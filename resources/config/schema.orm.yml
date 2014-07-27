@@ -1,0 +1,264 @@
+horaro\Library\Entity\User:
+  type: entity
+  table: users
+
+  id:
+    id:
+      type: integer
+      options: { unsigned: true }
+      generator: { strategy: AUTO }
+
+  fields:
+    login:
+      type: string
+      length: 100
+    password:
+      type: string
+      length: 255
+    display_name:
+      type: string
+      length: 255
+      nullable: true
+    role:
+      type: string
+      length: 100
+
+  uniqueConstraints:
+    unique_login:
+      columns: [ login ]
+
+  oneToMany:
+    teams:
+      targetEntity: horaro\Library\Entity\UserTeamRelation
+      mappedBy: user
+
+horaro\Library\Entity\Team:
+  type: entity
+  table: teams
+
+  id:
+    id:
+      type: integer
+      options: { unsigned: true }
+      generator: { strategy: AUTO }
+
+  fields:
+    name:
+      type: string
+      length: 255
+    slug:
+      type: string
+      length: 255
+
+  uniqueConstraints:
+    unique_slug:
+      columns: [ slug ]
+
+  oneToMany:
+    users:
+      targetEntity: horaro\Library\Entity\UserTeamRelation
+      mappedBy: team
+    events:
+      targetEntity: horaro\Library\Entity\Event
+      mappedBy: team
+
+horaro\Library\Entity\UserTeamRelation:
+  type: entity
+  table: users_teams
+
+  id:
+    user_id:
+      type: integer
+      options: { unsigned: true }
+    team_id:
+      type: integer
+      options: { unsigned: true }
+
+  fields:
+    role:
+      type: string
+      length: 100
+
+  manyToOne:
+    user:
+      targetEntity: horaro\Library\Entity\User
+      inversedBy: teams
+      joinColumn:
+        name: user_id
+        referencedColumnName: id
+        nullable: false
+        onDelete: CASCADE
+    team:
+      targetEntity: horaro\Library\Entity\User
+      inversedBy: users
+      joinColumn:
+        name: team_id
+        referencedColumnName: id
+        nullable: false
+        onDelete: CASCADE
+
+horaro\Library\Entity\Event:
+  type: entity
+  table: events
+
+  id:
+    id:
+      type: integer
+      options: { unsigned: true }
+      generator: { strategy: AUTO }
+
+  fields:
+    name:
+      type: string
+      length: 255
+    slug:
+      type: string
+      length: 255
+    website:
+      type: string
+      length: 255
+    twitter:
+      type: string
+      length: 255
+    twitch:
+      type: string
+      length: 255
+
+  uniqueConstraints:
+    unique_slug:
+      columns: [ team_id, slug ]
+
+  oneToMany:
+    schedules:
+      targetEntity: horaro\Library\Entity\Schedule
+      mappedBy: event
+
+  manyToOne:
+    team:
+      targetEntity: horaro\Library\Entity\Team
+      inversedBy: events
+      joinColumn:
+        name: team_id
+        referencedColumnName: id
+        nullable: false
+        onDelete: CASCADE
+
+horaro\Library\Entity\Schedule:
+  type: entity
+  table: schedules
+
+  id:
+    id:
+      type: integer
+      options: { unsigned: true }
+      generator: { strategy: AUTO }
+
+  fields:
+    name:
+      type: string
+      length: 255
+    slug:
+      type: string
+      length: 255
+    timezone:
+      type: string
+      length: 100
+    updated_at:
+      type: datetime
+
+  uniqueConstraints:
+    unique_slug:
+      columns: [ event_id, slug ]
+
+  oneToMany:
+    items:
+      targetEntity: horaro\Library\Entity\ScheduleItem
+      mappedBy: schedule
+    columns:
+      targetEntity: horaro\Library\Entity\ScheduleColumn
+      mappedBy: schedule
+
+  manyToOne:
+    event:
+      targetEntity: horaro\Library\Entity\Event
+      inversedBy: schedules
+      joinColumn:
+        name: event_id
+        referencedColumnName: id
+        nullable: false
+        onDelete: CASCADE
+
+horaro\Library\Entity\ScheduleItem:
+  type: entity
+  table: schedule_items
+
+  id:
+    id:
+      type: integer
+      options: { unsigned: true }
+      generator: { strategy: AUTO }
+
+  fields:
+    scheduled:
+      type: datetime
+    length:
+      type: time
+    extra:
+      type: text
+
+  uniqueConstraints:
+    unique_slug:
+      columns: [ scheduled ]
+
+  manyToOne:
+    schedule:
+      targetEntity: horaro\Library\Entity\Schedule
+      inversedBy: items
+      joinColumn:
+        name: schedule_id
+        referencedColumnName: id
+        nullable: false
+        onDelete: CASCADE
+
+horaro\Library\Entity\ScheduleColumn:
+  type: entity
+  table: schedule_columns
+
+  id:
+    id:
+      type: integer
+      options: { unsigned: true }
+      generator: { strategy: AUTO }
+
+  fields:
+    name:
+      type: string
+      length: 255
+
+  manyToOne:
+    schedule:
+      targetEntity: horaro\Library\Entity\Schedule
+      inversedBy: columns
+      joinColumn:
+        name: schedule_id
+        referencedColumnName: id
+        nullable: false
+        onDelete: CASCADE
+
+# This entity is defined here just so we get a nice CREATE TABLE statement in the schema.sql
+# for the Symfony-provided PDO Session Storage adapter.
+horaro\Library\Entity\Session:
+  type: entity
+  table: sessions
+
+  id:
+    id:
+      type: string
+      length: 255
+
+  fields:
+    data:
+      type: text
+    mtime:
+      type: integer
+      options: { unsigned: true }
