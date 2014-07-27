@@ -1,0 +1,7 @@
+syntax:glob
+assets/vendor/*
+node_modules/*
+resources/config/parameters.yml
+tmp/*
+vendor/*
+www/assets/*

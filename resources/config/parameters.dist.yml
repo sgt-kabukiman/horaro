@@ -1,0 +1,12 @@
+database:
+  driver:   pdo_mysql
+  user:     yourusername
+  password: yourpassword
+  dbname:   yourdatabasename
+session:
+  db_table:    session
+  db_id_col:   id
+  db_data_col: data
+  db_time_col: mtime
+doctrine_proxies: tmp/doctrine-proxies/
+debug: true
