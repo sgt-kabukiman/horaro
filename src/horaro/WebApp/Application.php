@@ -24,10 +24,8 @@ class Application extends BaseApplication {
 	public function setupServices() {
 		parent::setupServices();
 
-		$app = $this;
-
-		$this['app.controller.index'] = $this->share(function() use ($app) {
-			return new Controller\IndexController($app);
+		$this['app.controller.index'] = $this->share(function() {
+			return new Controller\IndexController($this);
 		});
 	}
 

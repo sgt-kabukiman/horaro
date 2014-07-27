@@ -27,21 +27,19 @@ class BaseApplication extends Application {
 	}
 
 	public function setupServices() {
-		$app = $this;
-
-		$app['session.storage.handler'] = $app->share(function() use ($app) {
-			$connection = $app['app.entitymanager']->getConnection();
+		$this['session.storage.handler'] = $this->share(function() {
+			$connection = $this['app.entitymanager']->getConnection();
 			$connection = $connection->getWrappedConnection();
-			$config     = $app['app.config'];
+			$config     = $this['app.config'];
 
 			return new PdoSessionHandler(
 				$connection,
 				$config['session'],
-				$app['session.storage.options']
+				$this['session.storage.options']
 			);
 		});
 
-		$this['app.config'] = $this->share(function() use ($app) {
+		$this['app.config'] = $this->share(function() {
 			$config = new Configuration();
 			$dir    = HORARO_ROOT.'/resources/config/';
 
@@ -51,9 +49,9 @@ class BaseApplication extends Application {
 			return $config;
 		});
 
-		$this['app.entitymanager'] = $this->share(function() use ($app) {
+		$this['app.entitymanager'] = $this->share(function() {
 			// the connection configuration
-			$config   = $app['app.config'];
+			$config   = $this['app.config'];
 			$paths    = [HORARO_ROOT.'/resources/config' => 'horaro\Library\Entity'];
 			$proxyDir = $config['doctrine_proxies'];
 
@@ -71,8 +69,8 @@ class BaseApplication extends Application {
 			return EntityManager::create($config['database'], $configuration);
 		});
 
-		$this['app.rolemanager'] = $this->share(function() use ($app) {
-			return new RoleManager($app['app.config']['roles']);
+		$this['app.rolemanager'] = $this->share(function() {
+			return new RoleManager($this['app.config']['roles']);
 		});
 
 		// set Silex' debug flag
