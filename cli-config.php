@@ -16,4 +16,4 @@ require HORARO_ROOT.'/vendor/autoload.php';
 
 $app = new Application();
 
-return ConsoleRunner::createHelperSet($app['app.entitymanager']);
+return ConsoleRunner::createHelperSet($app['entitymanager']);

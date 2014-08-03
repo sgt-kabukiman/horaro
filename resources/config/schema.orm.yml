@@ -31,6 +31,9 @@ horaro\Library\Entity\User:
     teams:
       targetEntity: horaro\Library\Entity\UserTeamRelation
       mappedBy: user
+    events:
+      targetEntity: horaro\Library\Entity\Event
+      mappedBy: user
 
 horaro\Library\Entity\Team:
   type: entity
@@ -134,13 +137,21 @@ horaro\Library\Entity\Event:
       mappedBy: event
 
   manyToOne:
+    user:
+      targetEntity: horaro\Library\Entity\User
+      inversedBy: events
+      joinColumn:
+        name: user_id
+        referencedColumnName: id
+        nullable: true
+        onDelete: CASCADE
     team:
       targetEntity: horaro\Library\Entity\Team
       inversedBy: events
       joinColumn:
         name: team_id
         referencedColumnName: id
-        nullable: false
+        nullable: true
         onDelete: CASCADE
 
 horaro\Library\Entity\Schedule:

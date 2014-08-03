@@ -52,6 +52,11 @@ class Event {
 	private $schedules;
 
 	/**
+	 * @var \horaro\Library\Entity\User
+	 */
+	private $user;
+
+	/**
 	 * @var \horaro\Library\Entity\Team
 	 */
 	private $team;
@@ -61,6 +66,21 @@ class Event {
 	 */
 	public function __construct() {
 		$this->schedules = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	public function setOwner($owner) {
+		if ($owner instanceof User) {
+			$this->setUser($owner)->setTeam(null);
+		}
+		elseif ($owner instanceof Team) {
+			$this->setUser(null)->setTeam($owner);
+		}
+
+		throw new \InvalidArgumentException('$owner must be either a User or a Team instance, got '.get_class($owner).' instance.');
+	}
+
+	public function getOwner() {
+		return $this->getTeam() ?: $this->getUser();
 	}
 
 	/**
@@ -208,12 +228,33 @@ class Event {
 	}
 
 	/**
+	 * Set user
+	 *
+	 * @param \horaro\Library\Entity\User $user
+	 * @return Event
+	 */
+	public function setUser(User $user = null) {
+		$this->user = $user;
+
+		return $this;
+	}
+
+	/**
+	 * Get user
+	 *
+	 * @return \horaro\Library\Entity\User
+	 */
+	public function getUser() {
+		return $this->user;
+	}
+
+	/**
 	 * Set team
 	 *
 	 * @param \horaro\Library\Entity\Team $team
 	 * @return Event
 	 */
-	public function setTeam(Team $team) {
+	public function setTeam(Team $team = null) {
 		$this->team = $team;
 
 		return $this;
