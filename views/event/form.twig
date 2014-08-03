@@ -1,0 +1,119 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h1>Create a New Event</h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-7">
+		<div class="well">
+			<form method="post" action="/-/events/create" class="form-horizontal">
+				<fieldset>
+					<legend>Event Information</legend>
+
+					<div class="form-group{% if result and result.name.errors %} has-error{% endif %}">
+						<label class="col-lg-3 control-label" for="name">Name:</label>
+						<div class="col-lg-9">
+							{% if result and result.name.errors and result.name.messages %}
+							<span class="help-block"><strong>
+								{% for message in result.name.messages %}
+									{{ message }}<br>
+								{% endfor %}
+							</strong></span>
+							{% endif %}
+							<input type="text" class="form-control" id="name" name="name" autofocus required placeholder="Pong-a-thon" value="{% if result %}{{ result.name.filtered }}{% endif %}">
+						</div>
+					</div>
+
+					<div class="form-group{% if result and result.slug.errors %} has-error{% endif %}">
+						<label class="col-lg-3 control-label" for="slug">Slug:</label>
+						<div class="col-lg-9">
+							{% if result and result.slug.errors and result.slug.messages %}
+							<span class="help-block"><strong>
+								{% for message in result.slug.messages %}
+									{{ message }}<br>
+								{% endfor %}
+							</strong></span>
+							{% endif %}
+							<input type="text" class="form-control" id="slug" name="slug" required placeholder="pongathon" pattern="[a-z0-9-]{2,}" value="{% if result %}{{ result.slug.filtered }}{% endif %}">
+						</div>
+					</div>
+
+					<div class="form-group{% if result and result.website.errors %} has-error{% endif %}">
+						<label class="col-lg-3 control-label" for="website">Website:</label>
+						<div class="col-lg-9">
+							{% if result and result.website.errors and result.website.messages %}
+							<span class="help-block"><strong>
+								{% for message in result.website.messages %}
+									{{ message }}<br>
+								{% endfor %}
+							</strong></span>
+							{% endif %}
+							<input type="text" class="form-control" id="website" name="website" placeholder="http://www.pongathon.org/" value="{% if result %}{{ result.website.filtered }}{% endif %}">
+						</div>
+					</div>
+
+					<div class="form-group{% if result and result.twitch.errors %} has-error{% endif %}">
+						<label class="col-lg-3 control-label" for="twitch">Twitch Stream:</label>
+						<div class="col-lg-9">
+							{% if result and result.twitch.errors and result.twitch.messages %}
+							<span class="help-block"><strong>
+								{% for message in result.twitch.messages %}
+									{{ message }}<br>
+								{% endfor %}
+							</strong></span>
+							{% endif %}
+							<div class="input-group">
+								<div class="input-group-addon">http://twitch.tv/</div>
+								<input type="text" class="form-control" id="twitch" name="twitch" placeholder="pongathon" value="{% if result %}{{ result.twitch.filtered }}{% endif %}">
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group{% if result and result.twitter.errors %} has-error{% endif %}">
+						<label class="col-lg-3 control-label" for="twitter">Twitter Account:</label>
+						<div class="col-lg-9">
+							{% if result and result.twitter.errors and result.twitter.messages %}
+							<span class="help-block"><strong>
+								{% for message in result.twitter.messages %}
+									{{ message }}<br>
+								{% endfor %}
+							</strong></span>
+							{% endif %}
+							<input type="text" class="form-control" id="twitter" name="twitter" placeholder="@pongathon" value="{% if result %}{{ result.twitter.filtered }}{% endif %}">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-lg-12 text-center">
+							<button type="submit" class="btn btn-primary"><i class="fa fa-check"> </i> Create Event</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+
+	<div class="col-lg-6 col-md-6 col-sm-5">
+		<p>If your event is happening regularly (e.g. monthly), it's recommended that you create an
+		event for each actual event (e.g. have &quot;Pong-a-thon 2013&quot; and &quot;Pong-a-thon 2014&quot;).</p>
+
+		<p>Each event can have multiple schedules, even though most usually only need one.
+		<abbr title="European Speedster Assembly">ESA</abbr> 2014 is an example for an event having
+		multiple schedules: one for each stream.</p>
+
+		<p>The <strong>slug</strong> is used for the URLs to view the event information and schedules.
+		Use something alphanumeric and short, e.g. &quot;pongathon2014&quot;. The slug has to be unique,
+		so note that someone else could already have reserved a slug for their event. You can only use
+		lowercase letters, numbers and dashes. Also note that a few names are reserved
+		and cannot be used: <code>-</code> and <code>assets</code>. A slug must be at least two
+		characters long.</p>
+
+		<p>The <strong>website</strong>, <strong>Twitter account</strong> and <strong>Twitch stream</strong>
+		are optional and purely informational. They will be shown on the public event information page.</p>
+	</div>
+</div>
+{% endblock %}

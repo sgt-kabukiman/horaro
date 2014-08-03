@@ -28,9 +28,9 @@ class BaseApplication extends Application {
 
 	public function setupServices() {
 		$this['session.storage.handler'] = $this->share(function() {
-			$connection = $this['app.entitymanager']->getConnection();
+			$connection = $this['entitymanager']->getConnection();
 			$connection = $connection->getWrappedConnection();
-			$config     = $this['app.config'];
+			$config     = $this['config'];
 
 			return new PdoSessionHandler(
 				$connection,
@@ -39,7 +39,7 @@ class BaseApplication extends Application {
 			);
 		});
 
-		$this['app.config'] = $this->share(function() {
+		$this['config'] = $this->share(function() {
 			$config = new Configuration();
 			$dir    = HORARO_ROOT.'/resources/config/';
 
@@ -49,9 +49,9 @@ class BaseApplication extends Application {
 			return $config;
 		});
 
-		$this['app.entitymanager'] = $this->share(function() {
+		$this['entitymanager'] = $this->share(function() {
 			// the connection configuration
-			$config   = $this['app.config'];
+			$config   = $this['config'];
 			$paths    = [HORARO_ROOT.'/resources/config' => 'horaro\Library\Entity'];
 			$proxyDir = $config['doctrine_proxies'];
 
@@ -69,11 +69,11 @@ class BaseApplication extends Application {
 			return EntityManager::create($config['database'], $configuration);
 		});
 
-		$this['app.rolemanager'] = $this->share(function() {
-			return new RoleManager($this['app.config']['roles']);
+		$this['rolemanager'] = $this->share(function() {
+			return new RoleManager($this['config']['roles']);
 		});
 
 		// set Silex' debug flag
-		$this['debug'] = $this['app.config']['debug'];
+		$this['debug'] = $this['config']['debug'];
 	}
 }

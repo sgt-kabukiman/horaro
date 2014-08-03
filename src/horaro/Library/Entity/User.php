@@ -53,6 +53,10 @@ class User {
 		$this->teams = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	public function getName() {
+		return $this->display_name ?: $this->login;
+	}
+
 	/**
 	 * Get id
 	 *

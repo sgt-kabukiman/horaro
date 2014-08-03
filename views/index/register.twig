@@ -1,0 +1,98 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h1>Create an Account</h1>
+		<p>Complete the form below to create a new account. It's free and you don't have to provide any personal information <span class="text-muted">(that you would fake anyway)</span>.</p>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6 col-md-12">
+		<div class="well">
+			<form method="post" action="/-/register" class="form-horizontal">
+				<fieldset>
+					<legend>Your Information</legend>
+
+					<div class="form-group{% if result and result.login.errors %} has-error{% endif %}">
+						<label class="col-lg-3 control-label" for="username">Username:</label>
+						<div class="col-lg-9">
+							{% if result and result.login.errors and result.login.messages %}
+							<span class="help-block"><strong>
+								{% for message in result.login.messages %}
+									{{ message }}<br>
+								{% endfor %}
+							</strong></span>
+							{% endif %}
+							<input type="text" class="form-control" id="username" name="username" autofocus required placeholder="cowen_hames69" value="{% if result %}{{ result.login.filtered }}{% endif %}">
+							<span class="help-block">Letters, numbers and a few special characters are allowed here. This has to
+							be unique across all users.</span>
+						</div>
+					</div>
+
+					<div class="form-group{% if result and result.password.errors %} has-error{% endif %}">
+						<label class="col-lg-3 control-label" for="password">Password:</label>
+						<div class="col-lg-9">
+							{% if result and result.password.errors and result.password.messages %}
+							<span class="help-block"><strong>
+								{% for message in result.password.messages %}
+									{{ message }}<br>
+								{% endfor %}
+							</strong></span>
+							{% endif %}
+							<input type="password" class="form-control" id="password" name="password" required placeholder="secret123 is not a good password">
+							<span class="help-block">Use whatever you like, but don't whine when someone guesses your shitty password.
+							Your password is stored as a bcrypt hash.</span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-lg-3 control-label" for="password2">Password again:</label>
+						<div class="col-lg-9">
+							<input type="password" class="form-control" id="password2" name="password2" required placeholder="secret123 is not a good password">
+							<span class="help-block">Yeah yeah, just paste your password in here again.</span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-lg-3 control-label" for="display_name">Display Name:</label>
+						<div class="col-lg-9">
+							<input type="text" class="form-control" id="display_name" name="display_name" placeholder="Cowen Hames">
+							<span class="help-block">This is the name that will be shown within Horaro. Leave it empty to
+							just use your username. Display names don't have to be unique across all users and you can use
+							whatever letters, numbers or symbols you want in here.</span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-lg-12 text-center">
+							<button type="submit" class="btn btn-primary"><i class="icon-lock icon-white"></i> Create Account</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+
+	<div class="col-lg-6 col-md-12">
+		<p>Having an account enables you to:</p>
+
+		<ul>
+			<li>Create or join a team.</li>
+			<li>Manage events.</li>
+			<li>Manage schedules.</li>
+		</ul>
+
+		<div class="alert alert-info">
+			<strong>Heads up!</strong><br>
+			You do <strong>not</strong> need an account to view public schedules or be on a schedule (as
+			a participant in an event).
+		</div>
+
+		<p>Please note that because we don't ask for your e-mail address, we cannot offer a
+		password reset functionality. If you lose your password, you either have to create a new
+		account or contact an administrator to manually reset your password.</p>
+	</div>
+</div>
+{% endblock %}

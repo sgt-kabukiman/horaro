@@ -12,10 +12,19 @@ namespace horaro\WebApp;
 
 use horaro\Library\BaseApplication;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
+use Silex\Provider\TwigServiceProvider;
 
 class Application extends BaseApplication {
 	public function __construct(array $values = []) {
 		parent::__construct($values);
+
+		$this->register(new TwigServiceProvider(), array(
+			'twig.path' => HORARO_ROOT.'/views',
+			'twig.options' => [
+				'cache'       => HORARO_ROOT.'/tmp/twig',
+				'auto_reload' => true
+			]
+		));
 
 		$this->setupServices();
 		$this->setupRouting();
@@ -24,12 +33,40 @@ class Application extends BaseApplication {
 	public function setupServices() {
 		parent::setupServices();
 
-		$this['app.controller.index'] = $this->share(function() {
+		$this['user'] = null;
+
+		$this['firewall'] = $this->share(function() {
+			return new Firewall($this);
+		});
+
+		$this['controller.index'] = $this->share(function() {
 			return new Controller\IndexController($this);
+		});
+
+		$this['controller.home'] = $this->share(function() {
+			return new Controller\HomeController($this);
+		});
+
+		$this['controller.event'] = $this->share(function() {
+			return new Controller\EventController($this);
 		});
 	}
 
 	public function setupRouting() {
-		$this->get('/', 'app.controller.index:indexAction');
+		$this->before('firewall:peekIntoSession');
+
+		$this->get ('/',           'controller.index:indexAction');
+		$this->get ('/-/login',    'controller.index:loginFormAction')->before('firewall:requireAnonymous');
+		$this->post('/-/login',    'controller.index:loginAction')->before('firewall:requireAnonymous');
+		$this->get ('/-/register', 'controller.index:registerFormAction')->before('firewall:requireAnonymous');
+		$this->post('/-/register', 'controller.index:registerAction')->before('firewall:requireAnonymous');
+
+		$this->get ('/-/home',   'controller.home:indexAction')->before('firewall:requireUser');
+		$this->get ('/-/logout', 'controller.home:logoutAction')->before('firewall:requireUser'); // TODO: This should be POST
+
+		$this->get ('/-/events/new', 'controller.event:newAction')->before('firewall:requireUser');
+
+		$this->error('firewall:handleAuthErrors');
+		$this->error('firewall:handleReverseAuthErrors');
 	}
 }

@@ -12,6 +12,7 @@
         "ircmaxell/password-compat": "~1.0.0",
         "league/fractal": "0.8.*",
         "hashids/hashids": "~0.3.0@dev",
+        "twig/twig": "~1.16",
         "knplabs/console-service-provider": "dev-master#1f1a331540"
     },
     "autoload": {
