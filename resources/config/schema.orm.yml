@@ -127,10 +127,6 @@ horaro\Library\Entity\Event:
       type: string
       length: 255
 
-  uniqueConstraints:
-    unique_slug:
-      columns: [ team_id, slug ]
-
   oneToMany:
     schedules:
       targetEntity: horaro\Library\Entity\Schedule
