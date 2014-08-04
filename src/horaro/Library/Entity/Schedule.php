@@ -43,6 +43,11 @@ class Schedule {
 	private $updated_at;
 
 	/**
+	 * @var \DateTime
+	 */
+	private $start;
+
+	/**
 	 * @var \Doctrine\Common\Collections\Collection
 	 */
 	private $items;
@@ -156,6 +161,27 @@ class Schedule {
 	 */
 	public function getUpdatedAt() {
 		return $this->updated_at;
+	}
+
+	/**
+	 * Set start
+	 *
+	 * @param \DateTime $start
+	 * @return Schedule
+	 */
+	public function setStart($start) {
+		$this->start = $start;
+
+		return $this;
+	}
+
+	/**
+	 * Get start
+	 *
+	 * @return \DateTime
+	 */
+	public function getStart() {
+		return $this->start;
 	}
 
 	/**

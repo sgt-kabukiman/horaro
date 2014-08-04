@@ -175,6 +175,9 @@ horaro\Library\Entity\Schedule:
       length: 100
     updated_at:
       type: datetime
+    start:
+      type: datetime
+      nullable: true
 
   uniqueConstraints:
     unique_slug:
