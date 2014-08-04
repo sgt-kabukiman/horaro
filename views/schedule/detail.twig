@@ -1,0 +1,56 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<ul class="breadcrumb" style="margin-bottom: 5px;">
+	<li><a href="/-/home">Home</a></li>
+	<li><a href="/-/events/{{ schedule.event.id }}">{{ schedule.event.name }}</a></li>
+	<li>{{ schedule.name }}</li>
+</ul>
+
+<div class="row">
+	<div class="col-lg-6">
+		<h2>{{ schedule.name }}</h2>
+	</div>
+
+	<form method="post" action="/-/schedules/{{ schedule.id }}/setstart" class="form-horizontal">
+		<div class="col-lg-1">
+			<label class="col-lg-3 control-label" for="username">Username:</label>
+		</div>
+
+		<div class="col-lg-1">
+			<input type="text" class="form-control col-xs-1" id="username" name="username" required placeholder="cowen_hames69">
+		</div>
+
+		<div class="col-lg-1">
+			<button type="submit" class="btn btn-primary btn-sm"><i class="icon-lock icon-white"></i> Create Account</button>
+		</div>
+	</form>
+</div>
+
+<div class="row">
+	<div class="col-lg-8">
+
+	</div>
+
+	<div class="col-lg-4">
+		<div class="well">
+			<fieldset>
+				<legend>Schedule Information <a href="/-/schedules/{{ schedule.id }}/edit" class="btn btn-link btn-sm pull-right">Edit...</a></legend>
+
+				<dl class="h-indented">
+					<dt>Name</dt>
+					<dd>{{ schedule.name }}</dd>
+					<dt>Slug</dt>
+					<dd><code>{{ schedule.slug }}</code></dd>
+					<dt>Timezone</dt>
+					<dd>{{ schedule.timezone }}</dd>
+				</dl>
+
+				<div class="text-center">
+					<a href="/-/schedules/{{ schedule.id }}/delete" class="btn btn-warning btn-sm">Delete Schedule&hellip;</a>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+{% endblock %}
