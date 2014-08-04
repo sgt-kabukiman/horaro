@@ -120,12 +120,15 @@ horaro\Library\Entity\Event:
     website:
       type: string
       length: 255
+      nullable: true
     twitter:
       type: string
       length: 255
+      nullable: true
     twitch:
       type: string
       length: 255
+      nullable: true
 
   oneToMany:
     schedules:

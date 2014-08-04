@@ -10,8 +10,7 @@
 
 namespace horaro\WebApp\Validator;
 
-class CreateAccountValidator {
-	protected $result;
+class CreateAccountValidator extends BaseValidator {
 	protected $repo;
 
 	public function __construct($userRepo) {
@@ -66,23 +65,6 @@ class CreateAccountValidator {
 	}
 
 	public function validateDisplayName($name) {
-		$name = trim($name);
-
-		return mb_strlen($name) === 0 ? null : $name;
-	}
-
-	protected function addError($field, $message) {
-		$this->result['_errors'] = true;
-		$this->result[$field]['errors'] = true;
-		$this->result[$field]['messages'][] = $message;
-	}
-
-	protected function setFilteredValue($field, $value) {
-		$this->result[$field]['filtered'] = $value;
-
-		if (!isset($this->result[$field]['errors'])) {
-			$this->result[$field]['errors'] = false;
-			$this->result[$field]['messages'] = [];
-		}
+		return trim($name);
 	}
 }

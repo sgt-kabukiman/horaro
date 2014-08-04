@@ -11,6 +11,7 @@
 namespace horaro\WebApp\Controller;
 
 use horaro\Library\Entity\User;
+use horaro\WebApp\Validator\CreateAccountValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,7 +29,7 @@ class IndexController extends BaseController {
 	}
 
 	public function registerAction(Request $request) {
-		$validator = new \horaro\WebApp\Validator\CreateAccountValidator($this->getRepository('User'));
+		$validator = new CreateAccountValidator($this->getRepository('User'));
 		$result    = $validator->validate([
 			'login'        => $request->request->get('username'),
 			'password'     => $request->request->get('password'),

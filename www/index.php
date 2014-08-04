@@ -11,5 +11,7 @@
 define('HORARO_ROOT', dirname(__DIR__));
 require HORARO_ROOT.'/vendor/autoload.php';
 
+Symfony\Component\HttpFoundation\Request::enableHttpMethodParameterOverride();
+
 $app = new horaro\WebApp\Application();
 $app->run();

@@ -70,10 +70,10 @@ class Event {
 
 	public function setOwner($owner) {
 		if ($owner instanceof User) {
-			$this->setUser($owner)->setTeam(null);
+			return $this->setUser($owner)->setTeam(null);
 		}
 		elseif ($owner instanceof Team) {
-			$this->setUser(null)->setTeam($owner);
+			return $this->setUser(null)->setTeam($owner);
 		}
 
 		throw new \InvalidArgumentException('$owner must be either a User or a Team instance, got '.get_class($owner).' instance.');
@@ -153,6 +153,18 @@ class Event {
 	 */
 	public function getWebsite() {
 		return $this->website;
+	}
+
+	/**
+	 * Get website
+	 *
+	 * @return string
+	 */
+	public function getWebsiteHost() {
+		$website = $this->getWebsite();
+		if (!$website) return null;
+
+		return parse_url($website, PHP_URL_HOST);
 	}
 
 	/**

@@ -5,6 +5,29 @@
 	<title>Welcome &ndash; Horaro</title>
 	<link href="/assets/css/yeti.min.css" rel="stylesheet">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<style type="text/css">
+	dl.h-indented dd {
+		padding-left: 20px;
+	}
+
+	.h-twitch, .h-website, .h-twitter {
+		padding-left: 20px;
+		background-position: left center;
+		background-repeat: no-repeat;
+	}
+
+	.h-twitch {
+		background-image: url(http://www.twitch.tv/favicon.ico);
+	}
+
+	.h-twitter {
+		background-image: url(http://twitter.com/favicon.ico);
+	}
+
+	.breadcrumb {
+		font-size: 14px;
+	}
+	</style>
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-static-top" id="top" role="navigation">
@@ -27,24 +50,34 @@
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gamepad"></i> My Events <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li>Event A</li>
-							<li>Event B</li>
+							{% for event in app.user.events %}
+							<li><a href="/-/events/{{ event.id }}">{{ event.name }}</a></li>
+							{% endfor %}
+
+							{% if app.user.events|length > 0 %}
 							<li class="divider"></li>
+							{% endif %}
 							<li><a href="/-/events/new">New&hellip;</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users"></i> My Teams <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li>Team A</li>
-							<li>Team B</li>
+							{% for event in app.user.teams %}
+							<li><a href="/-/teams/{{ team.id }}">{{ team.name }}</a></li>
+							{% endfor %}
+
+							{% if app.user.teams|length > 0 %}
+							<li class="divider"></li>
+							{% endif %}
+							<li><a href="/-/teams/new">New&hellip;</a></li>
 						</ul>
 					</li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="/-/profile"><i class="fa fa-cog"></i> {{ app.user.name }}</a></li>
-					<li><a href="/-/logout"><i class="fa fa-sign-out"></i> Log-out</a></li>
+					<li><a href="/-/logout"><i class="fa fa-power-off"></i> Log-out</a></li>
 				</ul>
 				{% else %}
 				<form method="post" action="/-/login" class="navbar-form navbar-right">

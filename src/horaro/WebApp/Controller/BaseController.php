@@ -37,18 +37,20 @@ class BaseController {
 	}
 
 	public function getCurrentUser() {
-		$userID = $this->app['session']->get('horaro.user');
+		return $this->app['user'];
+	}
 
-		if (!$userID) {
-			throw new UnauthorizedException('Forbidden.');
+	protected function encodeID($id, $entityType = null) {
+		return $id;
+	}
+
+	protected function decodeID($hash, $entityType = null) {
+		if (!ctype_digit($hash)) {
+			return null;
 		}
 
-		$user = $this->getRepository('User')->findById($userID);
+		$id = (int) $hash;
 
-		if (!$user) {
-			throw new UnauthorizedException('Forbidden.');
-		}
-
-		return $user;
+		return $id ?: null;
 	}
 }

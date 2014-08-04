@@ -10,8 +10,7 @@
 
 namespace horaro\WebApp\Validator;
 
-class LoginValidator {
-	protected $result;
+class LoginValidator extends BaseValidator {
 	protected $repo;
 
 	public function __construct($userRepo) {
@@ -60,20 +59,5 @@ class LoginValidator {
 		}
 
 		return $password;
-	}
-
-	protected function addError($field, $message) {
-		$this->result['_errors'] = true;
-		$this->result[$field]['errors'] = true;
-		$this->result[$field]['messages'][] = $message;
-	}
-
-	protected function setFilteredValue($field, $value) {
-		$this->result[$field]['filtered'] = $value;
-
-		if (!isset($this->result[$field]['errors'])) {
-			$this->result[$field]['errors'] = false;
-			$this->result[$field]['messages'] = [];
-		}
 	}
 }

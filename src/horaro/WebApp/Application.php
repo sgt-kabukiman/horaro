@@ -55,16 +55,22 @@ class Application extends BaseApplication {
 	public function setupRouting() {
 		$this->before('firewall:peekIntoSession');
 
-		$this->get ('/',           'controller.index:indexAction');
-		$this->get ('/-/login',    'controller.index:loginFormAction')->before('firewall:requireAnonymous');
-		$this->post('/-/login',    'controller.index:loginAction')->before('firewall:requireAnonymous');
-		$this->get ('/-/register', 'controller.index:registerFormAction')->before('firewall:requireAnonymous');
-		$this->post('/-/register', 'controller.index:registerAction')->before('firewall:requireAnonymous');
+		$this->get   ('/',           'controller.index:indexAction');
+		$this->get   ('/-/login',    'controller.index:loginFormAction')->before('firewall:requireAnonymous');
+		$this->post  ('/-/login',    'controller.index:loginAction')->before('firewall:requireAnonymous');
+		$this->get   ('/-/register', 'controller.index:registerFormAction')->before('firewall:requireAnonymous');
+		$this->post  ('/-/register', 'controller.index:registerAction')->before('firewall:requireAnonymous');
 
-		$this->get ('/-/home',   'controller.home:indexAction')->before('firewall:requireUser');
-		$this->get ('/-/logout', 'controller.home:logoutAction')->before('firewall:requireUser'); // TODO: This should be POST
+		$this->get   ('/-/home',   'controller.home:indexAction')->before('firewall:requireUser');
+		$this->get   ('/-/logout', 'controller.home:logoutAction')->before('firewall:requireUser'); // TODO: This should be POST
 
-		$this->get ('/-/events/new', 'controller.event:newAction')->before('firewall:requireUser');
+		$this->get   ('/-/events/new',         'controller.event:newAction')->before('firewall:requireUser');
+		$this->post  ('/-/events',             'controller.event:createAction')->before('firewall:requireUser');
+		$this->get   ('/-/events/{id}',        'controller.event:detailAction')->before('firewall:requireUser');
+		$this->get   ('/-/events/{id}/edit',   'controller.event:editAction')->before('firewall:requireUser');
+		$this->put   ('/-/events/{id}',        'controller.event:updateAction')->before('firewall:requireUser');
+		$this->get   ('/-/events/{id}/delete', 'controller.event:confirmationAction')->before('firewall:requireUser');
+		$this->delete('/-/events/{id}',        'controller.event:deleteAction')->before('firewall:requireUser');
 
 		$this->error('firewall:handleAuthErrors');
 		$this->error('firewall:handleReverseAuthErrors');

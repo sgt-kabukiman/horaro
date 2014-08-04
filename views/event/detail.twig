@@ -1,0 +1,82 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<ul class="breadcrumb" style="margin-bottom: 5px;">
+	<li><a href="/-/home">Home</a></li>
+	<li>{{ event.name }}</li>
+</ul>
+
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h2>{{ event.name }}</h2>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-8">
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="well well-sm text-center">
+					<h4><a href="/-/events/id"><i class="fa fa-gamepad fa-3x"></i><br>Blue Stream</a></h4>
+				</div>
+			</div>
+
+			<div class="col-lg-4">
+				<div class="well well-sm text-center">
+					<h4><a href="/-/events/id"><i class="fa fa-gamepad fa-3x"></i><br>Yellow Stream</a></h4>
+				</div>
+			</div>
+
+			<div class="col-lg-4">
+				<div class="well well-sm text-center" style="border:1px solid transparent;background:transparent">
+					<h4><a href="/-/events/{{ event.id }}/schedules/new" class="text-muted"><i class="fa fa-plus fa-3x"></i><br>New Schedule&hellip;</a></h4>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-4">
+		<div class="well">
+			<fieldset>
+				<legend>Event Information <a href="/-/events/{{ event.id }}/edit" class="btn btn-link btn-sm pull-right">Edit...</a></legend>
+
+				<dl class="h-indented">
+					<dt>Name</dt>
+					<dd>{{ event.name }}</dd>
+					<dt>Slug</dt>
+					<dd><code>{{ event.slug }}</code></dd>
+					<dt>Website</dt>
+					<dd>
+					{% if event.websitehost %}
+						<a href="{{ event.website }}" class="h-website" style="background-image:url(http://{{ event.websitehost }}/favicon.ico)">{{ event.websitehost }}</a>
+					{% elseif event.website %}
+						{{ event.website }}
+					{% else %}
+						(none)
+					{% endif %}
+					</dd>
+					<dt>Twitch Stream</dt>
+					<dd>
+					{% if event.twitch %}
+						<a href="http://twitch.tv/{{ event.twitch }}" class="h-twitch">{{ event.twitch }}</a>
+					{% else %}
+						(none)
+					{% endif %}
+					<dt>Twitter Account</dt>
+					<dd>
+					{% if event.twitter %}
+						<a href="http://twitter.com/{{ event.twitter }}" class="h-twitter">{{ event.twitter }}</a>
+					{% else %}
+						(none)
+					{% endif %}
+					</dd>
+				</dl>
+
+				<div class="text-center">
+					<a href="/-/events/{{ event.id }}/delete" class="btn btn-danger btn-sm">Delete Event&hellip;</a>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+{% endblock %}
