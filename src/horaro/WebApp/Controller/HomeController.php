@@ -18,11 +18,4 @@ class HomeController extends BaseController {
 	public function indexAction(Request $request) {
 		return $this->render('home/home.twig');
 	}
-
-	public function logoutAction(Request $request) {
-		$session = $this->app['session'];
-		$session->invalidate();
-
-		return $this->redirect('/');
-	}
 }

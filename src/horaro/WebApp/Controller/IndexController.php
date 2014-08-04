@@ -90,4 +90,11 @@ class IndexController extends BaseController {
 
 		return $this->redirect('/-/home');
 	}
+
+	public function logoutAction(Request $request) {
+		$session = $this->app['session'];
+		$session->invalidate();
+
+		return $this->redirect('/');
+	}
 }

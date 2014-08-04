@@ -58,11 +58,11 @@ class Application extends BaseApplication {
 		$this->get   ('/',           'controller.index:indexAction');
 		$this->get   ('/-/login',    'controller.index:loginFormAction')->before('firewall:requireAnonymous');
 		$this->post  ('/-/login',    'controller.index:loginAction')->before('firewall:requireAnonymous');
+		$this->get   ('/-/logout',   'controller.index:logoutAction')->before('firewall:requireUser'); // TODO: This should be POST
 		$this->get   ('/-/register', 'controller.index:registerFormAction')->before('firewall:requireAnonymous');
 		$this->post  ('/-/register', 'controller.index:registerAction')->before('firewall:requireAnonymous');
 
-		$this->get   ('/-/home',   'controller.home:indexAction')->before('firewall:requireUser');
-		$this->get   ('/-/logout', 'controller.home:logoutAction')->before('firewall:requireUser'); // TODO: This should be POST
+		$this->get   ('/-/home', 'controller.home:indexAction')->before('firewall:requireUser');
 
 		$this->get   ('/-/events/new',         'controller.event:newAction')->before('firewall:requireUser');
 		$this->post  ('/-/events',             'controller.event:createAction')->before('firewall:requireUser');
