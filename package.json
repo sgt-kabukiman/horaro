@@ -1,0 +1,12 @@
+{
+    "name": "kabukiman-horaro",
+    "version": "0.0.1",
+    "devDependencies": {
+        "grunt": "0.4.*",
+        "grunt-contrib-clean": "0.4.*",
+        "grunt-contrib-less": "0.6.*",
+        "grunt-contrib-concat": "0.4.*",
+        "grunt-shell": "0.7.*",
+        "grunt-lineending": "0.2.*"
+    }
+}
