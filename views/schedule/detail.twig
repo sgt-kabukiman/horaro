@@ -44,6 +44,12 @@
 					<dd><code>{{ schedule.slug }}</code></dd>
 					<dt>Timezone</dt>
 					<dd>{{ schedule.timezone }}</dd>
+					<dt>Start</dt>
+					{% if schedule.start %}
+					<dd>{{ schedule.start|date('D, F dS Y') }}</dd>
+					{% else %}
+					<dd>N/A</dd>
+					{% endif %}
 				</dl>
 
 				<div class="text-center">

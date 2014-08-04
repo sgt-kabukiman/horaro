@@ -73,12 +73,35 @@
 						<div class="col-lg-9">
 							<select name="timezone" id="timezone" class="form-control">
 							{% for timezone in timezones %}
-								<option value="{{ timezone }}">{{ timezone }}</option>
+								<option>{{ timezone }}</option>
 							{% endfor %}
 							</select>
 							{% if result and result.timezone.errors and result.timezone.messages %}
 							<span class="help-block"><strong>
 								{% for message in result.timezone.messages %}
+									{{ message }}<br>
+								{% endfor %}
+							</strong></span>
+							{% endif %}
+						</div>
+					</div>
+
+					<div class="form-group{% if result and result.start.errors %} has-error{% endif %}">
+						<label class="col-lg-3 control-label" for="start_date">Start:</label>
+						<div class="col-lg-9">
+							<div class="row">
+  								<div class="col-lg-7">
+									<input type="text" class="form-control" id="start_date" name="start_date" required placeholder="(click to edit)" value="{% if result %}{{ result.start_date.filtered }}{% elseif schedule %}{{ schedule.start|date('Y-m-d') }}{% endif %}">
+								</div>
+
+  								<div class="col-lg-5">
+									<input type="text" class="form-control" id="start_time" name="start_time" required placeholder="(click to edit)" value="{% if result %}{{ result.start_time.filtered }}{% elseif schedule %}{{ schedule.start|date('H:i') }}{% endif %}">
+								</div>
+							</div>
+
+							{% if result and result.start.errors and result.start.messages %}
+							<span class="help-block"><strong>
+								{% for message in result.start.messages %}
 									{{ message }}<br>
 								{% endfor %}
 							</strong></span>

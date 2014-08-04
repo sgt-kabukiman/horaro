@@ -81,4 +81,18 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	<script src="/assets/js/vendor.backend.js"></script>
+	<script type="text/javascript">
+	jQuery(function($) {
+		$('#start_date').pickadate({
+			formatSubmit: 'yyyy-mm-dd',
+			hiddenName: true
+		});
+
+		$('#start_time').pickatime({
+			interval: 15,
+			formatSubmit: 'HH:i',
+			hiddenName: true
+		});
+	});
+	</script>
 </body>

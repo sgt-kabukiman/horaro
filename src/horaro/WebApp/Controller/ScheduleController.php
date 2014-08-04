@@ -34,10 +34,12 @@ class ScheduleController extends BaseController {
 		$event     = $this->getRequestedEvent($request);
 		$validator = new ScheduleValidator($this->getRepository('Schedule'));
 		$result    = $validator->validate([
-			'name'     => $request->request->get('name'),
-			'slug'     => $request->request->get('slug'),
-			'timezone' => $request->request->get('timezone'),
-			'twitch'   => $request->request->get('twitch')
+			'name'       => $request->request->get('name'),
+			'slug'       => $request->request->get('slug'),
+			'timezone'   => $request->request->get('timezone'),
+			'twitch'     => $request->request->get('twitch'),
+			'start_date' => $request->request->get('start_date'),
+			'start_time' => $request->request->get('start_time')
 		], $event);
 
 		if ($result['_errors']) {
@@ -55,6 +57,7 @@ class ScheduleController extends BaseController {
 			->setSlug($result['slug']['filtered'])
 			->setTimezone($result['timezone']['filtered'])
 			->setUpdatedAt(new \DateTime('now UTC'))
+			->setStart($result['start']['filtered'])
 //			->setTwitch($result['twitch']['filtered'])
 		;
 

@@ -37,9 +37,9 @@ module.exports = function (grunt) {
 				},
 				src: [
 					'assets/vendor/bootswatch/yeti/bootstrap.min.css',
-					'assets/vendor/pickadate/lib/themes/default.css',
-					'assets/vendor/pickadate/lib/themes/default.date.css',
-					'assets/vendor/pickadate/lib/themes/default.time.css',
+					'assets/vendor/pickadate/lib/themes/classic.css',
+					'assets/vendor/pickadate/lib/themes/classic.date.css',
+					'assets/vendor/pickadate/lib/themes/classic.time.css',
 					'tmp/app.css'
 				],
 				dest: 'www/assets/app.css'
@@ -64,6 +64,13 @@ module.exports = function (grunt) {
 					'resources/schema.sql': ['resources/schema.sql']
 				}
 			}
+		},
+
+		watch: {
+			css: {
+				files: ['assets/app.less'],
+				tasks: ['css']
+			}
 		}
 	});
 
@@ -71,6 +78,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-shell');
 	grunt.loadNpmTasks('grunt-lineending');
 

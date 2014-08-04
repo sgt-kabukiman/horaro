@@ -27,6 +27,7 @@ class ScheduleValidator extends BaseValidator {
 		$this->setFilteredValue('slug',     $this->validateSlug($schedule['slug'], $event, $ref));
 		$this->setFilteredValue('timezone', $this->validateTimezone($schedule['timezone'], $event, $ref));
 		$this->setFilteredValue('twitch',   $this->validateTwitchAccount($schedule['twitch'], $event, $ref));
+		$this->setFilteredValue('start',    $this->validateStart($schedule['start_date'], $schedule['start_time'], $event, $ref));
 
 		return $this->result;
 	}
@@ -85,5 +86,49 @@ class ScheduleValidator extends BaseValidator {
 		}
 
 		return $account === '' ? null : $account;
+	}
+
+	public function validateStart($date, $time, Event $event, Schedule $ref = null) {
+		$this->setFilteredValue('start_date', $date);
+		$this->setFilteredValue('start_time', $time);
+
+		$okay = true;
+
+		if (strlen(trim($date)) === 0) {
+			$this->addError('start', 'No start date given.');
+			$okay = false;
+		}
+		else {
+			$d = \DateTime::createFromFormat('Y-m-d', $date);
+
+			if (!$d) {
+				$this->addError('start', 'The given start date is malformed.');
+				$okay = false;
+			}
+			else {
+				$year = $d->format('Y');
+				$now  = date('Y');
+
+				if ($year < $now-2 || $year > $now+2) {
+					$this->addError('start', 'The given start date is out of range.');
+					$okay = false;
+				}
+			}
+		}
+
+		if (strlen(trim($time)) === 0) {
+			$this->addError('start', 'No start time given.');
+			$okay = false;
+		}
+		else {
+			$t = \DateTime::createFromFormat('G:i', $time);
+
+			if (!$t) {
+				$this->addError('start', 'The given start time is malformed.');
+				$okay = false;
+			}
+		}
+
+		return $okay ? \DateTime::createFromFormat('Y-m-d G:i', "$date $time") : null;
 	}
 }
