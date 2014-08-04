@@ -61,7 +61,7 @@ class EventController extends BaseController {
 
 		// done
 
-		return $this->redirect('/-/home');
+		return $this->redirect('/-/events/'.$event->getId());
 	}
 
 	public function editAction(Request $request) {
