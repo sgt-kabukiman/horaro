@@ -52,7 +52,7 @@ class Firewall {
 	}
 
 	public function handleAuthErrors(UnauthorizedException $e) {
-		return new Response($this->app['twig']->render('index/login.twig'), $e->getHttpStatus());
+		return new Response($this->app['twig']->render('index/login.twig', ['result' => null]), $e->getHttpStatus());
 	}
 
 	public function handleReverseAuthErrors(TooAuthorizedException $e) {
