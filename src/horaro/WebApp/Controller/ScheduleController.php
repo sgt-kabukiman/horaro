@@ -71,59 +71,63 @@ class ScheduleController extends BaseController {
 	}
 
 	public function editAction(Request $request) {
-		$event = $this->getRequestedEvent($request);
+		$schedule = $this->getRequestedSchedule($request);
 
-		return $this->render('event/form.twig', ['event' => $event, 'result' => null]);
+		return $this->renderForm($schedule->getEvent(), $schedule, null);
 	}
 
 	public function updateAction(Request $request) {
-		$event     = $this->getRequestedEvent($request);
-		$validator = new EventValidator($this->getRepository('Event'));
+		$schedule  = $this->getRequestedSchedule($request);
+		$event     = $schedule->getEvent();
+		$validator = new ScheduleValidator($this->getRepository('Schedule'));
 		$result    = $validator->validate([
-			'name'    => $request->request->get('name'),
-			'slug'    => $request->request->get('slug'),
-			'website' => $request->request->get('website'),
-			'twitch'  => $request->request->get('twitch'),
-			'twitter' => $request->request->get('twitter')
-		], $event);
+			'name'       => $request->request->get('name'),
+			'slug'       => $request->request->get('slug'),
+			'timezone'   => $request->request->get('timezone'),
+			'twitch'     => $request->request->get('twitch'),
+			'start_date' => $request->request->get('start_date'),
+			'start_time' => $request->request->get('start_time')
+		], $event, $schedule);
 
 		if ($result['_errors']) {
-			return $this->render('event/form.twig', ['event' => $event, 'result' => $result]);
+			return $this->renderForm($event, $schedule, $result);
 		}
 
 		// update
 
-		$event
+		$schedule
 			->setName($result['name']['filtered'])
 			->setSlug($result['slug']['filtered'])
-			->setWebsite($result['website']['filtered'])
-			->setTwitch($result['twitch']['filtered'])
-			->setTwitter($result['twitter']['filtered'])
+			->setTimezone($result['timezone']['filtered'])
+			->setUpdatedAt(new \DateTime('now UTC'))
+			->setStart($result['start']['filtered'])
+//			->setTwitch($result['twitch']['filtered'])
 		;
 
 		$em = $this->getEntityManager();
-		$em->persist($event);
+		$em->persist($schedule);
 		$em->flush();
 
 		// done
 
-		return $this->redirect('/-/events/'.$event->getId());
+		return $this->redirect('/-/schedules/'.$schedule->getId());
 	}
 
 	public function confirmationAction(Request $request) {
-		$event = $this->getRequestedEvent($request);
+		$schedule = $this->getRequestedSchedule($request);
 
-		return $this->render('event/confirmation.twig', ['event' => $event]);
+		return $this->render('schedule/confirmation.twig', ['schedule' => $schedule]);
 	}
 
 	public function deleteAction(Request $request) {
-		$event = $this->getRequestedEvent($request);
-		$em    = $this->getEntityManager();
+		$schedule = $this->getRequestedSchedule($request);
+		$eventID  = $schedule->getEvent()->getId();
+		$em       = $this->getEntityManager();
 
-		$em->remove($event);
+		$em->remove($schedule);
 		$em->flush();
 
-		return $this->redirect('/-/home');
+		return $this->redirect('/-/events/'.$eventID);
 	}
 
 	protected function getRequestedEvent(Request $request) {

@@ -42,3 +42,27 @@ dl.h-indented dd {
 .picker__day, .picker__list-item {
 	font-size: 12px;
 }
+
+/* Scheduler */
+
+.h-scheduler {
+	font-size: 13px;
+
+	.panel {
+		margin-bottom: 3px;
+	}
+
+	.panel-body {
+		cursor: pointer;
+
+		&.expanded {
+			background: red;
+		}
+	}
+
+	.h-handle {
+		font-size: 16px;
+		margin-right: 8px;
+		cursor: move;
+	}
+}

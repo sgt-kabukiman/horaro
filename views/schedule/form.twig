@@ -5,7 +5,7 @@
 	<li><a href="/-/home">Home</a></li>
 	<li><a href="/-/events/{{ event.id }}">{{ event.name }}</a></li>
 	{% if schedule %}
-	<li><a href="/-/events/{{ event.id }}/schedules/{{ schedule.id }}">{{ schedule.name }}</a></li>
+	<li><a href="/-/schedules/{{ schedule.id }}">{{ schedule.name }}</a></li>
 	<li>Update Schedule&hellip;</li>
 	{% else %}
 	<li>New Schedule&hellip;</li>
@@ -22,7 +22,7 @@
 	<div class="col-lg-6 col-md-6 col-sm-7">
 		<div class="well">
 			{% if schedule %}
-			<form method="post" action="/-/events/{{ event.id }}/schedules/{{ schedule.id }}" class="form-horizontal">
+			<form method="post" action="/-/schedules/{{ schedule.id }}" class="form-horizontal">
 				<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
 			{% else %}
 			<form method="post" action="/-/events/{{ event.id }}/schedules" class="form-horizontal">
@@ -102,23 +102,6 @@
 							{% if result and result.start.errors and result.start.messages %}
 							<span class="help-block"><strong>
 								{% for message in result.start.messages %}
-									{{ message }}<br>
-								{% endfor %}
-							</strong></span>
-							{% endif %}
-						</div>
-					</div>
-
-					<div class="form-group{% if result and result.twitch.errors %} has-error{% endif %}">
-						<label class="col-lg-3 control-label" for="twitch">Twitch Stream:</label>
-						<div class="col-lg-9">
-							<div class="input-group">
-								<div class="input-group-addon">http://twitch.tv/</div>
-								<input type="text" class="form-control" id="twitch" name="twitch" placeholder="pongathon" value="{% if result %}{{ result.twitch.filtered }}{% elseif schedule %}{{ schedule.twitch }}{% endif %}">
-							</div>
-							{% if result and result.twitch.errors and result.twitch.messages %}
-							<span class="help-block"><strong>
-								{% for message in result.twitch.messages %}
 									{{ message }}<br>
 								{% endfor %}
 							</strong></span>

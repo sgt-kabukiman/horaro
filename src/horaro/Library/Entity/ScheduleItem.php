@@ -22,9 +22,9 @@ class ScheduleItem {
 	private $id;
 
 	/**
-	 * @var \DateTime
+	 * @var integer
 	 */
-	private $scheduled;
+	private $position;
 
 	/**
 	 * @var \DateTime
@@ -51,24 +51,24 @@ class ScheduleItem {
 	}
 
 	/**
-	 * Set scheduled
+	 * Set position
 	 *
-	 * @param \DateTime $scheduled
+	 * @param integer $position
 	 * @return ScheduleItem
 	 */
-	public function setScheduled($scheduled) {
-		$this->scheduled = $scheduled;
+	public function setPosition($position) {
+		$this->position = $position;
 
 		return $this;
 	}
 
 	/**
-	 * Get scheduled
+	 * Get position
 	 *
-	 * @return \DateTime
+	 * @return integer
 	 */
-	public function getScheduled() {
-		return $this->scheduled;
+	public function getPosition() {
+		return $this->position;
 	}
 
 	/**

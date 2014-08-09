@@ -212,16 +212,13 @@ horaro\Library\Entity\ScheduleItem:
       generator: { strategy: AUTO }
 
   fields:
-    scheduled:
-      type: datetime
+    position:
+      type: integer
+      options: { unsigned: true }
     length:
       type: time
     extra:
       type: text
-
-  uniqueConstraints:
-    unique_slug:
-      columns: [ scheduled ]
 
   manyToOne:
     schedule:

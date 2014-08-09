@@ -93,6 +93,15 @@
 			formatSubmit: 'HH:i',
 			hiddenName: true
 		});
+
+		$('.h-scheduler').sortable({
+			handle: '.h-handle',
+			forcePlaceholderSize: true
+		});
+
+		$('.h-scheduler .panel-body').on('click', function() {
+			$(this).toggleClass('expanded');
+		})
 	});
 	</script>
 </body>

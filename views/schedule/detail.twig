@@ -8,55 +8,66 @@
 </ul>
 
 <div class="row">
-	<div class="col-lg-6">
-		<h2>{{ schedule.name }}</h2>
+	<div class="col-lg-12">
+		<h2>{{ schedule.name }} <a href="/-/schedules/{{ schedule.id }}/edit" class="btn btn-link btn-sm">Edit details&hellip;</a></h2>
+
+		<p class="text-center text-muted"><small>Click on an item to edit its details. Click and drag the handle on the left side to move items up or down.</small></p>
 	</div>
-
-	<form method="post" action="/-/schedules/{{ schedule.id }}/setstart" class="form-horizontal">
-		<div class="col-lg-1">
-			<label class="col-lg-3 control-label" for="username">Username:</label>
-		</div>
-
-		<div class="col-lg-1">
-			<input type="text" class="form-control col-xs-1" id="username" name="username" required placeholder="cowen_hames69">
-		</div>
-
-		<div class="col-lg-1">
-			<button type="submit" class="btn btn-primary btn-sm"><i class="icon-lock icon-white"></i> Create Account</button>
-		</div>
-	</form>
 </div>
 
 <div class="row">
-	<div class="col-lg-8">
-
-	</div>
-
-	<div class="col-lg-4">
-		<div class="well">
-			<fieldset>
-				<legend>Schedule Information <a href="/-/schedules/{{ schedule.id }}/edit" class="btn btn-link btn-sm pull-right">Edit...</a></legend>
-
-				<dl class="h-indented">
-					<dt>Name</dt>
-					<dd>{{ schedule.name }}</dd>
-					<dt>Slug</dt>
-					<dd><code>{{ schedule.slug }}</code></dd>
-					<dt>Timezone</dt>
-					<dd>{{ schedule.timezone }}</dd>
-					<dt>Start</dt>
-					{% if schedule.start %}
-					<dd>{{ schedule.start|date('D, F dS Y') }}</dd>
-					{% else %}
-					<dd>N/A</dd>
-					{% endif %}
-				</dl>
-
-				<div class="text-center">
-					<a href="/-/schedules/{{ schedule.id }}/delete" class="btn btn-warning btn-sm">Delete Schedule&hellip;</a>
+	<div class="col-lg-12 h-scheduler">
+		<div class="panel panel-default h-header">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-lg-1 h-th">
+						<span class="h-handle">&nbsp;&nbsp;</span>Scheduled
+					</div>
+					<div class="col-lg-2 h-th">
+						Game
+					</div>
+					<div class="col-lg-2 h-th">
+						Runners
+					</div>
+					<div class="col-lg-1 h-th">
+						Estimated
+					</div>
+					<div class="col-lg-3 h-th">
+						Comments
+					</div>
+					<div class="col-lg-2 h-th">
+						Couch Commentators
+					</div>
 				</div>
-			</fieldset>
+			</div>
 		</div>
+
+		{% for item in schedule.items %}
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-lg-1">
+						<span class="h-handle">::</span>{{ item.length|date('H:i:s') }}
+					</div>
+					<div class="col-lg-2 h-th">
+						Game
+					</div>
+					<div class="col-lg-2 h-th">
+						Runners
+					</div>
+					<div class="col-lg-1 h-th">
+						Estimated
+					</div>
+					<div class="col-lg-3 h-th">
+						Comments
+					</div>
+					<div class="col-lg-2 h-th">
+						Couch Commentators
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
 	</div>
 </div>
 {% endblock %}
