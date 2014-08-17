@@ -28,6 +28,8 @@ module.exports = function (grunt) {
 					'assets/vendor/pickadate/lib/compressed/picker.date.js',
 					'assets/vendor/pickadate/lib/compressed/picker.time.js',
 					'assets/vendor/html.sortable/src/html.sortable.js', // TODO: minify this manually (don't use the prebuilt dist one cause it has its version number in the filename...)
+					'assets/vendor/moment/min/moment-with-locales.min.js',
+					'assets/vendor/underscore/underscore.js',
 				],
 				dest: 'www/assets/js/vendor.backend.js'
 			},

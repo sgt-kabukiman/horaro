@@ -80,7 +80,10 @@
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
 	<script src="/assets/js/vendor.backend.js"></script>
+
+	{% verbatim %}
 	<script type="text/javascript">
 	jQuery(function($) {
 		$('#start_date').pickadate({
@@ -94,14 +97,113 @@
 			hiddenName: true
 		});
 
-		$('.h-scheduler').sortable({
+		/* Begin integration of Underscore template engine with Knockout.  */
+
+		// ko.underscoreTemplateEngine = function () { };
+		// ko.underscoreTemplateEngine.prototype = ko.utils.extend(new ko.templateEngine(), {
+		// 	renderTemplateSource: function (templateSource, bindingContext, options) {
+		// 		// Precompile and cache the templates for efficiency
+		// 		var precompiled = templateSource['data']('precompiled');
+
+		// 		if (!precompiled) {
+		// 			precompiled = _.template('{% with($data) { %} ' + templateSource.text() + ' {% } %}');
+		// 			templateSource['data']('precompiled', precompiled);
+		// 		}
+
+		// 		// Run the template and parse its output into an array of DOM elements
+		// 		var renderedMarkup = precompiled(bindingContext).replace(/\s+/g, ' ');
+
+		// 		return ko.utils.parseHtmlFragment(renderedMarkup);
+		// 	},
+
+		// 	createJavaScriptEvaluatorBlock: function(script) {
+		// 		return '{% ' + script + ' %}';
+		// 	}
+		// });
+
+		// ko.setTemplateEngine(new ko.underscoreTemplateEngine());
+
+		// _.templateSettings.interpolate  = /\{\{(.+?)\}\}/g;             // {% console.log("blah") %}
+		// _.templateSettings.escape       = /\{\{\{([\s\S]+?)\}\}\}/g;    // {{ title }}
+		// _.templateSettings.evaluate     = /\{\%([\s\S]+?)\%\}/g;        // {{{ title }}}
+
+		/* End integration of Underscore template engine with Knockout */
+
+		function Item(id, length, game, runners, comments, commentary) {
+			this.id             = id;
+			this.length         = ko.observable(length);
+			this.game           = ko.observable(game);
+			this.runners        = ko.observable(runners);
+			this.comments       = ko.observable(comments);
+			this.commentary     = ko.observable(commentary);
+			this.prizes         = ko.observable(commentary);
+			this.something      = ko.observable(commentary);
+			this.donationReader = ko.observable(commentary);
+			this.donations      = ko.observable(commentary);
+			this.scheduled      = ko.observable();
+			this.expanded       = ko.observable(false);
+
+			this.formattedLength = ko.computed(function() {
+				return moment.unix(this.length()).utc().format('HH:mm:ss');
+			}, this);
+
+			this.formattedSchedule = ko.computed(function() {
+				return moment(this.scheduled()).locale('de').format('LT');
+			}, this);
+		}
+
+		function ItemsViewModel() {
+			this.items = ko.observableArray([
+				new Item(1, 2*3600+30*60, 'Super Mario 3D World',    'SlowKingsPants', '',                 'Veegie64, Coolstoryliv'),
+				new Item(2, 52*60,        'Crash Bandicoot: Warped', 'SSBMStuff'),
+				new Item(3, 1*3600+26*60, 'Ape Escape 2',            'iongravirei',    'o[8(|)',           'SSBMStuff'),
+				new Item(4, 32*60,        'Super Monkey Ball 2',     'Geoff, Miles',   'Expert mode race', 'Jumpyluff')
+			]);
+
+			this.calculateSchedule = function(startIdx) {
+				var start, i, len, items, item, scheduled;
+
+				startIdx = startIdx || 0;
+				items    = this.items();
+
+				if (startIdx === 0) {
+					start = horaro.schedule.start.getTime();
+				}
+				else {
+					start = items[startIdx].scheduled.getTime() + (items[startIdx].length() * 1000);
+				}
+
+				scheduled = start;
+
+				for (i = startIdx, len = items.length; i < len; ++i) {
+					item = items[i];
+
+					item.scheduled(new Date(scheduled));
+
+					scheduled += (item.length() * 1000);
+				}
+			};
+
+			this.toggleItem = function(item) {
+				item.expanded(!item.expanded());
+			};
+
+			this.calculateSchedule();
+		}
+
+		var viewModel = new ItemsViewModel();
+
+		ko.applyBindings(viewModel);
+
+		$('.h-items').sortable({
 			handle: '.h-handle',
 			forcePlaceholderSize: true
 		});
 
-		$('.h-scheduler .panel-body').on('click', function() {
-			$(this).toggleClass('expanded');
-		})
+		$('.h-items').sortable().on('sortupdate', function() {
+			console.log("foo");
+		});
 	});
 	</script>
+	{% endverbatim %}
 </body>
