@@ -20,24 +20,12 @@
 		<div class="panel panel-default h-header">
 			<div class="panel-body">
 				<div class="row">
-					<div class="col-lg-1 h-th">
-						<span class="h-handle">&nbsp;&nbsp;</span>Scheduled
-					</div>
-					<div class="col-lg-1 h-th">
-						Estimated
-					</div>
-					<div class="col-lg-2 h-th">
-						Game
-					</div>
-					<div class="col-lg-2 h-th">
-						Runners
-					</div>
-					<div class="col-lg-2 h-th">
-						Comments
-					</div>
-					<div class="col-lg-2 h-th">
-						Couch Commentators
-					</div>
+					<div class="col-lg-1 col-md-2 h-th"><span class="h-handle">&nbsp;&nbsp;</span>Scheduled</div>
+					<div class="col-lg-1 col-md-2 h-th">Estimated</div>
+					<div class="col-lg-2 col-md-2 h-th">Game</div>
+					<div class="col-lg-2 col-md-2 h-th">Runners</div>
+					<div class="col-lg-2 col-md-2 h-th">Comments</div>
+					<div class="col-lg-2 hidden-md h-th">Couch Commentators</div>
 				</div>
 			</div>
 		</div>
@@ -69,15 +57,15 @@ horaro.schedule = {
 	<div class="panel panel-default h-item">
 		<div class="panel-body">
 			<div class="row">
-				<div class="col-lg-1">
+				<div class="col-lg-1 col-md-2">
 					<span class="h-handle">::</span><span data-bind="text: formattedSchedule"></span>
 				</div>
-				<div class="col-lg-1"><span data-bind="text: formattedLength"></span></div>
-				<div class="col-lg-2"><span data-bind="text: game"></span></div>
-				<div class="col-lg-2"><span data-bind="text: runners"></span></div>
-				<div class="col-lg-2"><span data-bind="text: comments"></span></div>
-				<div class="col-lg-2"><span data-bind="text: commentary"></span></div>
-				<div class="col-lg-2 text-right">
+				<div class="col-lg-1 col-md-2"><span class="h-xeditable" data-bind="text: formattedLength"></span></div>
+				<div class="col-lg-2 col-md-2"><span class="h-xeditable" data-bind="text: game"></span></div>
+				<div class="col-lg-2 col-md-2"><span class="h-xeditable" data-bind="text: runners"></span></div>
+				<div class="col-lg-2 col-md-2"><span class="h-xeditable" data-bind="text: comments"></span></div>
+				<div class="col-lg-2 hidden-md"><span data-bind="text: commentary"></span></div>
+				<div class="col-lg-2 col-md-2 text-right">
 					<button class="btn btn-link btn-xs" rel="more" data-bind="click: $parent.toggleItem, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
 					<button class="btn btn-link btn-xs" rel="more" data-bind="click: $parent.toggleItem, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
 					<button class="btn btn-danger btn-xs" rel="delete"><i class="fa fa-trash-o"></i></button>

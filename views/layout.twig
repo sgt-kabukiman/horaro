@@ -3,7 +3,9 @@
 <head>
 	<meta charset="utf-8">
 	<title>Welcome &ndash; Horaro</title>
+	<link href="/assets/vendor.css" rel="stylesheet">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet">
 	<link href="/assets/app.css" rel="stylesheet">
 </head>
 <body>
@@ -81,6 +83,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 	<script src="/assets/js/vendor.backend.js"></script>
 
 	{% verbatim %}
@@ -97,37 +100,15 @@
 			hiddenName: true
 		});
 
-		/* Begin integration of Underscore template engine with Knockout.  */
+		$.fn.editable.defaults.mode = 'popup';
 
-		// ko.underscoreTemplateEngine = function () { };
-		// ko.underscoreTemplateEngine.prototype = ko.utils.extend(new ko.templateEngine(), {
-		// 	renderTemplateSource: function (templateSource, bindingContext, options) {
-		// 		// Precompile and cache the templates for efficiency
-		// 		var precompiled = templateSource['data']('precompiled');
-
-		// 		if (!precompiled) {
-		// 			precompiled = _.template('{% with($data) { %} ' + templateSource.text() + ' {% } %}');
-		// 			templateSource['data']('precompiled', precompiled);
-		// 		}
-
-		// 		// Run the template and parse its output into an array of DOM elements
-		// 		var renderedMarkup = precompiled(bindingContext).replace(/\s+/g, ' ');
-
-		// 		return ko.utils.parseHtmlFragment(renderedMarkup);
-		// 	},
-
-		// 	createJavaScriptEvaluatorBlock: function(script) {
-		// 		return '{% ' + script + ' %}';
-		// 	}
-		// });
-
-		// ko.setTemplateEngine(new ko.underscoreTemplateEngine());
-
-		// _.templateSettings.interpolate  = /\{\{(.+?)\}\}/g;             // {% console.log("blah") %}
-		// _.templateSettings.escape       = /\{\{\{([\s\S]+?)\}\}\}/g;    // {{ title }}
-		// _.templateSettings.evaluate     = /\{\%([\s\S]+?)\%\}/g;        // {{{ title }}}
-
-		/* End integration of Underscore template engine with Knockout */
+		$.fn.editableform.buttons =
+      '<button type="submit" class="btn btn-primary btn-xs editable-submit">'+
+        '<i class="fa fa-check"></i>'+
+      '</button>'+
+      '<button type="button" class="btn btn-default btn-xs editable-cancel">'+
+        '<i class="fa fa-ban"></i>'+
+      '</button>';
 
 		function Item(id, length, game, runners, comments, commentary) {
 			this.id             = id;
@@ -185,6 +166,7 @@
 			};
 
 			this.toggleItem = function(item) {
+				console.log(item);
 				item.expanded(!item.expanded());
 			};
 
@@ -202,6 +184,10 @@
 
 		$('.h-items').sortable().on('sortupdate', function() {
 			console.log("foo");
+		});
+
+		$('.h-xeditable').editable({
+			highlight: '#93fcba'
 		});
 	});
 	</script>
