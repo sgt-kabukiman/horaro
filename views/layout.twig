@@ -3,6 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>Welcome &ndash; Horaro</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="/assets/vendor.css" rel="stylesheet">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 	<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet">
@@ -110,19 +111,20 @@
         '<i class="fa fa-ban"></i>'+
       '</button>';
 
-		function Item(id, length, game, runners, comments, commentary) {
-			this.id             = id;
-			this.length         = ko.observable(length);
-			this.game           = ko.observable(game);
-			this.runners        = ko.observable(runners);
-			this.comments       = ko.observable(comments);
-			this.commentary     = ko.observable(commentary);
-			this.prizes         = ko.observable(commentary);
-			this.something      = ko.observable(commentary);
-			this.donationReader = ko.observable(commentary);
-			this.donations      = ko.observable(commentary);
-			this.scheduled      = ko.observable();
-			this.expanded       = ko.observable(false);
+		function Item(id, length, info) {
+			this.id        = id;
+			this.length    = ko.observable(length);
+			this.col0      = ko.observable(info[0]);
+			this.col1      = ko.observable(info[1]);
+			this.col2      = ko.observable(info[2]);
+			this.col3      = ko.observable(info[3]);
+			this.col4      = ko.observable(info[4]);
+			this.col5      = ko.observable(info[5]);
+			this.col6      = ko.observable(info[6]);
+			this.col7      = ko.observable(info[7]);
+			this.col8      = ko.observable(info[8]);
+			this.scheduled = ko.observable();
+			this.expanded  = ko.observable(false);
 
 			this.formattedLength = ko.computed(function() {
 				return moment.unix(this.length()).utc().format('HH:mm:ss');
@@ -135,10 +137,10 @@
 
 		function ItemsViewModel() {
 			this.items = ko.observableArray([
-				new Item(1, 2*3600+30*60, 'Super Mario 3D World',    'SlowKingsPants', '',                 'Veegie64, Coolstoryliv'),
-				new Item(2, 52*60,        'Crash Bandicoot: Warped', 'SSBMStuff'),
-				new Item(3, 1*3600+26*60, 'Ape Escape 2',            'iongravirei',    'o[8(|)',           'SSBMStuff'),
-				new Item(4, 32*60,        'Super Monkey Ball 2',     'Geoff, Miles',   'Expert mode race', 'Jumpyluff')
+				new Item(1, 2*3600+30*60, ['Super Mario 3D World',    'SlowKingsPants', '',                 'Veegie64, Coolstoryliv']),
+				new Item(2, 52*60,        ['Crash Bandicoot: Warped', 'SSBMStuff'                                                   ]),
+				new Item(3, 1*3600+26*60, ['Ape Escape 2',            'iongravirei',    'o[8(|)',           'SSBMStuff'             ]),
+				new Item(4, 32*60,        ['Super Monkey Ball 2',     'Geoff, Miles',   'Expert mode race', 'Jumpyluff'             ])
 			]);
 
 			this.calculateSchedule = function(startIdx) {
@@ -166,8 +168,11 @@
 			};
 
 			this.toggleItem = function(item) {
-				console.log(item);
 				item.expanded(!item.expanded());
+
+				$('.h-item-more .h-xeditable').editable({
+					highlight: '#93fcba'
+				});
 			};
 
 			this.calculateSchedule();

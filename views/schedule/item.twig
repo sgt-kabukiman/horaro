@@ -1,0 +1,37 @@
+<div class="panel panel-default h-item">
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-lg-1 col-md-2 col-sm-2 col-xs-2 h-scheduled">
+				<span class="h-handle">::</span><span data-bind="text: item.formattedSchedule"></span>
+			</div>
+			<div class="col-lg-1 col-md-2 col-sm-2 col-xs-2 h-length">
+				<span class="h-xeditable" data-bind="text: item.formattedLength"></span>
+			</div>
+
+			{% for idx,column in columns.slice(0, 4) %}
+			<div class="{{ utils.scheduleClass(idx, 8) }}"><span class="h-xeditable" data-bind="text: item.col{{ idx }}"></span></div>
+			{% endfor %}
+
+			<div class="col-lg-2 col-md-2 col-xs-2 text-right h-controls">
+				<button class="btn btn-link btn-xs" rel="more" data-bind="click: $parent.toggleItem, visible: !item.expanded()"><i class="fa fa-angle-double-down"></i> more</button>
+				<button class="btn btn-link btn-xs" rel="more" data-bind="click: $parent.toggleItem, visible: item.expanded"><i class="fa fa-angle-double-up"></i> less</button>
+				<button class="btn btn-danger btn-xs" rel="delete"><i class="fa fa-trash-o"></i></button>
+			</div>
+		</div>
+
+		<div data-bind="if: item.expanded">
+			<div class="row h-item-more">
+				{% for idx,column in columns.slice(2) %}
+				<div class="{{ idx < 4 ? 'hidden-lg' : '' }} {{ idx < 3 ? 'hidden-md' : '' }}">
+					<div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 text-right">
+						<strong>{{ column.name }}:</strong>
+					</div>
+					<div class="col-lg-2 col-md-3 col-sm-3 col-xs-8">
+						<span class="h-xeditable" data-bind="text: col{{ idx }}"></span>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>

@@ -26,6 +26,8 @@ class Application extends BaseApplication {
 			]
 		));
 
+		$this['twig']->addGlobal('utils', new TwigUtils());
+
 		$this->setupServices();
 		$this->setupRouting();
 	}

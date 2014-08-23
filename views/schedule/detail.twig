@@ -20,17 +20,19 @@
 		<div class="panel panel-default h-header">
 			<div class="panel-body">
 				<div class="row">
-					<div class="col-lg-1 col-md-2 h-th"><span class="h-handle">&nbsp;&nbsp;</span>Scheduled</div>
-					<div class="col-lg-1 col-md-2 h-th">Estimated</div>
-					<div class="col-lg-2 col-md-2 h-th">Game</div>
-					<div class="col-lg-2 col-md-2 h-th">Runners</div>
-					<div class="col-lg-2 col-md-2 h-th">Comments</div>
-					<div class="col-lg-2 hidden-md h-th">Couch Commentators</div>
+					<div class="col-lg-1 col-md-2 col-sm-2 col-xs-2 h-th h-scheduled"><span class="h-handle">&nbsp;&nbsp;</span>Scheduled</div>
+					<div class="col-lg-1 col-md-2 col-sm-2 col-xs-2 h-th h-length">Estimated</div>
+
+					{% for idx,column in schedule.columns.slice(0,4) %}
+					<div class="{{ utils.scheduleClass(idx, 8) }} h-th">{{ column.name }}</div>
+					{% endfor %}
 				</div>
 			</div>
 		</div>
 
-		<div class="h-items" data-bind="template: { name: 'item', foreach: items, as: 'item' }"></div>
+		<div class="h-items" data-bind="foreach: { data: items, as: 'item' }">
+			{% include 'schedule/item.twig' with {'schedule': schedule, 'items': schedule.items, 'columns': schedule.columns} %}
+		</div>
 	</div>
 </div>
 
@@ -51,53 +53,4 @@ horaro.schedule = {
 	start: new Date('2014-06-22T18:00:00Z')
 };
 </script>
-
-{% verbatim %}
-<script type="text/html" id="item">
-	<div class="panel panel-default h-item">
-		<div class="panel-body">
-			<div class="row">
-				<div class="col-lg-1 col-md-2">
-					<span class="h-handle">::</span><span data-bind="text: formattedSchedule"></span>
-				</div>
-				<div class="col-lg-1 col-md-2"><span class="h-xeditable" data-bind="text: formattedLength"></span></div>
-				<div class="col-lg-2 col-md-2"><span class="h-xeditable" data-bind="text: game"></span></div>
-				<div class="col-lg-2 col-md-2"><span class="h-xeditable" data-bind="text: runners"></span></div>
-				<div class="col-lg-2 col-md-2"><span class="h-xeditable" data-bind="text: comments"></span></div>
-				<div class="col-lg-2 hidden-md"><span data-bind="text: commentary"></span></div>
-				<div class="col-lg-2 col-md-2 text-right">
-					<button class="btn btn-link btn-xs" rel="more" data-bind="click: $parent.toggleItem, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
-					<button class="btn btn-link btn-xs" rel="more" data-bind="click: $parent.toggleItem, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
-					<button class="btn btn-danger btn-xs" rel="delete"><i class="fa fa-trash-o"></i></button>
-				</div>
-			</div>
-
-			<div data-bind="if: expanded">
-				<div class="row h-item-more">
-					<div class="col-lg-2 text-right">
-						<strong>Prizes:</strong>
-					</div>
-					<div class="col-lg-2">
-						<span data-bind="text: prizes"></span>
-					</div>
-
-					<div class="col-lg-2 text-right">
-						<strong>Prizes:</strong>
-					</div>
-					<div class="col-lg-2">
-						<span data-bind="text: prizes"></span>
-					</div>
-
-					<div class="col-lg-2 text-right">
-						<strong>Prizes:</strong>
-					</div>
-					<div class="col-lg-2">
-						<span data-bind="text: prizes"></span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</script>
-{% endverbatim %}
 {% endblock %}
