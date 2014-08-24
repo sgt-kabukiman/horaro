@@ -25,7 +25,7 @@ dl.h-indented dd {
 .h-scheduler {
 	font-size: 13px;
 
-	.h-handle {
+	tbody .h-handle {
 		width: 25px;
 		text-align: center;
 		cursor: move;
@@ -47,17 +47,21 @@ dl.h-indented dd {
 	}
 
 	.h-item-more div {
-		line-height: 28px;
+		line-height: 20px;
 	}
 
 	.h-controls {
 		white-space: nowrap;
-		max-width: 80px;
+		max-width: 100px;
 	}
 
 	.h-scheduled, .h-length {
 		white-space: nowrap;
 		max-width: 70px;
+	}
+
+	.h-length.danger .editable {
+		color: red;
 	}
 }
 

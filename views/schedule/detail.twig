@@ -31,23 +31,45 @@
 	<!-- ko foreach: items -->
 	{% include 'schedule/item.twig' with {'schedule': schedule, 'items': schedule.items, 'columns': schedule.columns} %}
 	<!-- /ko -->
+
+	<!-- ko if: items().length === 0 -->
+	<tbody>
+		<tr>
+			<td colspan="100" class="text-center active">
+				Click on the button below to create the first row in this schedule.
+			</td>
+		</tr>
+	</tbody>
+	<!-- /ko -->
 </table>
 
+<!-- ko if: hasNewItem -->
 <div class="row">
-	<div class="col-lg-12 text-center">
-		<a><i class="fa fa-plus fa-1x"></i> add item&hellip;</a>
+	<div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-4 col-sm-offset-4 col-xs-4 col-xs-offset-4 text-center">
+		<a href="#" class="btn btn-success btn-block btn-sm disabled"><i class="fa fa-plus fa-1x"></i> add row&hellip;</a>
 	</div>
 </div>
+<!-- /ko -->
+
+<!-- ko if: !hasNewItem() -->
+<div class="row">
+	<div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-4 col-sm-offset-4 col-xs-4 col-xs-offset-4 text-center">
+		<a data-bind="click: add" class="btn btn-success btn-block btn-sm"><i class="fa fa-plus fa-1x"></i> add row&hellip;</a>
+	</div>
+</div>
+<!-- /ko -->
 
 <script type="text/javascript">
 var horaro = horaro||{};
 
 horaro.schedule = {
 	id: {{ schedule.id }},
+	columns: [1,2,3,4,5,6],
 	name: 'Main Schedule',
 	slug: 'main-schedule',
 	timezone: 'UTC',
-	start: new Date('2014-06-22T18:00:00Z')
+	start: new Date('2014-06-22T18:00:00Z'),
+	items: {{ items|json_encode|raw }}
 };
 </script>
 {% endblock %}

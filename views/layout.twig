@@ -135,22 +135,34 @@
 		function Item(id, length, columns) {
 			var self = this;
 
-			self.id        = id;
+			// setup simple data properties
+
+			self.id        = ko.observable(id);
 			self.length    = ko.observable(length);
-			self.scheduled = ko.observable();
-			self.expanded  = ko.observable(false);
+			self.scheduled = ko.observable(); // will be set by calculateSchedule()
 
-			for (var key in columns) {
-				if (columns.hasOwnProperty(key)) {
-					var name = 'col_' + key;
+			// setup simple properties for the schedule columns
 
-					self[name] = ko.observable(columns[key]);
+			scheduleColumns.forEach(function(colID) {
+				var name  = 'col_' + colID;
+				var value = '';
+
+				if (columns.hasOwnProperty(colID)) {
+					value = columns[colID];
 				}
-			}
 
-			self.length.subscribe(function(newValue) {
-				viewModel.calculateSchedule(0);
+				self[name] = ko.observable(value);
 			});
+
+			// setup properties for managing app state
+
+			self.firstRun  = true;
+			self.suspended = false;
+			self.expanded  = ko.observable(false);
+			self.busy      = ko.observable(false);
+			self.errors    = ko.observable(false);
+
+			// computed properties
 
 			self.formattedLength = ko.pureComputed({
 				owner: self,
@@ -165,33 +177,114 @@
 			self.formattedSchedule = ko.pureComputed(function() {
 				return moment(self.scheduled()).locale('de').format('LT');
 			}, self);
-		}
 
-		function ItemsViewModel() {
-			this.items = ko.observableArray([
-				new Item(1, 2*3600+30*60, {1: 'Super Mario 3D World',    2: 'SlowKingsPants', 3: '',                 4: 'Veegie64, Coolstoryliv', 5: '', 6: ''}),
-				new Item(2, 52*60,        {1: 'Crash Bandicoot: Warped', 2: 'SSBMStuff',      3: '',                 4: '',                       5: '', 6: ''}),
-				new Item(3, 1*3600+26*60, {1: 'Ape Escape 2',            2: 'iongravirei',    3: 'o[8(|)',           4: 'SSBMStuff',              5: '', 6: ''}),
-				new Item(4, 32*60,        {1: 'Super Monkey Ball 2',     2: 'Geoff, Miles',   3: 'Expert mode race', 4: 'Jumpyluff',              5: '', 6: ''})
-			]);
+			// subscribers
 
-			this.findItem = function(itemID) {
-				var items = this.items();
+			self.length.subscribe(function(newValue) {
+				self.sync({length: newValue});
+				viewModel.calculateSchedule(0);
+			});
 
-				for (var i = 0, len = items.length; i < len; ++i) {
-					if (items[i].id === itemID) {
-						return items[i];
-					}
+			scheduleColumns.forEach(function(colID) {
+				var name = 'col_' + colID;
+
+				self[name].subscribe(function(newValue) {
+					var columns = {};
+					columns[colID] = newValue;
+
+					self.sync({columns: columns});
+				});
+			});
+
+			self.sync = function(patch) {
+				if (self.suspended) {
+					return;
 				}
 
-				return null;
+				var itemID = self.id();
+				var isNew  = itemID === -1;
+				var method = 'POST';
+				var url    = '';
+
+				if (isNew) {
+					url = '/-/schedules/' + scheduleID + '/items';
+
+					// When creating an element, send all non-empty fields instead of just the one that
+					// has been changed (i.e. the one in patch); this makes sure the length gets sent
+					// along when someone edits a content column first (without the length, the request
+					// would always fail, because items with length=0 are not allowed).
+					patch = {
+						length: self.length(),
+						columns: {}
+					};
+
+					scheduleColumns.forEach(function(colID) {
+						var key   = 'col_' + colID;
+						var value = self[key]();
+
+						patch.columns[colID] = value;
+					});
+				}
+				else {
+					url = '/-/schedules/' + scheduleID + '/items/' + itemID + '?_method=PATCH';
+				}
+
+				self.busy(true);
+
+				$.ajax({
+					type: method,
+					url: url,
+					dataType: 'json',
+					contentType: 'application/json',
+					data: JSON.stringify(patch),
+					success: function(result) {
+						self.suspended = true;
+
+						self.id(result.data.id);
+						self.length(result.data.length);
+						self.errors(false);
+
+						horaro.schedule.columns.forEach(function(id) {
+							var key   = 'col_' + id;
+							var value = id in result.data.columns ? result.data.columns[id] : '';
+
+							self[key](value);
+						});
+
+						self.suspended = false;
+					},
+					error: function(result, data) {
+						self.errors(result.responseJSON.errors);
+					},
+					complete: function() {
+						self.busy(false);
+					}
+				});
 			};
 
-			this.calculateSchedule = function(startIdx) {
+			// behaviours
+
+			self.toggle = function() {
+				self.expanded(!self.expanded());
+			};
+		}
+
+		function ItemsViewModel(items) {
+			var self = this;
+
+			self.items = ko.observableArray(items);
+
+			self.hasNewItem = ko.pureComputed(function() {
+				return self.items().filter(function(item) {
+					return item.id() === -1;
+				}).length > 0;
+			}, self);
+
+			self.calculateSchedule = function(startIdx) {
 				var start, i, len, items, item, scheduled;
 
 				startIdx = startIdx || 0;
-				items    = this.items();
+				items    = self.items();
 
 				if (startIdx === 0) {
 					start = horaro.schedule.start.getTime();
@@ -211,15 +304,32 @@
 				}
 			};
 
-			this.toggleItem = function(item) {
-				item.expanded(!item.expanded());
+			self.add = function() {
+				var data = {};
+
+				horaro.schedule.columns.forEach(function(id) {
+					data[id] = '';
+				});
+
+				self.items.push(new Item(-1, 30*60, data));
 			};
 
-			this.calculateSchedule();
+			ko.computed(function() {
+				self.calculateSchedule();
+			});
 		}
 
-		var viewModel = new ItemsViewModel();
+		var scheduleColumns = horaro.schedule.columns;
+		var scheduleID      = horaro.schedule.id;
+		var items           = [];
 
+		if (horaro.schedule.items) {
+			horaro.schedule.items.forEach(function(item) {
+				items.push(new Item(item[0], item[1], item[2]));
+			});
+		}
+
+		var viewModel = new ItemsViewModel(items);
 		ko.applyBindings(viewModel);
 
 		$('.h-scheduler').sortable({

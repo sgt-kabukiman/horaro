@@ -56,6 +56,10 @@ class Application extends BaseApplication {
 		$this['controller.schedule'] = $this->share(function() {
 			return new Controller\ScheduleController($this);
 		});
+
+		$this['controller.schedule.item'] = $this->share(function() {
+			return new Controller\ScheduleItemController($this);
+		});
 	}
 
 	public function setupRouting() {
@@ -86,10 +90,8 @@ class Application extends BaseApplication {
 		$this->get   ('/-/schedules/{id}/delete',        'controller.schedule:confirmationAction')->before('firewall:requireUser');
 		$this->delete('/-/schedules/{id}',               'controller.schedule:deleteAction')->before('firewall:requireUser');
 
-//		$this->get   ('/-/events/{id}/edit',   'controller.event:editAction')->before('firewall:requireUser');
-//		$this->put   ('/-/events/{id}',        'controller.event:updateAction')->before('firewall:requireUser');
-//		$this->get   ('/-/events/{id}/delete', 'controller.event:confirmationAction')->before('firewall:requireUser');
-//		$this->delete('/-/events/{id}',        'controller.event:deleteAction')->before('firewall:requireUser');
+		$this->post  ('/-/schedules/{id}/items',          'controller.schedule.item:createAction')->before('firewall:requireUser');
+		$this->patch ('/-/schedules/{id}/items/{itemid}', 'controller.schedule.item:patchAction')->before('firewall:requireUser');
 
 		$this->error('firewall:handleAuthErrors');
 		$this->error('firewall:handleReverseAuthErrors');

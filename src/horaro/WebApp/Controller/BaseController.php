@@ -11,7 +11,10 @@
 namespace horaro\WebApp\Controller;
 
 use horaro\WebApp\Application;
+use horaro\WebApp\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class BaseController {
 	protected $app;
@@ -52,5 +55,27 @@ class BaseController {
 		$id = (int) $hash;
 
 		return $id ?: null;
+	}
+
+	protected function getPayload(Request $request, $asArray = true) {
+		$content = $request->getContent();
+		$payload = @json_decode($content, $asArray);
+		$error   = json_last_error();
+
+		if ($error !== JSON_ERROR_NONE) {
+			throw new BadRequestException('Request does not contain valid JSON.', 900);
+		}
+
+		return $payload;
+	}
+
+	protected function respondWithArray($content = [], $status = 200, array $headers = []) {
+		$response = new JsonResponse($content, $status, $headers);
+
+		$response->setExpires(new \DateTime('1924-10-10 12:00:00 UTC'));
+		$response->headers->addCacheControlDirective('no-cache', true);
+		$response->headers->addCacheControlDirective('private', true);
+
+		return $response;
 	}
 }

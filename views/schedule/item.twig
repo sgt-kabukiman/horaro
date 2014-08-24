@@ -1,16 +1,24 @@
 <tbody class="h-item" data-bind="attr: {'data-itemid': id}">
 	<tr class="h-primary">
-		<td class="h-handle">::</td>
-		<td class="h-scheduled"><span data-bind="text: formattedSchedule"></span></td>
-		<td class="h-length"><span data-bind="editable: formattedLength"></span></td>
+		<td data-bind="attr: { class: 'h-handle'    + (busy() ? ' warning' : (errors() ? ' danger' : '')) }">::</td>
+		<td data-bind="attr: { class: 'h-scheduled' + (busy() ? ' warning' : (errors() ? ' danger' : '')) }"><span data-bind="text: formattedSchedule"></span></td>
+		<td data-bind="attr: { class: 'h-length'    + (busy() ? ' warning' : (errors() ? ' danger' : '')) }">
+			<!-- ko if: errors -->
+			<span data-bind="editable: formattedLength, attr: { title: errors().length[0] }"></span>
+			<!-- /ko -->
+
+			<!-- ko if: !errors() -->
+			<span data-bind="editable: formattedLength"></span>
+			<!-- /ko -->
+		</td>
 
 		{% for idx,column in columns.slice(0, 4) %}
-		<td class="h-column {{ utils.scheduleClass(idx, 8) }}"><span data-bind="editable: col_{{ column.id }}, attr: {id: 'h_col_' + id + '_{{ column.id }}', 'data-colid': {{ column.id }}}"></span></td>
+		<td data-bind="attr: { class: 'h-column {{ utils.scheduleClass(idx, 8) }}' + (busy() ? ' warning' : (errors() ? ' danger' : '')) }"><span data-bind="editable: col_{{ column.id }}"></span></td>
 		{% endfor %}
 
-		<td class="text-right h-controls">
-			<button class="btn btn-link btn-xs" rel="more" data-bind="click: $parent.toggleItem, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
-			<button class="btn btn-link btn-xs" rel="more" data-bind="click: $parent.toggleItem, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
+		<td data-bind="attr: { class: 'text-right h-controls' + (busy() ? ' warning' : (errors() ? ' danger' : '')) }">
+			<button class="btn btn-link btn-xs" rel="more" data-bind="click: toggle, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
+			<button class="btn btn-link btn-xs" rel="more" data-bind="click: toggle, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
 			<button class="btn btn-danger btn-xs" rel="delete"><i class="fa fa-trash-o"></i></button>
 		</td>
 	</tr>
@@ -28,7 +36,7 @@
 					<strong>{{ column.name }}:</strong>
 				</div>
 				<div class="col-lg-2">
-					<span data-bind="editable: col_{{ column.id }}, attr: {id: 'h_col_' + id + '_{{ column.id }}_lg', 'data-colid': {{ column.id }}}"></span>
+					<span data-bind="editable: col_{{ column.id }}"></span>
 				</div>
 
 				{% if loop.index0 % 3 == 2 %}
@@ -50,7 +58,7 @@
 					<strong>{{ column.name }}:</strong>
 				</div>
 				<div class="col-md-4">
-					<span data-bind="editable: col_{{ column.id }}, attr: {id: 'h_col_' + id + '_{{ column.id }}_md', 'data-colid': {{ column.id }}}"></span>
+					<span data-bind="editable: col_{{ column.id }}"></span>
 				</div>
 
 				{% if loop.index0 % 2 == 1 %}
@@ -69,7 +77,7 @@
 					<strong>{{ column.name }}:</strong>
 				</div>
 				<div class="col-sm-8 col-xs-8">
-					<span data-bind="editable: col_{{ column.id }}, attr: {id: 'h_col_' + id + '_{{ column.id }}_smxs', 'data-colid': {{ column.id }}}"></span>
+					<span data-bind="editable: col_{{ column.id }}"></span>
 				</div>
 			</div>
 			{% endfor %}

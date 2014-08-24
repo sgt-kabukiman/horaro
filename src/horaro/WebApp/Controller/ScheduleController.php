@@ -12,16 +12,27 @@ namespace horaro\WebApp\Controller;
 
 use horaro\Library\Entity\Event;
 use horaro\Library\Entity\Schedule;
+use horaro\Library\Entity\ScheduleItem;
 use horaro\WebApp\Exception as Ex;
 use horaro\WebApp\Validator\ScheduleValidator;
+use horaro\WebApp\Validator\ScheduleItemValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ScheduleController extends BaseController {
 	public function detailAction(Request $request) {
 		$schedule = $this->getRequestedSchedule($request);
+		$items    = [];
 
-		return $this->render('schedule/detail.twig', ['schedule' => $schedule]);
+		foreach ($schedule->getItems() as $item) {
+			$items[] = [
+				$item->getId(),
+				$item->getLengthInSeconds(),
+				$item->getExtra()
+			];
+		}
+
+		return $this->render('schedule/detail.twig', ['schedule' => $schedule, 'items' => $items ?: null]);
 	}
 
 	public function newAction(Request $request) {
