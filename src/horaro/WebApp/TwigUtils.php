@@ -14,10 +14,10 @@ class TwigUtils {
 	public function scheduleClass($idx, $availableSpace = 8) {
 		$class = [];
 
-		$class[] = ($idx < 4) ? 'col-lg-2' : 'hidden-lg';
-		$class[] = ($idx < 3) ? 'col-md-2' : 'hidden-md';
-		$class[] = ($idx < 2) ? 'col-sm-3' : 'hidden-sm';
-		$class[] = ($idx < 2) ? 'col-xs-3' : 'hidden-xs';
+		if ($idx >= 4) $class[] = 'hidden-lg';
+		if ($idx >= 3) $class[] = 'hidden-md';
+		if ($idx >= 2) $class[] = 'hidden-sm';
+		if ($idx >= 2) $class[] = 'hidden-xs';
 
 		return implode(' ', $class);
 	}

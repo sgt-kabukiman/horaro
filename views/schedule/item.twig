@@ -1,37 +1,79 @@
-<div class="panel panel-default h-item">
-	<div class="panel-body">
-		<div class="row">
-			<div class="col-lg-1 col-md-2 col-sm-2 col-xs-2 h-scheduled">
-				<span class="h-handle">::</span><span data-bind="text: item.formattedSchedule"></span>
-			</div>
-			<div class="col-lg-1 col-md-2 col-sm-2 col-xs-2 h-length">
-				<span class="h-xeditable" data-bind="text: item.formattedLength"></span>
-			</div>
+<tbody class="h-item" data-bind="attr: {'data-itemid': id}">
+	<tr class="h-primary">
+		<td class="h-handle">::</td>
+		<td class="h-scheduled"><span data-bind="text: formattedSchedule"></span></td>
+		<td class="h-length"><span data-bind="editable: formattedLength"></span></td>
 
-			{% for idx,column in columns.slice(0, 4) %}
-			<div class="{{ utils.scheduleClass(idx, 8) }}"><span class="h-xeditable" data-bind="text: item.col{{ idx }}"></span></div>
+		{% for idx,column in columns.slice(0, 4) %}
+		<td class="h-column {{ utils.scheduleClass(idx, 8) }}"><span data-bind="editable: col_{{ column.id }}, attr: {id: 'h_col_' + id + '_{{ column.id }}', 'data-colid': {{ column.id }}}"></span></td>
+		{% endfor %}
+
+		<td class="text-right h-controls">
+			<button class="btn btn-link btn-xs" rel="more" data-bind="click: $parent.toggleItem, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
+			<button class="btn btn-link btn-xs" rel="more" data-bind="click: $parent.toggleItem, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
+			<button class="btn btn-danger btn-xs" rel="delete"><i class="fa fa-trash-o"></i></button>
+		</td>
+	</tr>
+
+	<!-- ko if: expanded -->
+	<tr class="h-secondary">
+		<td colspan="100">
+			<!-- three elements per row, for large devices -->
+			{% for idx,column in columns.slice(4) %}
+				{% if loop.index0 % 3 == 0 %}
+				<div class="row h-item-more hidden-md hidden-sm hidden-xs">
+				{% endif %}
+
+				<div class="col-lg-2 text-right">
+					<strong>{{ column.name }}:</strong>
+				</div>
+				<div class="col-lg-2">
+					<span data-bind="editable: col_{{ column.id }}, attr: {id: 'h_col_' + id + '_{{ column.id }}_lg', 'data-colid': {{ column.id }}}"></span>
+				</div>
+
+				{% if loop.index0 % 3 == 2 %}
+				</div>
+				{% endif %}
 			{% endfor %}
 
-			<div class="col-lg-2 col-md-2 col-xs-2 text-right h-controls">
-				<button class="btn btn-link btn-xs" rel="more" data-bind="click: $parent.toggleItem, visible: !item.expanded()"><i class="fa fa-angle-double-down"></i> more</button>
-				<button class="btn btn-link btn-xs" rel="more" data-bind="click: $parent.toggleItem, visible: item.expanded"><i class="fa fa-angle-double-up"></i> less</button>
-				<button class="btn btn-danger btn-xs" rel="delete"><i class="fa fa-trash-o"></i></button>
+			{% if columns.length % 2 == 0 %}
 			</div>
-		</div>
+			{% endif %}
 
-		<div data-bind="if: item.expanded">
-			<div class="row h-item-more">
-				{% for idx,column in columns.slice(2) %}
-				<div class="{{ idx < 4 ? 'hidden-lg' : '' }} {{ idx < 3 ? 'hidden-md' : '' }}">
-					<div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 text-right">
-						<strong>{{ column.name }}:</strong>
-					</div>
-					<div class="col-lg-2 col-md-3 col-sm-3 col-xs-8">
-						<span class="h-xeditable" data-bind="text: col{{ idx }}"></span>
-					</div>
+			<!-- two elements per row, for medium devices -->
+			{% for idx,column in columns.slice(3) %}
+				{% if loop.index0 % 2 == 0 %}
+				<div class="row h-item-more hidden-lg hidden-sm hidden-xs">
+				{% endif %}
+
+				<div class="col-md-2 text-right">
+					<strong>{{ column.name }}:</strong>
 				</div>
-				{% endfor %}
+				<div class="col-md-4">
+					<span data-bind="editable: col_{{ column.id }}, attr: {id: 'h_col_' + id + '_{{ column.id }}_md', 'data-colid': {{ column.id }}}"></span>
+				</div>
+
+				{% if loop.index0 % 2 == 1 %}
+				</div>
+				{% endif %}
+			{% endfor %}
+
+			{% if columns.length % 2 == 0 %}
 			</div>
-		</div>
-	</div>
-</div>
+			{% endif %}
+
+			<!-- one row per element, for devices <= sm -->
+			{% for idx,column in columns.slice(2) %}
+			<div class="row h-item-more hidden-lg hidden-md">
+				<div class="col-sm-4 col-xs-4 text-right">
+					<strong>{{ column.name }}:</strong>
+				</div>
+				<div class="col-sm-8 col-xs-8">
+					<span data-bind="editable: col_{{ column.id }}, attr: {id: 'h_col_' + id + '_{{ column.id }}_smxs', 'data-colid': {{ column.id }}}"></span>
+				</div>
+			</div>
+			{% endfor %}
+		</td>
+	</tr>
+	<!-- /ko -->
+</tbody>

@@ -83,13 +83,34 @@
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.2.0/knockout-min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 	<script src="/assets/js/vendor.backend.js"></script>
 
 	{% verbatim %}
 	<script type="text/javascript">
 	jQuery(function($) {
+		function parseLength(str) {
+			var parts = str.split(':');
+
+			// 'HH:MM:SS'
+			if (parts.length >= 3) {
+				return parts[0] * 3600 + parts[1] * 60 + parseInt(parts[2], 10);
+			}
+
+			// 'HH:MM'
+			if (parts.length === 2) {
+				return parts[0] * 3600 + parts[1] * 60;
+			}
+
+			// 'MM'
+			if (parts.length === 1) {
+				return parts[0] * 60;
+			}
+
+			return 0;
+		}
+
 		$('#start_date').pickadate({
 			formatSubmit: 'yyyy-mm-dd',
 			hiddenName: true
@@ -104,44 +125,67 @@
 		$.fn.editable.defaults.mode = 'popup';
 
 		$.fn.editableform.buttons =
-      '<button type="submit" class="btn btn-primary btn-xs editable-submit">'+
-        '<i class="fa fa-check"></i>'+
-      '</button>'+
-      '<button type="button" class="btn btn-default btn-xs editable-cancel">'+
-        '<i class="fa fa-ban"></i>'+
-      '</button>';
+			'<button type="submit" class="btn btn-primary btn-xs editable-submit">'+
+				'<i class="fa fa-check"></i>'+
+			'</button>'+
+			'<button type="button" class="btn btn-default btn-xs editable-cancel">'+
+				'<i class="fa fa-ban"></i>'+
+			'</button>';
 
-		function Item(id, length, info) {
-			this.id        = id;
-			this.length    = ko.observable(length);
-			this.col0      = ko.observable(info[0]);
-			this.col1      = ko.observable(info[1]);
-			this.col2      = ko.observable(info[2]);
-			this.col3      = ko.observable(info[3]);
-			this.col4      = ko.observable(info[4]);
-			this.col5      = ko.observable(info[5]);
-			this.col6      = ko.observable(info[6]);
-			this.col7      = ko.observable(info[7]);
-			this.col8      = ko.observable(info[8]);
-			this.scheduled = ko.observable();
-			this.expanded  = ko.observable(false);
+		function Item(id, length, columns) {
+			var self = this;
 
-			this.formattedLength = ko.computed(function() {
-				return moment.unix(this.length()).utc().format('HH:mm:ss');
-			}, this);
+			self.id        = id;
+			self.length    = ko.observable(length);
+			self.scheduled = ko.observable();
+			self.expanded  = ko.observable(false);
 
-			this.formattedSchedule = ko.computed(function() {
-				return moment(this.scheduled()).locale('de').format('LT');
-			}, this);
+			for (var key in columns) {
+				if (columns.hasOwnProperty(key)) {
+					var name = 'col_' + key;
+
+					self[name] = ko.observable(columns[key]);
+				}
+			}
+
+			self.length.subscribe(function(newValue) {
+				viewModel.calculateSchedule(0);
+			});
+
+			self.formattedLength = ko.pureComputed({
+				owner: self,
+				read: function() {
+					return moment.unix(self.length()).utc().format('HH:mm:ss');
+				},
+				write: function(value) {
+					self.length(parseLength(value));
+				}
+			});
+
+			self.formattedSchedule = ko.pureComputed(function() {
+				return moment(self.scheduled()).locale('de').format('LT');
+			}, self);
 		}
 
 		function ItemsViewModel() {
 			this.items = ko.observableArray([
-				new Item(1, 2*3600+30*60, ['Super Mario 3D World',    'SlowKingsPants', '',                 'Veegie64, Coolstoryliv']),
-				new Item(2, 52*60,        ['Crash Bandicoot: Warped', 'SSBMStuff'                                                   ]),
-				new Item(3, 1*3600+26*60, ['Ape Escape 2',            'iongravirei',    'o[8(|)',           'SSBMStuff'             ]),
-				new Item(4, 32*60,        ['Super Monkey Ball 2',     'Geoff, Miles',   'Expert mode race', 'Jumpyluff'             ])
+				new Item(1, 2*3600+30*60, {1: 'Super Mario 3D World',    2: 'SlowKingsPants', 3: '',                 4: 'Veegie64, Coolstoryliv', 5: '', 6: ''}),
+				new Item(2, 52*60,        {1: 'Crash Bandicoot: Warped', 2: 'SSBMStuff',      3: '',                 4: '',                       5: '', 6: ''}),
+				new Item(3, 1*3600+26*60, {1: 'Ape Escape 2',            2: 'iongravirei',    3: 'o[8(|)',           4: 'SSBMStuff',              5: '', 6: ''}),
+				new Item(4, 32*60,        {1: 'Super Monkey Ball 2',     2: 'Geoff, Miles',   3: 'Expert mode race', 4: 'Jumpyluff',              5: '', 6: ''})
 			]);
+
+			this.findItem = function(itemID) {
+				var items = this.items();
+
+				for (var i = 0, len = items.length; i < len; ++i) {
+					if (items[i].id === itemID) {
+						return items[i];
+					}
+				}
+
+				return null;
+			};
 
 			this.calculateSchedule = function(startIdx) {
 				var start, i, len, items, item, scheduled;
@@ -169,10 +213,6 @@
 
 			this.toggleItem = function(item) {
 				item.expanded(!item.expanded());
-
-				$('.h-item-more .h-xeditable').editable({
-					highlight: '#93fcba'
-				});
 			};
 
 			this.calculateSchedule();
@@ -182,17 +222,14 @@
 
 		ko.applyBindings(viewModel);
 
-		$('.h-items').sortable({
+		$('.h-scheduler').sortable({
 			handle: '.h-handle',
+			items: '.h-item',
 			forcePlaceholderSize: true
 		});
 
 		$('.h-items').sortable().on('sortupdate', function() {
 			console.log("foo");
-		});
-
-		$('.h-xeditable').editable({
-			highlight: '#93fcba'
 		});
 	});
 	</script>
