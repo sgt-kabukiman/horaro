@@ -74,24 +74,25 @@ class Application extends BaseApplication {
 
 		$this->get   ('/-/home', 'controller.home:indexAction')->before('firewall:requireUser');
 
-		$this->get   ('/-/events/new',         'controller.event:newAction')->before('firewall:requireUser');
-		$this->post  ('/-/events',             'controller.event:createAction')->before('firewall:requireUser');
-		$this->get   ('/-/events/{id}',        'controller.event:detailAction')->before('firewall:requireUser');
-		$this->get   ('/-/events/{id}/edit',   'controller.event:editAction')->before('firewall:requireUser');
-		$this->put   ('/-/events/{id}',        'controller.event:updateAction')->before('firewall:requireUser');
-		$this->get   ('/-/events/{id}/delete', 'controller.event:confirmationAction')->before('firewall:requireUser');
-		$this->delete('/-/events/{id}',        'controller.event:deleteAction')->before('firewall:requireUser');
+		$this->get   ('/-/events/new',            'controller.event:newAction')->before('firewall:requireUser');
+		$this->post  ('/-/events',                'controller.event:createAction')->before('firewall:requireUser');
+		$this->get   ('/-/events/{event}',        'controller.event:detailAction')->before('firewall:requireUser');
+		$this->get   ('/-/events/{event}/edit',   'controller.event:editAction')->before('firewall:requireUser');
+		$this->put   ('/-/events/{event}',        'controller.event:updateAction')->before('firewall:requireUser');
+		$this->get   ('/-/events/{event}/delete', 'controller.event:confirmationAction')->before('firewall:requireUser');
+		$this->delete('/-/events/{event}',        'controller.event:deleteAction')->before('firewall:requireUser');
 
-		$this->get   ('/-/events/{event}/schedules/new', 'controller.schedule:newAction')->before('firewall:requireUser');
-		$this->post  ('/-/events/{event}/schedules',     'controller.schedule:createAction')->before('firewall:requireUser');
-		$this->get   ('/-/schedules/{id}',               'controller.schedule:detailAction')->before('firewall:requireUser');
-		$this->get   ('/-/schedules/{id}/edit',          'controller.schedule:editAction')->before('firewall:requireUser');
-		$this->put   ('/-/schedules/{id}',               'controller.schedule:updateAction')->before('firewall:requireUser');
-		$this->get   ('/-/schedules/{id}/delete',        'controller.schedule:confirmationAction')->before('firewall:requireUser');
-		$this->delete('/-/schedules/{id}',               'controller.schedule:deleteAction')->before('firewall:requireUser');
+		$this->get   ('/-/events/{event}/schedules/new',    'controller.schedule:newAction')->before('firewall:requireUser');
+		$this->post  ('/-/events/{event}/schedules',        'controller.schedule:createAction')->before('firewall:requireUser');
+		$this->get   ('/-/schedules/{schedule}',            'controller.schedule:detailAction')->before('firewall:requireUser');
+		$this->get   ('/-/schedules/{schedule}/edit',       'controller.schedule:editAction')->before('firewall:requireUser');
+		$this->put   ('/-/schedules/{schedule}',            'controller.schedule:updateAction')->before('firewall:requireUser');
+		$this->get   ('/-/schedules/{schedule}/delete',     'controller.schedule:confirmationAction')->before('firewall:requireUser');
+		$this->delete('/-/schedules/{schedule}',            'controller.schedule:deleteAction')->before('firewall:requireUser');
+		$this->post  ('/-/schedules/{schedule}/items/move', 'controller.schedule:moveItemAction')->before('firewall:requireUser');
 
-		$this->post  ('/-/schedules/{id}/items',          'controller.schedule.item:createAction')->before('firewall:requireUser');
-		$this->patch ('/-/schedules/{id}/items/{itemid}', 'controller.schedule.item:patchAction')->before('firewall:requireUser');
+		$this->post  ('/-/schedules/{schedule}/items',        'controller.schedule.item:createAction')->before('firewall:requireUser');
+		$this->patch ('/-/schedules/{schedule}/items/{item}', 'controller.schedule.item:patchAction')->before('firewall:requireUser');
 
 		$this->error('firewall:handleAuthErrors');
 		$this->error('firewall:handleReverseAuthErrors');

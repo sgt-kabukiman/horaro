@@ -119,29 +119,4 @@ class EventController extends BaseController {
 
 		return $this->redirect('/-/home');
 	}
-
-	protected function getRequestedEvent(Request $request) {
-		$hash = $request->attributes->get('id');
-		$id   = $this->decodeID($hash, 'event');
-
-		if ($id === null) {
-			throw new Ex\NotFoundException('The event could not be found.');
-		}
-
-		$repo  = $this->getRepository('Event');
-		$event = $repo->findOneById($id);
-
-		if (!$event) {
-			throw new Ex\NotFoundException('Event '.$hash.' could not be found.');
-		}
-
-		$user  = $this->getCurrentUser();
-		$owner = $event->getUser();
-
-		if (!$owner || $user->getId() !== $owner->getId()) {
-			throw new Ex\NotFoundException('Event '.$hash.' could not be found.');
-		}
-
-		return $event;
-	}
 }

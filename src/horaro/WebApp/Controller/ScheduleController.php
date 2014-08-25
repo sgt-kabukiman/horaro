@@ -21,8 +21,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ScheduleController extends BaseController {
 	public function detailAction(Request $request) {
-		$schedule = $this->getRequestedSchedule($request);
-		$items    = [];
+		$schedule  = $this->getRequestedSchedule($request);
+		$items     = [];
+		$columnIDs = [];
 
 		foreach ($schedule->getItems() as $item) {
 			$items[] = [
@@ -32,7 +33,11 @@ class ScheduleController extends BaseController {
 			];
 		}
 
-		return $this->render('schedule/detail.twig', ['schedule' => $schedule, 'items' => $items ?: null]);
+		foreach ($schedule->getColumns() as $column) {
+			$columnIDs[] = $column->getId();
+		}
+
+		return $this->render('schedule/detail.twig', ['schedule' => $schedule, 'items' => $items ?: null, 'columns' => $columnIDs]);
 	}
 
 	public function newAction(Request $request) {
@@ -141,54 +146,81 @@ class ScheduleController extends BaseController {
 		return $this->redirect('/-/events/'.$eventID);
 	}
 
-	protected function getRequestedEvent(Request $request) {
-		$hash = $request->attributes->get('event');
-		$id   = $this->decodeID($hash, 'event');
+	public function moveItemAction(Request $request) {
+		$schedule = $this->getRequestedSchedule($request);
+		$payload  = $this->getPayload($request);
 
-		if ($id === null) {
-			throw new Ex\NotFoundException('The event could not be found.');
+		// get the item
+
+		if (!isset($payload['item']) || !is_scalar($payload['item'])) {
+			throw new Ex\BadRequestException('No item ID given.');
 		}
 
-		$repo  = $this->getRepository('Event');
-		$event = $repo->findOneById($id);
+		$itemID = $payload['item'];
+		$item   = $this->resolveScheduleItemID($itemID, $schedule);
+		$curPos = $item->getPosition();
 
-		if (!$event) {
-			throw new Ex\NotFoundException('Event '.$hash.' could not be found.');
+		// get the target position
+
+		if (!isset($payload['position']) || !is_int($payload['position'])) {
+			throw new Ex\BadRequestException('No valid target position given.');
 		}
 
-		$user  = $this->getCurrentUser();
-		$owner = $event->getUser();
+		$target = (int) $payload['position'];
 
-		if (!$owner || $user->getId() !== $owner->getId()) {
-			throw new Ex\NotFoundException('Event '.$hash.' could not be found.');
+		// validate the target position
+
+		if ($target < 1) {
+			throw new Ex\BadRequestException('Positions are 1-based and therefore cannot be < 1.');
 		}
 
-		return $event;
-	}
-
-	protected function getRequestedSchedule(Request $request) {
-		$hash = $request->attributes->get('id');
-		$id   = $this->decodeID($hash, 'schedule');
-
-		if ($id === null) {
-			throw new Ex\NotFoundException('The schedule could not be found.');
+		if ($target === $curPos) {
+			throw new Ex\ConflictException('This would be a NOP.');
 		}
 
-		$repo     = $this->getRepository('Schedule');
-		$schedule = $repo->findOneById($id);
+		$repo = $this->getRepository('ScheduleItem');
+		$last = $repo->findOneBySchedule($schedule, ['position' => 'DESC']);
+		$max  = $last->getPosition();
 
-		if (!$schedule) {
-			throw new Ex\NotFoundException('Schedule '.$hash.' could not be found.');
+		if ($target > $max) {
+			throw new Ex\BadRequestException('Target position ('.$target.') is greater than the last position ('.$max.').');
 		}
 
-		$user  = $this->getCurrentUser();
-		$owner = $schedule->getEvent()->getUser();
+		// prepare chunk move
 
-		if (!$owner || $user->getId() !== $owner->getId()) {
-			throw new Ex\NotFoundException('Schedule '.$hash.' could not be found.');
-		}
+		$up          = $target < $curPos;
+		$relation    = $up ? '+' : '-';
+		list($a, $b) = $up ? array($target, $curPos) : array($curPos, $target);
 
-		return $schedule;
+		// move items between old and new position
+
+		$em = $this->getEntityManager();
+		$em->transactional(function($em) use ($relation, $item, $schedule, $a, $b, $target) {
+			$qb    = $em->createQueryBuilder();
+			$query = $qb
+				->update('horaro\Library\Entity\ScheduleItem', 'i')
+				->set('i.position', sprintf('i.position %s 1', $relation))
+				->where($qb->expr()->andX(
+					$qb->expr()->eq('i.schedule', $schedule->getId()),
+					$qb->expr()->between('i.position', $a, $b)
+				))
+				->getQuery();
+
+			$query->getResult();
+
+			$item->setPosition($target);
+			$em->persist($item);
+			$em->flush();
+		});
+
+		// respond
+
+		return $this->respondWithArray([
+			'data' => [
+				'id'  => $this->encodeID($item->getId(), 'schedule.item'),
+				'pos' => $item->getPosition()
+			]
+		], 200);
 	}
 
 	protected function renderForm(Event $event, Schedule $schedule = null, $result = null) {

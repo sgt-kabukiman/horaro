@@ -132,7 +132,7 @@
 				'<i class="fa fa-ban"></i>'+
 			'</button>';
 
-		function Item(id, length, columns) {
+		function Item(id, length, columns, pos) {
 			var self = this;
 
 			// setup simple data properties
@@ -156,6 +156,7 @@
 
 			// setup properties for managing app state
 
+			self.position  = pos;
 			self.firstRun  = true;
 			self.suspended = false;
 			self.expanded  = ko.observable(false);
@@ -314,6 +315,48 @@
 				self.items.push(new Item(-1, 30*60, data));
 			};
 
+			self.move = function(itemID, newPos) {
+				var items = self.items;
+				var item  = self.findItem(itemID);
+
+				item.busy(true);
+
+				$.ajax({
+					type: 'POST',
+					url: '/-/schedules/' + scheduleID + '/items/move',
+					dataType: 'json',
+					contentType: 'application/json',
+					data: JSON.stringify({ item: itemID, position: newPos }),
+					complete: function() {
+						item.busy(false);
+					}
+				});
+
+				// escape to floats for simple re-sorting goodness
+				item.position = (newPos < item.position) ? (newPos - 0.5) : (newPos + 0.5);
+
+				items.sort(function(a, b) {
+					return a.position - b.position;
+				});
+
+				// re-number the list
+				items().forEach(function(item, idx) {
+					item.position = idx + 1;
+				});
+			};
+
+			self.findItem = function(itemID) {
+				var items = self.items(), len = items.length, i = 0;
+
+				for (; i < len; ++i) {
+					if (items[i].id() === itemID) {
+						return items[i];
+					}
+				}
+
+				return null;
+			};
+
 			ko.computed(function() {
 				self.calculateSchedule();
 			});
@@ -324,8 +367,8 @@
 		var items           = [];
 
 		if (horaro.schedule.items) {
-			horaro.schedule.items.forEach(function(item) {
-				items.push(new Item(item[0], item[1], item[2]));
+			horaro.schedule.items.forEach(function(item, idx) {
+				items.push(new Item(item[0], item[1], item[2], idx + 1));
 			});
 		}
 
@@ -338,8 +381,12 @@
 			forcePlaceholderSize: true
 		});
 
-		$('.h-items').sortable().on('sortupdate', function() {
-			console.log("foo");
+		$('.h-scheduler').on('sortupdate', function(event, stuff) {
+			var row    = stuff.item;
+			var newPos = row.index();    // 1-based
+			var itemID = row.data('itemid');
+
+			viewModel.move(itemID, newPos);
 		});
 	});
 	</script>

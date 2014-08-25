@@ -64,7 +64,7 @@ var horaro = horaro||{};
 
 horaro.schedule = {
 	id: {{ schedule.id }},
-	columns: [1,2,3,4,5,6],
+	columns: {{ columns|json_encode|raw }},
 	name: 'Main Schedule',
 	slug: 'main-schedule',
 	timezone: 'UTC',
