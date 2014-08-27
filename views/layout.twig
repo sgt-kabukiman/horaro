@@ -160,6 +160,7 @@
 			self.firstRun  = true;
 			self.suspended = false;
 			self.expanded  = ko.observable(false);
+			self.deleting  = ko.observable(false);
 			self.busy      = ko.observable(false);
 			self.errors    = ko.observable(false);
 
@@ -177,6 +178,22 @@
 
 			self.formattedSchedule = ko.pureComputed(function() {
 				return moment(self.scheduled()).locale('de').format('LT');
+			}, self);
+
+			self.rowClass = ko.pureComputed(function() {
+				if (self.busy()) {
+					return 'warning';
+				}
+
+				if (self.errors()) {
+					return 'danger h-has-errors';
+				}
+
+				if (self.deleting()) {
+					return 'danger';
+				}
+
+				return '';
 			}, self);
 
 			// subscribers
@@ -267,10 +284,45 @@
 				});
 			};
 
+			self.deleteItem = function(patch) {
+				if (self.suspended) {
+					return;
+				}
+
+				var itemID = self.id();
+
+				self.busy(true);
+
+				$.ajax({
+					type: 'POST',
+					url: '/-/schedules/' + scheduleID + '/items/' + itemID + '?_method=DELETE',
+					dataType: 'json',
+					contentType: 'application/json',
+					success: function(result) {
+						viewModel.items.remove(self);
+					},
+					complete: function() {
+						self.busy(false);
+					}
+				});
+			};
+
 			// behaviours
 
 			self.toggle = function() {
 				self.expanded(!self.expanded());
+			};
+
+			self.confirmDelete = function() {
+				self.deleting(true);
+			};
+
+			self.cancelDelete = function() {
+				self.deleting(false);
+			};
+
+			self.doDelete = function() {
+				self.deleteItem();
 			};
 		}
 

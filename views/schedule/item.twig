@@ -1,8 +1,8 @@
 <tbody class="h-item" data-bind="attr: {'data-itemid': id}">
 	<tr class="h-primary">
-		<td data-bind="attr: { class: 'h-handle'    + (busy() ? ' warning' : (errors() ? ' danger' : '')) }">::</td>
-		<td data-bind="attr: { class: 'h-scheduled' + (busy() ? ' warning' : (errors() ? ' danger' : '')) }"><span data-bind="text: formattedSchedule"></span></td>
-		<td data-bind="attr: { class: 'h-length'    + (busy() ? ' warning' : (errors() ? ' danger' : '')) }">
+		<td data-bind="attr: { class: 'h-handle '    + rowClass() }">::</td>
+		<td data-bind="attr: { class: 'h-scheduled ' + rowClass() }"><span data-bind="text: formattedSchedule"></span></td>
+		<td data-bind="attr: { class: 'h-length '    + rowClass() }">
 			<!-- ko if: errors -->
 			<span data-bind="editable: formattedLength, attr: { title: errors().length[0] }"></span>
 			<!-- /ko -->
@@ -13,15 +13,22 @@
 		</td>
 
 		{% for idx,column in columns.slice(0, 4) %}
-		<td data-bind="attr: { class: 'h-column {{ utils.scheduleColClass(idx) }}' + (busy() ? ' warning' : (errors() ? ' danger' : '')) }"><span data-bind="editable: col_{{ column.id }}"></span></td>
+		<td data-bind="attr: { class: 'h-column {{ utils.scheduleColClass(idx) }} ' + rowClass() }"><span data-bind="editable: col_{{ column.id }}"></span></td>
 		{% endfor %}
 
-		<td data-bind="attr: { class: 'text-right h-controls' + (busy() ? ' warning' : (errors() ? ' danger' : '')) }">
+		<td data-bind="attr: { class: 'text-right h-controls ' + rowClass() }">
+			<!-- ko if: !deleting() -->
 			<span class="{{ utils.scheduleControlsClass(columns | length) }}">
-				<button class="btn btn-link btn-xs" rel="more" data-bind="click: toggle, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
-				<button class="btn btn-link btn-xs" rel="more" data-bind="click: toggle, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
+				<button class="btn btn-link btn-xs" data-bind="click: toggle, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
+				<button class="btn btn-link btn-xs" data-bind="click: toggle, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
 			</span>
-			<button class="btn btn-danger btn-xs" rel="delete"><i class="fa fa-trash-o"></i></button>
+			<button class="" data-bind="click: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + (id() === -1 ? ' disabled' : '') }"><i class="fa fa-trash-o"></i></button>
+			<!-- /ko -->
+
+			<!-- ko if: deleting() -->
+			<button class="btn btn-danger btn-xs" data-bind="click: doDelete"><i class="fa fa-trash-o"></i></button>
+			<button class="btn btn-default btn-xs" data-bind="click: cancelDelete"><i class="fa fa-undo"></i></button>
+			<!-- /ko -->
 		</td>
 	</tr>
 

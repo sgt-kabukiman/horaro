@@ -74,7 +74,7 @@ class ScheduleItemController extends BaseController {
 
 	public function patchAction(Request $request) {
 		$schedule  = $this->getRequestedSchedule($request);
-		$item      = $this->getRequestedItem($request, $schedule);
+		$item      = $this->getRequestedScheduleItem($request, $schedule);
 		$payload   = $this->getPayload($request);
 		$validator = new ScheduleItemValidator();
 		$result    = $validator->validateUpdate($payload, $item, $schedule);
@@ -122,5 +122,31 @@ class ScheduleItemController extends BaseController {
 				'columns' => $item->getExtra()
 			]
 		], 200);
+	}
+
+	public function deleteAction(Request $request) {
+		$schedule = $this->getRequestedSchedule($request);
+		$item     = $this->getRequestedScheduleItem($request, $schedule);
+
+		// delete item and move followers one position up
+
+		$em = $this->getEntityManager();
+		$em->transactional(function($em) use ($item) {
+			$qb    = $em->createQueryBuilder();
+			$query = $qb
+				->update('horaro\Library\Entity\ScheduleItem', 'i')
+				->set('i.position', 'i.position - 1')
+				->where('i.position > '.$item->getPosition())
+				->getQuery();
+
+			$query->getResult();
+
+			$em->remove($item);
+			$em->flush();
+		});
+
+		// respond
+
+		return $this->respondWithArray(['data' => true], 200);
 	}
 }

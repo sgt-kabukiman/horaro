@@ -139,7 +139,7 @@ class BaseController {
 	}
 
 	protected function getRequestedScheduleItem(Request $request, Schedule $schedule) {
-		return $this->resolveScheduleItemID($request->attributes->get('item'));
+		return $this->resolveScheduleItemID($request->attributes->get('item'), $schedule);
 	}
 
 	protected function resolveScheduleItemID($itemID, Schedule $schedule) {
