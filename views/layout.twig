@@ -252,6 +252,10 @@
 							self[key](value);
 						});
 
+						if (isNew) {
+							viewModel.initDragAndDrop(true);
+						}
+
 						self.suspended = false;
 					},
 					error: function(result, data) {
@@ -357,6 +361,24 @@
 				return null;
 			};
 
+			self.initDragAndDrop = function(reinit) {
+				$('.h-scheduler').sortable({
+					handle: '.h-handle',
+					items: '.h-item',
+					forcePlaceholderSize: true
+				});
+
+				if (!reinit) {
+					$('.h-scheduler').on('sortupdate', function(event, stuff) {
+						var row    = stuff.item;
+						var newPos = row.index();    // 1-based
+						var itemID = row.data('itemid');
+
+						self.move(itemID, newPos);
+					});
+				}
+			};
+
 			ko.computed(function() {
 				self.calculateSchedule();
 			});
@@ -374,20 +396,7 @@
 
 		var viewModel = new ItemsViewModel(items);
 		ko.applyBindings(viewModel);
-
-		$('.h-scheduler').sortable({
-			handle: '.h-handle',
-			items: '.h-item',
-			forcePlaceholderSize: true
-		});
-
-		$('.h-scheduler').on('sortupdate', function(event, stuff) {
-			var row    = stuff.item;
-			var newPos = row.index();    // 1-based
-			var itemID = row.data('itemid');
-
-			viewModel.move(itemID, newPos);
-		});
+		viewModel.initDragAndDrop(false);
 	});
 	</script>
 	{% endverbatim %}
