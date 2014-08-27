@@ -13,18 +13,20 @@
 		</td>
 
 		{% for idx,column in columns.slice(0, 4) %}
-		<td data-bind="attr: { class: 'h-column {{ utils.scheduleClass(idx, 8) }}' + (busy() ? ' warning' : (errors() ? ' danger' : '')) }"><span data-bind="editable: col_{{ column.id }}"></span></td>
+		<td data-bind="attr: { class: 'h-column {{ utils.scheduleColClass(idx) }}' + (busy() ? ' warning' : (errors() ? ' danger' : '')) }"><span data-bind="editable: col_{{ column.id }}"></span></td>
 		{% endfor %}
 
 		<td data-bind="attr: { class: 'text-right h-controls' + (busy() ? ' warning' : (errors() ? ' danger' : '')) }">
-			<button class="btn btn-link btn-xs" rel="more" data-bind="click: toggle, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
-			<button class="btn btn-link btn-xs" rel="more" data-bind="click: toggle, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
+			<span class="{{ utils.scheduleControlsClass(columns | length) }}">
+				<button class="btn btn-link btn-xs" rel="more" data-bind="click: toggle, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
+				<button class="btn btn-link btn-xs" rel="more" data-bind="click: toggle, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
+			</span>
 			<button class="btn btn-danger btn-xs" rel="delete"><i class="fa fa-trash-o"></i></button>
 		</td>
 	</tr>
 
 	<!-- ko if: expanded -->
-	<tr class="h-secondary">
+	<tr class="h-secondary {{ utils.scheduleControlsClass(columns | length) }}">
 		<td colspan="100">
 			<!-- three elements per row, for large devices -->
 			{% for idx,column in columns.slice(4) %}

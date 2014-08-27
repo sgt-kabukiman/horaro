@@ -21,8 +21,8 @@
 			<th class="h-handle">&nbsp;</th>
 			<th class="h-scheduled">Scheduled</th>
 			<th class="h-length">Estimated</th>
-			{% for idx,column in schedule.columns.slice(0,4) %}
-			<th class="h-column {{ utils.scheduleClass(idx, 8) }}">{{ column.name }}</th>
+			{% for idx,column in schedule.columns.slice(0, 4) %}
+			<th class="h-column {{ utils.scheduleColClass(idx) }}">{{ column.name }}</th>
 			{% endfor %}
 			<th class="h-controls">&nbsp;</th>
 		</tr>
