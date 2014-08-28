@@ -194,7 +194,7 @@ horaro\Library\Entity\Schedule:
     columns:
       targetEntity: horaro\Library\Entity\ScheduleColumn
       mappedBy: schedule
-      orderBy: { name: ASC }
+      orderBy: { position: ASC }
 
   manyToOne:
     event:
@@ -246,6 +246,9 @@ horaro\Library\Entity\ScheduleColumn:
       generator: { strategy: AUTO }
 
   fields:
+    position:
+      type: integer
+      options: { unsigned: true }
     name:
       type: string
       length: 255

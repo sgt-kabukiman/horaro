@@ -22,6 +22,11 @@ class ScheduleColumn {
 	private $id;
 
 	/**
+	 * @var integer
+	 */
+	private $position;
+
+	/**
 	 * @var string
 	 */
 	private $name;
@@ -38,6 +43,27 @@ class ScheduleColumn {
 	 */
 	public function getId() {
 		return $this->id;
+	}
+
+	/**
+	 * Set position
+	 *
+	 * @param integer $position
+	 * @return ScheduleItem
+	 */
+	public function setPosition($position) {
+		$this->position = $position;
+
+		return $this;
+	}
+
+	/**
+	 * Get position
+	 *
+	 * @return integer
+	 */
+	public function getPosition() {
+		return $this->position;
 	}
 
 	/**
