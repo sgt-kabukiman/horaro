@@ -8,6 +8,7 @@
         "grunt-contrib-concat": "0.4.*",
         "grunt-contrib-watch": "0.5.*",
         "grunt-shell": "0.7.*",
-        "grunt-lineending": "0.2.*"
+        "grunt-lineending": "0.2.*",
+        "grunt-rigger": "0.6.*"
     }
 }

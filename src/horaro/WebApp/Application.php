@@ -60,6 +60,10 @@ class Application extends BaseApplication {
 		$this['controller.schedule.item'] = $this->share(function() {
 			return new Controller\ScheduleItemController($this);
 		});
+
+		$this['controller.schedule.column'] = $this->share(function() {
+			return new Controller\ScheduleColumnController($this);
+		});
 	}
 
 	public function setupRouting() {
@@ -94,6 +98,8 @@ class Application extends BaseApplication {
 		$this->post  ('/-/schedules/{schedule}/items',        'controller.schedule.item:createAction')->before('firewall:requireUser');
 		$this->patch ('/-/schedules/{schedule}/items/{item}', 'controller.schedule.item:patchAction')->before('firewall:requireUser');
 		$this->delete('/-/schedules/{schedule}/items/{item}', 'controller.schedule.item:deleteAction')->before('firewall:requireUser');
+
+		$this->get   ('/-/schedules/{schedule}/columns/edit', 'controller.schedule.column:editAction')->before('firewall:requireUser');
 
 		$this->error('firewall:handleAuthErrors');
 		$this->error('firewall:handleReverseAuthErrors');

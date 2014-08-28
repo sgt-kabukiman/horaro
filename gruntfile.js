@@ -29,7 +29,7 @@ module.exports = function (grunt) {
 					'assets/vendor/pickadate/lib/compressed/picker.time.js',
 					'assets/vendor/html.sortable/src/html.sortable.js', // TODO: minify this manually (don't use the prebuilt dist one cause it has its version number in the filename...)
 					'assets/vendor/moment/min/moment-with-locales.min.js',
-					'assets/knockout.x-editable.patched.js',
+					'assets/js/knockout.x-editable.patched.js',
 				],
 				dest: 'www/assets/js/vendor.backend.js'
 			},
@@ -45,6 +45,14 @@ module.exports = function (grunt) {
 					'assets/vendor/pickadate/lib/themes/classic.time.css',
 				],
 				dest: 'www/assets/vendor.css'
+			}
+		},
+
+		rig: {
+			app_backend: {
+				files: {
+					'www/assets/js/app.backend.js': ['assets/js/backend.js']
+				}
 			}
 		},
 
@@ -72,6 +80,10 @@ module.exports = function (grunt) {
 			css: {
 				files: ['assets/app.less'],
 				tasks: ['less:app']
+			},
+			app: {
+				files: ['assets/js/**/*'],
+				tasks: ['rig']
 			}
 		}
 	});
@@ -83,10 +95,11 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-shell');
 	grunt.loadNpmTasks('grunt-lineending');
+	grunt.loadNpmTasks('grunt-rigger');
 
 	// register custom tasks
 	grunt.registerTask('css',      ['less:app', 'concat:vendor_css']);
-	grunt.registerTask('js',       ['concat:vendor_backend']);
+	grunt.registerTask('js',       ['concat:vendor_backend', 'rig']);
 	grunt.registerTask('assets',   ['clean:assets', 'css', 'js']);
 	grunt.registerTask('doctrine', ['shell:schema', 'lineending:schema', 'shell:proxies']);
 	grunt.registerTask('default',  ['assets']);

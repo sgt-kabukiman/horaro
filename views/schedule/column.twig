@@ -1,0 +1,16 @@
+<tbody class="h-column" data-bind="attr: {'data-colid': id}">
+	<tr class="h-primary">
+		<td data-bind="attr: { class: 'h-handle ' + rowClass() }">::</td>
+		<td data-bind="attr: { class: 'h-name '   + rowClass() }"><span data-bind="editable: name"></span></td>
+		<td data-bind="attr: { class: 'text-right h-controls ' + rowClass() }">
+			<!-- ko if: !deleting() -->
+			<button class="" data-bind="click: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + (id() === -1 ? ' disabled' : '') }"><i class="fa fa-trash-o"></i></button>
+			<!-- /ko -->
+
+			<!-- ko if: deleting() -->
+			<button class="btn btn-danger btn-xs" data-bind="click: doDelete"><i class="fa fa-trash-o"></i></button>
+			<button class="btn btn-default btn-xs" data-bind="click: cancelDelete"><i class="fa fa-undo"></i></button>
+			<!-- /ko -->
+		</td>
+	</tr>
+</tbody>

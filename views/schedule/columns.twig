@@ -1,0 +1,82 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<ul class="breadcrumb" style="margin-bottom: 5px;">
+	<li><a href="/-/home">Home</a></li>
+	<li><a href="/-/events/{{ schedule.event.id }}">{{ schedule.event.name }}</a></li>
+	<li><a href="/-/schedules/{{ schedule.id }}">{{ schedule.name }}</a></li>
+	<li>Edit Columns&hellip;</li>
+</ul>
+
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h2>Edit Columns</h2>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<p class="text-center text-muted"><small>Configure what information your schedule will contain.</small></p>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-5 col-md-6 col-sm-6">
+		<table class="table h-columnist">
+			<thead>
+				<tr>
+					<th class="h-handle">&nbsp;</th>
+					<th class="h-name">Column Name</th>
+					<th class="h-controls">&nbsp;</th>
+				</tr>
+			</thead>
+
+			<!-- ko foreach: columns -->
+			{% include 'schedule/column.twig' with {'schedule': schedule, 'columns': schedule.columns} %}
+			<!-- /ko -->
+		</table>
+
+		<!-- ko if: hasNewColumn -->
+		<div class="row">
+			<div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-4 col-xs-offset-4 text-center">
+				<a href="#" class="btn btn-success btn-block btn-sm disabled"><i class="fa fa-plus fa-1x"></i> add column&hellip;</a>
+			</div>
+		</div>
+		<!-- /ko -->
+
+		<!-- ko if: !hasNewColumn() -->
+		<div class="row">
+			<div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-4 col-xs-offset-4 text-center">
+				<a data-bind="click: add" class="btn btn-success btn-block btn-sm"><i class="fa fa-plus fa-1x"></i> add column&hellip;</a>
+			</div>
+		</div>
+		<!-- /ko -->
+	</div>
+
+	<div class="col-lg-7 col-md-6 col-sm-6 h-formhelp-columnist">
+		<p>Each schedule has its own set of columns, which control what data you can edit in the schedule
+		(duh). You must have a least one column per schedule.</p>
+
+		<p>Use the handle on the left of each row to move columns up and down. Positioning is important
+		when you have more than two or three columns:</p>
+
+		<p>You want to move the most important columns at the top, so they are always visible. Also,
+		keep the column names short and simple.</p>
+
+		<p>Keep in mind that your audience on mobile devices has smaller screens and can therefore not
+		easily consume a schedule with lots of columns. Depending on the device size, excessive columns
+		will be hidden by default and only shown when the user clicks on a link (pretty much like the
+		editing of schedules work).</p>
+	</div>
+</div>
+
+<script type="text/javascript">
+var horaro = horaro||{};
+
+horaro.ui = 'columnist';
+horaro.schedule = {
+	id: {{ schedule.id }},
+	columns: {{ columns|json_encode|raw }}
+};
+</script>
+{% endblock %}
