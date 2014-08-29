@@ -58,7 +58,15 @@
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="/-/profile"><i class="fa fa-cog"></i> {{ app.user.name }}</a></li>
+					<li>
+						<a href="/-/profile">
+							<i class="fa fa-cog"></i>
+							{{ app.user.name }}
+							{% if app.user.gravatarHash %}
+							<img src="//www.gravatar.com/avatar/{{ app.user.gravatarHash }}?size=23&amp;d=retro&amp;r=pg" class="h-avatar" alt="" />
+							{% endif %}
+						</a>
+					</li>
 					<li><a href="/-/logout"><i class="fa fa-power-off"></i> Log-out</a></li>
 				</ul>
 				{% else %}

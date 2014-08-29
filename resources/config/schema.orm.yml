@@ -19,6 +19,14 @@ horaro\Library\Entity\User:
       type: string
       length: 255
       nullable: true
+    gravatar_hash:
+      type: string
+      length: 32
+      nullable: true
+    language:
+      type: string
+      length: 10
+      nullable: true
     role:
       type: string
       length: 100

@@ -40,6 +40,16 @@ class User {
 	/**
 	 * @var string
 	 */
+	private $gravatar_hash;
+
+	/**
+	 * @var string
+	 */
+	private $language;
+
+	/**
+	 * @var string
+	 */
 	private $role;
 
 	/**
@@ -136,6 +146,52 @@ class User {
 	 */
 	public function getDisplayName() {
 		return $this->display_name;
+	}
+
+	/**
+	 * Set gravatar_hash
+	 *
+	 * @param string $hash
+	 * @return User
+	 */
+	public function setGravatarHash($hash) {
+		$hash = strtolower(trim($hash));
+
+		$this->gravatar_hash = preg_match('/^[0-9a-f]{32}$/', $hash) ? $hash : null;
+
+		return $this;
+	}
+
+	/**
+	 * Get gravatar_hash
+	 *
+	 * @return string
+	 */
+	public function getGravatarHash() {
+		return $this->gravatar_hash;
+	}
+
+	/**
+	 * Set language
+	 *
+	 * @param string $language
+	 * @return User
+	 */
+	public function setLanguage($language) {
+		$language = strtolower($language);
+
+		$this->language = strlen($language) > 0 ? $language : null;
+
+		return $this;
+	}
+
+	/**
+	 * Get language
+	 *
+	 * @return string
+	 */
+	public function getLanguage() {
+		return $this->language;
 	}
 
 	/**
