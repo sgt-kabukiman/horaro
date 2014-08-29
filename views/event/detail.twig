@@ -13,25 +13,25 @@
 </div>
 
 <div class="row">
-	<div class="col-lg-8">
+	<div class="col-lg-8 col-md-7">
 		<div class="row">
 			{% for schedule in event.schedules %}
-			<div class="col-lg-4">
+			<div class="col-lg-4 col-md-6 col-sm-4 col-xs-6">
 				<div class="well well-sm text-center">
 					<h4><a href="/-/schedules/{{ schedule.id }}"><i class="fa fa-calendar fa-3x"></i><br>{{ schedule.name }}</a></h4>
 				</div>
 			</div>
 			{% endfor %}
 
-			<div class="col-lg-4">
-				<div class="well well-sm text-center" style="border:1px solid transparent;background:transparent">
+			<div class="col-lg-4 col-md-6 col-sm-4 col-xs-6">
+				<div class="well well-sm text-center" style="border:1px solid transparent;background:transparent;box-shadow:none">
 					<h4><a href="/-/events/{{ event.id }}/schedules/new" class="text-muted"><i class="fa fa-plus fa-3x"></i><br>New Schedule&hellip;</a></h4>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="col-lg-4">
+	<div class="col-lg-4 col-md-5">
 		<div class="well">
 			<fieldset>
 				<legend>Event Information <a href="/-/events/{{ event.id }}/edit" class="btn btn-link btn-sm pull-right">Edit&hellip;</a></legend>
@@ -69,7 +69,7 @@
 				</dl>
 
 				<div class="text-center">
-					<a href="/-/events/{{ event.id }}/delete" class="btn btn-warning btn-sm">Delete Event&hellip;</a>
+					<a href="/-/events/{{ event.id }}/delete" class="btn btn-warning btn-sm"><i class="fa fa-trash-o"></i> Delete Event&hellip;</a>
 				</div>
 			</fieldset>
 		</div>

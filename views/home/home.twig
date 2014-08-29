@@ -13,15 +13,15 @@
 
 <div class="row">
 	{% for event in app.user.events %}
-	<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
 		<div class="well well-sm text-center">
 			<h4><a href="/-/events/{{ event.id }}"><i class="fa fa-gamepad fa-3x"></i><br>{{ event.name }}</a></h4>
 		</div>
 	</div>
 	{% endfor %}
 
-	<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-		<div class="well well-sm text-center" style="border:1px solid transparent;background:transparent">
+	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+		<div class="well well-sm text-center" style="border:1px solid transparent;background:transparent;box-shadow:none">
 			<h4><a href="/-/events/new" class="text-muted"><i class="fa fa-plus fa-3x"></i><br>New&hellip;</a></h4>
 		</div>
 	</div>
@@ -35,15 +35,15 @@
 
 <div class="row">
 	{% for team in app.user.teams %}
-	<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
 		<div class="well well-sm text-center">
 			<h4><a href="/-/teams/{{ team.id }}"><i class="fa fa-users fa-3x"></i><br>{{ team.name }}</a></h4>
 		</div>
 	</div>
 	{% endfor %}
 
-	<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-		<div class="well well-sm text-center" style="border:1px solid transparent;background:transparent">
+	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+		<div class="well well-sm text-center" style="border:1px solid transparent;background:transparent;box-shadow:none">
 			<h4><a href="/-/events/new" class="text-muted"><i class="fa fa-plus fa-3x"></i><br>New&hellip;</a></h4>
 		</div>
 	</div>
