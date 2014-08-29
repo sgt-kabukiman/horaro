@@ -12,6 +12,8 @@ jQuery(function($) {
 		hiddenName: true
 	});
 
+	$('select.h-fancy').select2();
+
 	$.fn.editable.defaults.mode = 'popup';
 	$.fn.editableform.buttons =
 		'<button type="submit" class="btn btn-primary btn-xs editable-submit">'+
@@ -29,7 +31,7 @@ jQuery(function($) {
 	//= src/Column.js
 	//= src/ColumnsViewModel.js
 
-	if (horaro && horaro.schedule) {
+	if (typeof horaro !== 'undefined' && horaro.schedule) {
 		scheduleColumns = horaro.schedule.columns;
 		scheduleID      = horaro.schedule.id;
 
