@@ -86,20 +86,24 @@ class Application extends BaseApplication {
 		$this->get   ('/-/events/{event}/delete', 'controller.event:confirmationAction')->before('firewall:requireUser');
 		$this->delete('/-/events/{event}',        'controller.event:deleteAction')->before('firewall:requireUser');
 
-		$this->get   ('/-/events/{event}/schedules/new',    'controller.schedule:newAction')->before('firewall:requireUser');
-		$this->post  ('/-/events/{event}/schedules',        'controller.schedule:createAction')->before('firewall:requireUser');
-		$this->get   ('/-/schedules/{schedule}',            'controller.schedule:detailAction')->before('firewall:requireUser');
-		$this->get   ('/-/schedules/{schedule}/edit',       'controller.schedule:editAction')->before('firewall:requireUser');
-		$this->put   ('/-/schedules/{schedule}',            'controller.schedule:updateAction')->before('firewall:requireUser');
-		$this->get   ('/-/schedules/{schedule}/delete',     'controller.schedule:confirmationAction')->before('firewall:requireUser');
-		$this->delete('/-/schedules/{schedule}',            'controller.schedule:deleteAction')->before('firewall:requireUser');
-		$this->post  ('/-/schedules/{schedule}/items/move', 'controller.schedule:moveItemAction')->before('firewall:requireUser');
+		$this->get   ('/-/events/{event}/schedules/new', 'controller.schedule:newAction')->before('firewall:requireUser');
+		$this->post  ('/-/events/{event}/schedules',     'controller.schedule:createAction')->before('firewall:requireUser');
+		$this->get   ('/-/schedules/{schedule}',         'controller.schedule:detailAction')->before('firewall:requireUser');
+		$this->get   ('/-/schedules/{schedule}/edit',    'controller.schedule:editAction')->before('firewall:requireUser');
+		$this->put   ('/-/schedules/{schedule}',         'controller.schedule:updateAction')->before('firewall:requireUser');
+		$this->get   ('/-/schedules/{schedule}/delete',  'controller.schedule:confirmationAction')->before('firewall:requireUser');
+		$this->delete('/-/schedules/{schedule}',         'controller.schedule:deleteAction')->before('firewall:requireUser');
 
 		$this->post  ('/-/schedules/{schedule}/items',        'controller.schedule.item:createAction')->before('firewall:requireUser');
+		$this->post  ('/-/schedules/{schedule}/items/move',   'controller.schedule.item:moveAction')->before('firewall:requireUser');
 		$this->patch ('/-/schedules/{schedule}/items/{item}', 'controller.schedule.item:patchAction')->before('firewall:requireUser');
 		$this->delete('/-/schedules/{schedule}/items/{item}', 'controller.schedule.item:deleteAction')->before('firewall:requireUser');
 
-		$this->get   ('/-/schedules/{schedule}/columns/edit', 'controller.schedule.column:editAction')->before('firewall:requireUser');
+		$this->get   ('/-/schedules/{schedule}/columns/edit',     'controller.schedule.column:editAction')->before('firewall:requireUser');
+		$this->post  ('/-/schedules/{schedule}/columns',          'controller.schedule.column:createAction')->before('firewall:requireUser');
+		$this->post  ('/-/schedules/{schedule}/columns/move',     'controller.schedule.column:moveAction')->before('firewall:requireUser');
+		$this->put   ('/-/schedules/{schedule}/columns/{column}', 'controller.schedule.column:updateAction')->before('firewall:requireUser');
+		$this->delete('/-/schedules/{schedule}/columns/{column}', 'controller.schedule.column:deleteAction')->before('firewall:requireUser');
 
 		$this->error('firewall:handleAuthErrors');
 		$this->error('firewall:handleReverseAuthErrors');

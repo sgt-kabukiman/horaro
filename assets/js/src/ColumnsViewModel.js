@@ -8,36 +8,36 @@ function ColumnsViewModel(columns) {
 	}, self);
 
 	self.add = function() {
-		self.columns.push(new Column(-1, 'My Column', self.columns().length + 1));
+		self.columns.push(new Column(-1, '', self.columns().length + 1));
 	};
 
-	self.move = function(itemID, newPos) {
-		var items = self.items;
-		var item  = self.findItem(itemID);
+	self.move = function(columnID, newPos) {
+		var columns = self.columns;
+		var col     = self.findColumn(columnID);
 
-		item.busy(true);
+		col.busy(true);
 
 		$.ajax({
 			type: 'POST',
-			url: '/-/schedules/' + scheduleID + '/items/move',
+			url: '/-/schedules/' + scheduleID + '/columns/move',
 			dataType: 'json',
 			contentType: 'application/json',
-			data: JSON.stringify({ item: itemID, position: newPos }),
+			data: JSON.stringify({ column: columnID, position: newPos }),
 			complete: function() {
-				item.busy(false);
+				col.busy(false);
 			}
 		});
 
 		// escape to floats for simple re-sorting goodness
-		item.position = (newPos < item.position) ? (newPos - 0.5) : (newPos + 0.5);
+		col.position = (newPos < col.position) ? (newPos - 0.5) : (newPos + 0.5);
 
-		items.sort(function(a, b) {
+		columns.sort(function(a, b) {
 			return a.position - b.position;
 		});
 
 		// re-number the list
-		items().forEach(function(item, idx) {
-			item.position = idx + 1;
+		columns().forEach(function(col, idx) {
+			col.position = idx + 1;
 		});
 	};
 

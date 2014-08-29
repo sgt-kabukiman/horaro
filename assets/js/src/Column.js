@@ -12,12 +12,17 @@ function Column(id, name, pos) {
 	self.suspended = false;
 	self.deleting  = ko.observable(false);
 	self.busy      = ko.observable(false);
+	self.errors    = ko.observable(false);
 
 	// computed properties
 
 	self.rowClass = ko.pureComputed(function() {
 		if (self.busy()) {
 			return 'warning';
+		}
+
+		if (self.errors()) {
+			return 'danger h-has-errors';
 		}
 
 		if (self.deleting()) {
@@ -55,12 +60,16 @@ function Column(id, name, pos) {
 
 				self.id(result.data.id);
 				self.name(result.data.name);
+				self.errors(false);
 
 				if (isNew) {
 					viewModel.initDragAndDrop(true);
 				}
 
 				self.suspended = false;
+			},
+			error: function(result, data) {
+				self.errors(result.responseJSON.errors);
 			},
 			complete: function() {
 				self.busy(false);

@@ -22,7 +22,7 @@
 				<button class="btn btn-link btn-xs" data-bind="click: toggle, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
 				<button class="btn btn-link btn-xs" data-bind="click: toggle, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
 			</span>
-			<button class="" data-bind="click: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + (id() === -1 ? ' disabled' : '') }"><i class="fa fa-trash-o"></i></button>
+			<button data-bind="click: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + (id() === -1 ? ' disabled' : '') }"><i class="fa fa-trash-o"></i></button>
 			<!-- /ko -->
 
 			<!-- ko if: deleting() -->

@@ -165,4 +165,32 @@ class BaseController {
 
 		return $item;
 	}
+
+	protected function getRequestedScheduleColumn(Request $request, Schedule $schedule) {
+		return $this->resolveScheduleColumnID($request->attributes->get('column'), $schedule);
+	}
+
+	protected function resolveScheduleColumnID($columnID, Schedule $schedule) {
+		$id = $this->decodeID((string) $columnID, 'schedule.column');
+
+		if ($id === null) {
+			throw new Ex\NotFoundException('The column could not be found.');
+		}
+
+		$repo   = $this->getRepository('ScheduleColumn');
+		$column = $repo->findOneById($id);
+
+		if (!$column) {
+			throw new Ex\NotFoundException('Schedule column '.$columnID.' could not be found.');
+		}
+
+		$user  = $this->getCurrentUser();
+		$owner = $schedule->getEvent()->getUser();
+
+		if ($column->getSchedule()->getId() != $schedule->getId()) {
+			throw new Ex\NotFoundException('Schedule column '.$columnID.' could not be found.');
+		}
+
+		return $column;
+	}
 }

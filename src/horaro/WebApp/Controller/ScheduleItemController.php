@@ -10,15 +10,10 @@
 
 namespace horaro\WebApp\Controller;
 
-use horaro\Library\Entity\Event;
-use horaro\Library\Entity\Schedule;
 use horaro\Library\Entity\ScheduleItem;
 use horaro\WebApp\Exception as Ex;
-use horaro\WebApp\Validator\ScheduleValidator;
 use horaro\WebApp\Validator\ScheduleItemValidator;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ScheduleItemController extends BaseController {
 	public function createAction(Request $request) {
@@ -148,5 +143,82 @@ class ScheduleItemController extends BaseController {
 		// respond
 
 		return $this->respondWithArray(['data' => true], 200);
+	}
+
+	public function moveAction(Request $request) {
+		$schedule = $this->getRequestedSchedule($request);
+		$payload  = $this->getPayload($request);
+
+		// get the item
+
+		if (!isset($payload['item']) || !is_scalar($payload['item'])) {
+			throw new Ex\BadRequestException('No item ID given.');
+		}
+
+		$itemID = $payload['item'];
+		$item   = $this->resolveScheduleItemID($itemID, $schedule);
+		$curPos = $item->getPosition();
+
+		// get the target position
+
+		if (!isset($payload['position']) || !is_int($payload['position'])) {
+			throw new Ex\BadRequestException('No valid target position given.');
+		}
+
+		$target = (int) $payload['position'];
+
+		// validate the target position
+
+		if ($target < 1) {
+			throw new Ex\BadRequestException('Positions are 1-based and therefore cannot be < 1.');
+		}
+
+		if ($target === $curPos) {
+			throw new Ex\ConflictException('This would be a NOP.');
+		}
+
+		$repo = $this->getRepository('ScheduleItem');
+		$last = $repo->findOneBySchedule($schedule, ['position' => 'DESC']);
+		$max  = $last->getPosition();
+
+		if ($target > $max) {
+			throw new Ex\BadRequestException('Target position ('.$target.') is greater than the last position ('.$max.').');
+		}
+
+		// prepare chunk move
+
+		$up          = $target < $curPos;
+		$relation    = $up ? '+' : '-';
+		list($a, $b) = $up ? array($target, $curPos) : array($curPos, $target);
+
+		// move items between old and new position
+
+		$em = $this->getEntityManager();
+		$em->transactional(function($em) use ($relation, $item, $schedule, $a, $b, $target) {
+			$qb    = $em->createQueryBuilder();
+			$query = $qb
+				->update('horaro\Library\Entity\ScheduleItem', 'i')
+				->set('i.position', sprintf('i.position %s 1', $relation))
+				->where($qb->expr()->andX(
+					$qb->expr()->eq('i.schedule', $schedule->getId()),
+					$qb->expr()->between('i.position', $a, $b)
+				))
+				->getQuery();
+
+			$query->getResult();
+
+			$item->setPosition($target);
+			$em->persist($item);
+			$em->flush();
+		});
+
+		// respond
+
+		return $this->respondWithArray([
+			'data' => [
+				'id'  => $this->encodeID($item->getId(), 'schedule.item'),
+				'pos' => $item->getPosition()
+			]
+		], 200);
 	}
 }

@@ -4,7 +4,7 @@
 		<td data-bind="attr: { class: 'h-name '   + rowClass() }"><span data-bind="editable: name"></span></td>
 		<td data-bind="attr: { class: 'text-right h-controls ' + rowClass() }">
 			<!-- ko if: !deleting() -->
-			<button class="" data-bind="click: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + (id() === -1 ? ' disabled' : '') }"><i class="fa fa-trash-o"></i></button>
+			<button class="" data-bind="click: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + ((id() === -1 || $parent.columns().length <= 1) ? ' disabled' : '') }"><i class="fa fa-trash-o"></i></button>
 			<!-- /ko -->
 
 			<!-- ko if: deleting() -->
