@@ -3,7 +3,10 @@
 <head>
 	<meta charset="utf-8">
 	<title>Welcome &ndash; Horaro</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="/assets/vendor.css" rel="stylesheet">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet">
 	<link href="/assets/app.css" rel="stylesheet">
 </head>
 <body>
@@ -80,28 +83,8 @@
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.2.0/knockout-min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 	<script src="/assets/js/vendor.backend.js"></script>
-	<script type="text/javascript">
-	jQuery(function($) {
-		$('#start_date').pickadate({
-			formatSubmit: 'yyyy-mm-dd',
-			hiddenName: true
-		});
-
-		$('#start_time').pickatime({
-			interval: 15,
-			formatSubmit: 'HH:i',
-			hiddenName: true
-		});
-
-		$('.h-scheduler').sortable({
-			handle: '.h-handle',
-			forcePlaceholderSize: true
-		});
-
-		$('.h-scheduler .panel-body').on('click', function() {
-			$(this).toggleClass('expanded');
-		})
-	});
-	</script>
+	<script src="/assets/js/app.backend.js"></script>
 </body>

@@ -20,6 +20,102 @@ dl.h-indented dd {
 	font-size: 14px;
 }
 
+.h-formhelp legend {
+	margin-top: 20px;
+}
+
+/* Scheduler */
+
+.h-scheduler {
+	font-size: 12px;
+
+	tbody .h-handle {
+		width: 25px;
+		text-align: center;
+		cursor: move;
+	}
+
+	thead th {
+		padding: 3px 5px !important;
+	}
+
+	> tbody + tbody {
+		border-top: 1px solid #dddddd;
+	}
+
+	.h-item {
+		td {
+			padding: 3px 5px;
+			vertical-align: middle;
+		}
+	}
+
+	.h-item-more div {
+		line-height: 20px;
+	}
+
+	.h-controls {
+		white-space: nowrap;
+		max-width: 100px;
+	}
+
+	.h-scheduled, .h-length {
+		white-space: nowrap;
+		max-width: 70px;
+	}
+
+	.h-length.h-has-errors .editable {
+		color: red;
+	}
+}
+
+.h-scheduler-header {
+	a {
+		font-size: 14px;
+	}
+
+	div:last-child {
+		margin-top: 25px;
+	}
+}
+
+/* Columnist */
+
+.h-columnist {
+	font-size: 14px;
+
+	tbody .h-handle {
+		width: 25px;
+		text-align: center;
+		cursor: move;
+	}
+
+	thead th {
+		padding: 3px 5px !important;
+	}
+
+	> tbody + tbody {
+		border-top: 1px solid #dddddd;
+	}
+
+	.h-column {
+		td {
+			padding: 3px 5px;
+			vertical-align: middle;
+		}
+	}
+
+	.h-controls {
+		white-space: nowrap;
+		max-width: 100px;
+	}
+}
+
+.h-formhelp-columnist {
+	margin-top: 30px;
+	font-size: 14px;
+}
+
 /* custom Pickadate styling */
 
 .picker__input {
@@ -43,26 +139,29 @@ dl.h-indented dd {
 	font-size: 12px;
 }
 
-/* Scheduler */
+/* custom X-Editable styling */
 
-.h-scheduler {
-	font-size: 13px;
+.editable-click, a.editable-click, a.editable-click:hover {
+	border-bottom: dashed 1px #5bc0de;
+	cursor: pointer;
+}
 
-	.panel {
-		margin-bottom: 3px;
+.editable-unsaved {
+	font-weight: normal;
+}
+
+.editable-buttons {
+	line-height: 30px;
+
+	button {
+		vertical-align: baseline;
 	}
+}
 
-	.panel-body {
-		cursor: pointer;
+.editableform .editable-input input {
+	width: 300px;
+}
 
-		&.expanded {
-			background: red;
-		}
-	}
-
-	.h-handle {
-		font-size: 16px;
-		margin-right: 8px;
-		cursor: move;
-	}
+.popover {
+	font-weight: normal;
 }

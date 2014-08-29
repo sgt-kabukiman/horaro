@@ -19,9 +19,23 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ScheduleController extends BaseController {
 	public function detailAction(Request $request) {
-		$schedule = $this->getRequestedSchedule($request);
+		$schedule  = $this->getRequestedSchedule($request);
+		$items     = [];
+		$columnIDs = [];
 
-		return $this->render('schedule/detail.twig', ['schedule' => $schedule]);
+		foreach ($schedule->getItems() as $item) {
+			$items[] = [
+				$item->getId(),
+				$item->getLengthInSeconds(),
+				$item->getExtra()
+			];
+		}
+
+		foreach ($schedule->getColumns() as $column) {
+			$columnIDs[] = $column->getId();
+		}
+
+		return $this->render('schedule/detail.twig', ['schedule' => $schedule, 'items' => $items ?: null, 'columns' => $columnIDs]);
 	}
 
 	public function newAction(Request $request) {
@@ -128,56 +142,6 @@ class ScheduleController extends BaseController {
 		$em->flush();
 
 		return $this->redirect('/-/events/'.$eventID);
-	}
-
-	protected function getRequestedEvent(Request $request) {
-		$hash = $request->attributes->get('event');
-		$id   = $this->decodeID($hash, 'event');
-
-		if ($id === null) {
-			throw new Ex\NotFoundException('The event could not be found.');
-		}
-
-		$repo  = $this->getRepository('Event');
-		$event = $repo->findOneById($id);
-
-		if (!$event) {
-			throw new Ex\NotFoundException('Event '.$hash.' could not be found.');
-		}
-
-		$user  = $this->getCurrentUser();
-		$owner = $event->getUser();
-
-		if (!$owner || $user->getId() !== $owner->getId()) {
-			throw new Ex\NotFoundException('Event '.$hash.' could not be found.');
-		}
-
-		return $event;
-	}
-
-	protected function getRequestedSchedule(Request $request) {
-		$hash = $request->attributes->get('id');
-		$id   = $this->decodeID($hash, 'schedule');
-
-		if ($id === null) {
-			throw new Ex\NotFoundException('The schedule could not be found.');
-		}
-
-		$repo     = $this->getRepository('Schedule');
-		$schedule = $repo->findOneById($id);
-
-		if (!$schedule) {
-			throw new Ex\NotFoundException('Schedule '.$hash.' could not be found.');
-		}
-
-		$user  = $this->getCurrentUser();
-		$owner = $schedule->getEvent()->getUser();
-
-		if (!$owner || $user->getId() !== $owner->getId()) {
-			throw new Ex\NotFoundException('Schedule '.$hash.' could not be found.');
-		}
-
-		return $schedule;
 	}
 
 	protected function renderForm(Event $event, Schedule $schedule = null, $result = null) {

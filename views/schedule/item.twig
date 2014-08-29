@@ -1,0 +1,96 @@
+<tbody class="h-item" data-bind="attr: {'data-itemid': id}">
+	<tr class="h-primary">
+		<td data-bind="attr: { class: 'h-handle '    + rowClass() }">::</td>
+		<td data-bind="attr: { class: 'h-scheduled ' + rowClass() }"><span data-bind="text: formattedSchedule"></span></td>
+		<td data-bind="attr: { class: 'h-length '    + rowClass() }">
+			<!-- ko if: errors -->
+			<span data-bind="editable: formattedLength, attr: { title: errors().length[0] }"></span>
+			<!-- /ko -->
+
+			<!-- ko if: !errors() -->
+			<span data-bind="editable: formattedLength"></span>
+			<!-- /ko -->
+		</td>
+
+		{% for idx,column in columns.slice(0, 4) %}
+		<td data-bind="attr: { class: 'h-column {{ utils.scheduleColClass(idx) }} ' + rowClass() }"><span data-bind="editable: col_{{ column.id }}"></span></td>
+		{% endfor %}
+
+		<td data-bind="attr: { class: 'text-right h-controls ' + rowClass() }">
+			<!-- ko if: !deleting() -->
+			<span class="{{ utils.scheduleControlsClass(columns | length) }}">
+				<button class="btn btn-link btn-xs" data-bind="click: toggle, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
+				<button class="btn btn-link btn-xs" data-bind="click: toggle, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
+			</span>
+			<button data-bind="click: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + (id() === -1 ? ' disabled' : '') }"><i class="fa fa-trash-o"></i></button>
+			<!-- /ko -->
+
+			<!-- ko if: deleting() -->
+			<button class="btn btn-danger btn-xs" data-bind="click: doDelete"><i class="fa fa-trash-o"></i></button>
+			<button class="btn btn-default btn-xs" data-bind="click: cancelDelete"><i class="fa fa-undo"></i></button>
+			<!-- /ko -->
+		</td>
+	</tr>
+
+	<!-- ko if: expanded -->
+	<tr class="h-secondary {{ utils.scheduleControlsClass(columns | length) }}">
+		<td colspan="100">
+			<!-- three elements per row, for large devices -->
+			{% for idx,column in columns.slice(4) %}
+				{% if loop.index0 % 3 == 0 %}
+				<div class="row h-item-more hidden-md hidden-sm hidden-xs">
+				{% endif %}
+
+				<div class="col-lg-2 text-right">
+					<strong>{{ column.name }}:</strong>
+				</div>
+				<div class="col-lg-2">
+					<span data-bind="editable: col_{{ column.id }}"></span>
+				</div>
+
+				{% if loop.index0 % 3 == 2 %}
+				</div>
+				{% endif %}
+			{% endfor %}
+
+			{% if columns.length % 2 == 0 %}
+			</div>
+			{% endif %}
+
+			<!-- two elements per row, for medium devices -->
+			{% for idx,column in columns.slice(3) %}
+				{% if loop.index0 % 2 == 0 %}
+				<div class="row h-item-more hidden-lg hidden-sm hidden-xs">
+				{% endif %}
+
+				<div class="col-md-2 text-right">
+					<strong>{{ column.name }}:</strong>
+				</div>
+				<div class="col-md-4">
+					<span data-bind="editable: col_{{ column.id }}"></span>
+				</div>
+
+				{% if loop.index0 % 2 == 1 %}
+				</div>
+				{% endif %}
+			{% endfor %}
+
+			{% if columns.length % 2 == 0 %}
+			</div>
+			{% endif %}
+
+			<!-- one row per element, for devices <= sm -->
+			{% for idx,column in columns.slice(2) %}
+			<div class="row h-item-more hidden-lg hidden-md">
+				<div class="col-sm-4 col-xs-4 text-right">
+					<strong>{{ column.name }}:</strong>
+				</div>
+				<div class="col-sm-8 col-xs-8">
+					<span data-bind="editable: col_{{ column.id }}"></span>
+				</div>
+			</div>
+			{% endfor %}
+		</td>
+	</tr>
+	<!-- /ko -->
+</tbody>

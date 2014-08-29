@@ -83,6 +83,10 @@ class ScheduleItem {
 		return $this;
 	}
 
+	public function setLengthInSeconds($seconds) {
+		return $this->setLength(\DateTime::createFromFormat('U', $seconds));
+	}
+
 	/**
 	 * Get length
 	 *
@@ -92,14 +96,27 @@ class ScheduleItem {
 		return $this->length;
 	}
 
+	public function getLengthInSeconds() {
+		$parts = explode(':', $this->getLength()->format('H:i:s'));
+
+		return $parts[0] * 3600 + $parts[1] * 60 + $parts[2];
+	}
+
 	/**
 	 * Set extra
 	 *
-	 * @param string $extra
+	 * @param array $extra
 	 * @return ScheduleItem
 	 */
-	public function setExtra($extra) {
-		$this->extra = $extra;
+	public function setExtra(array $extra) {
+		foreach ($extra as $key => $value) {
+			if (mb_strlen(trim($value)) === 0) {
+				unset($extra[$key]);
+			}
+		}
+
+		ksort($extra);
+		$this->extra = json_encode($extra);
 
 		return $this;
 	}
@@ -107,10 +124,10 @@ class ScheduleItem {
 	/**
 	 * Get extra
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public function getExtra() {
-		return $this->extra;
+		return json_decode($this->extra, true);
 	}
 
 	/**

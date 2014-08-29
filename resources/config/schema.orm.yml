@@ -61,9 +61,11 @@ horaro\Library\Entity\Team:
     users:
       targetEntity: horaro\Library\Entity\UserTeamRelation
       mappedBy: team
+      orderBy: { login: ASC }
     events:
       targetEntity: horaro\Library\Entity\Event
       mappedBy: team
+      orderBy: { name: ASC }
 
 horaro\Library\Entity\UserTeamRelation:
   type: entity
@@ -134,6 +136,7 @@ horaro\Library\Entity\Event:
     schedules:
       targetEntity: horaro\Library\Entity\Schedule
       mappedBy: event
+      orderBy: { name: ASC }
 
   manyToOne:
     user:
@@ -187,9 +190,11 @@ horaro\Library\Entity\Schedule:
     items:
       targetEntity: horaro\Library\Entity\ScheduleItem
       mappedBy: schedule
+      orderBy: { position: ASC }
     columns:
       targetEntity: horaro\Library\Entity\ScheduleColumn
       mappedBy: schedule
+      orderBy: { position: ASC }
 
   manyToOne:
     event:
@@ -241,6 +246,9 @@ horaro\Library\Entity\ScheduleColumn:
       generator: { strategy: AUTO }
 
   fields:
+    position:
+      type: integer
+      options: { unsigned: true }
     name:
       type: string
       length: 255
