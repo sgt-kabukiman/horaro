@@ -1,5 +1,7 @@
 {% extends "layout.twig" %}
 
+{% block title %}{{ schedule.name }} &ndash; {{ schedule.event.name }}{% endblock %}
+
 {% block content %}
 <ul class="breadcrumb" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>

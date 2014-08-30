@@ -1,5 +1,7 @@
 {% extends "layout.twig" %}
 
+{% block title %}{% if event %}{{ event.name }}{% else %}New Event&hellip;{% endif %}{% endblock %}
+
 {% block content %}
 <ul class="breadcrumb" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
