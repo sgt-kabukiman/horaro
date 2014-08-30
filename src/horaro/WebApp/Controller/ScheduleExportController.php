@@ -25,7 +25,7 @@ class ScheduleExportController extends BaseController {
 	public function jsonAction(Request $request) {
 		$schedule  = $this->getRequestedSchedule($request);
 		$event     = $schedule->getEvent();
-		$format    = $request->query->get('format');
+		$format    = strtolower($request->query->get('format'));
 		$formats   = ['json', 'xml', 'csv'];
 
 		if (!in_array($format, $formats, true)) {
