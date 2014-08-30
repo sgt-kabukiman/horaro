@@ -15,7 +15,18 @@
 	</div>
 
 	<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-		<a href="/-/schedules/{{ schedule.id }}/columns/edit" class="btn btn-link btn-sm pull-right"><i class="fa fa-columns"></i> Edit columns&hellip;</a>
+		<div class="btn-group pull-right">
+			<button type="button" class="btn dropdown-toggle btn-sm" data-toggle="dropdown">
+				<i class="fa fa-cog"></i> Actions <span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu">
+				<li><a href="/-/schedules/{{ schedule.id }}/columns/edit"><i class="fa fa-columns"></i> Edit columns&hellip;</a></li>
+				<li class="divider"></li>
+				<li><a href="/-/schedules/{{ schedule.id }}/export?format=json"><i class="fa fa-save"></i> Export as JSON</a></li>
+				<li><a href="/-/schedules/{{ schedule.id }}/export?format=xml"><i class="fa fa-save"></i> Export as XML</a></li>
+				<li><a href="/-/schedules/{{ schedule.id }}/export?format=csv"><i class="fa fa-save"></i> Export as CSV</a></li>
+			</ul>
+		</div>
 	</div>
 </div>
 
