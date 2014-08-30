@@ -42,19 +42,6 @@
 							<li><a href="/-/events/new">New&hellip;</a></li>
 						</ul>
 					</li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users"></i> My Teams <span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							{% for event in app.user.teams %}
-							<li><a href="/-/teams/{{ team.id }}">{{ team.name }}</a></li>
-							{% endfor %}
-
-							{% if app.user.teams|length > 0 %}
-							<li class="divider"></li>
-							{% endif %}
-							<li><a href="/-/teams/new">New&hellip;</a></li>
-						</ul>
-					</li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">
