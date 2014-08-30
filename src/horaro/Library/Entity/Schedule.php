@@ -143,6 +143,15 @@ class Schedule {
 	}
 
 	/**
+	 * Get timezone as a DateTimeZone instance
+	 *
+	 * @return \DateTimeZone
+	 */
+	public function getTimezoneInstance() {
+		return new \DateTimeZone($this->getTimezone());
+	}
+
+	/**
 	 * Set updated_at
 	 *
 	 * @param \DateTime $updatedAt
@@ -176,12 +185,36 @@ class Schedule {
 	}
 
 	/**
-	 * Get start
+	 * Get start (with the system timezone; most likely not what you want)
 	 *
 	 * @return \DateTime
 	 */
 	public function getStart() {
 		return $this->start;
+	}
+
+	/**
+	 * Get start time with the proper local timezone
+	 *
+	 * @return \DateTime
+	 */
+	public function getLocalStart() {
+		$tz      = $this->getTimezoneInstance();
+		$tmpFrmt = 'Y-m-d H:i:s';
+
+		return \DateTime::createFromFormat($tmpFrmt, $this->getStart()->format($tmpFrmt), $tz); // "inject" proper timezone
+	}
+
+	/**
+	 * Get start time in UTC timezone
+	 *
+	 * @return \DateTime
+	 */
+	public function getUTCStart() {
+		$local = $this->getLocalStart();
+		$local->setTimezone(new \DateTimeZone('UTC'));
+
+		return $local;
 	}
 
 	/**

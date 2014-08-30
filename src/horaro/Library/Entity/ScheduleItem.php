@@ -96,10 +96,24 @@ class ScheduleItem {
 		return $this->length;
 	}
 
+	/**
+	 * Get length in seconds
+	 *
+	 * @return int
+	 */
 	public function getLengthInSeconds() {
 		$parts = explode(':', $this->getLength()->format('H:i:s'));
 
 		return $parts[0] * 3600 + $parts[1] * 60 + $parts[2];
+	}
+
+	/**
+	 * Get length as DateInterval
+	 *
+	 * @return \DateInterval
+	 */
+	public function getDateInterval() {
+		return new \DateInterval('PT'.$this->getLengthInSeconds().'S');
 	}
 
 	/**
