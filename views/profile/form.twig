@@ -1,0 +1,88 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<ul class="breadcrumb" style="margin-bottom: 5px;">
+	<li><a href="/-/home">Home</a></li>
+	<li>Update Profile&hellip;</li>
+</ul>
+
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h2>Update Your Profile</h2>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-7">
+		<div class="well">
+			<form method="post" action="/-/profile" class="form-horizontal">
+				<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
+
+				<fieldset>
+					<legend>Profile Information</legend>
+
+					<div class="form-group">
+						<label class="col-lg-3 control-label" for="display_name">Display Name:</label>
+						<div class="col-lg-9">
+							<input type="text" class="form-control" id="display_name" name="display_name" autofocus placeholder="Cowen Hames" value="{{ user.displayName }}">
+							<span class="help-block">This is the name that will be shown within Horaro. Leave it empty to
+							just use your username. You can use whatever letters, numbers or symbols you want in here.</span>
+						</div>
+					</div>
+
+					<div class="form-group{% if result and result.language.errors %} has-error{% endif %}">
+						<label class="col-lg-3 control-label" for="language">Language:</label>
+						<div class="col-lg-9">
+							{% set lng = result ? result.language.filtered : user.language %}
+							<select name="language" id="language" class="form-control h-fancy">
+							{% for language,name in languages %}
+								<option value="{{ language }}"{% if lng == language %} selected{% endif %}>{{ name }}</option>
+							{% endfor %}
+							</select>
+							{% if result and result.language.errors and result.language.messages %}
+							<span class="help-block"><strong>
+								{% for message in result.language.messages %}
+									{{ message }}<br>
+								{% endfor %}
+							</strong></span>
+							{% endif %}
+						</div>
+					</div>
+
+					<div class="form-group{% if result and result.gravatar.errors %} has-error{% endif %}">
+						<label class="col-lg-3 control-label" for="gravatar">Gravatar Info:</label>
+						<div class="col-lg-9">
+							<input type="text" class="form-control" id="gravatar" name="gravatar" autofocus value="{{ result ? result.gravatar.filtered : user.gravatarHash }}">
+							<span class="help-block">Enter your e-mail address or its MD5 hash to enable avatars
+							within Horaro.</span>
+							{% if result and result.gravatar.errors and result.gravatar.messages %}
+							<span class="help-block"><strong>
+								{% for message in result.gravatar.messages %}
+									{{ message }}<br>
+								{% endfor %}
+							</strong></span>
+							{% endif %}
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-lg-12 text-center">
+							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"> </i> Update</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+
+	<div class="col-lg-6 col-md-6 col-sm-5 h-formhelp">
+		<legend>Side Notes</legend>
+		<p>To enable an Gravatar-based avatar for your account, enter your e-mail address in the Gravatar
+		field. If you don't want to enter it, you can also instead enter its MD5 hash.</p>
+		<p>Note that only the MD5 hash is stored anyway (even if you enter your e-mail address). So if
+		you see a bunch of seemingly random characters for your Gravatar info, that's <em>all right</em>.
+		Don't fiddle with them, unless you know what you are doing. To update, simply paste in another
+		MD5 hash or e-mail address.</p>
+	</div>
+</div>
+{% endblock %}

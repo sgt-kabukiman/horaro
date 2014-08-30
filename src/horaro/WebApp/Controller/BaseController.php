@@ -193,4 +193,12 @@ class BaseController {
 
 		return $column;
 	}
+
+	protected function getLanguages() {
+		return ['de_de' => 'Deutsch', 'en_us' => 'English (US)'];
+	}
+
+	protected function getDefaultLanguage() {
+		return 'en_us';
+	}
 }

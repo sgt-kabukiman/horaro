@@ -64,6 +64,10 @@ class Application extends BaseApplication {
 		$this['controller.schedule.column'] = $this->share(function() {
 			return new Controller\ScheduleColumnController($this);
 		});
+
+		$this['controller.profile'] = $this->share(function() {
+			return new Controller\ProfileController($this);
+		});
 	}
 
 	public function setupRouting() {
@@ -104,6 +108,9 @@ class Application extends BaseApplication {
 		$this->post  ('/-/schedules/{schedule}/columns/move',     'controller.schedule.column:moveAction')->before('firewall:requireUser');
 		$this->put   ('/-/schedules/{schedule}/columns/{column}', 'controller.schedule.column:updateAction')->before('firewall:requireUser');
 		$this->delete('/-/schedules/{schedule}/columns/{column}', 'controller.schedule.column:deleteAction')->before('firewall:requireUser');
+
+		$this->get   ('/-/profile', 'controller.profile:editAction')->before('firewall:requireUser');
+		$this->put   ('/-/profile', 'controller.profile:updateAction')->before('firewall:requireUser');
 
 		$this->error('firewall:handleAuthErrors');
 		$this->error('firewall:handleReverseAuthErrors');
