@@ -54,6 +54,7 @@ class IndexController extends BaseController {
 		$user->setPassword(password_hash($result['password']['filtered'], PASSWORD_DEFAULT, ['cost' => 11]));
 		$user->setDisplayName($result['display_name']['filtered']);
 		$user->setRole('ROLE_USER');
+		$user->setLanguage('en_us');
 
 		$em = $this->getEntityManager();
 		$em->persist($user);

@@ -12,6 +12,7 @@ namespace horaro\WebApp\Controller;
 
 use horaro\Library\Entity\Event;
 use horaro\Library\Entity\Schedule;
+use horaro\Library\Entity\ScheduleColumn;
 use horaro\WebApp\Exception as Ex;
 use horaro\WebApp\Validator\ScheduleValidator;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,8 +76,16 @@ class ScheduleController extends BaseController {
 //			->setTwitch($result['twitch']['filtered'])
 		;
 
+		$column = new ScheduleColumn();
+		$column
+			->setSchedule($schedule)
+			->setPosition(1)
+			->setName('Description')
+		;
+
 		$em = $this->getEntityManager();
 		$em->persist($schedule);
+		$em->persist($column);
 		$em->flush();
 
 		// done
