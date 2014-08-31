@@ -4,12 +4,7 @@
 	<meta charset="utf-8">
 	<title>{% block title %}Welcome{% endblock %} &ndash; Horaro</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link href="/assets/vendor.css" rel="stylesheet">
-	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-	<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet">
-	<link href="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.css" rel="stylesheet">
-	<link href="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2-bootstrap.min.css" rel="stylesheet">
-	<link href="/assets/app.css" rel="stylesheet">
+	{% block styles %}{% endblock %}
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-static-top" id="top" role="navigation">
@@ -24,53 +19,9 @@
 				<a href="/" class="navbar-brand">Horaro</a>
 			</div>
 
-			{% block navigation %}
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				{% if app.user %}
-				<ul class="nav navbar-nav">
-					<li><a href="/-/home"><i class="fa fa-home"></i> Home</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gamepad"></i> My Events <span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							{% for event in app.user.events %}
-							<li><a href="/-/events/{{ event.id }}">{{ event.name }}</a></li>
-							{% endfor %}
-
-							{% if app.user.events|length > 0 %}
-							<li class="divider"></li>
-							{% endif %}
-							<li><a href="/-/events/new">New&hellip;</a></li>
-						</ul>
-					</li>
-				</ul>
-
-				<ul class="nav navbar-nav navbar-right">
-					<li>
-						<a href="/-/profile">
-							<i class="fa fa-cog"></i>
-							{{ app.user.name }}
-							{% if app.user.gravatarHash %}
-							<img src="//www.gravatar.com/avatar/{{ app.user.gravatarHash }}?size=23&amp;d=retro&amp;r=pg" class="h-avatar" alt="" />
-							{% endif %}
-						</a>
-					</li>
-					<li><a href="/-/logout"><i class="fa fa-power-off"></i> Log-out</a></li>
-				</ul>
-				{% else %}
-				<form method="post" action="/-/login" class="navbar-form navbar-right">
-					<div class="form-group">
-						<input type="text" name="username" placeholder="username" required>
-					</div>
-					<div class="form-group">
-						<input type="password" name="password" placeholder="password" required>
-					</div>
-					<div class="form-group">
-						<button type="submit" class="btn btn-primary"><i class="fa fa-sign-in"></i> Log-in</button>
-					</div>
-				</form>
-				{% endif %}
+				{% block navigation %}{% endblock %}
 			</div>
-			{% endblock %}
 		</div>
 	</nav>
 
@@ -78,11 +29,5 @@
 		{% block content %}{% endblock %}
 	</div>
 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.2.0/knockout-min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
-	<script src="/assets/js/vendor.backend.js"></script>
-	<script src="/assets/js/app.backend.js"></script>
+	{% block scripts %}{% endblock %}
 </body>
