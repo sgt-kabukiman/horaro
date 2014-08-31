@@ -46,7 +46,7 @@
 					<dt>Website</dt>
 					<dd>
 					{% if event.websitehost %}
-						<a href="{{ event.website }}" class="h-website" style="background-image:url(http://{{ event.websitehost }}/favicon.ico)">{{ event.websitehost }}</a>
+						<a href="{{ event.website }}"><i class="fa fa-globe"></i> {{ event.websitehost }}</a>
 					{% elseif event.website %}
 						{{ event.website }}
 					{% else %}
@@ -56,14 +56,14 @@
 					<dt>Twitch Stream</dt>
 					<dd>
 					{% if event.twitch %}
-						<a href="http://twitch.tv/{{ event.twitch }}" class="h-twitch">{{ event.twitch }}</a>
+						<a href="http://twitch.tv/{{ event.twitch }}"><i class="fa fa-twitch"></i> {{ event.twitch }}</a>
 					{% else %}
 						(none)
 					{% endif %}
 					<dt>Twitter Account</dt>
 					<dd>
 					{% if event.twitter %}
-						<a href="http://twitter.com/{{ event.twitter }}" class="h-twitter">{{ event.twitter }}</a>
+						<a href="http://twitter.com/{{ event.twitter }}"><i class="fa fa-twitter"></i> {{ event.twitter }}</a>
 					{% else %}
 						(none)
 					{% endif %}
