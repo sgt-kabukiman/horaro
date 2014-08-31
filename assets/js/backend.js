@@ -14,6 +14,10 @@ jQuery(function($) {
 
 	$('select.h-fancy').select2();
 
+	$('time.h-fancy').each(function() {
+		$(this).text(moment.parseZone($(this).attr('datetime')).format('LLLL'));
+	});
+
 	$.fn.editable.defaults.mode = 'popup';
 	$.fn.editableform.buttons =
 		'<button type="submit" class="btn btn-primary btn-xs editable-submit">'+

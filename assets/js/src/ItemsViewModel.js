@@ -17,7 +17,7 @@ function ItemsViewModel(items) {
 			start = horaro.schedule.start.getTime();
 		}
 		else {
-			start = items[startIdx].scheduled.getTime() + (items[startIdx].length() * 1000);
+			start = items[startIdx].scheduled() + (items[startIdx].length() * 1000);
 		}
 
 		scheduled = start;
@@ -25,7 +25,7 @@ function ItemsViewModel(items) {
 		for (i = startIdx, len = items.length; i < len; ++i) {
 			item = items[i];
 
-			item.scheduled(new Date(scheduled));
+			item.scheduled(scheduled);
 
 			scheduled += (item.length() * 1000);
 		}

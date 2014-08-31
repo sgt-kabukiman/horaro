@@ -30,6 +30,14 @@
 	</div>
 </div>
 
+{% set start = schedule.localStart %}
+
+<div class="row">
+	<div class="col-lg-12 text-center">
+		<h4>Starts at <strong><time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}" class="h-fancy">{{ start.format('Y-m-d H:i:s') }}</time></strong> (<span title="UTC{{ start.format('P') }}" class="h-tooltip">{{ schedule.timezone }}</span> time)</h4>
+	</div>
+</div>
+
 <div class="row">
 	<div class="col-lg-12">
 		<p class="text-center text-muted"><small>Click on an item to edit its details. Click and drag the handle on the left side to move items up or down.</small></p>
@@ -86,11 +94,9 @@ var horaro = horaro||{};
 horaro.ui = 'scheduler';
 horaro.schedule = {
 	id: {{ schedule.id }},
+	start: new Date("{{ start.format('Y-m-d\\TH:i:sP') }}"),
+	tz: "{{ start.format('P') }}",
 	columns: {{ columns|json_encode|raw }},
-	name: 'Main Schedule',
-	slug: 'main-schedule',
-	timezone: 'UTC',
-	start: new Date('2014-06-22T18:00:00Z'),
 	items: {{ items|json_encode|raw }}
 };
 </script>

@@ -42,7 +42,7 @@ function Item(id, length, columns, pos) {
 	});
 
 	self.formattedSchedule = ko.pureComputed(function() {
-		return moment(self.scheduled()).locale('de').format('LT');
+		return moment.unix(self.scheduled() / 1000).zone(horaro.schedule.tz).format('LT');
 	}, self);
 
 	self.rowClass = ko.pureComputed(function() {
