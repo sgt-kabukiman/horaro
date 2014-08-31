@@ -8,7 +8,7 @@ function ItemsViewModel(items) {
 	}, self);
 
 	self.calculateSchedule = function(startIdx) {
-		var start, i, len, items, item, scheduled;
+		var start, i, len, items, item, scheduled, prev, date, dayOfYear;
 
 		startIdx = startIdx || 0;
 		items    = self.items();
@@ -21,13 +21,23 @@ function ItemsViewModel(items) {
 		}
 
 		scheduled = start;
+		prev      = null;
 
 		for (i = startIdx, len = items.length; i < len; ++i) {
 			item = items[i];
 
 			item.scheduled(scheduled);
+			item.dateSwitch(false);
 
+			date       = moment.unix(scheduled / 1000).zone(horaro.schedule.tz);
+			dayOfYear  = date.dayOfYear();
 			scheduled += (item.length() * 1000);
+
+			if (prev !== null && prev !== dayOfYear) {
+				item.dateSwitch(date.format('dddd, ll'));
+			}
+
+			prev = dayOfYear;
 		}
 	};
 
@@ -58,16 +68,16 @@ function ItemsViewModel(items) {
 			}
 		});
 
-		// escape to floats for simple re-sorting goodness
-		item.position = (newPos < item.position) ? (newPos - 0.5) : (newPos + 0.5);
+		// go by HTML node order to avoid problems with "concurrent" sorting operations
+		var scheduler = $('.h-scheduler');
 
-		items.sort(function(a, b) {
-			return a.position - b.position;
+		items().forEach(function(item) {
+			item.position = scheduler.find('tbody[data-itemid="' + item.id() + '"]').index() + 1;
 		});
 
-		// re-number the list
-		items().forEach(function(item, idx) {
-			item.position = idx + 1;
+		// this kicks off the computed property afterwards to re-calculate the schedule
+		items.sort(function(a, b) {
+			return a.position - b.position;
 		});
 	};
 

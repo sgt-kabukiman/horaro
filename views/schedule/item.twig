@@ -1,4 +1,10 @@
 <tbody class="h-item" data-bind="attr: {'data-itemid': id}">
+	<!-- ko if: dateSwitch -->
+	<tr class="h-new-day">
+		<td colspan="100" data-bind="text: dateSwitch"></td>
+	</tr>
+	<!-- /ko -->
+
 	<tr class="h-primary">
 		<td data-bind="attr: { class: 'h-handle '    + rowClass() }">::</td>
 		<td data-bind="attr: { class: 'h-scheduled ' + rowClass() }"><span data-bind="text: formattedSchedule"></span></td>
