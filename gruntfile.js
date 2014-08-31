@@ -28,10 +28,31 @@ module.exports = function (grunt) {
 					'assets/vendor/pickadate/lib/compressed/picker.date.js',
 					'assets/vendor/pickadate/lib/compressed/picker.time.js',
 					'assets/vendor/html.sortable/src/html.sortable.js', // TODO: minify this manually (don't use the prebuilt dist one cause it has its version number in the filename...)
-					'assets/vendor/moment/min/moment-with-locales.min.js',
-					'assets/js/knockout.x-editable.patched.js',
+					'assets/vendor/moment/min/moment.min.js',
+					'assets/js/knockout.x-editable.patched.js', // TODO: minify this manually
 				],
 				dest: 'www/assets/js/vendor.backend.js'
+			},
+
+			i18n_en_us: {
+				options: {
+					separator: '\n;\n',
+					footer: 'var horaroTimeFormat = "H:i a";'
+				},
+				src: [/* english (US) is built in into all dependencies */],
+				dest: 'www/assets/js/i18n/en_us.js'
+			},
+
+			i18n_de_de: {
+				options: {
+					separator: '\n;\n',
+					footer: 'var horaroTimeFormat = "HH:i !U!h!r";'
+				},
+				src: [
+					'assets/vendor/pickadate/lib/translations/de_DE.js',
+					'assets/vendor/moment/locale/de.js'
+				],
+				dest: 'www/assets/js/i18n/de_de.js'
 			},
 
 			vendor_css: {
@@ -99,7 +120,8 @@ module.exports = function (grunt) {
 
 	// register custom tasks
 	grunt.registerTask('css',      ['less:app', 'concat:vendor_css']);
-	grunt.registerTask('js',       ['concat:vendor_backend', 'rig']);
+	grunt.registerTask('js',       ['concat:vendor_backend', 'rig', 'i18n']);
+	grunt.registerTask('i18n',     ['concat:i18n_en_us', 'concat:i18n_de_de']);
 	grunt.registerTask('assets',   ['clean:assets', 'css', 'js']);
 	grunt.registerTask('doctrine', ['shell:schema', 'lineending:schema', 'shell:proxies']);
 	grunt.registerTask('default',  ['assets']);

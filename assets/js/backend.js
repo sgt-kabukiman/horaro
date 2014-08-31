@@ -9,6 +9,8 @@ jQuery(function($) {
 	$('#start_time').pickatime({
 		interval: 15,
 		formatSubmit: 'HH:i',
+		format: horaroTimeFormat,
+		formatLabel: horaroTimeFormat,
 		hiddenName: true
 	});
 

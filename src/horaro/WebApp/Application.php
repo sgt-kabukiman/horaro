@@ -41,6 +41,10 @@ class Application extends BaseApplication {
 			return new Firewall($this);
 		});
 
+		$this['i18n'] = $this->share(function() {
+			return new I18N($this);
+		});
+
 		$this['controller.index'] = $this->share(function() {
 			return new Controller\IndexController($this);
 		});
@@ -76,6 +80,7 @@ class Application extends BaseApplication {
 
 	public function setupRouting() {
 		$this->before('firewall:peekIntoSession');
+		$this->before('i18n:initLanguage');
 
 		$this->get   ('/',           'controller.index:welcomeAction');
 		$this->get   ('/-/login',    'controller.index:loginFormAction')->before('firewall:requireAnonymous');
