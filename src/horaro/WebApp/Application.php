@@ -77,7 +77,7 @@ class Application extends BaseApplication {
 	public function setupRouting() {
 		$this->before('firewall:peekIntoSession');
 
-		$this->get   ('/',           'controller.index:indexAction');
+		$this->get   ('/',           'controller.index:welcomeAction');
 		$this->get   ('/-/login',    'controller.index:loginFormAction')->before('firewall:requireAnonymous');
 		$this->post  ('/-/login',    'controller.index:loginAction')->before('firewall:requireAnonymous');
 		$this->get   ('/-/logout',   'controller.index:logoutAction')->before('firewall:requireUser'); // TODO: This should be POST

@@ -16,12 +16,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends BaseController {
-	public function indexAction(Request $request) {
+	public function welcomeAction(Request $request) {
+		$user = $this->getCurrentUser();
+
+		if ($user) {
+			return $this->redirect('/-/home');
+		}
+
 		// dummy: set locale based on Accept-Language header
 		// this needs to be done in a general pre-controller filter
 //		$this->app['locale'] = strtolower($request->getPreferredLanguage(['de_DE', 'en_US']));
 
-		return $this->render('index/home.twig');
+		return $this->render('index/welcome.twig');
 	}
 
 	public function registerFormAction(Request $request) {
