@@ -17,7 +17,7 @@ jQuery(function($) {
 	$('select.h-fancy').select2();
 
 	$('time.h-fancy').each(function() {
-		$(this).text(moment.parseZone($(this).attr('datetime')).format('LLLL'));
+		$(this).text(moment.parseZone($(this).attr('datetime')).format('llll'));
 	});
 
 	$.fn.editable.defaults.mode = 'popup';
