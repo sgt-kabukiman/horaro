@@ -1,4 +1,4 @@
-<tbody class="h-column" data-bind="attr: {'data-colid': id}">
+<tbody data-bind="attr: {'data-colid': id, 'class': 'h-column ' + ($index() % 2 ? 'h-odd' : 'h-even')}">
 	<tr class="h-primary">
 		<td data-bind="attr: { class: 'h-handle ' + rowClass() }">::</td>
 		<td data-bind="attr: { class: 'h-name '   + rowClass() }"><span data-bind="editable: name"></span></td>

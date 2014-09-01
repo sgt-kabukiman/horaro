@@ -1,4 +1,4 @@
-<tbody class="h-item" data-bind="attr: {'data-itemid': id}">
+<tbody data-bind="attr: {'data-itemid': id, 'class': 'h-item ' + ($index() % 2 ? 'h-odd' : 'h-even')}">
 	<!-- ko if: dateSwitch -->
 	<tr class="h-new-day">
 		<td colspan="100" data-bind="text: dateSwitch"></td>
