@@ -10,18 +10,15 @@
 
 namespace horaro\WebApp\Controller;
 
+use horaro\Library\Entity\User;
 use horaro\WebApp\Validator\ProfileValidator;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProfileController extends BaseController {
 	public function editAction(Request $request) {
-		$user      = $this->getCurrentUser();
-		$languages = $this->getLanguages();
+		$user = $this->getCurrentUser();
 
-		return $this->render('profile/form.twig', [
-			'user'      => $user,
-			'languages' => $languages
-		]);
+		return $this->renderForm($user, null);
 	}
 
 	public function updateAction(Request $request) {
@@ -35,11 +32,7 @@ class ProfileController extends BaseController {
 		]);
 
 		if ($result['_errors']) {
-			return $this->render('profile/form.twig', [
-				'result'    => $result,
-				'user'      => $user,
-				'languages' => $languages
-			]);
+			return $this->renderForm($user, $result);
 		}
 
 		// update profile
@@ -55,5 +48,39 @@ class ProfileController extends BaseController {
 		// done
 
 		return $this->redirect('/-/profile');
+	}
+
+	public function updatePasswordAction(Request $request) {
+		$user      = $this->getCurrentUser();
+		$validator = new ProfileValidator([], null);
+		$result    = $validator->validatePasswordChange([
+			'current'   => $request->request->get('current'),
+			'password'  => $request->request->get('password'),
+			'password2' => $request->request->get('password2')
+		], $user);
+
+		if ($result['_errors']) {
+			return $this->renderForm($user, $result);
+		}
+
+		// update profile
+
+		$user->setPassword(password_hash($result['password']['filtered'], PASSWORD_DEFAULT, ['cost' => 11]));
+
+		$em = $this->getEntityManager();
+		$em->persist($user);
+		$em->flush();
+
+		// done
+
+		return $this->redirect('/-/profile');
+	}
+
+	protected function renderForm(User $user, array $result = null) {
+		return $this->render('profile/form.twig', [
+			'result'    => $result,
+			'user'      => $user,
+			'languages' => $this->getLanguages()
+		]);
 	}
 }

@@ -10,6 +10,8 @@
 
 namespace horaro\WebApp\Validator;
 
+use horaro\Library\Entity\User;
+
 class ProfileValidator extends BaseValidator {
 	protected $languages;
 	protected $default;
@@ -25,6 +27,15 @@ class ProfileValidator extends BaseValidator {
 		$this->setFilteredValue('display_name', $this->validateDisplayName($profile['display_name']));
 		$this->setFilteredValue('language',     $this->validateLanguage($profile['language']));
 		$this->setFilteredValue('gravatar',     $this->validateGravatar($profile['gravatar']));
+
+		return $this->result;
+	}
+
+	public function validatePasswordChange(array $profile, User $user) {
+		$this->result = ['_errors' => false];
+
+		$this->setFilteredValue('current',  $this->validateCurrentPassword($profile['current'], $user));
+		$this->setFilteredValue('password', $this->validatePassword($profile['password'], $profile['password2']));
 
 		return $this->result;
 	}
@@ -67,5 +78,39 @@ class ProfileValidator extends BaseValidator {
 		}
 
 		return md5($gravatar);
+	}
+
+	public function validateCurrentPassword($given, User $user) {
+		if (!is_string($given)) {
+			$this->addError('current', 'Malformed current password.');
+			return null;
+		}
+
+		$given = trim($given);
+
+		if (!password_verify($given, $user->getPassword())) {
+			$this->addError('current', 'Wrong current password given.');
+		}
+
+		return null;
+	}
+
+	public function validatePassword($a, $b) {
+		$a = trim($a);
+		$b = trim($b);
+
+		if (mb_strlen($a) < 5) {
+			$this->addError('password', 'Don\'t be that lazy and give at least 5 characters.');
+		}
+
+		if (strtolower($a) === 'secret123') {
+			$this->addError('password', 'You just had to try it out, didn\'t you? Please choose something else.');
+		}
+
+		if ($a !== $b) {
+			$this->addError('password', 'See, you already made your first typo. The passwords don\'t match.');
+		}
+
+		return $a;
 	}
 }

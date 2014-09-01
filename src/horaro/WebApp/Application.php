@@ -120,8 +120,9 @@ class Application extends BaseApplication {
 		$this->put   ('/-/schedules/{schedule}/columns/{column}', 'controller.schedule.column:updateAction')->before('firewall:requireUser');
 		$this->delete('/-/schedules/{schedule}/columns/{column}', 'controller.schedule.column:deleteAction')->before('firewall:requireUser');
 
-		$this->get   ('/-/profile', 'controller.profile:editAction')->before('firewall:requireUser');
-		$this->put   ('/-/profile', 'controller.profile:updateAction')->before('firewall:requireUser');
+		$this->get   ('/-/profile',          'controller.profile:editAction')->before('firewall:requireUser');
+		$this->put   ('/-/profile',          'controller.profile:updateAction')->before('firewall:requireUser');
+		$this->put   ('/-/profile/password', 'controller.profile:updatePasswordAction')->before('firewall:requireUser');
 
 		$this->error('firewall:handleAuthErrors');
 		$this->error('firewall:handleReverseAuthErrors');
