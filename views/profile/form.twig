@@ -49,7 +49,7 @@
 					<div class="form-group{% if result and result.gravatar.errors %} has-error{% endif %}">
 						<label class="col-lg-4 control-label" for="gravatar">Gravatar Info:</label>
 						<div class="col-lg-8">
-							<input type="text" class="form-control" id="gravatar" name="gravatar" autofocus value="{{ result ? result.gravatar.filtered : user.gravatarHash }}">
+							<input type="text" class="form-control" id="gravatar" name="gravatar" value="{{ result ? result.gravatar.filtered : user.gravatarHash }}">
 							<span class="help-block">Enter your e-mail address or its MD5 hash to enable avatars within Horaro.</span>
 							{{ utils.form_errors(result, 'gravatar') }}
 						</div>
