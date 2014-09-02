@@ -58,6 +58,8 @@
       } else if (/^tbody$/i.test(this.tagName)) {
         var colspan = $("tr:first>td", this).length;
         placeholder = $('<tr><td class="sortable-placeholder" colspan=' + colspan + '></td></tr>');
+      } else {
+        placeholder = $('<div class="sortable-placeholder"></div>');
       }
 
       items.find(options.handle).mousedown(function () {
