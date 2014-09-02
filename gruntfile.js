@@ -27,8 +27,8 @@ module.exports = function (grunt) {
 					'assets/vendor/pickadate/lib/compressed/picker.js',
 					'assets/vendor/pickadate/lib/compressed/picker.date.js',
 					'assets/vendor/pickadate/lib/compressed/picker.time.js',
-					'assets/vendor/html.sortable/src/html.sortable.js', // TODO: minify this manually (don't use the prebuilt dist one cause it has its version number in the filename...)
 					'assets/vendor/moment/min/moment.min.js',
+					'assets/js/html.sortable.patched.js', // TODO: minify this manually (don't use the prebuilt dist one cause it has its version number in the filename...)
 					'assets/js/knockout.x-editable.patched.js', // TODO: minify this manually
 				],
 				dest: 'www/assets/js/vendor.backend.js'
