@@ -52,13 +52,16 @@
 
       var startParent, newParent;
 
-      var isHandle, index, placeholder, items = $(this).children(options.items);
+      var isHandle, index, placeholder, colspan, items = $(this).children(options.items);
       var tagName = items.length > 0 ? items[0].tagName : this.tagName;
 
       if (/^ul|ol|li$/i.test(tagName)) {
         placeholder = $('<li class="sortable-placeholder"></li>');
-      } else if (/^tbody|table$/i.test(tagName)) {
-        var colspan = $("tr:first>td", this).length;
+      } else if (/^tbody$/i.test(tagName)) {
+        colspan     = $('tbody:first > tr:first > td', this).length;
+        placeholder = $('<tbody><tr><td class="sortable-placeholder" colspan=' + colspan + '></td></tr></tbody>');
+      } else if (/^tr|table$/i.test(tagName)) {
+        colspan     = $('tr:first > td', this).length;
         placeholder = $('<tr><td class="sortable-placeholder" colspan=' + colspan + '></td></tr>');
       } else {
         placeholder = $('<div class="sortable-placeholder"></div>');
