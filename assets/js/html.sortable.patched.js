@@ -8,6 +8,10 @@
  * Thanks to the following contributors: andyburke, bistoco, daemianmack, drskullster, flying-sheep, OscarGodson, Parikshit N. Samant, rodolfospalenza, ssafejava
  *
  * Released under the MIT license.
+ *
+ * ---------------------------------------------------
+ *
+ * Contains a few patches gathered from pull requests.
  */
 'use strict';
 
@@ -46,9 +50,15 @@
         options = soptions;
       }
 
-      var isHandle, index, items = $(this).children(options.items);
       var startParent, newParent;
-      var placeholder = ( options.placeholder === null ) ? $('<' + (/^ul|ol$/i.test(this.tagName) ? 'li' : 'div') + ' class="sortable-placeholder">') : $(options.placeholder).addClass('sortable-placeholder');
+
+      var isHandle, index, placeholder, items = $(this).children(options.items);
+      if (/^ul|ol$/i.test(this.tagName)) {
+        placeholder = $('<li class="sortable-placeholder"></li>');
+      } else if (/^tbody$/i.test(this.tagName)) {
+        var colspan = $("tr:first>td", this).length;
+        placeholder = $('<tr><td class="sortable-placeholder" colspan=' + colspan + '></td></tr>');
+      }
 
       items.find(options.handle).mousedown(function () {
         isHandle = true;
