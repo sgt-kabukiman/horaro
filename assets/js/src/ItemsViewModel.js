@@ -88,8 +88,7 @@ function ItemsViewModel(items) {
 	self.initDragAndDrop = function(reinit) {
 		$('.h-scheduler').sortable({
 			handle: '.h-handle',
-			items: '.h-item',
-			forcePlaceholderSize: true
+			items: '.h-item'
 		});
 
 		if (!reinit) {

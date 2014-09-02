@@ -48,8 +48,7 @@ function ColumnsViewModel(columns) {
 	self.initDragAndDrop = function(reinit) {
 		$('.h-columnist').sortable({
 			handle: '.h-handle',
-			items: '.h-column',
-			forcePlaceholderSize: true
+			items: '.h-column'
 		});
 
 		if (!reinit) {
