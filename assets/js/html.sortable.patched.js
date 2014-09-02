@@ -53,9 +53,11 @@
       var startParent, newParent;
 
       var isHandle, index, placeholder, items = $(this).children(options.items);
-      if (/^ul|ol$/i.test(this.tagName)) {
+      var tagName = items.length > 0 ? items[0].tagName : this.tagName;
+
+      if (/^ul|ol|li$/i.test(tagName)) {
         placeholder = $('<li class="sortable-placeholder"></li>');
-      } else if (/^tbody$/i.test(this.tagName)) {
+      } else if (/^tbody|table$/i.test(tagName)) {
         var colspan = $("tr:first>td", this).length;
         placeholder = $('<tr><td class="sortable-placeholder" colspan=' + colspan + '></td></tr>');
       } else {
