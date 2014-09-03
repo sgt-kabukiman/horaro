@@ -59,7 +59,7 @@
 				{% endif %}
 			{% endfor %}
 
-			{% if columns.length % 2 == 0 %}
+			{% if columns|length > 4 and (columns|length - 4) % 3 > 0 %}
 			</div>
 			{% endif %}
 
@@ -81,7 +81,7 @@
 				{% endif %}
 			{% endfor %}
 
-			{% if columns.length % 2 == 0 %}
+			{% if columns|length > 3 and (columns|length - 3) % 2 > 0 %}
 			</div>
 			{% endif %}
 
