@@ -41,25 +41,25 @@
 	<!-- ko if: expanded -->
 	<tr class="h-secondary {{ utils.scheduleControlsClass(columns | length) }}">
 		<td colspan="100">
-			<!-- three elements per row, for large devices -->
+			<!-- two elements per row, for large devices -->
 			{% for idx,column in columns.slice(4) %}
-				{% if loop.index0 % 3 == 0 %}
+				{% if loop.index0 % 2 == 0 %}
 				<div class="row h-item-more hidden-md hidden-sm hidden-xs">
 				{% endif %}
 
 				<div class="col-lg-2 text-right">
 					<strong>{{ column.name }}:</strong>
 				</div>
-				<div class="col-lg-2">
+				<div class="col-lg-4">
 					<a href="#" data-bind="editable: col_{{ column.id }}, editableOptions: { hidden: onEditableHidden }"></a>
 				</div>
 
-				{% if loop.index0 % 3 == 2 %}
+				{% if loop.index0 % 2 == 1 %}
 				</div>
 				{% endif %}
 			{% endfor %}
 
-			{% if columns|length > 4 and (columns|length - 4) % 3 > 0 %}
+			{% if columns|length > 4 and (columns|length - 4) % 2 > 0 %}
 			</div>
 			{% endif %}
 
