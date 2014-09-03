@@ -1,7 +1,7 @@
 <tbody data-bind="attr: {'data-colid': id, 'class': 'h-column ' + ($index() % 2 ? 'h-odd' : 'h-even')}">
 	<tr class="h-primary">
 		<td data-bind="attr: { class: 'h-handle ' + rowClass() }">::</td>
-		<td data-bind="attr: { class: 'h-name '   + rowClass() }"><span data-bind="editable: name"></span></td>
+		<td data-bind="attr: { class: 'h-name '   + rowClass() }"><a href="#" data-bind="editable: name, editableOptions: { hidden: onEditableHidden }"></a></td>
 		<td data-bind="attr: { class: 'text-right h-controls ' + rowClass() }">
 			<!-- ko if: !deleting() -->
 			<button class="" data-bind="click: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + ((id() === -1 || $parent.columns().length <= 1) ? ' disabled' : '') }"><i class="fa fa-trash-o"></i></button>

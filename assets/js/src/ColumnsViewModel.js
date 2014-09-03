@@ -9,6 +9,7 @@ function ColumnsViewModel(columns) {
 
 	self.add = function() {
 		self.columns.push(new Column(-1, '', self.columns().length + 1));
+		$('.h-columnist tbody:last a.editable:visible:first').editable('show');
 	};
 
 	self.move = function(columnID, newPos) {

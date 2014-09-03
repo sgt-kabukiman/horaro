@@ -113,4 +113,26 @@ function Column(id, name, pos) {
 	self.doDelete = function() {
 		self.deleteColumn();
 	};
+
+	self.onEditableHidden = function(event, reason) {
+		var
+			self    = $(this),
+			root    = self.closest('table'),
+			links   = root.find('a.editable:visible'),
+			selfIdx = links.index(self),
+			next    = (selfIdx < (links.length - 1)) ? $(links[selfIdx+1]) : $('#h-add-model');
+
+		// advance to the next editable
+		if (reason === 'save' || reason === 'nochange') {
+			if (next.is('.editable')) {
+				next.editable('show');
+			}
+			else {
+				next.focus();
+			}
+		}
+		else {
+			self.focus();
+		}
+	};
 }
