@@ -201,7 +201,7 @@ function Item(id, length, columns, pos) {
 			next    = (selfIdx < (links.length - 1)) ? $(links[selfIdx+1]) : $('#h-add-model');
 
 		// advance to the next editable
-		if (reason === 'save') {
+		if (reason === 'save' || reason === 'nochange') {
 			if (next.is('.editable')) {
 				next.editable('show');
 			}
