@@ -175,8 +175,9 @@ function Item(id, length, columns, pos) {
 
 	// behaviours
 
-	self.toggle = function() {
+	self.toggle = function(item, event) {
 		self.expanded(!self.expanded());
+		$(event.target).parent().find('button:visible').focus();
 	};
 
 	self.confirmDelete = function() {
@@ -189,5 +190,27 @@ function Item(id, length, columns, pos) {
 
 	self.doDelete = function() {
 		self.deleteItem();
+	};
+
+	self.onEditableHidden = function(event, reason) {
+		var
+			self    = $(this),
+			root    = self.closest('table'),
+			links   = root.find('a.editable:visible'),
+			selfIdx = links.index(self),
+			next    = (selfIdx < (links.length - 1)) ? $(links[selfIdx+1]) : $('#h-add-model');
+
+		// advance to the next editable
+		if (reason === 'save') {
+			if (next.is('.editable')) {
+				next.editable('show');
+			}
+			else {
+				next.focus();
+			}
+		}
+		else {
+			self.focus();
+		}
 	};
 }

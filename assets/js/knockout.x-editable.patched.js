@@ -100,8 +100,14 @@
 				// <endpatch>
 			}
 
+			// register custom event handlers
+
 			if (editableOptions.save) {
 				$editable.on('save', editableOptions.save);
+			}
+
+			if (editableOptions.hidden) {
+				$editable.on('hidden', editableOptions.hidden);
 			}
 
 			//setup observable to fire only when editable changes, not when options change

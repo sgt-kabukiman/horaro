@@ -10,16 +10,16 @@
 		<td data-bind="attr: { class: 'h-scheduled ' + rowClass() }"><span data-bind="text: formattedSchedule"></span></td>
 		<td data-bind="attr: { class: 'h-length '    + rowClass() }">
 			<!-- ko if: errors -->
-			<span data-bind="editable: formattedLength, attr: { title: errors().length[0] }"></span>
+			<a href="#" data-bind="editable: formattedLength, editableOptions: { hidden: onEditableHidden }, attr: { title: errors().length[0] }"></a>
 			<!-- /ko -->
 
 			<!-- ko if: !errors() -->
-			<span data-bind="editable: formattedLength"></span>
+			<a href="#" data-bind="editable: formattedLength, editableOptions: { hidden: onEditableHidden }"></a>
 			<!-- /ko -->
 		</td>
 
 		{% for idx,column in columns.slice(0, 4) %}
-		<td data-bind="attr: { class: 'h-column {{ utils.scheduleColClass(idx) }} ' + rowClass() }"><span data-bind="editable: col_{{ column.id }}"></span></td>
+		<td data-bind="attr: { class: 'h-column {{ utils.scheduleColClass(idx) }} ' + rowClass() }"><a href="#" data-bind="editable: col_{{ column.id }}, editableOptions: { hidden: onEditableHidden }"></a></td>
 		{% endfor %}
 
 		<td data-bind="attr: { class: 'text-right h-controls ' + rowClass() }">
@@ -51,7 +51,7 @@
 					<strong>{{ column.name }}:</strong>
 				</div>
 				<div class="col-lg-2">
-					<span data-bind="editable: col_{{ column.id }}"></span>
+					<a href="#" data-bind="editable: col_{{ column.id }}, editableOptions: { hidden: onEditableHidden }"></a>
 				</div>
 
 				{% if loop.index0 % 3 == 2 %}
@@ -73,7 +73,7 @@
 					<strong>{{ column.name }}:</strong>
 				</div>
 				<div class="col-md-4">
-					<span data-bind="editable: col_{{ column.id }}"></span>
+					<a href="#" data-bind="editable: col_{{ column.id }}, editableOptions: { hidden: onEditableHidden }"></a>
 				</div>
 
 				{% if loop.index0 % 2 == 1 %}
@@ -92,7 +92,7 @@
 					<strong>{{ column.name }}:</strong>
 				</div>
 				<div class="col-sm-8 col-xs-8">
-					<span data-bind="editable: col_{{ column.id }}"></span>
+					<a href="#" data-bind="editable: col_{{ column.id }}, editableOptions: { hidden: onEditableHidden }"></a>
 				</div>
 			</div>
 			{% endfor %}

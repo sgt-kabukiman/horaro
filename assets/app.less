@@ -147,9 +147,19 @@ table.h-columnist {
 
 /* custom X-Editable styling */
 
-.editable-click, a.editable-click, a.editable-click:hover {
+a.editable-click {
 	border-bottom: dashed 1px #5bc0de;
 	cursor: pointer;
+	color: #222;
+
+	&.editable-empty {
+		color: #bbb;
+		border-bottom-color: #85dbf5;
+	}
+
+	&:hover {
+		border-bottom-style: solid;
+	}
 }
 
 .editable-unsaved {
