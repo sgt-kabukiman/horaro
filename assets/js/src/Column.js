@@ -10,6 +10,7 @@ function Column(id, name, pos) {
 
 	self.position  = pos;
 	self.suspended = false;
+	self.nextFocus = false;
 	self.deleting  = ko.observable(false);
 	self.busy      = ko.observable(false);
 	self.errors    = ko.observable(false);
@@ -67,6 +68,11 @@ function Column(id, name, pos) {
 				}
 
 				self.suspended = false;
+
+				if (self.nextFocus) {
+					$('#h-add-model').focus();
+					self.nextFocus = false;
+				}
 			},
 			error: function(result, data) {
 				self.errors(result.responseJSON.errors);
@@ -116,10 +122,10 @@ function Column(id, name, pos) {
 
 	self.onEditableHidden = function(event, reason) {
 		var
-			self    = $(this),
-			root    = self.closest('table'),
+			me      = $(this),
+			root    = me.closest('table'),
 			links   = root.find('a.editable:visible'),
-			selfIdx = links.index(self),
+			selfIdx = links.index(me),
 			next    = (selfIdx < (links.length - 1)) ? $(links[selfIdx+1]) : $('#h-add-model');
 
 		// advance to the next editable
@@ -129,10 +135,15 @@ function Column(id, name, pos) {
 			}
 			else {
 				next.focus();
+
+				// in case this saving triggers an ajax call to create the element,
+				// the add button is still disabled right now. We set a flag to let
+				// the success handler of the create call do the focussing.
+				self.nextFocus = true;
 			}
 		}
 		else {
-			self.focus();
+			me.focus();
 		}
 	};
 }
