@@ -36,7 +36,7 @@ jQuery(function($) {
 			type:            'info', // (null, 'info', 'error', 'success')
 			offset:          {from: 'top', amount: 26}, // 'top', or 'bottom'
 			align:           'center',
-			width:           400,
+			width:           350,
 			delay:           50000,
 			allow_dismiss:   true,
 			stackup_spacing: 5
