@@ -10,11 +10,11 @@
 		<td data-bind="attr: { class: 'h-scheduled ' + rowClass() }"><span data-bind="text: formattedSchedule"></span></td>
 		<td data-bind="attr: { class: 'h-length '    + rowClass() }">
 			<!-- ko if: errors -->
-			<a href="#" data-bind="editable: formattedLength, editableOptions: { hidden: onEditableHidden }, attr: { title: errors().length[0], tabindex: $index() === 0 ? 1 : null }"></a>
+			<a href="#" data-bind="editable: formattedLength, editableOptions: { hidden: onEditableHidden }, attr: { title: errors().length[0] }"></a>
 			<!-- /ko -->
 
 			<!-- ko if: !errors() -->
-			<a href="#" data-bind="editable: formattedLength, editableOptions: { hidden: onEditableHidden }, attr: { tabindex: $index() === 0 ? 1 : null }"></a>
+			<a href="#" data-bind="editable: formattedLength, editableOptions: { hidden: onEditableHidden }"></a>
 			<!-- /ko -->
 		</td>
 
