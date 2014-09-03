@@ -66,7 +66,8 @@ class IndexController extends BaseController {
 		$session->start();
 		$session->migrate(); // create new session ID (prevents session fixation)
 		$session->set('horaro.user', $user->getId());
-		$session->getFlashBag()->add('message', 'Welcome to Horaro, your account has been successfully created. You can now create your first team or be invited to an already existing one.');
+
+		$this->addSuccessMsg('Welcome to Horaro, your account has been successfully created.');
 
 		return $this->redirect('/-/home');
 	}

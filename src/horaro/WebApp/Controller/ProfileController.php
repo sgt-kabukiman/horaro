@@ -47,6 +47,8 @@ class ProfileController extends BaseController {
 
 		// done
 
+		$this->addSuccessMsg('Your profile has been updated.');
+
 		return $this->redirect('/-/profile');
 	}
 
@@ -72,6 +74,8 @@ class ProfileController extends BaseController {
 		$em->flush();
 
 		// done
+
+		$this->addSuccessMsg('Your password has been changed.');
 
 		return $this->redirect('/-/profile');
 	}

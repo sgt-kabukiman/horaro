@@ -1,3 +1,4 @@
+{% set flashes = app.session.flashbag.all %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,4 +31,11 @@
 	</div>
 
 	{% block scripts %}{% endblock %}
+
+	{% if flashes|length > 0 %}
+	<script type="text/javascript">
+	var horaro = horaro||{};
+	horaro.flashes = {{ flashes|json_encode|raw }};
+	</script>
+	{% endif %}
 </body>

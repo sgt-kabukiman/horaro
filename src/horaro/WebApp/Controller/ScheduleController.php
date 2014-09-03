@@ -90,6 +90,8 @@ class ScheduleController extends BaseController {
 
 		// done
 
+		$this->addSuccessMsg('Your new schedule has been created.');
+
 		return $this->redirect('/-/schedules/'.$schedule->getId());
 	}
 
@@ -133,6 +135,8 @@ class ScheduleController extends BaseController {
 
 		// done
 
+		$this->addSuccessMsg('Your schedule has been updated.');
+
 		return $this->redirect('/-/schedules/'.$schedule->getId());
 	}
 
@@ -149,6 +153,8 @@ class ScheduleController extends BaseController {
 
 		$em->remove($schedule);
 		$em->flush();
+
+		$this->addSuccessMsg('The requested schedule has been deleted.');
 
 		return $this->redirect('/-/events/'.$eventID);
 	}

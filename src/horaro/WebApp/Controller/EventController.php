@@ -61,6 +61,8 @@ class EventController extends BaseController {
 
 		// done
 
+		$this->addSuccessMsg('Your new event has been created.');
+
 		return $this->redirect('/-/events/'.$event->getId());
 	}
 
@@ -101,6 +103,8 @@ class EventController extends BaseController {
 
 		// done
 
+		$this->addSuccessMsg('Your event has been updated.');
+
 		return $this->redirect('/-/events/'.$event->getId());
 	}
 
@@ -116,6 +120,8 @@ class EventController extends BaseController {
 
 		$em->remove($event);
 		$em->flush();
+
+		$this->addSuccessMsg('The requested event has been deleted.');
 
 		return $this->redirect('/-/home');
 	}

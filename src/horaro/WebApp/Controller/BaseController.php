@@ -201,4 +201,16 @@ class BaseController {
 	protected function getDefaultLanguage() {
 		return 'en_us';
 	}
+
+	protected function addFlashMsg($type, $message) {
+		$this->app['session']->getFlashBag()->add($type, $message);
+	}
+
+	protected function addSuccessMsg($message) {
+		$this->addFlashMsg('success', $message);
+	}
+
+	protected function addErrorMsg($message) {
+		$this->addFlashMsg('error', $message);
+	}
 }
