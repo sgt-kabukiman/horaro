@@ -42,7 +42,7 @@ jQuery(function($) {
 			offset:          {from: 'top', amount: 26}, // 'top', or 'bottom'
 			align:           'center',
 			width:           350,
-			delay:           50000,
+			delay:           3000,
 			allow_dismiss:   true,
 			stackup_spacing: 5
 		};
