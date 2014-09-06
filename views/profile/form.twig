@@ -85,6 +85,7 @@
 
 				<fieldset>
 					<legend>Change Password</legend>
+					{{ utils.csrf_token() }}
 
 					<div class="form-group{% if result and result.current.errors %} has-error{% endif %}">
 						<label class="col-lg-4 control-label" for="current">Current Password:</label>
