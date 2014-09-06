@@ -1,5 +1,5 @@
 {% extends "backend.twig" %}
-{% import "macros.twig" as utils %}
+{% import "macros.twig" as macros %}
 
 {% block title %}Your Profile{% endblock %}
 
@@ -23,7 +23,7 @@
 
 				<fieldset>
 					<legend>Profile Information</legend>
-					{{ utils.csrf_token() }}
+					{{ macros.csrf_token() }}
 
 					<div class="form-group">
 						<label class="col-lg-4 control-label" for="display_name">Display Name:</label>
@@ -43,7 +43,7 @@
 								<option value="{{ language }}"{% if lng == language %} selected{% endif %}>{{ name }}</option>
 							{% endfor %}
 							</select>
-							{{ utils.form_errors(result, 'language') }}
+							{{ macros.form_errors(result, 'language') }}
 						</div>
 					</div>
 
@@ -52,7 +52,7 @@
 						<div class="col-lg-8">
 							<input type="text" class="form-control" id="gravatar" name="gravatar" value="{{ result ? result.gravatar.filtered : user.gravatarHash }}">
 							<span class="help-block">Enter your e-mail address or its MD5 hash to enable avatars within Horaro.</span>
-							{{ utils.form_errors(result, 'gravatar') }}
+							{{ macros.form_errors(result, 'gravatar') }}
 						</div>
 					</div>
 
@@ -85,13 +85,13 @@
 
 				<fieldset>
 					<legend>Change Password</legend>
-					{{ utils.csrf_token() }}
+					{{ macros.csrf_token() }}
 
 					<div class="form-group{% if result and result.current.errors %} has-error{% endif %}">
 						<label class="col-lg-4 control-label" for="current">Current Password:</label>
 						<div class="col-lg-8">
 							<input type="password" class="form-control" id="current" name="current" required>
-							{{ utils.form_errors(result, 'current') }}
+							{{ macros.form_errors(result, 'current') }}
 						</div>
 					</div>
 
@@ -99,7 +99,7 @@
 						<label class="col-lg-4 control-label" for="password">New Password:</label>
 						<div class="col-lg-8">
 							<input type="password" class="form-control" id="password" name="password" required>
-							{{ utils.form_errors(result, 'password') }}
+							{{ macros.form_errors(result, 'password') }}
 						</div>
 					</div>
 
@@ -107,7 +107,7 @@
 						<label class="col-lg-4 control-label" for="password2">New Password again:</label>
 						<div class="col-lg-8">
 							<input type="password" class="form-control" id="password2" name="password2" required>
-							{{ utils.form_errors(result, 'password2') }}
+							{{ macros.form_errors(result, 'password2') }}
 						</div>
 					</div>
 

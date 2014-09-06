@@ -1,5 +1,5 @@
 {% extends "backend.twig" %}
-{% import "macros.twig" as utils %}
+{% import "macros.twig" as macros %}
 
 {% block title %}{% if event %}{{ event.name }}{% else %}New Event&hellip;{% endif %}{% endblock %}
 
@@ -31,7 +31,7 @@
 			{% endif %}
 				<fieldset>
 					<legend>Event Information</legend>
-					{{ utils.csrf_token() }}
+					{{ macros.csrf_token() }}
 
 					<div class="form-group{% if result and result.name.errors %} has-error{% endif %}">
 						<label class="col-lg-3 control-label" for="name">Name:</label>
