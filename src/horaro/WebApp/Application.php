@@ -45,6 +45,14 @@ class Application extends BaseApplication {
 			return new I18N($this);
 		});
 
+		$this['csrf'] = $this->share(function() {
+			$factory   = new \RandomLib\Factory();
+			$generator = $factory->getMediumStrengthGenerator();
+			$name      = '_csrf_token';
+
+			return new CsrfHandler($name, $generator);
+		});
+
 		$this['controller.index'] = $this->share(function() {
 			return new Controller\IndexController($this);
 		});
@@ -126,5 +134,6 @@ class Application extends BaseApplication {
 
 		$this->error('firewall:handleAuthErrors');
 		$this->error('firewall:handleReverseAuthErrors');
+		$this->error('firewall:handleBadCsrf');
 	}
 }

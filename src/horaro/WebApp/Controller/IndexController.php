@@ -67,6 +67,7 @@ class IndexController extends BaseController {
 		$session->migrate(); // create new session ID (prevents session fixation)
 		$session->set('horaro.user', $user->getId());
 
+		$this->app['csrf']->initSession($session);
 		$this->addSuccessMsg('Welcome to Horaro, your account has been successfully created.');
 
 		return $this->redirect('/-/home');
@@ -95,6 +96,7 @@ class IndexController extends BaseController {
 		$session->start();
 		$session->migrate(); // create new session ID (prevents session fixation)
 		$session->set('horaro.user', $user->getId());
+		$this->app['csrf']->initSession($session);
 
 		return $this->redirect('/-/home');
 	}

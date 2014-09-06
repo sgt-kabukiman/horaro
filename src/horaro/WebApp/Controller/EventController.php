@@ -28,6 +28,8 @@ class EventController extends BaseController {
 	}
 
 	public function createAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$validator = new EventValidator($this->getRepository('Event'));
 		$result    = $validator->validate([
 			'name'    => $request->request->get('name'),
@@ -73,6 +75,8 @@ class EventController extends BaseController {
 	}
 
 	public function updateAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$event     = $this->getRequestedEvent($request);
 		$validator = new EventValidator($this->getRepository('Event'));
 		$result    = $validator->validate([
@@ -115,6 +119,8 @@ class EventController extends BaseController {
 	}
 
 	public function deleteAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$event = $this->getRequestedEvent($request);
 		$em    = $this->getEntityManager();
 

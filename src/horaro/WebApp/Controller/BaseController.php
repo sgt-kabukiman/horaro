@@ -82,6 +82,10 @@ class BaseController {
 		return $response;
 	}
 
+	protected function checkCsrfToken(Request $request) {
+		$this->app['csrf']->checkToken($request, $this->app['session']);
+	}
+
 	protected function getRequestedEvent(Request $request) {
 		return $this->resolveEventID($request->attributes->get('event'));
 	}

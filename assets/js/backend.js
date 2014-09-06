@@ -1,5 +1,10 @@
 jQuery(function($) {
-	var scheduleColumns, scheduleID, viewModel, items, columns;
+	var scheduleColumns, scheduleID, viewModel, items, columns, csrfToken, csrfTokenName;
+
+	// init CSRF token information
+
+	csrfToken     = $('meta[name="csrf_token"]').attr('content');
+	csrfTokenName = $('meta[name="csrf_token_name"]').attr('content');
 
 	// init date and time pickers
 

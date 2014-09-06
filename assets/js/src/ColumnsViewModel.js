@@ -15,6 +15,9 @@ function ColumnsViewModel(columns) {
 	self.move = function(columnID, newPos) {
 		var columns = self.columns;
 		var col     = self.findColumn(columnID);
+		var data    = { column: columnID, position: newPos };
+
+		data[csrfTokenName] = csrfToken;
 
 		col.busy(true);
 
@@ -23,7 +26,7 @@ function ColumnsViewModel(columns) {
 			url: '/-/schedules/' + scheduleID + '/columns/move',
 			dataType: 'json',
 			contentType: 'application/json',
-			data: JSON.stringify({ column: columnID, position: newPos }),
+			data: JSON.stringify(data),
 			complete: function() {
 				col.busy(false);
 			}

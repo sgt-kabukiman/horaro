@@ -22,6 +22,8 @@ class ProfileController extends BaseController {
 	}
 
 	public function updateAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$user      = $this->getCurrentUser();
 		$languages = $this->getLanguages();
 		$validator = new ProfileValidator(array_keys($languages), $this->getDefaultLanguage());
@@ -53,6 +55,8 @@ class ProfileController extends BaseController {
 	}
 
 	public function updatePasswordAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$user      = $this->getCurrentUser();
 		$validator = new ProfileValidator([], null);
 		$result    = $validator->validatePasswordChange([

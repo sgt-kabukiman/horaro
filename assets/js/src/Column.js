@@ -48,6 +48,9 @@ function Column(id, name, pos) {
 			url += '/' + colID + '?_method=PUT';
 		}
 
+		var data = { name: self.name() };
+		data[csrfTokenName] = csrfToken;
+
 		self.busy(true);
 
 		$.ajax({
@@ -55,7 +58,7 @@ function Column(id, name, pos) {
 			url: url,
 			dataType: 'json',
 			contentType: 'application/json',
-			data: JSON.stringify({ name: self.name() }),
+			data: JSON.stringify(data),
 			success: function(result) {
 				self.suspended = true;
 
@@ -89,6 +92,9 @@ function Column(id, name, pos) {
 		}
 
 		var colID = self.id();
+		var data  = {};
+
+		data[csrfTokenName] = csrfToken;
 
 		self.busy(true);
 
@@ -97,6 +103,7 @@ function Column(id, name, pos) {
 			url: '/-/schedules/' + scheduleID + '/columns/' + colID + '?_method=DELETE',
 			dataType: 'json',
 			contentType: 'application/json',
+			data: JSON.stringify(data),
 			success: function(result) {
 				viewModel.columns.remove(self);
 			},

@@ -28,6 +28,8 @@ class ScheduleColumnController extends BaseController {
 	}
 
 	public function createAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$schedule  = $this->getRequestedSchedule($request);
 		$payload   = $this->getPayload($request);
 		$validator = new ScheduleColumnValidator();
@@ -77,6 +79,8 @@ class ScheduleColumnController extends BaseController {
 	}
 
 	public function updateAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$schedule  = $this->getRequestedSchedule($request);
 		$column    = $this->getRequestedScheduleColumn($request, $schedule);
 		$payload   = $this->getPayload($request);
@@ -118,6 +122,8 @@ class ScheduleColumnController extends BaseController {
 	}
 
 	public function deleteAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$schedule = $this->getRequestedSchedule($request);
 		$column   = $this->getRequestedScheduleColumn($request, $schedule);
 
@@ -152,6 +158,8 @@ class ScheduleColumnController extends BaseController {
 	}
 
 	public function moveAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$schedule = $this->getRequestedSchedule($request);
 		$payload  = $this->getPayload($request);
 

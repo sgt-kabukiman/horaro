@@ -1,9 +1,19 @@
 {% macro form_errors(result, field) %}
-	{% if result and result[field].errors and result[field].messages %}
-	<span class="help-block"><strong>
-		{% for message in result[field].messages %}
-			{{ message }}<br>
-		{% endfor %}
-	</strong></span>
-	{% endif %}
+{% if result and result[field].errors and result[field].messages %}
+<span class="help-block"><strong>
+	{% for message in result[field].messages %}
+		{{ message }}<br>
+	{% endfor %}
+</strong></span>
+{% endif %}
 {% endmacro %}
+
+{% macro csrf_token() %}
+<div><input type="hidden" name="{{ app.csrf.paramName }}" value="{{ app.csrf.token(app.session) }}" /></div>
+{% endmacro %}
+
+{% macro csrf_token_meta() %}
+<meta name="csrf_token" content="{{ app.csrf.token(app.session) }}">
+<meta name="csrf_token_name" content="{{ app.csrf.paramName }}">
+{% endmacro %}
+

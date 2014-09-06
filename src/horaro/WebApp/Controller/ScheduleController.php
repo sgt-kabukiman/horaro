@@ -46,6 +46,8 @@ class ScheduleController extends BaseController {
 	}
 
 	public function createAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$event     = $this->getRequestedEvent($request);
 		$validator = new ScheduleValidator($this->getRepository('Schedule'));
 		$result    = $validator->validate([
@@ -102,6 +104,8 @@ class ScheduleController extends BaseController {
 	}
 
 	public function updateAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$schedule  = $this->getRequestedSchedule($request);
 		$event     = $schedule->getEvent();
 		$validator = new ScheduleValidator($this->getRepository('Schedule'));
@@ -147,6 +151,8 @@ class ScheduleController extends BaseController {
 	}
 
 	public function deleteAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$schedule = $this->getRequestedSchedule($request);
 		$eventID  = $schedule->getEvent()->getId();
 		$em       = $this->getEntityManager();

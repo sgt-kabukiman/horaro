@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ScheduleItemController extends BaseController {
 	public function createAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$schedule  = $this->getRequestedSchedule($request);
 		$payload   = $this->getPayload($request);
 		$validator = new ScheduleItemValidator();
@@ -68,6 +70,8 @@ class ScheduleItemController extends BaseController {
 	}
 
 	public function patchAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$schedule  = $this->getRequestedSchedule($request);
 		$item      = $this->getRequestedScheduleItem($request, $schedule);
 		$payload   = $this->getPayload($request);
@@ -120,6 +124,8 @@ class ScheduleItemController extends BaseController {
 	}
 
 	public function deleteAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$schedule = $this->getRequestedSchedule($request);
 		$item     = $this->getRequestedScheduleItem($request, $schedule);
 
@@ -146,6 +152,8 @@ class ScheduleItemController extends BaseController {
 	}
 
 	public function moveAction(Request $request) {
+		$this->checkCsrfToken($request);
+
 		$schedule = $this->getRequestedSchedule($request);
 		$payload  = $this->getPayload($request);
 

@@ -55,6 +55,9 @@ function ItemsViewModel(items) {
 	self.move = function(itemID, newPos) {
 		var items = self.items;
 		var item  = self.findItem(itemID);
+		var data  = { item: itemID, position: newPos };
+
+		data[csrfTokenName] = csrfToken;
 
 		item.busy(true);
 
@@ -63,7 +66,7 @@ function ItemsViewModel(items) {
 			url: '/-/schedules/' + scheduleID + '/items/move',
 			dataType: 'json',
 			contentType: 'application/json',
-			data: JSON.stringify({ item: itemID, position: newPos }),
+			data: JSON.stringify(data),
 			complete: function() {
 				item.busy(false);
 			}

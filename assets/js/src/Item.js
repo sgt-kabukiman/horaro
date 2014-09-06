@@ -116,6 +116,8 @@ function Item(id, length, columns, pos) {
 
 		self.busy(true);
 
+		patch[csrfTokenName] = csrfToken;
+
 		$.ajax({
 			type: method,
 			url: url,
@@ -162,6 +164,9 @@ function Item(id, length, columns, pos) {
 		}
 
 		var itemID = self.id();
+		var data   = {};
+
+		data[csrfTokenName] = csrfToken;
 
 		self.busy(true);
 
@@ -170,6 +175,7 @@ function Item(id, length, columns, pos) {
 			url: '/-/schedules/' + scheduleID + '/items/' + itemID + '?_method=DELETE',
 			dataType: 'json',
 			contentType: 'application/json',
+			data: JSON.stringify(data),
 			success: function(result) {
 				viewModel.items.remove(self);
 			},

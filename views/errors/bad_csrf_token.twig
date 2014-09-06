@@ -1,0 +1,24 @@
+{% extends "backend.twig" %}
+
+{% block title %}Uhhhhhh&hellip; no.{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
+		<h3 class="text-danger">You need the green key to enter this room!</h3>
+		<p>
+			The submitted security token does not match, so your request has not been processed.
+		</p>
+		<p>
+			This can happen if you open a form in one browser tab, log-out and log-in in another and
+			then submit the old form. If you do this, please stop doing it, because it will fail
+			every time.
+		</p>
+		<p>Please re-open the form (if in doubt, refresh the form page) and submit it again.</p>
+		<p><small class="text-muted">
+			Even though this seems like an annoying bug, please note that it's quite the opposite and
+			necessary to prevent certain kinds of attacks on <em>your</em> data.
+		</small></p>
+	</div>
+</div>
+{% endblock %}

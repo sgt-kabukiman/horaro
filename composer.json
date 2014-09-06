@@ -10,6 +10,7 @@
         "symfony/console": "2.5.*",
         "doctrine/orm": "~2.4.3",
         "ircmaxell/password-compat": "~1.0.0",
+        "ircmaxell/random-lib": "~1.0.0",
         "league/fractal": "0.8.*",
         "hashids/hashids": "~0.3.0@dev",
         "twig/twig": "~1.16",
