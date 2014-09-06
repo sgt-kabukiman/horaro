@@ -11,6 +11,7 @@
 namespace horaro\WebApp;
 
 use horaro\WebApp\Exception\BadCsrfTokenException;
+use horaro\WebApp\Exception\BadRequestException;
 use RandomLib\Generator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -58,7 +59,7 @@ class CsrfHandler {
 			$error   = json_last_error();
 
 			if ($error !== JSON_ERROR_NONE) {
-				throw new Ex\BadRequestException('Request does not contain valid JSON.', 900);
+				throw new BadRequestException('Request does not contain valid JSON.', 900);
 			}
 
 			$token = (isset($payload[$name]) && is_string($payload[$name])) ? $payload[$name] : null;
