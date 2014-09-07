@@ -4,12 +4,12 @@
 		<td data-bind="attr: { class: 'h-name '   + rowClass() }"><a href="#" data-bind="editable: name, editableOptions: { hidden: onEditableHidden }"></a></td>
 		<td data-bind="attr: { class: 'text-right h-controls ' + rowClass() }">
 			<!-- ko if: !deleting() -->
-			<button class="" data-bind="click: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + ((id() === -1 || $parent.columns().length <= 1) ? ' disabled' : '') }"><i class="fa fa-trash-o"></i></button>
+			<button class="" data-bind="click: confirmDelete, activate: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + ((id() === -1 || $parent.columns().length <= 1) ? ' disabled' : '') }"><i class="fa fa-trash-o"></i></button>
 			<!-- /ko -->
 
 			<!-- ko if: deleting() -->
-			<button class="btn btn-danger btn-xs" data-bind="click: doDelete"><i class="fa fa-trash-o"></i></button>
-			<button class="btn btn-default btn-xs" data-bind="click: cancelDelete"><i class="fa fa-undo"></i></button>
+			<button class="btn btn-danger btn-xs" data-bind="click: doDelete, activate: doDelete"><i class="fa fa-trash-o"></i></button>
+			<button class="btn btn-default btn-xs" data-bind="click: cancelDelete, activate: cancelDelete"><i class="fa fa-undo"></i></button>
 			<!-- /ko -->
 		</td>
 	</tr>

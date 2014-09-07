@@ -75,6 +75,21 @@ jQuery(function($) {
 
 	// setup Knockout bindings
 
+	ko.bindingHandlers.activate = {
+		init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+			var value = valueAccessor();
+
+			$(element).keydown(function(e) {
+				if (e.keyCode === 13 /* return */ || e.keyCode === 32 /* space */) {
+					e.preventDefault();
+					e.stopPropagation();
+
+					value.call(bindingContext['$data'], bindingContext['$data'], e);
+				}
+			});
+		}
+	};
+
 	//= src/Utils.js
 	//= src/SpatialNavigation.js
 
