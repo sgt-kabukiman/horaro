@@ -168,7 +168,7 @@ class ScheduleController extends BaseController {
 	public function exportAction(Request $request) {
 		$schedule = $this->getRequestedSchedule($request);
 		$format   = strtolower($request->query->get('format'));
-		$formats  = ['json', 'xml', 'csv'];
+		$formats  = ['json', 'xml', 'csv', 'ical'];
 
 		if (!in_array($format, $formats, true)) {
 			throw new Ex\BadRequestException('Invalid format "'.$format.'" given.');

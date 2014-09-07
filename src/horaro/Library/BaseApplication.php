@@ -85,6 +85,10 @@ class BaseApplication extends Application {
 			return new ScheduleTransformer\CsvTransformer();
 		});
 
+		$this['schedule-transformer-ical'] = $this->share(function() {
+			return new ScheduleTransformer\ICalTransformer();
+		});
+
 		// set Silex' debug flag
 		$this['debug'] = $this['config']['debug'];
 	}
