@@ -18,16 +18,6 @@ class Application extends BaseApplication {
 	public function __construct(array $values = []) {
 		parent::__construct($values);
 
-		$this->register(new TwigServiceProvider(), array(
-			'twig.path' => HORARO_ROOT.'/views',
-			'twig.options' => [
-				'cache'       => HORARO_ROOT.'/tmp/twig',
-				'auto_reload' => true
-			]
-		));
-
-		$this['twig']->addGlobal('utils', new TwigUtils());
-
 		$this->setupServices();
 		$this->setupRouting();
 	}
@@ -51,6 +41,21 @@ class Application extends BaseApplication {
 			$name      = '_csrf_token';
 
 			return new CsrfHandler($name, $generator);
+		});
+
+		$this->register(new TwigServiceProvider(), array(
+			'twig.path' => HORARO_ROOT.'/views',
+			'twig.options' => [
+				'cache'       => HORARO_ROOT.'/tmp/twig',
+				'auto_reload' => $this['config']['debug']
+			]
+		));
+
+		$this->extend('twig', function($twig, $container) {
+			$versions = json_decode(file_get_contents(HORARO_ROOT.'/tmp/assets.json'), true);
+			$twig->addGlobal('utils', new TwigUtils($versions));
+
+			return $twig;
 		});
 
 		$this['controller.index'] = $this->share(function() {

@@ -11,6 +11,12 @@
 namespace horaro\WebApp;
 
 class TwigUtils {
+	protected $versions = [];
+
+	public function __construct(array $assetVersions) {
+		$this->versions = $assetVersions;
+	}
+
 	public function scheduleColClass($idx) {
 		$class = [];
 
@@ -21,6 +27,7 @@ class TwigUtils {
 
 		return implode(' ', $class);
 	}
+
 	public function scheduleControlsClass($columns) {
 		$class = [];
 
@@ -30,5 +37,9 @@ class TwigUtils {
 		if ($columns <= 4) $class[] = 'hidden-lg';
 
 		return implode(' ', $class);
+	}
+
+	public function asset($path) {
+		return isset($this->versions[$path]) ? $this->versions[$path] : $path;
 	}
 }

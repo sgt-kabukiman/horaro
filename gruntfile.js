@@ -3,7 +3,7 @@ module.exports = function (grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 
 		clean: {
-			assets:  ['www/assets/']
+			assets:  ['www/assets/', 'tmp/assets/']
 		},
 
 		less: {
@@ -13,7 +13,7 @@ module.exports = function (grunt) {
 					compress: true
 				},
 				files: {
-					'www/assets/app.css': 'assets/app.less'
+					'tmp/assets/css/app.css': 'assets/app.less'
 				}
 			}
 		},
@@ -32,7 +32,7 @@ module.exports = function (grunt) {
 					'assets/js/html.sortable.patched.js',      // TODO: minify this manually
 					'assets/js/knockout.x-editable.patched.js' // TODO: minify this manually
 				],
-				dest: 'www/assets/js/vendor.backend.js'
+				dest: 'tmp/assets/js/vendor-backend.js'
 			},
 
 			i18n_en_us: {
@@ -41,7 +41,7 @@ module.exports = function (grunt) {
 					footer: 'var horaroTimeFormat = "H:i a";'
 				},
 				src: [/* english (US) is built in into all dependencies */],
-				dest: 'www/assets/js/i18n/en_us.js'
+				dest: 'tmp/assets/js/i18n/en_us.js'
 			},
 
 			i18n_de_de: {
@@ -53,7 +53,7 @@ module.exports = function (grunt) {
 					'assets/vendor/pickadate/lib/translations/de_DE.js',
 					'assets/vendor/moment/locale/de.js'
 				],
-				dest: 'www/assets/js/i18n/de_de.js'
+				dest: 'tmp/assets/js/i18n/de_de.js'
 			},
 
 			vendor_css: {
@@ -66,14 +66,73 @@ module.exports = function (grunt) {
 					'assets/vendor/pickadate/lib/themes/classic.date.css',
 					'assets/vendor/pickadate/lib/themes/classic.time.css',
 				],
-				dest: 'www/assets/vendor.css'
+				dest: 'tmp/assets/css/vendor.css'
 			}
 		},
 
 		rig: {
 			app_backend: {
 				files: {
-					'www/assets/js/app.backend.js': ['assets/js/backend.js']
+					'tmp/assets/js/app-backend.js': ['assets/js/backend.js']
+				}
+			}
+		},
+
+		cssmin: {
+			assets: {
+				options: {
+					keepSpecialComments: 0
+				},
+				files: [{
+					expand: true,
+					cwd: 'tmp/assets/css/',
+					src: ['*.css', '!*.min.css'],
+					dest: 'www/assets/css/',
+					ext: '.min.css'
+				}]
+			}
+		},
+
+		uglify: {
+			assets: {
+				files: [{
+					expand: true,
+					cwd: 'tmp/assets/js',
+					src: '**/*.js',
+					dest: 'www/assets/js',
+					ext: '.min.js'
+				}]
+			}
+		},
+
+		filerev: {
+			options: {
+				encoding: 'utf8',
+				algorithm: 'md5',
+				length: 8
+			},
+
+			css: {
+				src: 'www/assets/css/*.min.css',
+				dest: 'www/assets/css'
+			},
+
+			js: {
+				src: 'www/assets/js/*.js',
+				dest: 'www/assets/js'
+			},
+
+			i18n: {
+				src: 'www/assets/js/i18n/*.js',
+				dest: 'www/assets/js/i18n'
+			}
+		},
+
+		filerev_assets: {
+			ship: {
+				options: {
+					dest: 'tmp/assets.json',
+					cwd: 'www/assets/'
 				}
 			}
 		},
@@ -101,29 +160,34 @@ module.exports = function (grunt) {
 		watch: {
 			css: {
 				files: ['assets/app.less'],
-				tasks: ['less:app']
+				tasks: ['less:app', 'cssmin']
 			},
 			app: {
 				files: ['assets/js/**/*'],
-				tasks: ['rig']
+				tasks: ['rig', 'uglify']
 			}
 		}
 	});
 
 	// load tasks
 	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.loadNpmTasks('grunt-contrib-less');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-shell');
+	grunt.loadNpmTasks('grunt-filerev');
+	grunt.loadNpmTasks('grunt-filerev-assets');
 	grunt.loadNpmTasks('grunt-lineending');
 	grunt.loadNpmTasks('grunt-rigger');
+	grunt.loadNpmTasks('grunt-shell');
 
 	// register custom tasks
-	grunt.registerTask('css',      ['less:app', 'concat:vendor_css']);
-	grunt.registerTask('js',       ['concat:vendor_backend', 'rig', 'i18n']);
+	grunt.registerTask('css',      ['less:app', 'concat:vendor_css', 'cssmin']);
+	grunt.registerTask('js',       ['concat:vendor_backend', 'rig', 'i18n', 'uglify']);
 	grunt.registerTask('i18n',     ['concat:i18n_en_us', 'concat:i18n_de_de']);
 	grunt.registerTask('assets',   ['clean:assets', 'css', 'js']);
 	grunt.registerTask('doctrine', ['shell:schema', 'lineending:schema', 'shell:proxies']);
+	grunt.registerTask('ship',     ['filerev', 'filerev_assets']);
 	grunt.registerTask('default',  ['assets']);
 };

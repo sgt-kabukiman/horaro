@@ -17,3 +17,7 @@
 <meta name="csrf_token_name" content="{{ app.csrf.paramName }}">
 {% endmacro %}
 
+{% macro asset(path) %}
+/assets/{% if app.debug %}{{ path }}{% else %}{{ utils.asset(path) }}{% endif %}
+{% endmacro %}
+
