@@ -1,3 +1,6 @@
+# Never edit this file directly!
+# Instead, copy it and name the copy 'parameters.yml'. Edit the copy only.
+
 database:
   driver:   pdo_mysql
   user:     yourusername

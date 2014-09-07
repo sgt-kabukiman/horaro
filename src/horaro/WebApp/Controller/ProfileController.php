@@ -71,7 +71,8 @@ class ProfileController extends BaseController {
 
 		// update profile
 
-		$user->setPassword(password_hash($result['password']['filtered'], PASSWORD_DEFAULT, ['cost' => 11]));
+		$costs = $this->app['config']['bcryptCost'];
+		$user->setPassword(password_hash($result['password']['filtered'], PASSWORD_DEFAULT, ['cost' => $costs]));
 
 		$em = $this->getEntityManager();
 		$em->persist($user);

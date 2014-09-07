@@ -1,0 +1,5 @@
+bcryptCost: 11
+roles:
+  ADMIN:  [USER]
+  USER:   []
+defaultRole: USER
