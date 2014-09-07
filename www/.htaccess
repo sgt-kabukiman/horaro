@@ -1,5 +1,12 @@
 RewriteEngine On
 
+<IfModule expires_module>
+	<FilesMatch "[0-9a-f]{8}\.(css|js)$">
+		ExpiresActive On
+		ExpiresDefault "access plus 6 months"
+	</FilesMatch>
+</IfModule>
+
 RewriteRule ^/?api/ api.php [QSA,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
