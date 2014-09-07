@@ -73,6 +73,18 @@ class BaseApplication extends Application {
 			return new RoleManager($this['config']['roles']);
 		});
 
+		$this['schedule-transformer-json'] = $this->share(function() {
+			return new ScheduleTransformer\JsonTransformer();
+		});
+
+		$this['schedule-transformer-xml'] = $this->share(function() {
+			return new ScheduleTransformer\XmlTransformer();
+		});
+
+		$this['schedule-transformer-csv'] = $this->share(function() {
+			return new ScheduleTransformer\CsvTransformer();
+		});
+
 		// set Silex' debug flag
 		$this['debug'] = $this['config']['debug'];
 	}

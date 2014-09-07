@@ -82,10 +82,6 @@ class Application extends BaseApplication {
 			return new Controller\ScheduleColumnController($this);
 		});
 
-		$this['controller.schedule.export'] = $this->share(function() {
-			return new Controller\ScheduleExportController($this);
-		});
-
 		$this['controller.profile'] = $this->share(function() {
 			return new Controller\ProfileController($this);
 		});
@@ -119,8 +115,7 @@ class Application extends BaseApplication {
 		$this->put   ('/-/schedules/{schedule}',         'controller.schedule:updateAction')->before('firewall:requireUser');
 		$this->get   ('/-/schedules/{schedule}/delete',  'controller.schedule:confirmationAction')->before('firewall:requireUser');
 		$this->delete('/-/schedules/{schedule}',         'controller.schedule:deleteAction')->before('firewall:requireUser');
-
-		$this->get   ('/-/schedules/{schedule}/export', 'controller.schedule.export:jsonAction')->before('firewall:requireUser');
+		$this->get   ('/-/schedules/{schedule}/export',  'controller.schedule:exportAction')->before('firewall:requireUser');
 
 		$this->post  ('/-/schedules/{schedule}/items',        'controller.schedule.item:createAction')->before('firewall:requireUser');
 		$this->post  ('/-/schedules/{schedule}/items/move',   'controller.schedule.item:moveAction')->before('firewall:requireUser');

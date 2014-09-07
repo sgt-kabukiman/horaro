@@ -165,6 +165,25 @@ class ScheduleController extends BaseController {
 		return $this->redirect('/-/events/'.$eventID);
 	}
 
+	public function exportAction(Request $request) {
+		$schedule = $this->getRequestedSchedule($request);
+		$format   = strtolower($request->query->get('format'));
+		$formats  = ['json', 'xml', 'csv'];
+
+		if (!in_array($format, $formats, true)) {
+			throw new Ex\BadRequestException('Invalid format "'.$format.'" given.');
+		}
+
+		$id          = 'schedule-transformer-'.$format;
+		$transformer = $this->app[$id];
+		$data        = $transformer->transform($schedule);
+		$contentType = $transformer->getContentType();
+
+		return new Response($data, 200, [
+			'content-type' => $contentType
+		]);
+	}
+
 	protected function renderForm(Event $event, Schedule $schedule = null, $result = null) {
 		$timezones = \DateTimeZone::listIdentifiers();
 
