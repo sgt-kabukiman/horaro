@@ -177,10 +177,11 @@ class ScheduleController extends BaseController {
 		$id          = 'schedule-transformer-'.$format;
 		$transformer = $this->app[$id];
 		$data        = $transformer->transform($schedule);
-		$contentType = $transformer->getContentType();
+		$filename    = sprintf('%s-%s.%s', $schedule->getEvent()->getSlug(), $schedule->getSlug(), $transformer->getFileExtension());
 
 		return new Response($data, 200, [
-			'content-type' => $contentType
+			'Content-Type'        => $transformer->getContentType(),
+			'Content-Disposition' => 'filename="'.$filename.'"'
 		]);
 	}
 

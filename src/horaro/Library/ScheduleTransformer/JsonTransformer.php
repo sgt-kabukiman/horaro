@@ -20,6 +20,10 @@ class JsonTransformer extends BaseTransformer {
 		return 'application/json; charset=UTF-8';
 	}
 
+	public function getFileExtension() {
+		return 'json';
+	}
+
 	public function transform(Schedule $schedule) {
 		$event     = $schedule->getEvent();
 		$cols      = $schedule->getColumns();

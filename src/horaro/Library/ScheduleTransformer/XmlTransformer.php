@@ -20,6 +20,10 @@ class XmlTransformer extends BaseTransformer {
 		return 'text/xml; charset=UTF-8';
 	}
 
+	public function getFileExtension() {
+		return 'xml';
+	}
+
 	public function transform(Schedule $schedule) {
 		$event     = $schedule->getEvent();
 		$start     = $schedule->getLocalStart();

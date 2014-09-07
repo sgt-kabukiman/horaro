@@ -19,6 +19,10 @@ class CsvTransformer extends BaseTransformer {
 		return 'text/csv; charset=UTF-8';
 	}
 
+	public function getFileExtension() {
+		return 'csv';
+	}
+
 	public function transform(Schedule $schedule) {
 		$rows      = [];
 		$cols      = $schedule->getColumns();
