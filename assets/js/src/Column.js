@@ -48,7 +48,7 @@ function Column(id, name, pos) {
 			url += '/' + colID + '?_method=PUT';
 		}
 
-		var data = { name: self.name() };
+		var data = { name: newValue };
 		data[csrfTokenName] = csrfToken;
 
 		self.busy(true);
@@ -77,7 +77,7 @@ function Column(id, name, pos) {
 					self.nextFocus = false;
 				}
 			},
-			error: function(result, data) {
+			error: function(result) {
 				self.errors(result.responseJSON.errors);
 			},
 			complete: function() {
@@ -86,7 +86,7 @@ function Column(id, name, pos) {
 		});
 	});
 
-	self.deleteColumn = function(patch) {
+	self.deleteColumn = function() {
 		if (self.suspended) {
 			return;
 		}
@@ -104,7 +104,7 @@ function Column(id, name, pos) {
 			dataType: 'json',
 			contentType: 'application/json',
 			data: JSON.stringify(data),
-			success: function(result) {
+			success: function() {
 				viewModel.columns.remove(self);
 			},
 			complete: function() {
@@ -115,12 +115,16 @@ function Column(id, name, pos) {
 
 	// behaviours
 
-	self.confirmDelete = function() {
+	self.confirmDelete = function(item, event) {
+		var parent = $(event.target).parent();
 		self.deleting(true);
+		parent.find('.btn-default').focus();
 	};
 
-	self.cancelDelete = function() {
+	self.cancelDelete = function(item, event) {
+		var parent = $(event.target).parent();
 		self.deleting(false);
+		parent.find('.btn-danger').focus();
 	};
 
 	self.doDelete = function() {

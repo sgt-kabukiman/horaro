@@ -1,4 +1,8 @@
+/*global jQuery, ko, horaro, horaroTimeFormat, moment */
+
 jQuery(function($) {
+	'use strict';
+
 	var scheduleColumns, scheduleID, viewModel, items, columns, csrfToken, csrfTokenName;
 
 	// init CSRF token information
@@ -35,6 +39,10 @@ jQuery(function($) {
 
 	// render flash messages
 
+	function growl(msg) {
+		$.bootstrapGrowl(msg, growlOpt);
+	}
+
 	if (typeof horaro !== 'undefined' && horaro.flashes) {
 		var growlOpt = {
 			ele:             'body',
@@ -50,9 +58,7 @@ jQuery(function($) {
 		for (var flashType in horaro.flashes) {
 			growlOpt.type = flashType;
 
-			horaro.flashes[flashType].forEach(function(message) {
-				$.bootstrapGrowl(message, growlOpt);
-			});
+			horaro.flashes[flashType].forEach(growl);
 		}
 	}
 
@@ -70,6 +76,7 @@ jQuery(function($) {
 	// setup Knockout bindings
 
 	//= src/Utils.js
+	//= src/SpatialNavigation.js
 
 	//= src/Item.js
 	//= src/ItemsViewModel.js
@@ -107,6 +114,12 @@ jQuery(function($) {
 		if (viewModel) {
 			ko.applyBindings(viewModel);
 			viewModel.initDragAndDrop(false);
+		}
+
+		// init spatial navigation (i.e. allow going up/down/left/right with array keys)
+		var root = $('.h-scheduler, .h-columnist'); // only one will ever be found
+		if (root.length > 0) {
+			new SpatialNavigation(root);
 		}
 	}
 });

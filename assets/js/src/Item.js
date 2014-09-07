@@ -149,7 +149,7 @@ function Item(id, length, columns, pos) {
 					self.nextFocus = false;
 				}
 			},
-			error: function(result, data) {
+			error: function(result) {
 				self.errors(result.responseJSON.errors);
 			},
 			complete: function() {
@@ -158,7 +158,7 @@ function Item(id, length, columns, pos) {
 		});
 	};
 
-	self.deleteItem = function(patch) {
+	self.deleteItem = function() {
 		if (self.suspended) {
 			return;
 		}
@@ -176,7 +176,7 @@ function Item(id, length, columns, pos) {
 			dataType: 'json',
 			contentType: 'application/json',
 			data: JSON.stringify(data),
-			success: function(result) {
+			success: function() {
 				viewModel.items.remove(self);
 			},
 			complete: function() {
@@ -192,16 +192,37 @@ function Item(id, length, columns, pos) {
 		$(event.target).parent().find('button:visible').focus();
 	};
 
-	self.confirmDelete = function() {
+	self.confirmDelete = function(item, event) {
+		var parent = $(event.target).parent();
 		self.deleting(true);
+		parent.find('.btn-default').focus();
 	};
 
-	self.cancelDelete = function() {
+	self.cancelDelete = function(item, event) {
+		var parent = $(event.target).parent();
 		self.deleting(false);
+		parent.find('.btn-danger').focus();
 	};
 
-	self.doDelete = function() {
+	self.doDelete = function(item, event) {
 		self.deleteItem();
+
+		var row  = $(event.target).closest('tbody');
+		var next = row.next('tbody');
+
+		if (next.length === 0) {
+			next = row.prev('tbody');
+
+			if (next.length === 0) {
+				next = $('#h-add-model');
+			}
+		}
+
+		if (next.is('tbody')) {
+			next = next.find('button:visible:last');
+		}
+
+		next.focus();
 	};
 
 	self.onEditableHidden = function(event, reason) {
