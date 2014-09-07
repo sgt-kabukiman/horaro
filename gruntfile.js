@@ -35,6 +35,16 @@ module.exports = function (grunt) {
 				dest: 'tmp/assets/js/vendor-backend.js'
 			},
 
+			vendor_frontend: {
+				options: {
+					separator: '\n;\n'
+				},
+				src: [
+					'assets/vendor/moment/min/moment.min.js',
+				],
+				dest: 'tmp/assets/js/vendor-frontend.js'
+			},
+
 			i18n_en_us: {
 				options: {
 					separator: '\n;\n',
@@ -74,6 +84,11 @@ module.exports = function (grunt) {
 			app_backend: {
 				files: {
 					'tmp/assets/js/app-backend.js': ['assets/js/backend.js']
+				}
+			},
+			app_frontend: {
+				files: {
+					'tmp/assets/js/app-frontend.js': ['assets/js/frontend.js']
 				}
 			}
 		},
@@ -184,7 +199,7 @@ module.exports = function (grunt) {
 
 	// register custom tasks
 	grunt.registerTask('css',      ['less:app', 'concat:vendor_css', 'cssmin']);
-	grunt.registerTask('js',       ['concat:vendor_backend', 'rig', 'i18n', 'uglify']);
+	grunt.registerTask('js',       ['concat:vendor_backend', 'concat:vendor_frontend', 'rig', 'i18n', 'uglify']);
 	grunt.registerTask('i18n',     ['concat:i18n_en_us', 'concat:i18n_de_de']);
 	grunt.registerTask('assets',   ['clean:assets', 'css', 'js']);
 	grunt.registerTask('doctrine', ['shell:schema', 'lineending:schema', 'shell:proxies']);

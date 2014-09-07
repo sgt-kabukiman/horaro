@@ -62,6 +62,10 @@ class Application extends BaseApplication {
 			return new Controller\IndexController($this);
 		});
 
+		$this['controller.frontend'] = $this->share(function() {
+			return new Controller\FrontendController($this);
+		});
+
 		$this['controller.home'] = $this->share(function() {
 			return new Controller\HomeController($this);
 		});
@@ -131,6 +135,11 @@ class Application extends BaseApplication {
 		$this->get   ('/-/profile',          'controller.profile:editAction')->before('firewall:requireUser');
 		$this->put   ('/-/profile',          'controller.profile:updateAction')->before('firewall:requireUser');
 		$this->put   ('/-/profile/password', 'controller.profile:updatePasswordAction')->before('firewall:requireUser');
+
+		$this->get   ('/{event}',             'controller.frontend:eventAction');
+		$this->get   ('/{event}/',            'controller.frontend:eventAction');
+		$this->get   ('/{event}/{schedule}',  'controller.frontend:scheduleAction');
+		$this->get   ('/{event}/{schedule}/', 'controller.frontend:scheduleAction');
 
 		$this->error('firewall:handleAuthErrors');
 		$this->error('firewall:handleReverseAuthErrors');

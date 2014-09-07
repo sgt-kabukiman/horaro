@@ -113,7 +113,16 @@ class ScheduleItem {
 	 * @return \DateInterval
 	 */
 	public function getDateInterval() {
-		return new \DateInterval('PT'.$this->getLengthInSeconds().'S');
+		return new \DateInterval($this->getISODuration());
+	}
+
+	/**
+	 * Get length as ISO duration
+	 *
+	 * @return string
+	 */
+	public function getISODuration() {
+		return 'PT'.$this->getLengthInSeconds().'S';
 	}
 
 	/**
