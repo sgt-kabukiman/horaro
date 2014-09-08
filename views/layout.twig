@@ -3,13 +3,15 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>{% block title %}Welcome{% endblock %} &ndash; Horaro</title>
+	<title>{% block fulltitle %}{% block title %}Welcome{% endblock %} &ndash; Horaro{% endblock %}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	{% block styles %}{% endblock %}
 </head>
 <body>
+	{% block navbar %}
 	<nav class="navbar navbar-default navbar-static-top" id="top" role="navigation">
 		<div class="container">
+			{% block navheader %}
 			<div class="navbar-header">
 				<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#h-collapse-nav">
 					<span class="sr-only">Toggle navigation</span>
@@ -19,12 +21,14 @@
 				</button>
 				<a href="/" class="navbar-brand">Horaro</a>
 			</div>
+			{% endblock %}
 
 			<div class="collapse navbar-collapse" id="h-collapse-nav">
 				{% block navigation %}{% endblock %}
 			</div>
 		</div>
 	</nav>
+	{% endblock %}
 
 	<div class="container" id="content">
 		{% block content %}{% endblock %}

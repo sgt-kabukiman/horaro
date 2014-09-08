@@ -1,11 +1,37 @@
-{% extends "frontend.twig" %}
+{% extends "frontend/layout.twig" %}
 
-{% block title %}{{ schedule.name }} &ndash; {{ event.name }}{% endblock %}
+{% block fulltitle %}{{ schedule.name }} &ndash; {{ event.name }}{% endblock %}
+
+{% block navheader %}
+<div class="navbar-header">
+	<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#h-collapse-nav">
+		<span class="sr-only">Toggle navigation</span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+	</button>
+	<a href="/{{ event.slug }}" class="navbar-brand">{{ event.name }}</a>
+</div>
+{% endblock %}
+
+{% block navigation %}
+<ul class="nav navbar-nav">
+	{% for sched in event.schedules %}
+	<li><a href="/{{ event.slug }}/{{ sched.slug }}"><i class="fa fa-calendar"></i> {{ sched.name }}</a></li>
+	{% endfor %}
+</ul>
+
+<ul class="nav navbar-nav navbar-right">
+	{% if event.website %}<li><a href="{{ event.website }}" target="_blank" title="{{ event.website }}"><i class="fa fa-globe"></i></a></li>{% endif %}
+	{% if event.twitch %}<li><a href="http://twitch.tv/{{ event.twitch }}" target="_blank" title="{{ event.twitch }}"><i class="fa fa-twitch"></i></a></li>{% endif %}
+	{% if event.twitter %}<li><a href="http://twitter.com/{{ event.twitter }}" target="_blank" title="@{{ event.twitter }}"><i class="fa fa-twitter"></i></a></li>{% endif %}
+</ul>
+{% endblock %}
 
 {% block content %}
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-		<h2>{{ event.name }} <small>{{ schedule.name }}</small></h2>
+		<h2>{{ schedule.name }}</h2>
 	</div>
 </div>
 
