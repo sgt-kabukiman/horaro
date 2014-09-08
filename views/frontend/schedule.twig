@@ -62,7 +62,7 @@
 			{% for idx,column in columns %}
 			<th class="h-c{{ utils.schedulePseudoColClass(idx) }}">{{ column.name }}</th>
 			{% endfor %}
-			<th class="h-co hidden">&nbsp;</th>
+			<th class="h-co hidden {{ utils.scheduleControlsClass(columns | length) }}">&nbsp;</th>
 		{% endspaceless %}</tr>
 	</thead>
 
