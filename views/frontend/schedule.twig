@@ -41,45 +41,46 @@
 
 <div class="row">
 	<div class="col-lg-12 text-center">
-		<h4>Starts on <strong><time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}" class="h-fancy">{{ start.format('Y-m-d H:i:s') }}</time></strong></h4>
+		<h4>Starts on <strong><time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}" class="h-fancy">{{ start.format('l, F d, Y') }}</time></strong></h4>
 	</div>
 </div>
 
 <div class="row">
 	<div class="col-lg-12">
-		<p class="text-center text-muted"><small>All dates and times are given in your local timezone.</small></p>
+		<p class="text-center text-muted" id="localized-note">
+			<small>All dates and times are given in {{ schedule.timezone }} timezone (UTC{{ start.format('P') }}).</small>
+			<small class="nope">All dates and times are given in your local timezone.</small>
+		</p>
 	</div>
 </div>
 
 <table class="table h-schedule">
 	<thead>
 		<tr>{% spaceless %}
-			<th class="h-scheduled">Scheduled</th>
-			<th class="h-length">Estimated</th>
+			<th class="h-s">Scheduled</th>
+			<th class="h-l">Estimated</th>
 			{% for idx,column in columns %}
-			<th class="h-column {{ utils.scheduleColClass(idx) }}">{{ column.name }}</th>
+			<th class="h-c{{ utils.schedulePseudoColClass(idx) }}">{{ column.name }}</th>
 			{% endfor %}
-			<th class="h-controls">&nbsp;</th>
+			<th class="h-co hidden">&nbsp;</th>
 		{% endspaceless %}</tr>
 	</thead>
 
 	{% for idx,item in schedule.items %}
 	<tbody class="{{ idx % 2 ? 'h-odd' : 'h-even' }}">
-		{% set extra = item.extra %}
-		<tr class="h-primary">{% spaceless %}
-			<td class="h-scheduled"><time datetime="{{ scheduled.format('Y-m-d\\TH:i:sP') }}">{{ scheduled.format('H:i:s') }}</time></td>
-			<td class="h-length"><time datetime="{{ item.isoDuration }}">{{ item.length.format('H:i:s') }}</time></td>
+		<tr class="h-primary">
+			{% set extra = item.extra %}
+			<td class="h-s"><time datetime="{{ scheduled.format('Y-m-d\\TH:i:sP') }}">{{ scheduled.format('H:i:s') }}</time></td>
+			<td class="h-l"><time datetime="{{ item.isoDuration }}">{{ item.length.format('H:i:s') }}</time></td>
 			{% for idx,column in columns %}
-			<td class="h-column {{ utils.scheduleColClass(idx) }}" data-colid="{{ column.id }}">{{ extra[column.id]|default('') }}</td>
+			<td class="h-c{{ utils.schedulePseudoColClass(idx) }}">{{ extra[column.id]|default('') }}</td>
 			{% endfor %}
-			<td class="text-right h-controls">
-				<span class="{{ utils.scheduleControlsClass(columns | length) }}">
-					<button class="btn btn-link btn-xs" rel="more"><i class="fa fa-angle-double-down"></i> more</button>
-					<button class="btn btn-link btn-xs hidden" rel="less"><i class="fa fa-angle-double-up"></i> less</button>
-				</span>
-			</td>
 			{% set scheduled = scheduled.add(item.dateInterval) %}
-		{% endspaceless %}</tr>
+			<td class="text-right h-co hidden {{ utils.scheduleControlsClass(columns | length) }}">
+				<button class="btn btn-link btn-xs" rel="more"><i class="fa fa-angle-double-down"></i> more</button>
+				<button class="btn btn-link btn-xs" rel="less"><i class="fa fa-angle-double-up"></i> less</button>
+			</td>
+		</tr>
 	</tbody>
 	{% endfor %}
 </table>
@@ -93,7 +94,7 @@
 			{% endif %}
 
 			<div class="col-lg-2 text-right"><strong>{{ column.name }}:</strong></div>
-			<div class="col-lg-4" rel="{{ column.id }}">&nbsp;</div>
+			<div class="col-lg-4" rel="{{ idx }}">&nbsp;</div>
 
 			{% if loop.index0 % 2 == 1 %}
 			</div>
@@ -110,7 +111,7 @@
 			<div class="row h-item-more hidden-lg hidden-sm hidden-xs">
 			{% endif %}
 			<div class="col-md-2 text-right"><strong>{{ column.name }}:</strong></div>
-			<div class="col-md-4" rel="{{ column.id }}">&nbsp;</div>
+			<div class="col-md-4" rel="{{ idx }}">&nbsp;</div>
 			{% if loop.index0 % 2 == 1 %}
 			</div>
 			{% endif %}
@@ -124,7 +125,7 @@
 		{% for idx,column in columns.slice(2) %}
 		<div class="row h-item-more hidden-lg hidden-md">
 			<div class="col-sm-4 col-xs-4 text-right"><strong>{{ column.name }}:</strong></div>
-			<div class="col-sm-8 col-xs-8" rel="{{ column.id }}">&nbsp;</div>
+			<div class="col-sm-8 col-xs-8" rel="{{ idx }}">&nbsp;</div>
 		</div>
 		{% endfor %}
 	{% endspaceless %}</td>

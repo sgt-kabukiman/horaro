@@ -2,6 +2,10 @@
 	margin-top: 20px;
 }
 
+.nope {
+	display: none;
+}
+
 /* Scheduler */
 
 table.h-schedule {
@@ -26,12 +30,26 @@ table.h-schedule {
 		line-height: 20px;
 	}
 
-	.h-controls {
+	.h-co {
 		white-space: nowrap;
 		width: 100px;
+
+		button[rel=less] {
+			display: none;
+		}
+
+		&.expanded {
+			button[rel=less] {
+				display: inline-block;
+			}
+
+			button[rel=more] {
+				display: none;
+			}
+		}
 	}
 
-	.h-scheduled, .h-length {
+	.h-s, .h-l {
 		white-space: nowrap;
 		width: 50px;
 	}
