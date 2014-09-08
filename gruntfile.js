@@ -13,13 +13,14 @@ module.exports = function (grunt) {
 					compress: true
 				},
 				files: {
-					'tmp/assets/css/app.css': 'assets/app.less'
+					'tmp/assets/css/app-frontend.css': 'assets/less/frontend.less',
+					'tmp/assets/css/app-backend.css':  'assets/less/backend.less'
 				}
 			}
 		},
 
 		concat: {
-			vendor_backend: {
+			vendor_js_backend: {
 				options: {
 					separator: '\n;\n'
 				},
@@ -35,7 +36,7 @@ module.exports = function (grunt) {
 				dest: 'tmp/assets/js/vendor-backend.js'
 			},
 
-			vendor_frontend: {
+			vendor_js_frontend: {
 				options: {
 					separator: '\n;\n'
 				},
@@ -66,7 +67,7 @@ module.exports = function (grunt) {
 				dest: 'tmp/assets/js/i18n/de_de.js'
 			},
 
-			vendor_css: {
+			vendor_css_backend: {
 				options: {
 					separator: '\n'
 				},
@@ -76,7 +77,17 @@ module.exports = function (grunt) {
 					'assets/vendor/pickadate/lib/themes/classic.date.css',
 					'assets/vendor/pickadate/lib/themes/classic.time.css',
 				],
-				dest: 'tmp/assets/css/vendor.css'
+				dest: 'tmp/assets/css/vendor-backend.css'
+			},
+
+			vendor_css_frontend: {
+				options: {
+					separator: '\n'
+				},
+				src: [
+					'assets/vendor/bootswatch/yeti/bootstrap.min.css'
+				],
+				dest: 'tmp/assets/css/vendor-frontend.css'
 			}
 		},
 
@@ -198,8 +209,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-shell');
 
 	// register custom tasks
-	grunt.registerTask('css',      ['less:app', 'concat:vendor_css', 'cssmin']);
-	grunt.registerTask('js',       ['concat:vendor_backend', 'concat:vendor_frontend', 'rig', 'i18n', 'uglify']);
+	grunt.registerTask('css',      ['less:app', 'concat:vendor_css_backend', 'concat:vendor_css_frontend', 'cssmin']);
+	grunt.registerTask('js',       ['concat:vendor_js_backend', 'concat:vendor_js_frontend', 'rig', 'i18n', 'uglify']);
 	grunt.registerTask('i18n',     ['concat:i18n_en_us', 'concat:i18n_de_de']);
 	grunt.registerTask('assets',   ['clean:assets', 'css', 'js']);
 	grunt.registerTask('doctrine', ['shell:schema', 'lineending:schema', 'shell:proxies']);
