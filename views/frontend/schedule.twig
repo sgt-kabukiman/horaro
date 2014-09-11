@@ -75,12 +75,20 @@
 			{% for idx,column in columns %}
 			<td class="h-c{{ utils.schedulePseudoColClass(idx) }}">{{ extra[column.id]|default('') }}</td>
 			{% endfor %}
-			{% set scheduled = scheduled.add(item.dateInterval) %}
 			<td class="text-right h-co hidden {{ utils.scheduleControlsClass(columns | length) }}">
 				<button class="btn btn-link btn-xs" rel="more"><i class="fa fa-angle-double-down"></i> more</button>
 				<button class="btn btn-link btn-xs" rel="less"><i class="fa fa-angle-double-up"></i> less</button>
 			</td>
 		</tr>
+
+		{% set old       = scheduled.format('d') %}
+		{% set scheduled = scheduled.add(item.dateInterval) %}
+
+		{% if idx > 0 and old != scheduled.format('d') %}
+		<tr class="h-new-day">
+			<td colspan="99">{{ scheduled.format('l, F d, Y') }}</td>
+		</tr>
+		{% endif %}
 	</tbody>
 	{% endfor %}
 </table>
