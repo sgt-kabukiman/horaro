@@ -3,6 +3,8 @@
 jQuery(function($) {
 	'use strict';
 
+	$('html').addClass('js');
+
 	var prev = null;
 
 	// render localized times

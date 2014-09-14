@@ -84,49 +84,53 @@ table.h-schedule {
 }
 
 /* h-0 is always shown */
-.h-1, .h-2, .h-3, .h-4, .h-5, .h-6, .h-7, .h-8, .h-9, .h-l {
-	display: none;
-}
+.js {
+	.h-1, .h-2, .h-3, .h-4, .h-5, .h-6, .h-7, .h-8, .h-9, .h-l {
+		display: none;
+	}
 
-.h-l1 .h-co {
-	display: none;
+	.h-l1 .h-co {
+		display: none;
+	}
 }
 
 /* helper */
 .generate-media-query(@width, @colIdx) {
 	@media (min-width: @width) {
-		.h-@{colIdx} {
-			display: table-cell;
-		}
+		.js {
+			.h-@{colIdx} {
+				display: table-cell;
+			}
 
-		/* switch controls to be disabled if all filled-in columns are shown now */
-		.h-i-l@{colIdx} .h-co button {
-			display: none !important;
-		}
+			/* switch controls to be disabled if all filled-in columns are shown now */
+			.h-i-l@{colIdx} .h-co button {
+				display: none !important;
+			}
 
-		.h-i-l@{colIdx} .h-co button[disabled] {
-			display: inline-block !important;
-		}
+			.h-i-l@{colIdx} .h-co button[disabled] {
+				display: inline-block !important;
+			}
 
-		/* also, hide the expanded row when all relevant columns are shown */
-		.h-i-l@{colIdx} .h-secondary {
-			display: none;
-		}
-
-		/* in the expanded view, hide all shown columns */
-		.hide-dd(@counter) when (@counter > 0) {
-			.hide-dd((@counter - 1));    // next iteration
-
-			.h-e-@{counter} {
+			/* also, hide the expanded row when all relevant columns are shown */
+			.h-i-l@{colIdx} .h-secondary {
 				display: none;
 			}
-		}
 
-		.hide-dd(@colIdx);
+			/* in the expanded view, hide all shown columns */
+			.hide-dd(@counter) when (@counter > 0) {
+				.hide-dd((@counter - 1));    // next iteration
 
-		/* hide the controls entirely when all columns for all items are shown */
-		.h-l@{colIdx} .h-co {
-			display: none;
+				.h-e-@{counter} {
+					display: none;
+				}
+			}
+
+			.hide-dd(@colIdx);
+
+			/* hide the controls entirely when all columns for all items are shown */
+			.h-l@{colIdx} .h-co {
+				display: none;
+			}
 		}
 	}
 }
@@ -136,12 +140,14 @@ table.h-schedule {
 
 /* also, show length if there are no more than one column */
 @media (min-width: 550px) {
-	.h-l0 .h-l {
-		display: table-cell;
-	}
+	.js {
+		.h-l0 .h-l {
+			display: table-cell;
+		}
 
-	.h-e-l {
-		display: none;
+		.h-e-l {
+			display: none;
+		}
 	}
 }
 
