@@ -94,7 +94,7 @@ table.h-schedule {
 
 /* helper */
 .generate-media-query(@width, @colIdx) {
-	@media screen and (min-width: @width) {
+	@media (min-width: @width) {
 		.h-@{colIdx} {
 			display: table-cell;
 		}
@@ -135,8 +135,8 @@ table.h-schedule {
 .generate-media-query(550px, 1);
 
 /* also, show length if there are no more than one column */
-@media screen and (min-width: 550px) {
-	.h-l1 .h-l {
+@media (min-width: 550px) {
+	.h-l0 .h-l {
 		display: table-cell;
 	}
 
@@ -147,7 +147,7 @@ table.h-schedule {
 
 /* when we get 45px more, we can even show the length */
 /* do this below 600px so I can see the length on my Nexus 4 (598px when not browsing in fullscreen) */
-@media screen and (min-width: 595px) {
+@media (min-width: 595px) {
 	.h-l {
 		display: table-cell;
 	}
@@ -157,7 +157,7 @@ table.h-schedule {
 .generate-media-query(750px, 2);
 
 /* time to scale the UI back to normal sizes */
-@media screen and (min-width: 992px) {
+@media (min-width: 992px) {
 	table.h-schedule {
 		font-size: 13px;
 	}
@@ -182,7 +182,7 @@ table.h-schedule {
 
 /* when switching to Bootstrap's md style, remove our custom indentation for dd elements, cause they are now shown horizontally */
 /* while we are at it, also increase the space for dt from 160px to 200px */
-@media screen and (min-width: 768px) {
+@media (min-width: 768px) {
 	table.h-schedule {
 		dt {
 			width: 200px;
