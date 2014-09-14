@@ -122,7 +122,7 @@ class ScheduleItem {
 	 * @return string
 	 */
 	public function getISODuration() {
-		return 'PT'.$this->getLengthInSeconds().'S';
+		return preg_replace('/([THMS])0+[HMS]/', '$1', $this->length->format('\P\TG\Hi\Ms\S'));
 	}
 
 	/**
@@ -172,5 +172,18 @@ class ScheduleItem {
 	 */
 	public function getSchedule() {
 		return $this->schedule;
+	}
+
+	public function getWidth($columns) {
+		$len   = 0;
+		$extra = $this->getExtra();
+
+		foreach ($columns as $idx => $column) {
+			if (isset($extra[$column->getId()]) && mb_strlen(trim($extra[$column->getId()])) > 0) {
+				$len = $idx;
+			}
+		}
+
+		return $len;
 	}
 }

@@ -1,5 +1,11 @@
 {% extends "frontend/layout.twig" %}
 
+{% set start     = schedule.localStart %}
+{% set scheduled = schedule.localStart %}
+{% set columns   = schedule.columns    %}
+{% set numCols   = columns|length      %}
+{% set fluid     = numCols > 4         %}
+
 {% block fulltitle %}{{ schedule.name }} &ndash; {{ event.name }}{% endblock %}
 
 {% block navheader %}
@@ -35,10 +41,6 @@
 	</div>
 </div>
 
-{% set start     = schedule.localStart %}
-{% set scheduled = schedule.localStart %}
-{% set columns   = schedule.columns %}
-
 <div class="row">
 	<div class="col-lg-12 text-center">
 		<h4>Starts on <strong><time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}" class="h-fancy">{{ start.format('l, F d, Y') }}</time></strong></h4>
@@ -54,31 +56,28 @@
 	</div>
 </div>
 
-<table class="table h-schedule">
+<table class="table h-schedule h-l{{ schedule.getMaxItemWidth(columns) }}" data-columns="{{ numCols }}">
 	<thead>
 		<tr>{% spaceless %}
 			<th class="h-s">Scheduled</th>
+			<th class="h-0">{{ columns[0].name }}</th>
 			<th class="h-l">Estimated</th>
-			{% for idx,column in columns %}
-			<th class="h-c{{ utils.schedulePseudoColClass(idx) }}">{{ column.name }}</th>
+			{% for idx,column in columns.slice(1) %}
+			<th class="h-{{ idx }}">{{ column.name }}</th>
 			{% endfor %}
-			<th class="h-co hidden {{ utils.scheduleControlsClass(columns | length) }}">&nbsp;</th>
 		{% endspaceless %}</tr>
 	</thead>
 
 	{% for idx,item in schedule.items %}
-	<tbody class="{{ idx % 2 ? 'h-odd' : 'h-even' }}">
+	<tbody class="{{ idx % 2 ? 'h-odd' : 'h-even' }} h-i-l{{ item.getWidth(columns) }}">
 		<tr class="h-primary">
 			{% set extra = item.extra %}
 			<td class="h-s"><time datetime="{{ scheduled.format('Y-m-d\\TH:i:sP') }}">{{ scheduled.format('H:i:s') }}</time></td>
+			<td class="h-0">{{ extra[columns[0].id]|default('') }}</td>
 			<td class="h-l"><time datetime="{{ item.isoDuration }}">{{ item.length.format('H:i:s') }}</time></td>
-			{% for idx,column in columns %}
-			<td class="h-c{{ utils.schedulePseudoColClass(idx) }}">{{ extra[column.id]|default('') }}</td>
+			{% for idx,column in columns.slice(1) %}
+			<td class="h-{{ idx }}">{{ extra[column.id]|default('') }}</td>
 			{% endfor %}
-			<td class="text-right h-co hidden {{ utils.scheduleControlsClass(columns | length) }}">
-				<button class="btn btn-link btn-xs" rel="more"><i class="fa fa-angle-double-down"></i> more</button>
-				<button class="btn btn-link btn-xs" rel="less"><i class="fa fa-angle-double-up"></i> less</button>
-			</td>
 		</tr>
 
 		{% set old       = scheduled.format('d') %}
@@ -86,57 +85,35 @@
 
 		{% if idx > 0 and old != scheduled.format('d') %}
 		<tr class="h-new-day">
-			<td colspan="99">{{ scheduled.format('l, F d, Y') }}</td>
+			<td colspan="{{ numCols + 2 }}">{{ scheduled.format('l, F d, Y') }}</td>
 		</tr>
 		{% endif %}
 	</tbody>
 	{% endfor %}
 </table>
 
+{% if numCols > 1 %}
+<script type="text/html" id="controls">
+<td class="h-co">
+	<button class="btn btn-link btn-xs" rel="more"><i class="fa fa-angle-double-down"></i> more</button>
+	<button class="btn btn-link btn-xs" rel="less"><i class="fa fa-angle-double-up"></i> less</button>
+	<button class="btn btn-link btn-xs" disabled><i class="fa fa-angle-double-down"></i> more</button>
+</td>
+</script>
+
 <script type="text/html" id="expanded_tpl">
-<tr class="h-secondary {{ utils.scheduleControlsClass(columns | length) }}">
-	<td colspan="100">{% spaceless %}
-		{% for idx,column in columns.slice(4) %}
-			{% if loop.index0 % 2 == 0 %}
-			<div class="row h-item-more hidden-md hidden-sm hidden-xs">
-			{% endif %}
-
-			<div class="col-lg-2 text-right"><strong>{{ column.name }}:</strong></div>
-			<div class="col-lg-4" rel="{{ idx }}">&nbsp;</div>
-
-			{% if loop.index0 % 2 == 1 %}
-			</div>
-			{% endif %}
-		{% endfor %}
-
-		{% if columns|length > 4 and (columns|length - 4) % 2 > 0 %}
-		</div>
-		{% endif %}
-
-		{% for idx,column in columns.slice(3) %}
-			{% spaceless %}
-			{% if loop.index0 % 2 == 0 %}
-			<div class="row h-item-more hidden-lg hidden-sm hidden-xs">
-			{% endif %}
-			<div class="col-md-2 text-right"><strong>{{ column.name }}:</strong></div>
-			<div class="col-md-4" rel="{{ idx }}">&nbsp;</div>
-			{% if loop.index0 % 2 == 1 %}
-			</div>
-			{% endif %}
-			{% endspaceless %}
-		{% endfor %}
-
-		{% if columns|length > 3 and (columns|length - 3) % 2 > 0 %}
-		</div>
-		{% endif %}
-
-		{% for idx,column in columns.slice(2) %}
-		<div class="row h-item-more hidden-lg hidden-md">
-			<div class="col-sm-4 col-xs-4 text-right"><strong>{{ column.name }}:</strong></div>
-			<div class="col-sm-8 col-xs-8" rel="{{ idx }}">&nbsp;</div>
-		</div>
-		{% endfor %}
-	{% endspaceless %}</td>
+<tr class="h-secondary">
+	<td colspan="{{ numCols + 2 }}">
+		<dl class="dl-horizontal">
+			<dt class="h-e-l">Estimated:</dt>
+			<dd class="h-e-l">&nbsp;</dd>
+			{% for idx,column in columns.slice(1) %}
+			<dt class="h-e-{{ idx }}">{{ column.name }}:</dt>
+			<dd class="h-e-{{ idx }}">&nbsp;</dd>
+			{% endfor %}
+		</dl>
+	</td>
 </tr>
 </script>
+{% endif %}
 {% endblock %}

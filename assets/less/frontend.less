@@ -7,24 +7,27 @@
 }
 
 /* Scheduler */
+/* extra extra small, our default (Bootstrap philosophy) */
 
 table.h-schedule {
-	font-size: 13px;
+	font-size: 12px;
+
+	.btn-xs {
+		padding: 3px 0;
+	}
 
 	thead th {
-		padding: 3px 5px !important;
+		padding: 3px !important;
 	}
 
 	> tbody + tbody {
 		border-top: 1px solid #dddddd;
 	}
 
-	tbody {
-		td {
-			padding: 3px 5px;
-			vertical-align: middle;
-			line-height: 24px;
-		}
+	tbody td {
+		padding: 3px;
+		vertical-align: middle;
+		line-height: 22px;
 	}
 
 	.h-item-more div {
@@ -32,10 +35,10 @@ table.h-schedule {
 	}
 
 	.h-co {
-		white-space: nowrap;
-		width: 100px;
+		text-align: right;
 
-		button[rel=less] {
+		button[rel=less],
+		button[disabled] {
 			display: none;
 		}
 
@@ -48,20 +51,158 @@ table.h-schedule {
 				display: none;
 			}
 		}
+
+		button[disabled] {
+			color: #999;
+		}
 	}
 
-	.h-s, .h-l {
-		white-space: nowrap;
-		width: 50px;
+	dl {
+		margin-top: 2px;
+		margin-bottom: 2px;
 	}
 
-	.h-new-day td {
-		background: #ddd;
-		padding: 7px;
-		font-weight: bold;
-		line-height: 16px;
+	dt, dd {
+		line-height: 150%;
+	}
+
+	dd {
+		margin-left: 15px;
 	}
 }
+
+.h-s, .h-l {
+	white-space: nowrap;
+	width: 50px;
+}
+
+.h-new-day td {
+	background: #ddd !important;
+	padding: 7px;
+	font-weight: bold;
+	line-height: 16px;
+}
+
+/* h-0 is always shown */
+.h-1, .h-2, .h-3, .h-4, .h-5, .h-6, .h-7, .h-8, .h-9, .h-l {
+	display: none;
+}
+
+.h-l1 .h-co {
+	display: none;
+}
+
+/* helper */
+.generate-media-query(@width, @colIdx) {
+	@media screen and (min-width: @width) {
+		.h-@{colIdx} {
+			display: table-cell;
+		}
+
+		/* switch controls to be disabled if all filled-in columns are shown now */
+		.h-i-l@{colIdx} .h-co button {
+			display: none !important;
+		}
+
+		.h-i-l@{colIdx} .h-co button[disabled] {
+			display: inline-block !important;
+		}
+
+		/* also, hide the expanded row when all relevant columns are shown */
+		.h-i-l@{colIdx} .h-secondary {
+			display: none;
+		}
+
+		/* in the expanded view, hide all shown columns */
+		.hide-dd(@counter) when (@counter > 0) {
+			.hide-dd((@counter - 1));    // next iteration
+
+			.h-e-@{counter} {
+				display: none;
+			}
+		}
+
+		.hide-dd(@colIdx);
+
+		/* hide the controls entirely when all columns for all items are shown */
+		.h-l@{colIdx} .h-co {
+			display: none;
+		}
+	}
+}
+
+/* second text column shall be 150px wide(we use 12px font size), our minimal size is based on 400px */
+.generate-media-query(550px, 1);
+
+/* also, show length if there are no more than one column */
+@media screen and (min-width: 550px) {
+	.h-l1 .h-l {
+		display: table-cell;
+	}
+
+	.h-e-l {
+		display: none;
+	}
+}
+
+/* when we get 45px more, we can even show the length */
+/* do this below 600px so I can see the length on my Nexus 4 (598px when not browsing in fullscreen) */
+@media screen and (min-width: 595px) {
+	.h-l {
+		display: table-cell;
+	}
+}
+
+/* space for one more column */
+.generate-media-query(750px, 2);
+
+/* time to scale the UI back to normal sizes */
+@media screen and (min-width: 992px) {
+	table.h-schedule {
+		font-size: 13px;
+	}
+
+	.btn-xs {
+		padding: 4px 8px;
+	}
+
+	thead th {
+		padding: 3px 5px !important;
+	}
+
+	tbody td {
+		padding: 3px 5px;
+		line-height: 24px;
+	}
+
+	.h-co {
+		width: 100px;
+	}
+}
+
+/* when switching to Bootstrap's md style, remove our custom indentation for dd elements, cause they are now shown horizontally */
+/* while we are at it, also increase the space for dt from 160px to 200px */
+@media screen and (min-width: 768px) {
+	table.h-schedule {
+		dt {
+			width: 200px;
+		}
+
+		dd {
+			margin-left: 220px;
+		}
+	}
+}
+
+/* generate generic 200px rules for the next columns; we show up to 10 columns */
+.generate-queries(@colIdx) when (@colIdx =< 9) {
+	@width: (850px + ((@colIdx - 2) * 200));
+
+	.generate-media-query(@width, @colIdx);
+	.generate-queries((@colIdx + 1));
+}
+
+.generate-queries(3);
 
 .h-schedule-header {
 	.btn-group a {

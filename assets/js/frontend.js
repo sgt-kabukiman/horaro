@@ -36,30 +36,49 @@ jQuery(function($) {
 		$('.h-schedule .'+size).addClass('hidden-'+size).removeClass(size);
 	});
 
-	// add the more/less control buttons
-	$('.h-schedule .h-co').removeClass('hidden');
-
 	// The actual more/less behaviour
+	if ($('#controls').length > 0) {
+		$('.h-schedule tbody tr.h-primary').append($('#controls').html());
+		$('.h-schedule thead tr').append('<th class="h-co">&nbsp;</th>');
+	}
+
 	var template = $($('#expanded_tpl').html().trim());
+	var columns  = $('.h-schedule').data('columns');
 
 	$('.h-schedule').on('click', '.h-co button', function(event) {
-		var btn     = $(this);
-		var row     = btn.closest('tr');
-		var mode    = btn.attr('rel');
-		var columns = row.find('.h-c');
-		var tpl     = template.clone();
+		var btn        = $(this);
+		var row        = btn.closest('tr');
+		var mode       = btn.attr('rel');
+		var allColumns = row.find('td');
+		var tpl        = template.clone();
+		var rel, i, text, len;
 
 		if (mode === 'less') {
 			row.next('.h-secondary').remove();
 		}
 		else {
-			columns.each(function(idx, col) {
-				tpl.find('div[rel="' + idx + '"]').text(col.innerText);
-			});
+			tpl.find('dd.h-e-l').text(row.find('.h-l').text());
 
+			len = 0;
+
+			for (var i = 0; i < columns; ++i) {
+				text = row.find('.h-' + i).text();
+
+				if (text.trim().length === 0) {
+					tpl.find('.h-e-' + i).remove();
+				}
+				else {
+					tpl.find('dd.h-e-' + i).text(text);
+					len++;
+				}
+			}
+
+			tpl.addClass('h-e-l' + len);
 			row.after(tpl);
 		}
 
 		btn.parent().toggleClass('expanded');
 	});
+
+	// add
 });

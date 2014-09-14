@@ -10,7 +10,7 @@
 <body>
 	{% block navbar %}
 	<nav class="navbar navbar-default navbar-static-top" id="top" role="navigation">
-		<div class="container">
+		<div class="{{ fluid|default(false) ? 'container-fluid' : 'container' }}">
 			{% block navheader %}
 			<div class="navbar-header">
 				<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#h-collapse-nav">
@@ -30,7 +30,7 @@
 	</nav>
 	{% endblock %}
 
-	<div class="container" id="content">
+	<div class="{{ fluid|default(false) ? 'container-fluid' : 'container' }}" id="content">
 		{% block content %}{% endblock %}
 	</div>
 

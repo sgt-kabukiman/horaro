@@ -297,4 +297,14 @@ class Schedule {
 	public function getEvent() {
 		return $this->event;
 	}
+
+	public function getMaxItemWidth($columns) {
+		$max = 0;
+
+		foreach ($this->getItems() as $item) {
+			$max = max($max, $item->getWidth($columns));
+		}
+
+		return $max;
+	}
 }
