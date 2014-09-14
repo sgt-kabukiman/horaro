@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -78,16 +80,6 @@ module.exports = function (grunt) {
 					'assets/vendor/pickadate/lib/themes/classic.time.css',
 				],
 				dest: 'tmp/assets/css/vendor-backend.css'
-			},
-
-			vendor_css_frontend: {
-				options: {
-					separator: '\n'
-				},
-				src: [
-					'assets/vendor/bootswatch/yeti/bootstrap.min.css'
-				],
-				dest: 'tmp/assets/css/vendor-frontend.css'
 			}
 		},
 
@@ -116,6 +108,21 @@ module.exports = function (grunt) {
 					dest: 'www/assets/css/',
 					ext: '.min.css'
 				}]
+			}
+		},
+
+		copy: {
+			themes: {
+				files: [
+					{
+						expand: true,
+						src: ['assets/vendor/bootswatch/*/*.min.css'],
+						dest: 'www/assets/css',
+						rename: function(dest, src) {
+							return path.join(dest, 'theme-' + path.basename(path.dirname(src)) + '.min.css');
+						}
+					}
+				]
 			}
 		},
 
@@ -198,6 +205,7 @@ module.exports = function (grunt) {
 	// load tasks
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -209,7 +217,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-shell');
 
 	// register custom tasks
-	grunt.registerTask('css',      ['less:app', 'concat:vendor_css_backend', 'concat:vendor_css_frontend', 'cssmin']);
+	grunt.registerTask('css',      ['less:app', 'concat:vendor_css_backend', 'copy:themes', 'cssmin']);
 	grunt.registerTask('js',       ['concat:vendor_js_backend', 'concat:vendor_js_frontend', 'rig', 'i18n', 'uglify']);
 	grunt.registerTask('i18n',     ['concat:i18n_en_us', 'concat:i18n_de_de']);
 	grunt.registerTask('assets',   ['clean:assets', 'css', 'js']);

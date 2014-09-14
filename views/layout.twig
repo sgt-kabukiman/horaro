@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	{% block styles %}{% endblock %}
 </head>
-<body>
+<body{% block body_attr %}{% endblock %}>
 	{% block navbar %}
 	<nav class="navbar navbar-default navbar-static-top" id="top" role="navigation">
 		<div class="{{ fluid|default(false) ? 'container-fluid' : 'container' }}">
