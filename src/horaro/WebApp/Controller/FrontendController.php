@@ -10,11 +10,50 @@
 
 namespace horaro\WebApp\Controller;
 
+use horaro\Library\Entity\Schedule;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class FrontendController extends BaseController {
 	public function scheduleAction(Request $request) {
+		list($schedule, $event) = $this->resolveSchedule($request);
+
+		$content = $this->render('frontend/schedule.twig', [
+			'event'        => $event,
+			'schedule'     => $schedule,
+			'eventSlug'    => $eventSlug,
+			'scheduleSlug' => $scheduleSlug
+		]);
+
+		$response = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
+
+		return $this->setCachingHeader($schedule, $response);
+	}
+
+	public function scheduleExportAction(Request $request) {
+		list($schedule, $event) = $this->resolveSchedule($request);
+
+		$format  = strtolower($request->attributes->get('format'));
+		$formats = ['json', 'xml', 'csv', 'ical'];
+
+		if (!in_array($format, $formats, true)) {
+			throw new Ex\BadRequestException('Invalid format "'.$format.'" given.');
+		}
+
+		$id          = 'schedule-transformer-'.$format;
+		$transformer = $this->app[$id];
+		$data        = $transformer->transform($schedule, true);
+		$filename    = sprintf('%s-%s.%s', $event->getSlug(), $schedule->getSlug(), $transformer->getFileExtension());
+
+		$response = new Response($data, 200, [
+			'Content-Type'        => $transformer->getContentType(),
+			'Content-Disposition' => 'filename="'.$filename.'"'
+		]);
+
+		return $this->setCachingHeader($schedule, $response);
+	}
+
+	protected function resolveSchedule(Request $request) {
 		$eventSlug    = mb_strtolower($request->attributes->get('event'));
 		$scheduleSlug = mb_strtolower($request->attributes->get('schedule'));
 
@@ -49,14 +88,10 @@ class FrontendController extends BaseController {
 			]);
 		}
 
-		$content = $this->render('frontend/schedule.twig', [
-			'event'        => $event,
-			'schedule'     => $schedule,
-			'eventSlug'    => $eventSlug,
-			'scheduleSlug' => $scheduleSlug
-		]);
+		return [$schedule, $event];
+	}
 
-		$response = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
+	protected function setCachingHeader(Schedule $schedule, Response $response) {
 		$response->setLastModified($schedule->getUpdatedAt());
 		$response->setTtl(5*60);       // 5 minutes
 		$response->setClientTtl(5*60);

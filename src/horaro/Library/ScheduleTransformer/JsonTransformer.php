@@ -24,7 +24,7 @@ class JsonTransformer extends BaseTransformer {
 		return 'json';
 	}
 
-	public function transform(Schedule $schedule) {
+	public function transform(Schedule $schedule, $public = false) {
 		$event     = $schedule->getEvent();
 		$cols      = $schedule->getColumns();
 		$columns   = [];
@@ -56,6 +56,8 @@ class JsonTransformer extends BaseTransformer {
 			$scheduled->add($item->getDateInterval());
 		}
 
+		$scheduleData =
+
 		$data = [
 			'schedule' => [
 				'id'       => $this->encodeID($schedule->getId(), 'schedule'),
@@ -78,6 +80,11 @@ class JsonTransformer extends BaseTransformer {
 				'exported' => gmdate(self::DATE_FORMAT_UTC)
 			]
 		];
+
+		if ($public) {
+			unset($data['schedule']['id']);
+			unset($data['schedule']['event']['id']);
+		}
 
 		return json_encode($data, JSON_UNESCAPED_SLASHES);
 	}

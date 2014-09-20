@@ -24,7 +24,7 @@ class XmlTransformer extends BaseTransformer {
 		return 'xml';
 	}
 
-	public function transform(Schedule $schedule) {
+	public function transform(Schedule $schedule, $public = false) {
 		$event     = $schedule->getEvent();
 		$start     = $schedule->getLocalStart();
 		$cols      = $schedule->getColumns();
@@ -36,7 +36,9 @@ class XmlTransformer extends BaseTransformer {
 
 		$xml->startElement('export');
 			$xml->startElement('schedule');
-				$xml->writeAttribute('id', $this->encodeID($schedule->getId(), 'schedule'));
+				if (!$public) {
+					$xml->writeAttribute('id', $this->encodeID($schedule->getId(), 'schedule'));
+				}
 				$xml->writeElement('name', $schedule->getName());
 				$xml->writeElement('slug', $schedule->getSlug());
 				$xml->writeElement('timezone', $schedule->getTimezone());
@@ -50,7 +52,9 @@ class XmlTransformer extends BaseTransformer {
 				$xml->writeElement('url', sprintf('/%s/%s', $event->getSlug(), $schedule->getSlug()));
 
 				$xml->startElement('event');
-					$xml->writeAttribute('id', $this->encodeID($event->getId(), 'event'));
+					if (!$public) {
+						$xml->writeAttribute('id', $this->encodeID($event->getId(), 'event'));
+					}
 					$xml->writeElement('name', $event->getName());
 					$xml->writeElement('slug', $event->getSlug());
 				$xml->endElement();

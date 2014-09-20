@@ -17,6 +17,12 @@ class ICalTransformer extends BaseTransformer {
 	const DATE_FORMAT     = 'Ymd\THis';
 	const DATE_FORMAT_UTC = 'Ymd\THis\Z';
 
+	protected $secret;
+
+	public function __construct($secret) {
+		$this->secret = $secret;
+	}
+
 	public function getContentType() {
 		return 'text/calendar; charset=UTF-8';
 	}
@@ -25,7 +31,7 @@ class ICalTransformer extends BaseTransformer {
 		return 'ics';
 	}
 
-	public function transform(Schedule $schedule) {
+	public function transform(Schedule $schedule, $public = false) {
 		$now         = new \DateTime('now UTC');
 		$tz          = $schedule->getTimezone();
 		$start       = $schedule->getLocalStart();
@@ -87,9 +93,9 @@ class ICalTransformer extends BaseTransformer {
 	public function generateUID(ScheduleItem $item) {
 		$event    = $item->getSchedule()->getEvent()->getSlug();
 		$schedule = $item->getSchedule()->getSlug();
-		$item     = $item->getId();
+		$item     = substr(sha1($this->secret.'-'.$item->getId()), 0, 12);
 
-		return sprintf('%s_%s_%d@horaro.example.com', $event, $schedule, $item);
+		return sprintf('%s_%s_%s@horaro.example.com', $event, $schedule, $item);
 	}
 
 	protected function getProductID() {

@@ -91,7 +91,7 @@ class BaseApplication extends Application {
 		});
 
 		$this['schedule-transformer-ical'] = $this->share(function() {
-			return new ScheduleTransformer\ICalTransformer();
+			return new ScheduleTransformer\ICalTransformer('something super secret that should be configurable');
 		});
 
 		// set Silex' debug flag

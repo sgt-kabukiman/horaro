@@ -136,10 +136,11 @@ class Application extends BaseApplication {
 		$this->put   ('/-/profile',          'controller.profile:updateAction')->before('firewall:requireUser');
 		$this->put   ('/-/profile/password', 'controller.profile:updatePasswordAction')->before('firewall:requireUser');
 
-		$this->get   ('/{event}',             'controller.frontend:eventAction');
-		$this->get   ('/{event}/',            'controller.frontend:eventAction');
-		$this->get   ('/{event}/{schedule}',  'controller.frontend:scheduleAction');
-		$this->get   ('/{event}/{schedule}/', 'controller.frontend:scheduleAction');
+		$this->get   ('/{event}',                     'controller.frontend:eventAction');
+		$this->get   ('/{event}/',                    'controller.frontend:eventAction');
+		$this->get   ('/{event}/{schedule}.{format}', 'controller.frontend:scheduleExportAction')->assert('format', '(json|xml|csv|ical)');
+		$this->get   ('/{event}/{schedule}',          'controller.frontend:scheduleAction');
+		$this->get   ('/{event}/{schedule}/',         'controller.frontend:scheduleAction');
 
 		$this->error('firewall:handleAuthErrors');
 		$this->error('firewall:handleReverseAuthErrors');

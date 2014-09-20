@@ -23,7 +23,7 @@ class CsvTransformer extends BaseTransformer {
 		return 'csv';
 	}
 
-	public function transform(Schedule $schedule) {
+	public function transform(Schedule $schedule, $public = false) {
 		$rows      = [];
 		$cols      = $schedule->getColumns();
 		$scheduled = $schedule->getLocalStart();
