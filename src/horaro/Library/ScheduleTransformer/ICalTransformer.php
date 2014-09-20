@@ -18,9 +18,11 @@ class ICalTransformer extends BaseTransformer {
 	const DATE_FORMAT_UTC = 'Ymd\THis\Z';
 
 	protected $secret;
+	protected $host;
 
-	public function __construct($secret) {
+	public function __construct($secret, $hostname) {
 		$this->secret = $secret;
+		$this->host   = $hostname;
 	}
 
 	public function getContentType() {
@@ -34,8 +36,7 @@ class ICalTransformer extends BaseTransformer {
 	public function transform(Schedule $schedule, $public = false) {
 		$now         = new \DateTime('now UTC');
 		$tz          = $schedule->getTimezone();
-		$start       = $schedule->getLocalStart();
-		$scheduled   = clone $start;
+		$scheduled   = $schedule->getUTCStart();
 		$columns     = $schedule->getColumns();
 		$columnNames = [];
 		$columnIDs   = [];
@@ -51,7 +52,10 @@ class ICalTransformer extends BaseTransformer {
 		$lines = [
 			'BEGIN:VCALENDAR',
 			'VERSION:2.0',
-			'PRODID:'.$this->getProductID()
+			'PRODID:'.$this->getProductID(),
+			'CALSCALE:GREGORIAN',
+			$this->getString($schedule->getEvent()->getName().' '.$schedule->getName(), 'X-WR-CALNAME'),
+			'X-PUBLISHED-TTL:PT15M'
 		];
 
 		foreach ($schedule->getItems() as $item) {
@@ -67,14 +71,14 @@ class ICalTransformer extends BaseTransformer {
 			}
 
 			$lines[] = 'BEGIN:VEVENT';
-			$lines[] = 'UID:'.$this->generateUID($item);
-			$lines[] = 'DTSTAMP:'.$now->format(self::DATE_FORMAT_UTC);
-			$lines[] = $this->getString($summary, 'SUMMARY');
-			$lines[] = 'DTSTART;TZID='.$tz.':'.$scheduled->format(self::DATE_FORMAT);
+			$lines[] = 'DTSTART:'.$scheduled->format(self::DATE_FORMAT_UTC);
 
 			$scheduled->add($item->getDateInterval());
 
-			$lines[] = 'DTEND;TZID='.$tz.':'.$scheduled->format(self::DATE_FORMAT);
+			$lines[] = 'DTEND:'.$scheduled->format(self::DATE_FORMAT_UTC);
+			$lines[] = 'DTSTAMP:'.$now->format(self::DATE_FORMAT_UTC);
+			$lines[] = 'UID:'.$this->generateUID($item);
+			$lines[] = $this->getString($summary, 'SUMMARY');
 
 			if (!empty($description)) {
 				$lines[] = $this->getString(implode("\n", $description), 'DESCRIPTION');
@@ -95,7 +99,7 @@ class ICalTransformer extends BaseTransformer {
 		$schedule = $item->getSchedule()->getSlug();
 		$item     = substr(sha1($this->secret.'-'.$item->getId()), 0, 12);
 
-		return sprintf('%s_%s_%s@horaro.example.com', $event, $schedule, $item);
+		return sprintf('%s_%s_%s@%s', $event, $schedule, $item, $this->host);
 	}
 
 	protected function getProductID() {
@@ -109,11 +113,11 @@ class ICalTransformer extends BaseTransformer {
 		// a really cool algorithm to do so, we just go character by character and
 		// count the bytes (character != byte).
 
-		$str   = addcslashes($str, ',;:\\'."\n");
+		$str   = addcslashes($str, ',;\\'."\n");
 		$total = strtoupper($property).':'.$str;
 
 		// simple case, do nothing
-		if (mb_strlen($total, '8bit') <= 75) return $total;
+		if (mb_strlen($total, '8bit') <= 74) return $total;
 
 		$result = '';
 		$len    = 0;
@@ -122,7 +126,7 @@ class ICalTransformer extends BaseTransformer {
 			$char   = mb_substr($total, 0, 1);
 			$octets = mb_strlen($char, '8bit');
 
-			if ($len+$octets > 75) {
+			if ($len+$octets > 74) {
 				$result .= "\r\n $char";
 				$len     = $octets + 1; // len of char + the leading space
 			}

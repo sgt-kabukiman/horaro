@@ -45,9 +45,9 @@
 		<ul class="dropdown-menu">
 			<li><a href="/{{ event.slug }}/{{ schedule.slug }}/ical-feed"><i class="fa fa-calendar"></i> iCal Feed</a></li>
 			<li class="divider"></li>
-			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.json"><i class="fa fa-download"></i> Export as JSON</a></li>
-			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.xml"><i class="fa fa-download"></i> Export as XML</a></li>
-			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.csv"><i class="fa fa-download"></i> Export as CSV</a></li>
+			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.json?named=true"><i class="fa fa-download"></i> Export as JSON</a></li>
+			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.xml?named=true"><i class="fa fa-download"></i> Export as XML</a></li>
+			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.csv?named=true"><i class="fa fa-download"></i> Export as CSV</a></li>
 		</ul>
 	</li>
 </ul>
@@ -93,7 +93,7 @@
 		is definitely the recommended way, because your calendar will be kept up to date as the schedule
 		changes.</p>
 
-		<p>To just import the schedule once, <a href="/{{ event.slug }}/{{ schedule.slug }}.ical">download the iCal file</a>
+		<p>To just import the schedule once, <a href="/{{ event.slug }}/{{ schedule.slug }}.ical?named=true">download the iCal file</a>
 		and use your calendar's import function on it. Don't let the file extension (<code>.ics</code>) of
 		your download distract you: iCal data is simply stored in <code>.ics</code> files.</p>
 

@@ -44,11 +44,13 @@ class FrontendController extends BaseController {
 		$transformer = $this->app[$id];
 		$data        = $transformer->transform($schedule, true);
 		$filename    = sprintf('%s-%s.%s', $event->getSlug(), $schedule->getSlug(), $transformer->getFileExtension());
+		$headers     = ['Content-Type' => $transformer->getContentType()];
 
-		$response = new Response($data, 200, [
-			'Content-Type'        => $transformer->getContentType(),
-			'Content-Disposition' => 'filename="'.$filename.'"'
-		]);
+		if ($request->query->get('named')) {
+			$headers['Content-Disposition'] = 'filename="'.$filename.'"';
+		}
+
+		$response = new Response($data, 200, $headers);
 
 		return $this->setCachingHeader($schedule, $response);
 	}
