@@ -86,9 +86,11 @@ jQuery(function($) {
 		var next = current.next('tbody');
 
 		$('.h-ticker').show();
+		$('.h-schedule tr.success').removeClass('success');
 		$('.h-current .panel-body').text(getItemTitle(current));
 		$('.h-next .panel-body').text(getItemTitle(next));
 		$('.h-next time').attr('datetime', getItemScheduled(next));
+		current.find('.h-primary').addClass('success');
 
 		updateRelativeTimes();
 	}
@@ -169,13 +171,20 @@ jQuery(function($) {
 			btn.parent().toggleClass('expanded');
 		});
 
-		// show currently active schedule item on top
-		var tickerInterval = window.setInterval(function() {
-
-		}, 30000);
-
 		// update ticker
 		window.setInterval(updateTicker, 5000);
 		updateTicker();
+
+		$('.h-jumper').on('click', function() {
+			var item = findCurrentItem();
+
+			if (!item) {
+				return false;
+			}
+
+			$('html, body').animate({ scrollTop: item.offset().top - 100 }, 'slow');
+
+			return false;
+		});
 	}
 });
