@@ -123,6 +123,15 @@ module.exports = function (grunt) {
 						}
 					}
 				]
+			},
+			images: {
+				files: [
+					{
+						expand: true,
+						src: ['assets/images/*'],
+						dest: 'www'
+					}
+				]
 			}
 		},
 
@@ -153,6 +162,11 @@ module.exports = function (grunt) {
 			js: {
 				src: 'www/assets/js/*.js',
 				dest: 'www/assets/js'
+			},
+
+			images: {
+				src: 'www/assets/images/*',
+				dest: 'www/assets/images'
 			},
 
 			i18n: {
@@ -220,7 +234,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('css',      ['less:app', 'concat:vendor_css_backend', 'copy:themes', 'cssmin']);
 	grunt.registerTask('js',       ['concat:vendor_js_backend', 'concat:vendor_js_frontend', 'rig', 'i18n', 'uglify']);
 	grunt.registerTask('i18n',     ['concat:i18n_en_us', 'concat:i18n_de_de']);
-	grunt.registerTask('assets',   ['clean:assets', 'css', 'js']);
+	grunt.registerTask('assets',   ['clean:assets', 'css', 'js', 'copy:images']);
 	grunt.registerTask('doctrine', ['shell:schema', 'lineending:schema', 'shell:proxies']);
 	grunt.registerTask('ship',     ['filerev', 'filerev_assets']);
 	grunt.registerTask('default',  ['assets']);

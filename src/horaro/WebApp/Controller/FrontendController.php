@@ -21,8 +21,8 @@ class FrontendController extends BaseController {
 		$content = $this->render('frontend/schedule.twig', [
 			'event'        => $event,
 			'schedule'     => $schedule,
-			'eventSlug'    => $eventSlug,
-			'scheduleSlug' => $scheduleSlug
+			'eventSlug'    => $event->getSlug(),
+			'scheduleSlug' => $schedule->getSlug()
 		]);
 
 		$response = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
@@ -49,6 +49,19 @@ class FrontendController extends BaseController {
 			'Content-Type'        => $transformer->getContentType(),
 			'Content-Disposition' => 'filename="'.$filename.'"'
 		]);
+
+		return $this->setCachingHeader($schedule, $response);
+	}
+
+	public function icalFaqAction(Request $request) {
+		list($schedule, $event) = $this->resolveSchedule($request);
+
+		$content = $this->render('frontend/schedule-ical.twig', [
+			'event'    => $event,
+			'schedule' => $schedule,
+		]);
+
+		$response = new Response($content, 200, ['Content-Type' => 'text/html; charset=UTF-8']);
 
 		return $this->setCachingHeader($schedule, $response);
 	}

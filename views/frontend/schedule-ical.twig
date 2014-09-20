@@ -1,0 +1,109 @@
+{% extends "frontend/layout.twig" %}
+
+{% set columns = schedule.columns %}
+{% set numCols = columns|length   %}
+{% set fluid   = numCols > 4      %}
+{% set theme   = 'yeti'           %}
+
+{% block fulltitle %}{{ schedule.name }} &ndash; {{ event.name }}{% endblock %}
+{% block body_attr %} class="theme-{{ theme }}"{% endblock %}
+
+{% block styles %}
+<link href="{{ macros.asset('css/theme-' ~ theme ~ '.min.css') }}" rel="stylesheet">
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="{{ macros.asset('css/app-frontend.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block navheader %}
+<div class="navbar-header">
+	<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#h-collapse-nav">
+		<span class="sr-only">Toggle navigation</span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+	</button>
+	<a href="/{{ event.slug }}" class="navbar-brand">{{ event.name }}</a>
+</div>
+{% endblock %}
+
+{% block navigation %}
+<ul class="nav navbar-nav">
+	{% if event.schedules|length == 1 %}
+	<li><a href="/{{ event.slug }}/{{ event.schedules[0].slug }}"><i class="fa fa-calendar"></i> {{ event.schedules[0].name }}</a></li>
+	{% else %}
+	<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-calendar"></i> Schedules <span class="caret"></span></a>
+		<ul class="dropdown-menu">
+			{% for sched in event.schedules %}
+			<li><a href="/{{ event.slug }}/{{ sched.slug }}">{{ sched.name }}</a></li>
+			{% endfor %}
+		</ul>
+	</li>
+	{%	endif %}
+	<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wrench"></i> Tools <span class="caret"></span></a>
+		<ul class="dropdown-menu">
+			<li><a href="/{{ event.slug }}/{{ schedule.slug }}/ical-feed"><i class="fa fa-calendar"></i> iCal Feed</a></li>
+			<li class="divider"></li>
+			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.json"><i class="fa fa-download"></i> Export as JSON</a></li>
+			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.xml"><i class="fa fa-download"></i> Export as XML</a></li>
+			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.csv"><i class="fa fa-download"></i> Export as CSV</a></li>
+		</ul>
+	</li>
+</ul>
+
+<ul class="nav navbar-nav navbar-right">
+	{% if event.website %}<li><a href="{{ event.website }}" target="_blank" title="{{ event.website }}"><i class="fa fa-globe"></i></a></li>{% endif %}
+	{% if event.twitch %}<li><a href="http://twitch.tv/{{ event.twitch }}" target="_blank" title="{{ event.twitch }}"><i class="fa fa-twitch"></i></a></li>{% endif %}
+	{% if event.twitter %}<li><a href="http://twitter.com/{{ event.twitter }}" target="_blank" title="@{{ event.twitter }}"><i class="fa fa-twitter"></i></a></li>{% endif %}
+</ul>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<h2>{{ schedule.name }} <small>iCal Feed</small></h2>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<p class="text-center"><a href="/{{ event.slug }}/{{ schedule.slug }}" class="btn btn-default btn-sm"><i class="fa fa-arrow-left"></i> Back to the Schedule</a></p>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<p>
+			<img src="{{ macros.asset('images/google-calendar-example.png') }}" alt="Example screenshot of Google Calendar, displaying a few calendar entries from the GTA Marathon schedule" class="img-thumbnail pull-right">
+			iCal is a data format for transmitting calendar entries. Lots of calendar applications like
+			Thunderbird, Google Calendar, Outlook or iCalendar support im- and exporting iCal files.
+			Despite its name, it is not something exclusive to the Apple universe.
+		</p>
+
+		<h3>How does this help me?</h3>
+
+		<p>You can get an iCal version of the schedule, so you can import it and have the dates and times
+		of it readily available in your personal calendar. Then you can for example set reminders on
+		certain schedule items, so you never miss the most important things to you.</p>
+
+		<h3>Tell me how!</h3>
+
+		<p>You have two options here: Doing a one-time import or subscribing to the schedule. Subscribing
+		is definitely the recommended way, because your calendar will be kept up to date as the schedule
+		changes.</p>
+
+		<p>To just import the schedule once, <a href="/{{ event.slug }}/{{ schedule.slug }}.ical">download the iCal file</a>
+		and use your calendar's import function on it. Don't let the file extension (<code>.ics</code>) of
+		your download distract you: iCal data is simply stored in <code>.ics</code> files.</p>
+
+		<p>If your calendar supports it, you really should subscribe to the schedule instead. This
+		makes sure your calendar does not go out-of-sync over time. To subscribe, you will need to
+		copy and paste the following URL in your calendar:</p>
+
+		<p class="text-center"><code>{{ app.request.scheme }}://{{ app.request.host }}/{{ event.slug }}/{{ schedule.slug }}.ical</code></p>
+
+		<p>That's already it.</p>
+	</div>
+</div>
+{% endblock %}
