@@ -27,6 +27,11 @@ class BaseApplication extends Application {
 	}
 
 	public function setupServices() {
+		$this['session.storage.options'] = [
+			'cookie_httponly' => true,
+			'cookie_lifetime' => 24*3600 // 1 day
+		];
+
 		$this['session.storage.handler'] = $this->share(function() {
 			$connection = $this['entitymanager']->getConnection();
 			$connection = $connection->getWrappedConnection();
