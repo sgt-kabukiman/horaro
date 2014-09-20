@@ -3,6 +3,96 @@
 jQuery(function($) {
 	'use strict';
 
+	function updateRelativeTimes() {
+		var now = new Date();
+
+		$('time.h-relative').each(function() {
+			var minutes = moment($(this).attr('datetime')).diff(now, 'minutes');
+			var hours   = parseInt(minutes / 60, 10);
+			var texts   = [];
+
+			minutes -= hours*60;
+
+			if (hours) {
+				texts.push(hours + ' hour' + (hours === 1 ? '' : 's'));
+			}
+
+			if (minutes) {
+				texts.push(minutes + ' minute' + (minutes === 1 ? '' : 's'));
+			}
+
+			$(this).text('in ' + (texts.length === 0 ? 'a few moments' : texts.join(' and ')));
+		});
+	}
+
+	function findCurrentItem() {
+		var now           = (new Date()).getTime();
+		var scheduleStart = new Date($('#h-schedule-start').attr('datetime'));
+
+		// schedule has not started yet
+		if (scheduleStart.getTime() > now) {
+			return null;
+		}
+
+		var scheduleEnd = new Date($('#h-schedule-end').attr('datetime'));
+
+		// schedule is over
+		if (scheduleEnd.getTime() < now) {
+			return null;
+		}
+
+		var items = $('.h-schedule tbody');
+		var item;
+		var currentItem;
+		var scheduled;
+
+		for (var i = 0, len = items.length; i < len; ++i) {
+			item      = $(items[i]);
+			scheduled = new Date(item.find('.h-s time').attr('datetime'));
+
+			// item has not yet been reached; this means we just ran past the current item
+			// and can now just stop
+			if (scheduled.getTime() > now) {
+				break;
+			}
+
+			currentItem = item;
+		}
+
+		// By checking for the end time before this loop, we can be sure we found an item,
+		// even it it's the last one (otherwise we'd have to check its length to make sure
+		// the schedule isn't over yet).
+		// This means we're done :)
+
+		return currentItem;
+	}
+
+	function getItemTitle(item) {
+		return item.find('.h-0').text();
+	}
+
+	function getItemScheduled(item) {
+		return item.find('.h-s time').attr('datetime');
+	}
+
+	function updateTicker() {
+		var current = findCurrentItem();
+
+		if (!current) {
+			$('.h-ticker').hide();
+			return;
+		}
+
+		var next = current.next('tbody');
+
+		$('.h-ticker').show();
+		$('.h-current .panel-body').text(getItemTitle(current));
+		$('.h-next .panel-body').text(getItemTitle(next));
+		$('.h-next time').attr('datetime', getItemScheduled(next));
+
+		updateRelativeTimes();
+	}
+
 	$('html').addClass('js');
 
 	var prev = null;
@@ -11,6 +101,10 @@ jQuery(function($) {
 
 	$('time.h-fancy').each(function() {
 		$(this).text(moment($(this).attr('datetime')).format('dddd, LL'));
+	});
+
+	$('time.h-fancy-time').each(function() {
+		$(this).text(moment($(this).attr('datetime')).format('HH:mm:ss'));
 	});
 
 	// remove previous day breaks (computed by the server, based on the schedule timezone)
@@ -30,21 +124,15 @@ jQuery(function($) {
 
 	$('#localized-note small').toggle();
 
-	// Add responsiveness classes, because now (with JS available) we can show and
-	// handle the more/less buttons. If we'd add the classes in the templates, it
-	// would be possible that we hide stuff and users cannot read it (think of the
-	// Google cache or archive.org).
-	['xs', 'sm', 'md', 'lg'].forEach(function(size) {
-		$('.h-schedule .'+size).addClass('hidden-'+size).removeClass(size);
-	});
-
-	// The actual more/less behaviour
+	// Add funky behaviour to the schedule
 	if ($('#controls').length > 0) {
 		$('.h-schedule tbody tr.h-primary').append($('#controls').html());
 		$('.h-schedule thead tr').append('<th class="h-co">&nbsp;</th>');
 
 		var template = $($('#expanded_tpl').html().trim());
 		var columns  = $('.h-schedule').data('columns');
+
+		// more/less toggling
 
 		$('.h-schedule').on('click', '.h-co button', function(event) {
 			var btn        = $(this);
@@ -80,5 +168,14 @@ jQuery(function($) {
 
 			btn.parent().toggleClass('expanded');
 		});
+
+		// show currently active schedule item on top
+		var tickerInterval = window.setInterval(function() {
+
+		}, 30000);
+
+		// update ticker
+		window.setInterval(updateTicker, 5000);
+		updateTicker();
 	}
 });
