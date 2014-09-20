@@ -49,11 +49,18 @@ class FrontendController extends BaseController {
 			]);
 		}
 
-		return $this->render('frontend/schedule.twig', [
+		$content = $this->render('frontend/schedule.twig', [
 			'event'        => $event,
 			'schedule'     => $schedule,
 			'eventSlug'    => $eventSlug,
 			'scheduleSlug' => $scheduleSlug
 		]);
+
+		$response = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
+		$response->setLastModified($schedule->getUpdatedAt());
+		$response->setTtl(5*60);       // 5 minutes
+		$response->setClientTtl(5*60);
+
+		return $response;
 	}
 }
