@@ -138,12 +138,11 @@ jQuery(function($) {
 		// more/less toggling
 
 		$('.h-schedule').on('click', '.h-co button', function(event) {
-			var btn        = $(this);
-			var row        = btn.closest('tr');
-			var mode       = btn.attr('rel');
-			var allColumns = row.find('td');
-			var tpl        = template.clone();
-			var rel, i, text, len;
+			var btn  = $(this);
+			var row  = btn.closest('tr');
+			var mode = btn.attr('rel');
+			var tpl  = template.clone();
+			var i, text, len;
 
 			if (mode === 'less') {
 				row.next('.h-secondary').remove();
@@ -153,7 +152,7 @@ jQuery(function($) {
 
 				len = 0;
 
-				for (var i = 0; i < columns; ++i) {
+				for (i = 0; i < columns; ++i) {
 					text = row.find('.h-' + i).text();
 
 					if (text.trim().length === 0) {
