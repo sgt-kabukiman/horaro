@@ -78,6 +78,8 @@ jQuery(function($) {
 	function updateTicker() {
 		var current = findCurrentItem();
 
+		$('.h-schedule tr.success').removeClass('success');
+
 		if (!current) {
 			$('.h-ticker').hide();
 			return;
@@ -86,7 +88,6 @@ jQuery(function($) {
 		var next = current.next('tbody');
 
 		$('.h-ticker').show();
-		$('.h-schedule tr.success').removeClass('success');
 		$('.h-current .panel-body').text(getItemTitle(current));
 		$('.h-next .panel-body').text(getItemTitle(next));
 		$('.h-next time').attr('datetime', getItemScheduled(next));
