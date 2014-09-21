@@ -36,7 +36,12 @@ class ScheduleController extends BaseController {
 			$columnIDs[] = $column->getId();
 		}
 
-		return $this->render('schedule/detail.twig', ['schedule' => $schedule, 'items' => $items ?: null, 'columns' => $columnIDs]);
+		return $this->render('schedule/detail.twig', [
+			'schedule' => $schedule,
+			'items'    => $items ?: null,
+			'columns'  => $columnIDs,
+			'maxItems' => $this->app['config']['max_schedule_items']
+		]);
 	}
 
 	public function newAction(Request $request) {

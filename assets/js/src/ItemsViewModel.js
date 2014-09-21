@@ -7,6 +7,10 @@ function ItemsViewModel(items) {
 		return hasNewModel(self.items());
 	}, self);
 
+	self.isFull = ko.pureComputed(function() {
+		return self.items().length >= horaro.schedule.maxItems;
+	});
+
 	self.calculateSchedule = function(startIdx) {
 		var start, i, len, items, item, scheduled, prev, date, dayOfYear;
 

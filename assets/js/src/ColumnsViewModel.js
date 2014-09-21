@@ -7,6 +7,10 @@ function ColumnsViewModel(columns) {
 		return hasNewModel(self.columns());
 	}, self);
 
+	self.isFull = ko.pureComputed(function() {
+		return self.columns().length >= 10;
+	});
+
 	self.add = function() {
 		self.columns.push(new Column(-1, '', self.columns().length + 1));
 		$('.h-columnist tbody:last a.editable:visible:first').editable('show');
