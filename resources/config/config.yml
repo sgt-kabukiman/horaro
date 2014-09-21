@@ -1,5 +1,4 @@
-bcryptCost: 11
 roles:
-  ADMIN:  [USER]
-  USER:   []
-defaultRole: USER
+  ROLE_ADMIN:  [ROLE_USER]
+  ROLE_USER:   []
+default_role: ROLE_USER

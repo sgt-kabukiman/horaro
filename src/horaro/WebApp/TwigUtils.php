@@ -28,17 +28,6 @@ class TwigUtils {
 		return implode(' ', $class);
 	}
 
-	public function schedulePseudoColClass($idx) {
-		$class = [];
-
-		if ($idx >= 4) $class[] = 'lg';
-		if ($idx >= 3) $class[] = 'md';
-		if ($idx >= 2) $class[] = 'sm';
-		if ($idx >= 2) $class[] = 'xs';
-
-		return empty($class) ? '' : (' '.implode(' ', $class));
-	}
-
 	public function scheduleControlsClass($columns) {
 		$class = [];
 

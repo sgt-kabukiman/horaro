@@ -38,7 +38,7 @@ class Application extends BaseApplication {
 		$this['csrf'] = $this->share(function() {
 			$factory   = new \RandomLib\Factory();
 			$generator = $factory->getMediumStrengthGenerator();
-			$name      = '_csrf_token';
+			$name      = $this['config']['csrf_token_name'];
 
 			return new CsrfHandler($name, $generator);
 		});

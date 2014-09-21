@@ -1,15 +1,70 @@
 # Never edit this file directly!
 # Instead, copy it and name the copy 'parameters.yml'. Edit the copy only.
 
+# Your database connection. Set the user, password and dbname. If needed, change
+# the host.
 database:
   driver:   pdo_mysql
+  host:     127.0.0.1
   user:     yourusername
   password: yourpassword
   dbname:   yourdatabasename
+  charset:  utf8
+  driverOptions:
+    1002: SET NAMES utf8
+
+# Your secret.
+# This is a random string of characters. Set it to anything you want, but make it
+# at least 10 characters long and random. You cannot leave this field blank.
+# Something like this is good: http://www.random.org/strings/?num=1&len=20&digits=on&upperalpha=on&loweralpha=on&format=plain
+secret: ''
+
+# Set this to false to enable production mode. This will:
+#   - turn off Twig auto-reloads
+#   - turn off on-demand generation of Doctrine proxies
+#   - create links to versioned assets
+# See the README.md for more details.
+debug: true
+
+# set the maximum number of allowed user accounts; set to ~ to disable a limit;
+# note that you should not disable the limit, or people can extremely easily
+# flood your database (because there is no IP blocking, captcha, ...);
+# to "disable registration", simply set this to a low value after all users
+# you want to have have registred their accounts.
+max_users: 100
+
+# maximum number of events per user
+max_events: 20
+
+# maximum number of schedules per event
+max_schedules: 20
+
+# maximum number of rows per schedule
+max_schedule_items: 200
+
+# Lifetime of session cookies (in seconds). Set this to 0 to create cookies that
+# are deleted once the browser is closed. Default is 1 day (= 86400 secs).
+cookie_lifetime: 86400
+
+# Directory where generated Doctrine proxies are stored. You can use either
+# relative paths or absolute ones (on *nix systems).
+doctrine_proxies: tmp/doctrine-proxies/
+
+# Name of the CSRF token request parameter. Generally, you don't need to change
+# this, as changing only offers a very very very small security gain. Do not use
+# something 'common' like "name" or "password", because those names would clash
+# with real form fields.
+csrf_token_name: _csrf_token
+
+# Cost factor for password hashing; do not change this unless you absolutely
+# understand what you're doing. Setting this too large will result in allowing
+# DoS attacks, too low will dramatically decrease password security.
+bcrypt_cost: 11
+
+# If you change something in here, you have to adjust the schema.orm.yml and your
+# database as well. Generally, there is no reason to touch this.
 session:
   db_table:    sessions
   db_id_col:   id
   db_data_col: data
   db_time_col: mtime
-doctrine_proxies: tmp/doctrine-proxies/
-debug: true

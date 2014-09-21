@@ -27,9 +27,19 @@ class BaseApplication extends Application {
 	}
 
 	public function setupServices() {
+		$this['config'] = $this->share(function() {
+			$config = new Configuration();
+			$dir    = HORARO_ROOT.'/resources/config/';
+
+			$config->loadFile($dir.'config.yml');
+			$config->loadFile($dir.'parameters.yml');
+
+			return $config;
+		});
+
 		$this['session.storage.options'] = [
 			'cookie_httponly' => true,
-			'cookie_lifetime' => 24*3600 // 1 day
+			'cookie_lifetime' => $this['config']['cookie_lifetime']
 		];
 
 		$this['session.storage.handler'] = $this->share(function() {
@@ -42,16 +52,6 @@ class BaseApplication extends Application {
 				$config['session'],
 				$this['session.storage.options']
 			);
-		});
-
-		$this['config'] = $this->share(function() {
-			$config = new Configuration();
-			$dir    = HORARO_ROOT.'/resources/config/';
-
-			$config->loadFile($dir.'config.yml');
-			$config->loadFile($dir.'parameters.yml');
-
-			return $config;
 		});
 
 		$this['entitymanager'] = $this->share(function() {
@@ -91,7 +91,7 @@ class BaseApplication extends Application {
 		});
 
 		$this['schedule-transformer-ical'] = $this->share(function() {
-			$secret = 'something super secret that should be configurable';
+			$secret = $this['config']['secret'];
 			$host   = $this['request']->getHost();
 
 			return new ScheduleTransformer\ICalTransformer($secret, $host);
