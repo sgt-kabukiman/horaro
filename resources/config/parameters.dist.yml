@@ -31,13 +31,13 @@ debug: true
 # flood your database (because there is no IP blocking, captcha, ...);
 # to "disable registration", simply set this to a low value after all users
 # you want to have have registred their accounts.
-max_users: 100
+max_users: 50
 
 # maximum number of events per user
-max_events: 20
+max_events: 10
 
 # maximum number of schedules per event
-max_schedules: 20
+max_schedules: 10
 
 # maximum number of rows per schedule
 max_schedule_items: 200
