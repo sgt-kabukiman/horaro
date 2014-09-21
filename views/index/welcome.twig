@@ -3,12 +3,18 @@
 {% block content %}
 <div class="jumbotron">
 	<h1>Welcome to Horaro</h1>
-	<p>This tool allows you to create schedules (specifically tailored towards game speedrun marathons)
-	for you or your team's events. It's free (as in free beer) and available both as a hosted service
-	and as an open-source application.</p>
+	{% if not noRegister %}
+	<p>This tool allows you to create schedules (specifically tailored towards live stream marathons).
+	It's free (as in free beer) and available both as a hosted service and as an
+	<a href="https://bitbucket.org/sgt-kabukiman/horaro" target="_blank">open-source application</a>.</p>
+	{% endif %}
 	<p>
+		{% if noRegister %}
+		<small><em>User registration is not available in this installation.</em></small>
+		{% else %}
 		<a href="/-/register" class="btn btn-primary btn-md" role="button"><i class="fa fa-user"></i> Create an Account</a>
 		<small>or log-in with your existing account.</small>
+		{% endif %}
 	</p>
 </div>
 {% endblock %}

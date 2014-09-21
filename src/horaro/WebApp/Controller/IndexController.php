@@ -16,6 +16,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends BaseController {
+	public function isFull() {
+		$maxUsers = $this->app['config']['max_users'];
+		$total    = $this->getEntityManager()
+			->createQuery('SELECT COUNT(u.id) FROM horaro\Library\Entity\User u')
+			->getSingleScalarResult();
+
+		return $total >= $maxUsers;
+	}
+
 	public function welcomeAction(Request $request) {
 		$user = $this->getCurrentUser();
 
@@ -27,14 +36,24 @@ class IndexController extends BaseController {
 		// this needs to be done in a general pre-controller filter
 //		$this->app['locale'] = strtolower($request->getPreferredLanguage(['de_DE', 'en_US']));
 
-		return $this->render('index/welcome.twig');
+		return $this->render('index/welcome.twig', [
+			'noRegister' => $this->isFull()
+		]);
 	}
 
 	public function registerFormAction(Request $request) {
+		if ($this->isFull()) {
+			return $this->redirect('/');
+		}
+
 		return $this->render('index/register.twig', ['result' => null]);
 	}
 
 	public function registerAction(Request $request) {
+		if ($this->isFull()) {
+			return $this->redirect('/');
+		}
+
 		$validator = new CreateAccountValidator($this->getRepository('User'));
 		$result    = $validator->validate([
 			'login'        => $request->request->get('username'),
