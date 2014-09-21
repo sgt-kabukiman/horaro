@@ -16,15 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends BaseController {
-	public function isFull() {
-		$maxUsers = $this->app['config']['max_users'];
-		$total    = $this->getEntityManager()
-			->createQuery('SELECT COUNT(u.id) FROM horaro\Library\Entity\User u')
-			->getSingleScalarResult();
-
-		return $total >= $maxUsers;
-	}
-
 	public function welcomeAction(Request $request) {
 		$user = $this->getCurrentUser();
 
@@ -37,12 +28,12 @@ class IndexController extends BaseController {
 //		$this->app['locale'] = strtolower($request->getPreferredLanguage(['de_DE', 'en_US']));
 
 		return $this->render('index/welcome.twig', [
-			'noRegister' => $this->isFull()
+			'noRegister' => $this->exceedsMaxUsers()
 		]);
 	}
 
 	public function registerFormAction(Request $request) {
-		if ($this->isFull()) {
+		if ($this->exceedsMaxUsers()) {
 			return $this->redirect('/');
 		}
 
@@ -50,7 +41,7 @@ class IndexController extends BaseController {
 	}
 
 	public function registerAction(Request $request) {
-		if ($this->isFull()) {
+		if ($this->exceedsMaxUsers()) {
 			return $this->redirect('/');
 		}
 

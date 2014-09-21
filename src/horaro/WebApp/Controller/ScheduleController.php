@@ -42,13 +42,23 @@ class ScheduleController extends BaseController {
 	public function newAction(Request $request) {
 		$event = $this->getRequestedEvent($request);
 
+		if ($this->exceedsMaxSchedules($event)) {
+			return $this->redirect('/-/events/'.$event->getId());
+		}
+
 		return $this->renderForm($event);
 	}
 
 	public function createAction(Request $request) {
+		// do not leak information, check CSRF token before checking for max schedules
 		$this->checkCsrfToken($request);
 
-		$event     = $this->getRequestedEvent($request);
+		$event = $this->getRequestedEvent($request);
+
+		if ($this->exceedsMaxSchedules($event)) {
+			return $this->redirect('/-/events/'.$event->getId());
+		}
+
 		$validator = new ScheduleValidator($this->getRepository('Schedule'));
 		$result    = $validator->validate([
 			'name'       => $request->request->get('name'),

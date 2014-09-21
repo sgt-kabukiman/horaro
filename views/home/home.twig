@@ -22,10 +22,18 @@
 	</div>
 	{% endfor %}
 
+	{% if not isFull %}
 	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
 		<div class="well well-sm text-center" style="border:1px solid transparent;background:transparent;box-shadow:none">
 			<h4><a href="/-/events/new" class="text-muted"><i class="fa fa-plus fa-3x"></i><br>New&hellip;</a></h4>
 		</div>
 	</div>
+	{% endif %}
 </div>
+
+{% if isFull %}
+<div class="alert alert-info">
+	<i class="fa fa-info-circle"></i> You have reached the maximum number of allowed events for your account.
+</div>
+{% endif %}
 {% endblock %}

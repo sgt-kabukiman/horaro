@@ -10,6 +10,7 @@
 
 namespace horaro\WebApp\Controller;
 
+use horaro\Library\Entity\User;
 use horaro\Library\Entity\Event;
 use horaro\Library\Entity\Schedule;
 use horaro\Library\Entity\ScheduleItem;
@@ -216,5 +217,53 @@ class BaseController {
 
 	protected function addErrorMsg($message) {
 		$this->addFlashMsg('error', $message);
+	}
+
+	protected function exceedsMaxUsers() {
+		$maxUsers = $this->app['config']['max_users'];
+		$total    = $this->getEntityManager()
+			->createQuery('SELECT COUNT(u.id) FROM horaro\Library\Entity\User u')
+			->getSingleScalarResult();
+
+		return $total >= $maxUsers;
+	}
+
+	protected function exceedsMaxEvents(User $u) {
+		$maxEvents = $this->app['config']['max_events'];
+		$total     = $this->getEntityManager()
+			->createQuery('SELECT COUNT(e.id) FROM horaro\Library\Entity\Event e WHERE e.user = :user')
+			->setParameter('user', $u)
+			->getSingleScalarResult();
+
+		return $total >= $maxEvents;
+	}
+
+	protected function exceedsMaxSchedules(Event $e) {
+		$maxSchedules = $this->app['config']['max_schedules'];
+		$total        = $this->getEntityManager()
+			->createQuery('SELECT COUNT(s.id) FROM horaro\Library\Entity\Schedule s WHERE s.event = :event')
+			->setParameter('event', $e)
+			->getSingleScalarResult();
+
+		return $total >= $maxSchedules;
+	}
+
+	protected function exceedsMaxScheduleItems(Schedule $s) {
+		$maxItems = $this->app['config']['max_schedule_items'];
+		$total    = $this->getEntityManager()
+			->createQuery('SELECT COUNT(i.id) FROM horaro\Library\Entity\ScheduleItem i WHERE i.schedule = :schedule')
+			->setParameter('schedule', $s)
+			->getSingleScalarResult();
+
+		return $total >= $maxItems;
+	}
+
+	protected function exceedsMaxScheduleColumns(Schedule $s) {
+		$total = $this->getEntityManager()
+			->createQuery('SELECT COUNT(c.id) FROM horaro\Library\Entity\ScheduleColumn c WHERE c.schedule = :schedule')
+			->setParameter('schedule', $s)
+			->getSingleScalarResult();
+
+		return $total >= 10;
 	}
 }

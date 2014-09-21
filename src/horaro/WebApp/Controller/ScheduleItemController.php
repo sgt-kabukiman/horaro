@@ -17,9 +17,15 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ScheduleItemController extends BaseController {
 	public function createAction(Request $request) {
+		// do not leak information, check CSRF token before checking for max items
 		$this->checkCsrfToken($request);
 
-		$schedule  = $this->getRequestedSchedule($request);
+		$schedule = $this->getRequestedSchedule($request);
+
+		if ($this->exceedsMaxScheduleItems($schedule)) {
+			throw new Ex\BadRequestException('You cannot create more rows in this schedule.');
+		}
+
 		$payload   = $this->getPayload($request);
 		$validator = new ScheduleItemValidator();
 		$result    = $validator->validateNew($payload, $schedule);

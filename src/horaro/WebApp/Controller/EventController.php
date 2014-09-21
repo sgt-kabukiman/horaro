@@ -20,15 +20,27 @@ class EventController extends BaseController {
 	public function detailAction(Request $request) {
 		$event = $this->getRequestedEvent($request);
 
-		return $this->render('event/detail.twig', ['event' => $event]);
+		return $this->render('event/detail.twig', [
+			'event'  => $event,
+			'isFull' => $this->exceedsMaxSchedules($event)
+		]);
 	}
 
 	public function newAction(Request $request) {
+		if ($this->exceedsMaxEvents($this->getCurrentUser())) {
+			return $this->redirect('/-/home');
+		}
+
 		return $this->render('event/form.twig', ['event' => null, 'result' => null]);
 	}
 
 	public function createAction(Request $request) {
+		// do not leak information, check CSRF token before checking for max events
 		$this->checkCsrfToken($request);
+
+		if ($this->exceedsMaxEvents($this->getCurrentUser())) {
+			return $this->redirect('/-/home');
+		}
 
 		$validator = new EventValidator($this->getRepository('Event'));
 		$result    = $validator->validate([

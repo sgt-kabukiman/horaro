@@ -28,9 +28,15 @@ class ScheduleColumnController extends BaseController {
 	}
 
 	public function createAction(Request $request) {
+		// do not leak information, check CSRF token before checking for max columns
 		$this->checkCsrfToken($request);
 
-		$schedule  = $this->getRequestedSchedule($request);
+		$schedule = $this->getRequestedSchedule($request);
+
+		if ($this->exceedsMaxScheduleColumns($schedule)) {
+			throw new Ex\BadRequestException('You cannot create more columns for this schedule.');
+		}
+
 		$payload   = $this->getPayload($request);
 		$validator = new ScheduleColumnValidator();
 		$result    = $validator->validateNew($payload, $schedule);
