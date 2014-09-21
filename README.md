@@ -37,7 +37,8 @@ Clone or download this repository.
 
 You will need to create a dedicated vhost for horaro, because as of now, all
 assets and links are absolute. Installing to something like
-``http://localhost/horaro/`` will **not work**.
+``http://localhost/horaro/`` will **not work**. Make sure the vhost points to
+the ``www`` directory.
 
 Installation
 ------------
