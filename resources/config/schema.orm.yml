@@ -30,6 +30,11 @@ horaro\Library\Entity\User:
     role:
       type: string
       length: 100
+    created_at:
+      type: datetime
+    max_events:
+      type: integer
+      options: { unsigned: true }
 
   uniqueConstraints:
     unique_login:
@@ -139,6 +144,9 @@ horaro\Library\Entity\Event:
       type: string
       length: 255
       nullable: true
+    max_schedules:
+      type: integer
+      options: { unsigned: true }
 
   oneToMany:
     schedules:
@@ -189,6 +197,9 @@ horaro\Library\Entity\Schedule:
     start:
       type: datetime
       nullable: true
+    max_items:
+      type: integer
+      options: { unsigned: true }
 
   uniqueConstraints:
     unique_slug:

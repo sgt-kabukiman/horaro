@@ -48,6 +48,11 @@ class Schedule {
 	private $start;
 
 	/**
+	 * @var integer
+	 */
+	private $max_items;
+
+	/**
 	 * @var \Doctrine\Common\Collections\Collection
 	 */
 	private $items;
@@ -215,6 +220,27 @@ class Schedule {
 		$local->setTimezone(new \DateTimeZone('UTC'));
 
 		return $local;
+	}
+
+	/**
+	 * Set max items
+	 *
+	 * @param integer $maxItems
+	 * @return Event
+	 */
+	public function setMaxItems($maxItems) {
+		$this->max_items = $maxItems < 0 ? 0 : (int) $maxItems;
+
+		return $this;
+	}
+
+	/**
+	 * Get max items
+	 *
+	 * @return integer
+	 */
+	public function getMaxItems() {
+		return $this->max_items;
 	}
 
 	/**

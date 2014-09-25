@@ -91,6 +91,7 @@ class ScheduleController extends BaseController {
 			->setUpdatedAt(new \DateTime('now UTC'))
 			->setStart($result['start']['filtered'])
 //			->setTwitch($result['twitch']['filtered'])
+			->setMaxItems($this->app['config']['max_schedule_items'])
 		;
 
 		$column = new ScheduleColumn();

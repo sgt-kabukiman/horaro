@@ -67,6 +67,7 @@ class EventController extends BaseController {
 			->setWebsite($result['website']['filtered'])
 			->setTwitch($result['twitch']['filtered'])
 			->setTwitter($result['twitter']['filtered'])
+			->setMaxSchedules($this->app['config']['max_schedules'])
 		;
 
 		$em = $this->getEntityManager();

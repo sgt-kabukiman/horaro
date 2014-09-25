@@ -229,33 +229,30 @@ class BaseController {
 	}
 
 	protected function exceedsMaxEvents(User $u) {
-		$maxEvents = $this->app['config']['max_events'];
-		$total     = $this->getEntityManager()
+		$total = $this->getEntityManager()
 			->createQuery('SELECT COUNT(e.id) FROM horaro\Library\Entity\Event e WHERE e.user = :user')
 			->setParameter('user', $u)
 			->getSingleScalarResult();
 
-		return $total >= $maxEvents;
+		return $total >= $u->getMaxEvents();
 	}
 
 	protected function exceedsMaxSchedules(Event $e) {
-		$maxSchedules = $this->app['config']['max_schedules'];
-		$total        = $this->getEntityManager()
+		$total = $this->getEntityManager()
 			->createQuery('SELECT COUNT(s.id) FROM horaro\Library\Entity\Schedule s WHERE s.event = :event')
 			->setParameter('event', $e)
 			->getSingleScalarResult();
 
-		return $total >= $maxSchedules;
+		return $total >= $e->getMaxSchedules();
 	}
 
 	protected function exceedsMaxScheduleItems(Schedule $s) {
-		$maxItems = $this->app['config']['max_schedule_items'];
-		$total    = $this->getEntityManager()
+		$total = $this->getEntityManager()
 			->createQuery('SELECT COUNT(i.id) FROM horaro\Library\Entity\ScheduleItem i WHERE i.schedule = :schedule')
 			->setParameter('schedule', $s)
 			->getSingleScalarResult();
 
-		return $total >= $maxItems;
+		return $total >= $e->getMaxItems();
 	}
 
 	protected function exceedsMaxScheduleColumns(Schedule $s) {

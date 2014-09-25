@@ -59,13 +59,15 @@ class IndexController extends BaseController {
 
 		// create new user
 
-		$costs = $this->app['config']['bcrypt_cost'];
+		$config = $this->app['config'];
+		$costs  = $config['bcrypt_cost'];
 
 		$user = new User();
 		$user->setLogin($result['login']['filtered']);
 		$user->setPassword(password_hash($result['password']['filtered'], PASSWORD_DEFAULT, ['cost' => $costs]));
 		$user->setDisplayName($result['display_name']['filtered']);
-		$user->setRole($this->app['config']['default_role']);
+		$user->setRole($config['default_role']);
+		$user->setMaxEvents($config['max_events']);
 		$user->setLanguage('en_us');
 
 		$em = $this->getEntityManager();

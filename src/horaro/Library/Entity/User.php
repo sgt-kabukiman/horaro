@@ -53,6 +53,16 @@ class User {
 	private $role;
 
 	/**
+	 * @var \DateTime
+	 */
+	private $created_at;
+
+	/**
+	 * @var integer
+	 */
+	private $max_events;
+
+	/**
 	 * @var \Doctrine\Common\Collections\Collection
 	 */
 	private $teams;
@@ -66,8 +76,9 @@ class User {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->teams  = new ArrayCollection();
-		$this->events = new ArrayCollection();
+		$this->teams      = new ArrayCollection();
+		$this->events     = new ArrayCollection();
+		$this->created_at = new \DateTime('now UTC');
 	}
 
 	public function getName() {
@@ -213,6 +224,48 @@ class User {
 	 */
 	public function getRole() {
 		return $this->role;
+	}
+
+	/**
+	 * Set created_at
+	 *
+	 * @param \DateTime $createdAt
+	 * @return Schedule
+	 */
+	public function setCreatedAt($createdAt) {
+		$this->created_at = $createdAt;
+
+		return $this;
+	}
+
+	/**
+	 * Get created_at
+	 *
+	 * @return \DateTime
+	 */
+	public function getCreatedAt() {
+		return $this->created_at;
+	}
+
+	/**
+	 * Set max events
+	 *
+	 * @param integer $maxEvents
+	 * @return User
+	 */
+	public function setMaxEvents($maxEvents) {
+		$this->max_events = $maxEvents < 0 ? 0 : (int) $maxEvents;
+
+		return $this;
+	}
+
+	/**
+	 * Get max events
+	 *
+	 * @return integer
+	 */
+	public function getMaxEvents() {
+		return $this->max_events;
 	}
 
 	/**

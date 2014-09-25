@@ -47,6 +47,11 @@ class Event {
 	private $twitch;
 
 	/**
+	 * @var integer
+	 */
+	private $max_schedules;
+
+	/**
 	 * @var \Doctrine\Common\Collections\Collection
 	 */
 	private $schedules;
@@ -207,6 +212,27 @@ class Event {
 	 */
 	public function getTwitch() {
 		return $this->twitch;
+	}
+
+	/**
+	 * Set max schedules
+	 *
+	 * @param integer $maxSchedules
+	 * @return Event
+	 */
+	public function setMaxSchedules($maxSchedules) {
+		$this->max_schedules = $maxSchedules < 0 ? 0 : (int) $maxSchedules;
+
+		return $this;
+	}
+
+	/**
+	 * Get max schedules
+	 *
+	 * @return integer
+	 */
+	public function getMaxSchedules() {
+		return $this->max_schedules;
 	}
 
 	/**
