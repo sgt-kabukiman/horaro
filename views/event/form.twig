@@ -1,16 +1,16 @@
 {% extends "backend.twig" %}
 {% import "macros.twig" as macros %}
 
-{% block title %}{% if event %}{{ event.name }}{% else %}New Event&hellip;{% endif %}{% endblock %}
+{% block title %}{% if event %}{{ event.name }}{% else %}New Event…{% endif %}{% endblock %}
 
 {% block content %}
 <ul class="breadcrumb" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
 	{% if event %}
 	<li><a href="/-/events/{{ event.id }}">{{ event.name|shorten(45) }}</a></li>
-	<li>Update Event&hellip;</li>
+	<li>Update Event…</li>
 	{% else %}
-	<li>New Event&hellip;</li>
+	<li>New Event…</li>
 	{% endif %}
 </ul>
 

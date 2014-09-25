@@ -1,7 +1,7 @@
 {% extends "backend.twig" %}
 {% import "macros.twig" as macros %}
 
-{% block title %}{% if schedule %}{{ schedule.name }}{% else %}New Schedule&hellip;{% endif %} &ndash; {{ event.name }}{% endblock %}
+{% block title %}{% if schedule %}{{ schedule.name }}{% else %}New Schedule…{% endif %} &ndash; {{ event.name }}{% endblock %}
 
 {% block content %}
 <ul class="breadcrumb" style="margin-bottom: 5px;">
@@ -9,9 +9,9 @@
 	<li><a href="/-/events/{{ event.id }}">{{ event.name|shorten(45) }}</a></li>
 	{% if schedule %}
 	<li><a href="/-/schedules/{{ schedule.id }}">{{ schedule.name|shorten(45) }}</a></li>
-	<li>Update Schedule&hellip;</li>
+	<li>Update Schedule…</li>
 	{% else %}
-	<li>New Schedule&hellip;</li>
+	<li>New Schedule…</li>
 	{% endif %}
 </ul>
 
@@ -119,7 +119,7 @@
 							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"> </i> {% if schedule %}Update{% else %}Create{% endif %} Schedule</button>
 							{% if schedule %}
 							&ndash; or &ndash;
-							<a href="/-/schedules/{{ schedule.id }}/delete" class="btn btn-warning btn-sm"><i class="fa fa-trash-o"></i> Delete Schedule&hellip;</a>
+							<a href="/-/schedules/{{ schedule.id }}/delete" class="btn btn-warning btn-sm"><i class="fa fa-trash-o"></i> Delete Schedule</a>
 							{% endif %}
 						</div>
 					</div>
