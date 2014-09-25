@@ -5,13 +5,13 @@
 {% block content %}
 <ul class="breadcrumb" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
-	<li><a href="/-/events/{{ schedule.event.id }}">{{ schedule.event.name }}</a></li>
-	<li>{{ schedule.name }}</li>
+	<li><a href="/-/events/{{ schedule.event.id }}">{{ schedule.event.name|shorten(45) }}</a></li>
+	<li>{{ schedule.name|shorten(45) }}</li>
 </ul>
 
 <div class="row h-scheduler-header">
 	<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-		<h2><a href="/{{ schedule.event.slug }}/{{ schedule.slug }}" target="_blank">{{ schedule.name }}</a> <sup><small><i class="fa fa-external-link"></i></small></sup></h2>
+		<h2><a href="/{{ schedule.event.slug }}/{{ schedule.slug }}" target="_blank">{{ schedule.name|shorten(45) }}</a> <sup><small><i class="fa fa-external-link"></i></small></sup></h2>
 	</div>
 
 	<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">

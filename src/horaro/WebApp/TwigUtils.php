@@ -42,4 +42,12 @@ class TwigUtils {
 	public function asset($path) {
 		return isset($this->versions[$path]) ? $this->versions[$path] : $path;
 	}
+
+	public function shorten($string, $maxlen) {
+		if (mb_strlen($string) <= $maxlen) {
+			return $string;
+		}
+
+		return mb_substr($string, 0, $maxlen).'…';
+	}
 }

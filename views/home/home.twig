@@ -13,19 +13,29 @@
 	</div>
 </div>
 
-<div class="row">
+<div class="row h-tiles">
 	{% for event in app.user.events %}
-	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
-		<div class="well well-sm text-center">
-			<h4><a href="/-/events/{{ event.id }}"><i class="fa fa-gamepad fa-3x"></i><br>{{ event.name }}</a></h4>
+	<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+		<div class="well well-sm">
+			<div>
+				<h4><a href="/-/events/{{ event.id }}">
+					<span><i class="fa fa-gamepad fa-3x"></i></span>
+					<span>{{ event.name|shorten(55) }}</span>
+				</a></h4>
+			</div>
 		</div>
 	</div>
 	{% endfor %}
 
 	{% if not isFull %}
-	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
-		<div class="well well-sm text-center" style="border:1px solid transparent;background:transparent;box-shadow:none">
-			<h4><a href="/-/events/new" class="text-muted"><i class="fa fa-plus fa-3x"></i><br>New&hellip;</a></h4>
+	<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+		<div class="well well-sm h-adder">
+			<div>
+				<h4><a href="/-/events/new" class="text-muted">
+					<span><i class="fa fa-plus fa-3x"></i></span>
+					<span>New&hellip;</span>
+				</a></h4>
+			</div>
 		</div>
 	</div>
 	{% endif %}

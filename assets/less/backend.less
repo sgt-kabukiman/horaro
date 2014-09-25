@@ -126,6 +126,44 @@ table.h-columnist {
 	font-size: 14px;
 }
 
+/* event/schedule tiles */
+
+.h-tiles {
+	.well {
+		padding: 12px 9px;
+
+		> div {
+			display: table;
+			width: 100%;
+		}
+	}
+
+	h4 {
+		margin: 0;
+		height: 62px;
+		overflow: hidden;
+
+		span {
+			display: table-cell;
+
+			&:last-child {
+				vertical-align: middle;
+			}
+		}
+	}
+
+	.h-adder {
+		border: 1px solid transparent;
+		background: transparent;
+		box-shadow: none;
+		padding: 12px 9px;
+	}
+
+	.fa {
+		margin-right: 10px;
+	}
+}
+
 /* custom Pickadate styling */
 
 .picker__input {

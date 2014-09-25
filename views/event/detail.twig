@@ -5,30 +5,40 @@
 {% block content %}
 <ul class="breadcrumb" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
-	<li>{{ event.name }}</li>
+	<li>{{ event.name|shorten(45) }}</li>
 </ul>
 
 <div class="row">
 	<div class="col-lg-12 col-md-12">
-		<h2>{{ event.name }}</h2>
+		<h2>{{ event.name|shorten(60) }}</h2>
 	</div>
 </div>
 
 <div class="row">
 	<div class="col-lg-8 col-md-7">
-		<div class="row">
+		<div class="row h-tiles">
 			{% for schedule in event.schedules %}
-			<div class="col-lg-4 col-md-6 col-sm-4 col-xs-6">
-				<div class="well well-sm text-center">
-					<h4><a href="/-/schedules/{{ schedule.id }}"><i class="fa fa-calendar fa-3x"></i><br>{{ schedule.name }}</a></h4>
+			<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+				<div class="well well-sm">
+					<div>
+						<h4><a href="/-/schedules/{{ schedule.id }}">
+							<span><i class="fa fa-calendar fa-3x"></i></span>
+							<span>{{ schedule.name|shorten(45) }}</span>
+						</a></h4>
+					</div>
 				</div>
 			</div>
 			{% endfor %}
 
 			{% if not isFull %}
-			<div class="col-lg-4 col-md-6 col-sm-4 col-xs-6">
-				<div class="well well-sm text-center" style="border:1px solid transparent;background:transparent;box-shadow:none">
-					<h4><a href="/-/events/{{ event.id }}/schedules/new" class="text-muted"><i class="fa fa-plus fa-3x"></i><br>New Schedule&hellip;</a></h4>
+			<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+				<div class="well well-sm h-adder">
+					<div>
+						<h4><a href="/-/events/{{ event.id }}/schedules/new" class="text-muted">
+							<span><i class="fa fa-plus fa-3x"></i></span>
+							<span>New&hellip;</span>
+						</a></h4>
+					</div>
 				</div>
 			</div>
 			{% endif %}

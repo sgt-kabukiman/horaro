@@ -7,7 +7,7 @@
 <ul class="breadcrumb" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
 	{% if event %}
-	<li><a href="/-/events/{{ event.id }}">{{ event.name }}</a></li>
+	<li><a href="/-/events/{{ event.id }}">{{ event.name|shorten(45) }}</a></li>
 	<li>Update Event&hellip;</li>
 	{% else %}
 	<li>New Event&hellip;</li>

@@ -6,9 +6,9 @@
 {% block content %}
 <ul class="breadcrumb" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
-	<li><a href="/-/events/{{ event.id }}">{{ event.name }}</a></li>
+	<li><a href="/-/events/{{ event.id }}">{{ event.name|shorten(45) }}</a></li>
 	{% if schedule %}
-	<li><a href="/-/schedules/{{ schedule.id }}">{{ schedule.name }}</a></li>
+	<li><a href="/-/schedules/{{ schedule.id }}">{{ schedule.name|shorten(45) }}</a></li>
 	<li>Update Schedule&hellip;</li>
 	{% else %}
 	<li>New Schedule&hellip;</li>

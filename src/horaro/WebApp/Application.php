@@ -53,7 +53,12 @@ class Application extends BaseApplication {
 
 		$this->extend('twig', function($twig, $container) {
 			$versions = json_decode(file_get_contents(HORARO_ROOT.'/tmp/assets.json'), true);
-			$twig->addGlobal('utils', new TwigUtils($versions));
+			$utils    = new TwigUtils($versions);
+
+			$twig->addGlobal('utils', $utils);
+			$twig->addFilter(new \Twig_SimpleFilter('shorten', function($string, $maxlen) use ($utils) {
+				return $utils->shorten($string, $maxlen);
+			}));
 
 			return $twig;
 		});
