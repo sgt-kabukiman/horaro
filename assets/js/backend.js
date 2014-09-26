@@ -129,6 +129,8 @@ jQuery(function($) {
 		if (viewModel) {
 			ko.applyBindings(viewModel);
 			viewModel.initDragAndDrop(false);
+			$('#h-scheduler-loading').hide();
+			$('#h-scheduler-container').show();
 		}
 
 		// init spatial navigation (i.e. allow going up/down/left/right with array keys)
