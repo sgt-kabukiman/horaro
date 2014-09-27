@@ -17,8 +17,9 @@ use Symfony\Component\HttpFoundation\Response;
 class FrontendController extends BaseController {
 	public function scheduleAction(Request $request) {
 		list($schedule, $event) = $this->resolveSchedule($request);
+		if ($schedule instanceof Response) return $schedule;
 
-		$content = $this->render('frontend/schedule.twig', [
+		$content = $this->render('frontend/schedule/schedule.twig', [
 			'event'        => $event,
 			'schedule'     => $schedule,
 			'eventSlug'    => $event->getSlug(),
@@ -32,6 +33,7 @@ class FrontendController extends BaseController {
 
 	public function scheduleExportAction(Request $request) {
 		list($schedule, $event) = $this->resolveSchedule($request);
+		if ($schedule instanceof Response) return $schedule;
 
 		$format  = strtolower($request->attributes->get('format'));
 		$formats = ['json', 'xml', 'csv', 'ical'];
@@ -57,8 +59,9 @@ class FrontendController extends BaseController {
 
 	public function icalFaqAction(Request $request) {
 		list($schedule, $event) = $this->resolveSchedule($request);
+		if ($schedule instanceof Response) return $schedule;
 
-		$content = $this->render('frontend/schedule-ical.twig', [
+		$content = $this->render('frontend/schedule/ical.twig', [
 			'event'    => $event,
 			'schedule' => $schedule,
 		]);
@@ -74,7 +77,7 @@ class FrontendController extends BaseController {
 
 		// quickly fail if this is just a broken link somewhere in the backend or a missing asset
 		if (in_array($eventSlug, ['-', 'assets'], true)) {
-			return new Response('Not Found.', 404, ['content-type' => 'text/plain']);
+			return [new Response('Not Found.', 404, ['content-type' => 'text/plain']), null];
 		}
 
 		// resolve event
@@ -82,12 +85,9 @@ class FrontendController extends BaseController {
 		$event     = $eventRepo->findOneBySlug($eventSlug);
 
 		if (!$event) {
-			return $this->render('frontend/event_not_found.twig', [
-				'event'        => null,
-				'schedule'     => null,
-				'eventSlug'    => $eventSlug,
-				'scheduleSlug' => $scheduleSlug
-			]);
+			$content = $this->render('errors/not_found.twig');
+
+			return [new Response($content, 404), null];
 		}
 
 		// resolve schedule
@@ -95,12 +95,14 @@ class FrontendController extends BaseController {
 		$schedule     = $scheduleRepo->findOneBy(['event' => $event, 'slug' => $scheduleSlug]);
 
 		if (!$schedule) {
-			return $this->render('frontend/schedule_not_found.twig', [
+			$content = $this->render('frontend/schedule/not_found.twig', [
 				'event'        => $event,
 				'schedule'     => null,
 				'eventSlug'    => $eventSlug,
 				'scheduleSlug' => $scheduleSlug
 			]);
+
+			return [new Response($content, 404), $event];
 		}
 
 		return [$schedule, $event];

@@ -35,6 +35,10 @@ class Application extends BaseApplication {
 			return new I18N($this);
 		});
 
+		$this['errorhandler'] = $this->share(function() {
+			return new ErrorHandler($this);
+		});
+
 		$this['csrf'] = $this->share(function() {
 			$factory   = new \RandomLib\Factory();
 			$generator = $factory->getMediumStrengthGenerator();
@@ -148,8 +152,13 @@ class Application extends BaseApplication {
 		$this->get   ('/{event}/{schedule}/',          'controller.frontend:scheduleAction');
 		$this->get   ('/{event}/{schedule}/ical-feed', 'controller.frontend:icalFaqAction');
 
-		$this->error('firewall:handleAuthErrors');
-		$this->error('firewall:handleReverseAuthErrors');
-		$this->error('firewall:handleBadCsrf');
+		$this->error('errorhandler:handleAuthErrors');
+		$this->error('errorhandler:handleReverseAuthErrors');
+		$this->error('errorhandler:handleBadCsrf');
+		$this->error('errorhandler:notFound');
+
+		if (!$this['debug']) {
+			$this->error('errorhandler:generic');
+		}
 	}
 }

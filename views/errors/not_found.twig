@@ -1,0 +1,13 @@
+{% extends "frontend/layout.twig" %}
+
+{% block title %}Not Found{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-4 col-xs-offset-4">
+		<p class="text-center">
+			<img src="{{ macros.asset('images/error-404.png') }}" alt="Schedule Not Found" class="img-responsive">
+		</p>
+	</div>
+</div>
+{% endblock %}
