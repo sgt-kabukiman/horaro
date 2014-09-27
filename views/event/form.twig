@@ -37,13 +37,7 @@
 						<label class="col-lg-3 control-label" for="name">Name:</label>
 						<div class="col-lg-9">
 							<input type="text" class="form-control" id="name" name="name" autofocus required placeholder="Pong-a-thon" value="{% if result %}{{ result.name.filtered }}{% elseif event %}{{ event.name }}{% endif %}">
-							{% if result and result.name.errors and result.name.messages %}
-							<span class="help-block"><strong>
-								{% for message in result.name.messages %}
-									{{ message }}<br>
-								{% endfor %}
-							</strong></span>
-							{% endif %}
+							{{ macros.form_errors(result, 'name') }}
 						</div>
 					</div>
 
@@ -51,13 +45,7 @@
 						<label class="col-lg-3 control-label" for="slug">Slug:</label>
 						<div class="col-lg-9">
 							<input type="text" class="form-control" id="slug" name="slug" required placeholder="pongathon" pattern="[a-z0-9-]{2,}" value="{% if result %}{{ result.slug.filtered }}{% elseif event %}{{ event.slug }}{% endif %}">
-							{% if result and result.slug.errors and result.slug.messages %}
-							<span class="help-block"><strong>
-								{% for message in result.slug.messages %}
-									{{ message }}<br>
-								{% endfor %}
-							</strong></span>
-							{% endif %}
+							{{ macros.form_errors(result, 'slug') }}
 						</div>
 					</div>
 
@@ -65,13 +53,7 @@
 						<label class="col-lg-3 control-label" for="website">Website:</label>
 						<div class="col-lg-9">
 							<input type="text" class="form-control" id="website" name="website" placeholder="http://www.pongathon.org/" value="{% if result %}{{ result.website.filtered }}{% elseif event %}{{ event.website }}{% endif %}">
-							{% if result and result.website.errors and result.website.messages %}
-							<span class="help-block"><strong>
-								{% for message in result.website.messages %}
-									{{ message }}<br>
-								{% endfor %}
-							</strong></span>
-							{% endif %}
+							{{ macros.form_errors(result, 'website') }}
 						</div>
 					</div>
 
@@ -82,13 +64,7 @@
 								<div class="input-group-addon">http://twitch.tv/</div>
 								<input type="text" class="form-control" id="twitch" name="twitch" placeholder="pongathon" value="{% if result %}{{ result.twitch.filtered }}{% elseif event %}{{ event.twitch }}{% endif %}">
 							</div>
-							{% if result and result.twitch.errors and result.twitch.messages %}
-							<span class="help-block"><strong>
-								{% for message in result.twitch.messages %}
-									{{ message }}<br>
-								{% endfor %}
-							</strong></span>
-							{% endif %}
+							{{ macros.form_errors(result, 'twitch') }}
 						</div>
 					</div>
 
@@ -99,13 +75,7 @@
 								<div class="input-group-addon">@</div>
 								<input type="text" class="form-control" id="twitter" name="twitter" placeholder="pongathon" value="{% if result %}{{ result.twitter.filtered }}{% elseif event %}{{ event.twitter }}{% endif %}">
 							</div>
-							{% if result and result.twitter.errors and result.twitter.messages %}
-							<span class="help-block"><strong>
-								{% for message in result.twitter.messages %}
-									{{ message }}<br>
-								{% endfor %}
-							</strong></span>
-							{% endif %}
+							{{ macros.form_errors(result, 'twitter') }}
 						</div>
 					</div>
 

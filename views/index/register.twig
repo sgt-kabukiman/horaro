@@ -1,4 +1,5 @@
 {% extends "frontend.twig" %}
+{% import "macros.twig" as macros %}
 
 {% block title %}Register{% endblock %}
 
@@ -20,13 +21,7 @@
 					<div class="form-group{% if result and result.login.errors %} has-error{% endif %}">
 						<label class="col-lg-3 control-label" for="username">Username:</label>
 						<div class="col-lg-9">
-							{% if result and result.login.errors and result.login.messages %}
-							<span class="help-block"><strong>
-								{% for message in result.login.messages %}
-									{{ message }}<br>
-								{% endfor %}
-							</strong></span>
-							{% endif %}
+							{{ macros.form_errors(result, 'login') }}
 							<input type="text" class="form-control" id="username" name="username" autofocus required placeholder="cowen_hames69" value="{% if result %}{{ result.login.filtered }}{% endif %}">
 							<span class="help-block">Letters, numbers and a few special characters are allowed here. This has to
 							be unique across all users.</span>
@@ -36,13 +31,7 @@
 					<div class="form-group{% if result and result.password.errors %} has-error{% endif %}">
 						<label class="col-lg-3 control-label" for="password">Password:</label>
 						<div class="col-lg-9">
-							{% if result and result.password.errors and result.password.messages %}
-							<span class="help-block"><strong>
-								{% for message in result.password.messages %}
-									{{ message }}<br>
-								{% endfor %}
-							</strong></span>
-							{% endif %}
+							{{ macros.form_errors(result, 'password') }}
 							<input type="password" class="form-control" id="password" name="password" required placeholder="secret123 is not a good password">
 							<span class="help-block">Use whatever you like, but don't whine when someone guesses your shitty password.
 							Your password is stored as a bcrypt hash.</span>
