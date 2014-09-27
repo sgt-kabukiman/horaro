@@ -236,6 +236,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('i18n',     ['concat:i18n_en_us', 'concat:i18n_de_de']);
 	grunt.registerTask('assets',   ['clean:assets', 'css', 'js', 'copy:images']);
 	grunt.registerTask('doctrine', ['shell:schema', 'lineending:schema', 'shell:proxies']);
-	grunt.registerTask('ship',     ['filerev', 'filerev_assets']);
+	grunt.registerTask('version',  ['filerev', 'filerev_assets']);
+	grunt.registerTask('ship',     ['clean', 'assets', 'i18n', 'version']);
 	grunt.registerTask('default',  ['assets']);
 };
