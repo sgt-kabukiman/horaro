@@ -53,6 +53,11 @@ class Schedule {
 	private $max_items;
 
 	/**
+	 * @var string
+	 */
+	private $theme;
+
+	/**
 	 * @var \Doctrine\Common\Collections\Collection
 	 */
 	private $items;
@@ -226,7 +231,7 @@ class Schedule {
 	 * Set max items
 	 *
 	 * @param integer $maxItems
-	 * @return Event
+	 * @return Schedule
 	 */
 	public function setMaxItems($maxItems) {
 		$this->max_items = $maxItems < 0 ? 0 : (int) $maxItems;
@@ -241,6 +246,27 @@ class Schedule {
 	 */
 	public function getMaxItems() {
 		return $this->max_items;
+	}
+
+	/**
+	 * Set theme
+	 *
+	 * @param string $theme
+	 * @return Schedule
+	 */
+	public function setTheme($theme) {
+		$this->theme = $theme;
+
+		return $this;
+	}
+
+	/**
+	 * Get theme
+	 *
+	 * @return string
+	 */
+	public function getTheme() {
+		return $this->theme;
 	}
 
 	/**

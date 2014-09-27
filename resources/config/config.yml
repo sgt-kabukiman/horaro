@@ -2,3 +2,19 @@ roles:
   ROLE_ADMIN:  [ROLE_USER]
   ROLE_USER:   []
 default_role: ROLE_USER
+themes:
+  amelia:    Amelia
+  cerulian:  Cerulian
+  cosmo:     Cosmo
+  cyborg:    Cyborg
+  darkly:    Darkly
+  flatly:    Flatly
+  journal:   Journal
+  lumen:     Lumen
+  readable:  Readable
+  simplex:   Simplex
+  slate:     Slate
+  spacelab:  Spacelab
+  superhero: Superhero
+  united:    United
+  yeti:      Yeti

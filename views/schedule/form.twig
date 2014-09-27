@@ -114,6 +114,25 @@
 						</div>
 					</div>
 
+					<div class="form-group{% if result and result.theme.errors %} has-error{% endif %}">
+						<label class="col-lg-3 control-label" for="theme">Theme:</label>
+						<div class="col-lg-9">
+							{% set t = result ? result.theme.filtered : (schedule ? schedule.theme : defaultTheme) %}
+							<select name="theme" id="theme" class="form-control h-fancy">
+							{% for themeKey,themeName in themes %}
+								<option value="{{ themeKey }}"{% if t == themeKey %} selected{% endif %}>{{ themeName }}</option>
+							{% endfor %}
+							</select>
+							{% if result and result.theme.errors and result.theme.messages %}
+							<span class="help-block"><strong>
+								{% for message in result.theme.messages %}
+									{{ message }}<br>
+								{% endfor %}
+							</strong></span>
+							{% endif %}
+						</div>
+					</div>
+
 					<div class="form-group">
 						<div class="col-lg-12 text-center">
 							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"> </i> {% if schedule %}Update{% else %}Create{% endif %} Schedule</button>

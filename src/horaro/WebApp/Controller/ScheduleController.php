@@ -64,14 +64,15 @@ class ScheduleController extends BaseController {
 			return $this->redirect('/-/events/'.$event->getId());
 		}
 
-		$validator = new ScheduleValidator($this->getRepository('Schedule'));
+		$validator = $this->getValidator();
 		$result    = $validator->validate([
 			'name'       => $request->request->get('name'),
 			'slug'       => $request->request->get('slug'),
 			'timezone'   => $request->request->get('timezone'),
 			'twitch'     => $request->request->get('twitch'),
 			'start_date' => $request->request->get('start_date'),
-			'start_time' => $request->request->get('start_time')
+			'start_time' => $request->request->get('start_time'),
+			'theme'      => $request->request->get('theme')
 		], $event);
 
 		if ($result['_errors']) {
@@ -80,6 +81,7 @@ class ScheduleController extends BaseController {
 
 		// create schedule
 
+		$config   = $this->app['config'];
 		$user     = $this->getCurrentUser();
 		$schedule = new Schedule();
 
@@ -90,8 +92,8 @@ class ScheduleController extends BaseController {
 			->setTimezone($result['timezone']['filtered'])
 			->setUpdatedAt(new \DateTime('now UTC'))
 			->setStart($result['start']['filtered'])
-//			->setTwitch($result['twitch']['filtered'])
-			->setMaxItems($this->app['config']['max_schedule_items'])
+			->setMaxItems($config['max_schedule_items'])
+			->setTheme($result['theme']['filtered'])
 		;
 
 		$column = new ScheduleColumn();
@@ -124,14 +126,15 @@ class ScheduleController extends BaseController {
 
 		$schedule  = $this->getRequestedSchedule($request);
 		$event     = $schedule->getEvent();
-		$validator = new ScheduleValidator($this->getRepository('Schedule'));
+		$validator = $this->getValidator();
 		$result    = $validator->validate([
 			'name'       => $request->request->get('name'),
 			'slug'       => $request->request->get('slug'),
 			'timezone'   => $request->request->get('timezone'),
 			'twitch'     => $request->request->get('twitch'),
 			'start_date' => $request->request->get('start_date'),
-			'start_time' => $request->request->get('start_time')
+			'start_time' => $request->request->get('start_time'),
+			'theme'      => $request->request->get('theme')
 		], $event, $schedule);
 
 		if ($result['_errors']) {
@@ -146,7 +149,7 @@ class ScheduleController extends BaseController {
 			->setTimezone($result['timezone']['filtered'])
 			->setUpdatedAt(new \DateTime('now UTC'))
 			->setStart($result['start']['filtered'])
-//			->setTwitch($result['twitch']['filtered'])
+			->setTheme($result['theme']['filtered'])
 		;
 
 		$em = $this->getEntityManager();
@@ -201,14 +204,23 @@ class ScheduleController extends BaseController {
 		]);
 	}
 
+	protected function getValidator() {
+		$config = $this->app['config'];
+
+		return new ScheduleValidator($this->getRepository('Schedule'), array_keys($config['themes']), $config['default_schedule_theme']);
+	}
+
 	protected function renderForm(Event $event, Schedule $schedule = null, $result = null) {
 		$timezones = \DateTimeZone::listIdentifiers();
+		$config    = $this->app['config'];
 
 		return $this->render('schedule/form.twig', [
-			'event'     => $event,
-			'timezones' => $timezones,
-			'schedule'  => $schedule,
-			'result'    => $result
+			'event'        => $event,
+			'timezones'    => $timezones,
+			'schedule'     => $schedule,
+			'result'       => $result,
+			'themes'       => $config['themes'],
+			'defaultTheme' => $config['default_schedule_theme']
 		]);
 	}
 }

@@ -42,6 +42,9 @@ max_schedules: 10
 # maximum number of rows per schedule
 max_schedule_items: 200
 
+# default theme for new schedules
+default_schedule_theme: yeti
+
 # Lifetime of session cookies (in seconds). Set this to 0 to create cookies that
 # are deleted once the browser is closed. Default is 1 day (= 86400 secs).
 cookie_lifetime: 86400

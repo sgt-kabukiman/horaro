@@ -200,6 +200,9 @@ horaro\Library\Entity\Schedule:
     max_items:
       type: integer
       options: { unsigned: true }
+    theme:
+      type: string
+      length: 100
 
   uniqueConstraints:
     unique_slug:

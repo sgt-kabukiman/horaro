@@ -15,9 +15,13 @@ use horaro\Library\Entity\Schedule;
 
 class ScheduleValidator extends BaseValidator {
 	protected $repo;
+	protected $themes;
+	protected $defaultTheme;
 
-	public function __construct($scheduleRepo) {
-		$this->repo = $scheduleRepo;
+	public function __construct($scheduleRepo, array $themes, $defaultTheme) {
+		$this->repo         = $scheduleRepo;
+		$this->themes       = $themes;
+		$this->defaultTheme = $defaultTheme;
 	}
 
 	public function validate(array $schedule, Event $event, Schedule $ref = null) {
@@ -28,6 +32,7 @@ class ScheduleValidator extends BaseValidator {
 		$this->setFilteredValue('timezone', $this->validateTimezone($schedule['timezone'], $event, $ref));
 		$this->setFilteredValue('twitch',   $this->validateTwitchAccount($schedule['twitch'], $event, $ref));
 		$this->setFilteredValue('start',    $this->validateStart($schedule['start_date'], $schedule['start_time'], $event, $ref));
+		$this->setFilteredValue('theme',    $this->validateTheme($schedule['theme'], $event, $ref));
 
 		return $this->result;
 	}
@@ -130,5 +135,17 @@ class ScheduleValidator extends BaseValidator {
 		}
 
 		return $okay ? \DateTime::createFromFormat('Y-m-d G:i', "$date $time") : null;
+	}
+
+	public function validateTheme($theme, Event $event, Schedule $ref = null) {
+		$theme = trim($theme);
+
+		if (!in_array($theme, $this->themes, true)) {
+			$this->addError('theme', 'Your selected theme is invalid.');
+
+			return $this->defaultTheme;
+		}
+
+		return $theme;
 	}
 }

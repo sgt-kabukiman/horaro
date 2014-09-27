@@ -1,11 +1,11 @@
 {% extends "frontend/layout.twig" %}
 
+{% set theme     = schedule.theme      %}
 {% set start     = schedule.localStart %}
 {% set scheduled = schedule.localStart %}
 {% set columns   = schedule.columns    %}
 {% set numCols   = columns|length      %}
 {% set fluid     = numCols > 4         %}
-{% set theme     = 'yeti'              %}
 
 {% block fulltitle %}{{ schedule.name }} &ndash; {{ event.name }}{% endblock %}
 {% block body_attr %} class="theme-{{ theme }}"{% endblock %}
