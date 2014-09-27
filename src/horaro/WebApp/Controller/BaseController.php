@@ -252,7 +252,7 @@ class BaseController {
 			->setParameter('schedule', $s)
 			->getSingleScalarResult();
 
-		return $total >= $e->getMaxItems();
+		return $total >= $s->getMaxItems();
 	}
 
 	protected function exceedsMaxScheduleColumns(Schedule $s) {
