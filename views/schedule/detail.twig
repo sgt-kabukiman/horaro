@@ -1,5 +1,9 @@
 {% extends "backend.twig" %}
 
+{% set start   = schedule.localStart %}
+{% set numCols = columns|length      %}
+{% set fluid   = numCols > 3         %}
+
 {% block title %}{{ schedule.name }} &ndash; {{ schedule.event.name }}{% endblock %}
 
 {% block content %}
@@ -32,8 +36,6 @@
 	</div>
 </div>
 
-{% set start = schedule.localStart %}
-
 <div class="row">
 	<div class="col-lg-12 text-center">
 		<h4>Starts on <strong><time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}" class="h-fancy">{{ start.format('Y-m-d H:i:s') }}</time></strong> (<span title="UTC{{ start.format('P') }}" class="h-tooltip">{{ schedule.timezone }}</span> time)</h4>
@@ -57,27 +59,27 @@
 </div>
 
 <div id="h-scheduler-container">
-	<table class="table h-scheduler">
+	<table class="table h-scheduler h-l{{ numCols }}">
 		<thead>
 			<tr>
-				<th class="h-handle">&nbsp;</th>
-				<th class="h-scheduled">Scheduled</th>
-				<th class="h-length">Estimated</th>
-				{% for idx,column in schedule.columns.slice(0, 4) %}
-				<th class="h-column {{ utils.scheduleColClass(idx) }}">{{ column.name }}</th>
+				<th class="h-m">&nbsp;</th>
+				<th class="h-s">Scheduled</th>
+				<th class="h-l">Estimated</th>
+				{% for idx,column in schedule.columns %}
+				<th class="h-{{ idx }}">{{ column.name }}</th>
 				{% endfor %}
-				<th class="h-controls">&nbsp;</th>
+				<th class="h-co">&nbsp;</th>
 			</tr>
 		</thead>
 
 		<!-- ko foreach: items -->
-		{% include 'schedule/item.twig' with {'schedule': schedule, 'items': schedule.items, 'columns': schedule.columns} %}
+		{% include 'schedule/item.twig' with {'schedule': schedule, 'items': schedule.items, 'columns': schedule.columns, 'numCols' : numCols} %}
 		<!-- /ko -->
 
 		<!-- ko if: items().length === 0 -->
 		<tbody>
 			<tr>
-				<td colspan="100" class="text-center active">
+				<td colspan="{{ numCols + 4 }}" class="text-center active">
 					Click on the button below to create the first row in this schedule.
 				</td>
 			</tr>

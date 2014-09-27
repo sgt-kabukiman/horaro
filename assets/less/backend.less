@@ -21,6 +21,7 @@ dl.h-indented dd {
 }
 
 /* Scheduler */
+/* extra extra small, our default (Bootstrap philosophy) */
 
 #h-scheduler-container {
 	display: none;
@@ -29,7 +30,8 @@ dl.h-indented dd {
 table.h-scheduler {
 	font-size: 12px;
 
-	tbody .h-handle {
+	/* the move-handle */
+	tbody .h-m {
 		width: 25px;
 		text-align: center;
 		cursor: move;
@@ -43,41 +45,126 @@ table.h-scheduler {
 		border-top: 1px solid #dddddd;
 	}
 
-	tbody {
-		td {
-			padding: 3px 5px;
-			vertical-align: middle;
-		}
+	tbody td {
+		padding: 3px 5px;
+		vertical-align: middle;
 	}
 
 	.h-item-more div {
 		line-height: 20px;
 	}
 
-	.h-controls {
+	.h-co {
 		white-space: nowrap;
 		width: 100px;
+		text-align: right;
 	}
 
-	.h-scheduled, .h-length {
-		white-space: nowrap;
-		width: 50px;
-	}
-
-	.h-length.h-has-errors .editable {
+	.h-l.h-has-errors .editable {
 		color: red;
 	}
 
-	.h-length .editable-input input {
+	.h-l .editable-input input {
 		width: 100px;
 	}
 
-	.h-new-day td {
-		background: #ddd;
-		padding: 7px;
-		font-weight: bold;
+	dl {
+		margin-top: 2px;
+		margin-bottom: 2px;
+	}
+
+	dt, dd {
+		line-height: 150%;
+	}
+
+	dd {
+		margin-left: 15px;
 	}
 }
+
+.h-s, .h-l {
+	white-space: nowrap;
+	width: 50px;
+}
+
+.h-new-day td {
+	background: #ddd !important;
+	padding: 7px;
+	font-weight: bold;
+}
+
+/* h-0 is always shown */
+.h-1, .h-2, .h-3, .h-4, .h-5, .h-6, .h-7, .h-8, .h-9 {
+	display: none;
+}
+
+.h-l1 .h-co span {
+	display: none;
+}
+
+/* helper */
+.generate-media-query(@width, @colIdx) {
+	@media (min-width: @width) {
+		@shown: @colIdx + 1;
+
+		.h-@{colIdx} {
+			display: table-cell;
+		}
+
+		/* switch controls to be disabled if all columns are shown now */
+		.h-l@{shown} .h-co span {
+			display: none !important;
+		}
+
+		/* also, hide the expanded row when all columns are shown */
+		.h-l@{shown} .h-secondary {
+			display: none;
+		}
+
+		/* in the expanded view, hide all shown columns */
+		.hide-dd(@counter) when (@counter > 0) {
+			.hide-dd((@counter - 1));    // next iteration
+
+			.h-e-@{counter} {
+				display: none;
+			}
+		}
+
+		.hide-dd(@colIdx);
+	}
+}
+
+/* second text column shall be 150px wide(we use 12px font size), our minimal size is based on 500px */
+/* 500 because 400 is damn small and compared to the frontend (where we use 400) we have to show the */
+/* length column at all times. So we need a bit more space before we can comfortably show more columns */
+.generate-media-query(650px, 1);
+
+/* space for one more column */
+.generate-media-query(800px, 2);
+
+/* when switching to Bootstrap's md style, remove our custom indentation for dd elements, cause they are now shown horizontally */
+/* while we are at it, also increase the space for dt from 160px to 200px */
+@media (min-width: 768px) {
+	table.h-scheduler {
+		dt {
+			width: 200px;
+		}
+
+		dd {
+			margin-left: 220px;
+		}
+	}
+}
+
+/* generate generic 200px rules for the next columns; we show up to 10 columns */
+.generate-queries(@colIdx) when (@colIdx =< 9) {
+	@width: (900px + ((@colIdx - 2) * 200));
+
+	.generate-media-query(@width, @colIdx);
+	.generate-queries((@colIdx + 1));
+}
+
+.generate-queries(3);
 
 .h-scheduler-header {
 	.btn-group a {

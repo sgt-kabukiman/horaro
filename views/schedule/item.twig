@@ -1,14 +1,14 @@
 <tbody data-bind="attr: {'data-itemid': id, 'class': 'h-item ' + ($index() % 2 ? 'h-odd' : 'h-even')}">
 	<!-- ko if: dateSwitch -->
 	<tr class="h-new-day">
-		<td colspan="100" data-bind="text: dateSwitch"></td>
+		<td colspan="{{ numCols + 4 }}" data-bind="text: dateSwitch"></td>
 	</tr>
 	<!-- /ko -->
 
 	<tr class="h-primary">
-		<td data-bind="attr: { class: 'h-handle '    + rowClass() }">::</td>
-		<td data-bind="attr: { class: 'h-scheduled ' + rowClass() }"><span data-bind="text: formattedSchedule"></span></td>
-		<td data-bind="attr: { class: 'h-length '    + rowClass() }">
+		<td data-bind="attr: { class: 'h-m ' + rowClass() }">::</td>
+		<td data-bind="attr: { class: 'h-s ' + rowClass() }"><span data-bind="text: formattedSchedule"></span></td>
+		<td data-bind="attr: { class: 'h-l ' + rowClass() }">
 			<!-- ko if: errors -->
 			<a href="#" data-bind="editable: formattedLength, editableOptions: { hidden: onEditableHidden }, attr: { title: errors().length[0] }"></a>
 			<!-- /ko -->
@@ -18,13 +18,13 @@
 			<!-- /ko -->
 		</td>
 
-		{% for idx,column in columns.slice(0, 4) %}
-		<td data-bind="attr: { class: 'h-column {{ utils.scheduleColClass(idx) }} ' + rowClass() }"><a href="#" data-bind="editable: col_{{ column.id }}, editableOptions: { hidden: onEditableHidden }"></a></td>
+		{% for idx,column in columns %}
+		<td data-bind="attr: { class: 'h-{{ idx }} ' + rowClass() }"><a href="#" data-bind="editable: col_{{ column.id }}, editableOptions: { hidden: onEditableHidden }"></a></td>
 		{% endfor %}
 
-		<td data-bind="attr: { class: 'text-right h-controls ' + rowClass() }">
+		<td data-bind="attr: { class: 'h-co text-right ' + rowClass() }">
 			<!-- ko if: !deleting() -->
-			<span class="{{ utils.scheduleControlsClass(columns | length) }}">
+			<span>
 				<button class="btn btn-link btn-xs" data-bind="click: toggle, activate: toggle, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
 				<button class="btn btn-link btn-xs" data-bind="click: toggle, activate: toggle, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
 			</span>
@@ -39,63 +39,16 @@
 	</tr>
 
 	<!-- ko if: expanded -->
-	<tr class="h-secondary {{ utils.scheduleControlsClass(columns | length) }}">
-		<td colspan="100">
-			<!-- two elements per row, for large devices -->
-			{% for idx,column in columns.slice(4) %}
-				{% if loop.index0 % 2 == 0 %}
-				<div class="row h-item-more hidden-md hidden-sm hidden-xs">
-				{% endif %}
-
-				<div class="col-lg-2 text-right">
-					<strong>{{ column.name }}:</strong>
-				</div>
-				<div class="col-lg-4">
-					<a href="#" data-bind="editable: col_{{ column.id }}, editableOptions: { hidden: onEditableHidden }"></a>
-				</div>
-
-				{% if loop.index0 % 2 == 1 %}
-				</div>
-				{% endif %}
-			{% endfor %}
-
-			{% if columns|length > 4 and (columns|length - 4) % 2 > 0 %}
-			</div>
-			{% endif %}
-
-			<!-- two elements per row, for medium devices -->
-			{% for idx,column in columns.slice(3) %}
-				{% if loop.index0 % 2 == 0 %}
-				<div class="row h-item-more hidden-lg hidden-sm hidden-xs">
-				{% endif %}
-
-				<div class="col-md-2 text-right">
-					<strong>{{ column.name }}:</strong>
-				</div>
-				<div class="col-md-4">
-					<a href="#" data-bind="editable: col_{{ column.id }}, editableOptions: { hidden: onEditableHidden }"></a>
-				</div>
-
-				{% if loop.index0 % 2 == 1 %}
-				</div>
-				{% endif %}
-			{% endfor %}
-
-			{% if columns|length > 3 and (columns|length - 3) % 2 > 0 %}
-			</div>
-			{% endif %}
-
-			<!-- one row per element, for devices <= sm -->
-			{% for idx,column in columns.slice(2) %}
-			<div class="row h-item-more hidden-lg hidden-md">
-				<div class="col-sm-4 col-xs-4 text-right">
-					<strong>{{ column.name }}:</strong>
-				</div>
-				<div class="col-sm-8 col-xs-8">
-					<a href="#" data-bind="editable: col_{{ column.id }}, editableOptions: { hidden: onEditableHidden }"></a>
-				</div>
-			</div>
-			{% endfor %}
+	<tr class="h-secondary">
+		<td colspan="{{ numCols + 4 }}">
+			<dl class="dl-horizontal">
+				<dt class="h-e-l">Estimated:</dt>
+				<dd class="h-e-l">&nbsp;</dd>
+				{% for idx,column in columns.slice(1) %}
+				<dt class="h-e-{{ idx }}">{{ column.name }}:</dt>
+				<dd class="h-e-{{ idx }}"><a href="#" data-bind="editable: col_{{ column.id }}, editableOptions: { hidden: onEditableHidden }"></a></dd>
+				{% endfor %}
+			</dl>
 		</td>
 	</tr>
 	<!-- /ko -->

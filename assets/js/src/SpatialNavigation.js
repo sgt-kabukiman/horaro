@@ -14,7 +14,7 @@ function SpatialNavigation(root) {
 		var target = $(e.target);
 
 		// do nothing on elements we don't care about
-		if (!target.is('.editable') && !target.is('.h-controls button')) {
+		if (!target.is('.editable') && !target.is('.h-co button')) {
 			return;
 		}
 
