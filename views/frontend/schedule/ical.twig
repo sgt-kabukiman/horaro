@@ -55,7 +55,7 @@
 <ul class="nav navbar-nav navbar-right">
 	{% if event.website %}<li><a href="{{ event.website }}" target="_blank" title="{{ event.website }}"><i class="fa fa-globe"></i> <span class="hidden-sm">Website</span></a></li>{% endif %}
 	{% if event.twitch %}<li><a href="http://twitch.tv/{{ event.twitch }}" target="_blank" title="{{ event.twitch }}"><i class="fa fa-twitch"></i> <span class="hidden-sm">{{ event.twitch }}</span></a></li>{% endif %}
-	{% if event.twitter %}<li><a href="http://twitter.com/{{ event.twitter }}" target="_blank" title="@{{ event.twitter }}"><i class="fa fa-twitter"></i> <span class="hidden-sm">{{ event.twitter }}</span></a></li>{% endif %}
+	{% if event.twitter %}<li><a href="http://twitter.com/{{ event.twitter }}" target="_blank" title="@{{ event.twitter }}"><i class="fa fa-twitter"></i> <span class="hidden-sm">@{{ event.twitter }}</span></a></li>{% endif %}
 </ul>
 {% endblock %}
 
