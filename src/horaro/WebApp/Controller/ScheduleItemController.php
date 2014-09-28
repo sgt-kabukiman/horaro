@@ -57,9 +57,12 @@ class ScheduleItemController extends BaseController {
 		$item->setPosition($max + 1);
 		$item->setExtra($result['columns']['filtered']);
 
+		$schedule->touch();
+
 		// store it
 
 		$em = $this->getEntityManager();
+		$em->persist($schedule);
 		$em->persist($item);
 		$em->flush();
 
@@ -110,10 +113,12 @@ class ScheduleItemController extends BaseController {
 		}
 
 		$item->setExtra($extra);
+		$schedule->touch();
 
 		// store it
 
 		$em = $this->getEntityManager();
+		$em->persist($schedule);
 		$em->persist($item);
 		$em->flush();
 
@@ -148,6 +153,9 @@ class ScheduleItemController extends BaseController {
 
 			$query->getResult();
 
+			$schedule->touch();
+
+			$em->persist($schedule);
 			$em->remove($item);
 			$em->flush();
 		});
@@ -221,7 +229,10 @@ class ScheduleItemController extends BaseController {
 
 			$query->getResult();
 
+			$schedule->touch();
+
 			$item->setPosition($target);
+			$em->persist($schedule);
 			$em->persist($item);
 			$em->flush();
 		});

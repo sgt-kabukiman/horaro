@@ -67,9 +67,12 @@ class ScheduleColumnController extends BaseController {
 		$col->setPosition($max + 1);
 		$col->setName($result['name']['filtered']);
 
+		$schedule->touch();
+
 		// store it
 
 		$em = $this->getEntityManager();
+		$em->persist($schedule);
 		$em->persist($col);
 		$em->flush();
 
@@ -109,10 +112,12 @@ class ScheduleColumnController extends BaseController {
 		// update column
 
 		$column->setName($result['name']['filtered']);
+		$schedule->touch();
 
 		// store it
 
 		$em = $this->getEntityManager();
+		$em->persist($schedule);
 		$em->persist($column);
 		$em->flush();
 
@@ -142,7 +147,7 @@ class ScheduleColumnController extends BaseController {
 		// delete column and move followers one position up
 
 		$em = $this->getEntityManager();
-		$em->transactional(function($em) use ($column) {
+		$em->transactional(function($em) use ($column, $schedule) {
 			$qb    = $em->createQueryBuilder();
 			$query = $qb
 				->update('horaro\Library\Entity\ScheduleColumn', 'c')
@@ -152,6 +157,9 @@ class ScheduleColumnController extends BaseController {
 
 			$query->getResult();
 
+			$schedule->touch();
+
+			$em->persist($schedule);
 			$em->remove($column);
 			$em->flush();
 		});

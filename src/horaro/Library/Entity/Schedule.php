@@ -174,6 +174,15 @@ class Schedule {
 	}
 
 	/**
+	 * Set updated_at to now UTC
+	 *
+	 * @return Schedule
+	 */
+	public function touch() {
+		return $this->setUpdatedAt(new \DateTime('now UTC'));
+	}
+
+	/**
 	 * Get updated_at
 	 *
 	 * @return \DateTime
