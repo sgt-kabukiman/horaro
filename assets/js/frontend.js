@@ -119,7 +119,7 @@ jQuery(function($) {
 		element.text(d.toLocaleTimeString());
 
 		if (prev !== null && d.getDate() !== prev) {
-			element.closest('tr').before('<tr class="h-new-day"><td colspan="99">' + moment(d).format('dddd, LL') + '</td></tr>');
+			element.closest('tr').before('<tr class="h-new-day info"><td colspan="99">' + moment(d).format('dddd, LL') + '</td></tr>');
 		}
 
 		prev = d.getDate();

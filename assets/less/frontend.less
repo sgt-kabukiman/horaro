@@ -11,32 +11,15 @@
 	margin-bottom: 10px;
 }
 
-/* Scheduler */
-/* extra extra small, our default (Bootstrap philosophy) */
+/* Schedule */
+/* The following are basically all the hide/show rules for the schedule. All the colors and padding */
+/* adjustments are done below, on a per-theme basis. */
 
-table.h-schedule {
-	font-size: 12px;
+/* we start with extra small, our default (Bootstrap philosophy) */
 
-	.btn-xs {
-		padding: 3px 0;
-	}
-
-	thead th {
-		padding: 3px !important;
-	}
-
-	> tbody + tbody {
-		border-top: 1px solid #dddddd;
-	}
-
+.h-schedule {
 	tbody td {
-		padding: 3px;
 		vertical-align: middle;
-		line-height: 22px;
-	}
-
-	.h-item-more div {
-		line-height: 20px;
 	}
 
 	.h-co {
@@ -56,12 +39,14 @@ table.h-schedule {
 				display: none;
 			}
 		}
-
-		button[disabled] {
-			color: #999;
-		}
 	}
 
+	/* always force length and scheduled to be as small as possible */
+	.h-s, .h-l {
+		width: 40px;
+	}
+
+	/* this is useful for all themes, because dl are never expected to be in a td */
 	dl {
 		margin-top: 2px;
 		margin-bottom: 2px;
@@ -70,31 +55,19 @@ table.h-schedule {
 	dt, dd {
 		line-height: 150%;
 	}
-
-	dd {
-		margin-left: 15px;
-	}
 }
 
 .h-s, .h-l {
 	white-space: nowrap;
-	width: 50px;
 }
 
 .h-new-day td {
-	background: #ddd !important;
-	padding: 7px;
 	font-weight: bold;
-	line-height: 16px;
 }
 
 /* h-0 is always shown */
 .js {
 	.h-1, .h-2, .h-3, .h-4, .h-5, .h-6, .h-7, .h-8, .h-9, .h-l {
-		display: none;
-	}
-
-	.h-l1 .h-co {
 		display: none;
 	}
 }
@@ -107,38 +80,37 @@ table.h-schedule {
 				display: table-cell;
 			}
 
-			/* switch controls to be disabled if all filled-in columns are shown now */
-			.h-i-l@{colIdx} .h-co button {
-				display: none !important;
-			}
+			.loopy(@counter) when (@counter >= 0) {
+				.loopy((@counter - 1));    // next iteration
 
-			.h-i-l@{colIdx} .h-co button[disabled] {
-				display: inline-block !important;
-			}
+				/* switch controls to be disabled if all filled-in columns are shown now */
+				.h-i-l@{counter} .h-co button {
+					display: none !important;
+				}
 
-			/* also, hide the expanded row when all relevant columns are shown */
-			.h-i-l@{colIdx} .h-secondary {
-				display: none;
-			}
+				.h-i-l@{counter} .h-co button[disabled] {
+					display: inline-block !important;
+				}
 
-			/* in the expanded view, hide all shown columns */
-			.hide-dd(@counter) when (@counter > 0) {
-				.hide-dd((@counter - 1));    // next iteration
+				/* hide the controls entirely when all columns for all items are shown */
+				.h-l@{counter} .h-co,
 
-				.h-e-@{counter} {
+				/* in the expanded view, hide all shown columns */
+				.h-e-@{counter},
+
+				/* also, hide the expanded row when all relevant columns are shown */
+				.h-i-l@{counter} .h-secondary {
 					display: none;
 				}
 			}
 
-			.hide-dd(@colIdx);
-
-			/* hide the controls entirely when all columns for all items are shown */
-			.h-l@{colIdx} .h-co {
-				display: none;
-			}
+			.loopy(@colIdx);
 		}
 	}
 }
+
+/* generate base rules for the smallest possible device */
+.generate-media-query(10px, 0);
 
 /* second text column shall be 150px wide(we use 12px font size), our minimal size is based on 400px */
 .generate-media-query(550px, 1);
@@ -146,7 +118,24 @@ table.h-schedule {
 /* also, show length if there are no more than one column */
 @media (min-width: 550px) {
 	.js {
-		.h-l0 .h-l {
+		.h-l0 {
+			.h-l {
+				display: table-cell;
+			}
+
+			.h-e-l {
+				display: none;
+			}
+		}
+	}
+}
+
+/* when we get 45px more, we can always show the length (before showing more content columns) */
+/* do this below 600px so I can see the length on my Nexus 4 (598px when not browsing in fullscreen) */
+/* this is basically the same as above, except without the l0 restriction */
+@media (min-width: 595px) {
+	.js {
+		.h-l {
 			display: table-cell;
 		}
 
@@ -156,54 +145,8 @@ table.h-schedule {
 	}
 }
 
-/* when we get 45px more, we can even show the length */
-/* do this below 600px so I can see the length on my Nexus 4 (598px when not browsing in fullscreen) */
-@media (min-width: 595px) {
-	.js .h-l {
-		display: table-cell;
-	}
-}
-
 /* space for one more column */
 .generate-media-query(750px, 2);
-
-/* time to scale the UI back to normal sizes */
-@media (min-width: 992px) {
-	table.h-schedule {
-		font-size: 13px;
-	}
-
-	.btn-xs {
-		padding: 4px 8px;
-	}
-
-	thead th {
-		padding: 3px 5px !important;
-	}
-
-	tbody td {
-		padding: 3px 5px;
-		line-height: 24px;
-	}
-
-	.h-co {
-		width: 100px;
-	}
-}
-
-/* when switching to Bootstrap's md style, remove our custom indentation for dd elements, cause they are now shown horizontally */
-/* while we are at it, also increase the space for dt from 160px to 200px */
-@media (min-width: 768px) {
-	table.h-schedule {
-		dt {
-			width: 200px;
-		}
-
-		dd {
-			margin-left: 220px;
-		}
-	}
-}
 
 /* generate generic 200px rules for the next columns; we show up to 10 columns */
 .generate-queries(@colIdx) when (@colIdx =< 9) {
@@ -215,28 +158,10 @@ table.h-schedule {
 
 .generate-queries(3);
 
-.h-schedule-header {
-	.btn-group a {
-		font-size: 14px;
-	}
-
-	div:last-child {
-		margin-top: 11px;
-	}
-}
-
-tbody.h-odd td {
-	background: #f8f8f8;
-}
-
 /* Ticker (above schedule, showing currently active schedule item) */
-.h-ticker {
-	font-size: 12px;
-	display: none;
 
-	h3 {
-		font-size: 13px;
-	}
+.h-ticker {
+	display: none;
 
 	.panel-heading, .panel-body {
 		padding: 6px;
@@ -247,35 +172,187 @@ tbody.h-odd td {
 	}
 }
 
-/* time to scale the UI back to normal sizes */
-@media (min-width: 992px) {
-	.h-ticker {
-		font-size: 13px;
+/* custom Bootswatch styling, the stuff that is the same for all themes */
 
-		h3 {
-			font-size: 14px;
+.h-schedule {
+	tbody + tbody {
+		border-top-width: 1px;
+	}
+}
+
+button[disabled] {
+	opacity: 0.4 !important;
+}
+
+/* most themes use this as their odd styling */
+.h-odd td {
+	background: #f9f9f9;
+}
+
+/* overwrite styling for xs/sm devices (Bootstrap definition) */
+@media (max-width: 991px) {
+	body {
+		table.h-schedule {
+			td, th {
+				font-size: 12px;
+				padding: 3px;
+				line-height: 25px;
+			}
+
+			.btn-xs {
+				padding: 3px 0;
+			}
+
+			dd {
+				margin-left: 15px;
+			}
+		}
+
+		.h-ticker {
+			font-size: 12px;
+
+			h3 {
+				font-size: 13px;
+			}
+		}
+
+		.btn-xs {
+			font-size: 12px;
 		}
 	}
 }
 
-/* custom Bootstrap styling */
+/* custom styling for sm/md/lg */
+@media (min-width: 768px) {
+	body .h-schedule {
+		dt {
+			width: 200px;
+		}
 
-.dropdown-menu > li > a {
-	padding-top: 4px;
-	padding-bottom: 4px;
+		dd {
+			margin-left: 220px;
+		}
+	}
 }
 
-.navbar .dropdown-menu > li > a {
-	padding-top: 7px;
-	padding-bottom: 7px;
+/* custom styling for md/lg */
+@media (min-width: 992px) {
+	body {
+		table.h-schedule {
+			td, th {
+				font-size: 13px;
+				padding: 3px;
+				line-height: 27px;
+			}
+		}
+
+		.h-ticker {
+			font-size: 13px;
+
+			h3 {
+				font-size: 14px;
+			}
+		}
+	}
 }
 
-.dropdown-menu .divider {
-	margin: 5.5px 0;
+/* custom Bootswatch styling for each theme */
+
+.theme-amelia {
+	.h-odd td {
+		background: #0f7f88;
+	}
 }
 
-.alert {
-	padding: 5px;
-	font-size: 13px;
-	line-height: 23px;
+.theme-cerulean {
+	/* nothing */
+}
+
+.theme-cosmo {
+	/* nothing */
+}
+
+.theme-cyborg {
+	.h-schedule {
+		background: transparent;
+	}
+
+	.h-odd td {
+		background: #181818;
+	}
+}
+
+.theme-darkly {
+	.h-schedule {
+		background: transparent;
+	}
+
+	tbody + tbody {
+		border-top-width: 0;
+	}
+
+	tbody.h-odd td {
+		background: #303030;
+	}
+}
+
+.theme-flatly {
+	.h-schedule {
+		background: transparent;
+	}
+
+	tbody + tbody {
+		border-top-width: 0;
+	}
+}
+
+.theme-journal {
+	/* nothing */
+}
+
+.theme-lumen {
+	.h-schedule {
+		background: transparent;
+	}
+
+	tbody + tbody {
+		border-top-width: 0;
+	}
+}
+
+.theme-readable {
+	/* nothing */
+}
+
+.theme-simplex {
+	/* nothing */
+}
+
+.theme-slate {
+	tbody.h-odd td {
+		background: #353a41;
+	}
+}
+
+.theme-spacelab {
+	/* nothing */
+}
+
+.theme-superhero {
+	tbody.h-odd td {
+		background: #4e5d6c;
+	}
+
+	/* the default is just unreadable */
+	.text-muted {
+		color: #8e9dac;
+	}
+}
+
+.theme-united {
+	/* nothing */
+}
+
+.theme-yeti {
+	/* nothing */
 }

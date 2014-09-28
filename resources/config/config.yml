@@ -4,7 +4,7 @@ roles:
 default_role: ROLE_USER
 themes:
   amelia:    Amelia
-  cerulian:  Cerulian
+  cerulean:  Cerulean
   cosmo:     Cosmo
   cyborg:    Cyborg
   darkly:    Darkly
