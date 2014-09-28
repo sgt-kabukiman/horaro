@@ -97,7 +97,7 @@
 	<div class="col-lg-4 col-md-4 col-sm-5">
 		<div class="panel panel-default h-next">
 			<div class="panel-heading">
-				<h3 class="panel-title">Next up <time datetime="2014-09-19T12:52:00-06:00" class="h-relative"></time>:</h3>
+				<h3 class="panel-title">Next up <time datetime="" class="h-relative"></time>:</h3>
 			</div>
 			<div class="panel-body">&nbsp;</div>
 		</div>
@@ -109,6 +109,7 @@
 		<p class="text-center text-muted" id="localized-note">
 			<small>All dates and times are given in {{ schedule.timezone }} timezone (UTC{{ start.format('P') }}).</small>
 			<small class="nope">All dates and times are given in your local timezone.</small>
+			<small class="show">The schedule was last updated <time datetime="{{ schedule.localUpdatedAt.format('Y-m-d\\TH:i:sP') }}" class="h-relative h-fuzzy">{{ schedule.localUpdatedAt.format('F d, Y \\a\\t H:i:s') }}</time>.</small>
 		</p>
 	</div>
 </div>

@@ -183,12 +183,26 @@ class Schedule {
 	}
 
 	/**
-	 * Get updated_at
+	 * Get updated_at (UTC)
 	 *
 	 * @return \DateTime
 	 */
 	public function getUpdatedAt() {
-		return $this->updated_at;
+		$tmpFrmt = 'Y-m-d H:i:s';
+
+		return \DateTime::createFromFormat($tmpFrmt, $this->updated_at->format($tmpFrmt), new \DateTimeZone('UTC')); // "inject" proper timezone
+	}
+
+	/**
+	 * Get updated_at with the proper local timezone
+	 *
+	 * @return \DateTime
+	 */
+	public function getLocalUpdatedAt() {
+		$local = $this->getUpdatedAt();
+		$local->setTimezone($this->getTimezoneInstance());
+
+		return $local;
 	}
 
 	/**

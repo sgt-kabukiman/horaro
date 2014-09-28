@@ -8,8 +8,14 @@ jQuery(function($) {
 
 		$('time.h-relative').each(function() {
 			var minutes = moment($(this).attr('datetime')).diff(now, 'minutes');
-			var hours   = parseInt(minutes / 60, 10);
-			var texts   = [];
+
+			if ($(this).is('.h-fuzzy')) {
+				$(this).text(moment.duration(minutes, 'minutes').humanize(true));
+				return;
+			}
+
+			var hours = parseInt(minutes / 60, 10);
+			var texts = [];
 
 			minutes -= hours*60;
 
@@ -92,8 +98,6 @@ jQuery(function($) {
 		$('.h-next .panel-body').text(getItemTitle(next));
 		$('.h-next time').attr('datetime', getItemScheduled(next));
 		current.find('.h-primary').addClass('success');
-
-		updateRelativeTimes();
 	}
 
 	$('html').addClass('js');
@@ -173,7 +177,9 @@ jQuery(function($) {
 
 		// update ticker
 		window.setInterval(updateTicker, 5000);
+		window.setInterval(updateRelativeTimes, 5000);
 		updateTicker();
+		updateRelativeTimes();
 
 		$('.h-jumper').on('click', function() {
 			var item = findCurrentItem();
