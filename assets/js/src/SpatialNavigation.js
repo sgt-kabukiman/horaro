@@ -35,7 +35,7 @@ function SpatialNavigation(root) {
 
 		var row   = target.closest('tbody');
 		var rows  = root.find('tbody');
-		var nodes = row.find('.h-primary a:visible, .h-primary button:visible');
+		var nodes = row.find('.h-primary a:visible, .h-primary .h-co button:visible');
 		var x     = nodes.index(target);
 		var y     = rows.index(row);
 		var maxX  = nodes.length - 1;
