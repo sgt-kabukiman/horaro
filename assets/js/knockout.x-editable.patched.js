@@ -110,6 +110,17 @@
 				$editable.on('hidden', editableOptions.hidden);
 			}
 
+			$editable.on('shown', function() {
+				var input = $(this).parent().find('.editable-input input');
+
+				// X-Editable will call the shown event before calling the hidden event.
+				// Because the hidden event listener most likly will set the focus to the
+				// editable link, we need to defer our focus (which is more important).
+				window.setTimeout(function() {
+					input.focus()[0].setSelectionRange(0, input.val().length);
+				}, 0);
+			});
+
 			//setup observable to fire only when editable changes, not when options change
 			//http://www.knockmeout.net/2012/06/knockoutjs-performance-gotcha-3-all-bindings.html
 			ko.computed({
