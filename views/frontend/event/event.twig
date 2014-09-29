@@ -1,0 +1,89 @@
+{% extends "frontend/layout.twig" %}
+
+{% set theme = 'yeti' %}
+
+{% block fulltitle %}{{ event.name }}{% endblock %}
+{% block body_attr %} class="theme-{{ theme }}"{% endblock %}
+
+{% block styles %}
+<link href="{{ macros.asset('css/theme-' ~ theme ~ '.min.css') }}" rel="stylesheet">
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="{{ macros.asset('css/app-frontend.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block navheader %}
+<div class="navbar-header">
+	<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#h-collapse-nav">
+		<span class="sr-only">Toggle navigation</span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+	</button>
+	<a href="/{{ event.slug }}" class="navbar-brand">{{ event.name }}</a>
+</div>
+{% endblock %}
+
+{% block navigation %}
+<ul class="nav navbar-nav">
+	{% if event.schedules|length == 1 %}
+	<li><a href="/{{ event.slug }}/{{ event.schedules[0].slug }}"><i class="fa fa-calendar"></i> {{ event.schedules[0].name }}</a></li>
+	{% else %}
+	<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-calendar"></i> Schedules <span class="caret"></span></a>
+		<ul class="dropdown-menu">
+			{% for sched in event.schedules %}
+			<li><a href="/{{ event.slug }}/{{ sched.slug }}">{{ sched.name }}</a></li>
+			{% endfor %}
+		</ul>
+	</li>
+	{%	endif %}
+</ul>
+
+<ul class="nav navbar-nav navbar-right">
+	{% if event.website %}<li><a href="{{ event.website }}" target="_blank" title="{{ event.website }}"><i class="fa fa-globe"></i> <span class="hidden-sm">Website</span></a></li>{% endif %}
+	{% if event.twitch %}<li><a href="http://twitch.tv/{{ event.twitch }}" target="_blank" title="{{ event.twitch }}"><i class="fa fa-twitch"></i> <span class="hidden-sm">{{ event.twitch }}</span></a></li>{% endif %}
+	{% if event.twitter %}<li><a href="http://twitter.com/{{ event.twitter }}" target="_blank" title="@{{ event.twitter }}"><i class="fa fa-twitter"></i> <span class="hidden-sm">@{{ event.twitter }}</span></a></li>{% endif %}
+</ul>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<h2>{{ event.name }} <small>Schedules</small></h2>
+	</div>
+</div>
+
+{% if event.schedules is empty %}
+<div class="row">
+	<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1 col-xs-12">
+		<div class="alert alert-info">
+			<i class="fa fa-info-circle"></i> This event does not have any schedules yet. Check back later.
+		</div>
+	</div>
+</div>
+{% else %}
+<ul class="row h-schedule-list">
+	{% for schedule in event.schedules %}
+	<li class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+		{% set start = schedule.localStart %}
+		{% set end   = schedule.localEnd   %}
+		<div class="well well-sm">
+			<h3>
+				<a href="/{{ event.slug }}/{{ schedule.slug }}"><i class="fa fa-calendar"></i> {{ schedule.name|shorten(30) }}</a>
+				<span class="badge">{{ schedule.items|length }}</span><br>
+				<small>
+					{% if start.format('Ymd') == end.format('Ymd') %}
+					<time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}">{{ start.format('H:i') }}</time> &ndash;
+					<time datetime="{{ end.format('Y-m-d\\TH:i:sP') }}">{{ end.format('H:i \\o\\n D, M d, Y') }}</time>
+					{% else %}
+					<time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}">{{ start.format('D, M d') }}</time> &ndash;
+					<time datetime="{{ end.format('Y-m-d\\TH:i:sP') }}">{{ end.format('D, M d, Y') }}</time>
+					{% endif %}
+				</small>
+			</h3>
+		</div>
+	</li>
+	{% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

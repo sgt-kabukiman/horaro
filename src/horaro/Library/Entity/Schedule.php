@@ -251,6 +251,21 @@ class Schedule {
 	}
 
 	/**
+	 * Get end time with the proper local timezone
+	 *
+	 * @return \DateTime
+	 */
+	public function getLocalEnd() {
+		$t = $this->getLocalStart();
+
+		foreach ($this->getItems() as $item) {
+			$t->add($item->getDateInterval());
+		}
+
+		return $t;
+	}
+
+	/**
 	 * Set max items
 	 *
 	 * @param integer $maxItems

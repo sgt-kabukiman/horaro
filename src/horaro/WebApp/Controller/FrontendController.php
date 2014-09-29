@@ -20,10 +20,8 @@ class FrontendController extends BaseController {
 		if ($schedule instanceof Response) return $schedule;
 
 		$content = $this->render('frontend/schedule/schedule.twig', [
-			'event'        => $event,
-			'schedule'     => $schedule,
-			'eventSlug'    => $event->getSlug(),
-			'scheduleSlug' => $schedule->getSlug()
+			'event'    => $event,
+			'schedule' => $schedule
 		]);
 
 		$response = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
@@ -71,13 +69,22 @@ class FrontendController extends BaseController {
 		return $this->setCachingHeader($schedule, $response);
 	}
 
-	protected function resolveSchedule(Request $request) {
-		$eventSlug    = mb_strtolower($request->attributes->get('event'));
-		$scheduleSlug = mb_strtolower($request->attributes->get('schedule'));
+	public function eventAction(Request $request) {
+		$event = $this->resolveEvent($request);
+		if ($event instanceof Response) return $event;
+
+		$content  = $this->render('frontend/event/event.twig', ['event' => $event]);
+		$response = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
+
+		return $this->setCachingHeader(null, $response);
+	}
+
+	protected function resolveEvent(Request $request) {
+		$eventSlug = mb_strtolower($request->attributes->get('event'));
 
 		// quickly fail if this is just a broken link somewhere in the backend or a missing asset
 		if (in_array($eventSlug, ['-', 'assets'], true)) {
-			return [new Response('Not Found.', 404, ['content-type' => 'text/plain']), null];
+			return new Response('Not Found.', 404, ['content-type' => 'text/plain']);
 		}
 
 		// resolve event
@@ -87,20 +94,24 @@ class FrontendController extends BaseController {
 		if (!$event) {
 			$content = $this->render('errors/not_found.twig');
 
-			return [new Response($content, 404), null];
+			return new Response($content, 404);
 		}
 
+		return $event;
+	}
+
+	protected function resolveSchedule(Request $request) {
+		// resolve event
+		$event = $this->resolveEvent($request);
+		if ($event instanceof Response) return [$event, null];
+
 		// resolve schedule
+		$scheduleSlug = mb_strtolower($request->attributes->get('schedule'));
 		$scheduleRepo = $this->getRepository('Schedule');
 		$schedule     = $scheduleRepo->findOneBy(['event' => $event, 'slug' => $scheduleSlug]);
 
 		if (!$schedule) {
-			$content = $this->render('frontend/schedule/not_found.twig', [
-				'event'        => $event,
-				'schedule'     => null,
-				'eventSlug'    => $eventSlug,
-				'scheduleSlug' => $scheduleSlug
-			]);
+			$content = $this->render('frontend/schedule/not_found.twig', ['event' => $event]);
 
 			return [new Response($content, 404), $event];
 		}
@@ -108,8 +119,11 @@ class FrontendController extends BaseController {
 		return [$schedule, $event];
 	}
 
-	protected function setCachingHeader(Schedule $schedule, Response $response) {
-		$response->setLastModified($schedule->getUpdatedAt());
+	protected function setCachingHeader(Schedule $schedule = null, Response $response) {
+		if ($schedule) {
+			$response->setLastModified($schedule->getUpdatedAt());
+		}
+
 		$response->setTtl(5*60);       // 5 minutes
 		$response->setClientTtl(5*60);
 
