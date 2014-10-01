@@ -4,6 +4,7 @@
 {% block flashes %}{% endblock %}
 
 {% block navigation %}
+{% if not app.user %}
 <form method="post" action="/-/login" class="navbar-form navbar-right">
 	<div class="form-group">
 		<input type="text" name="username" placeholder="username" required>
@@ -15,6 +16,7 @@
 		<button type="submit" class="btn btn-primary"><i class="fa fa-sign-in"></i> Log-in</button>
 	</div>
 </form>
+{% endif %}
 {% endblock %}
 
 {% block styles %}

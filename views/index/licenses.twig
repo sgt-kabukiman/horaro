@@ -1,0 +1,244 @@
+{% extends "frontend.twig" %}
+
+{% block title %}Acknowledgments{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h2>Acknowledgments</h2>
+		<p>horaro contains software and other stuff from these awesome people and projects:</p>
+
+		<h3>PHP Libraries</h3>
+
+		<h4><a href="http://www.doctrine-project.org/" target="_blank">Doctrine</a> <small>A whole bunch of libraries...</small></h4>
+		<div class="license">{{ utils.getLicenseMarkup('vendor/doctrine/orm/LICENSE')|raw }}</div>
+
+		<h4><a href="http://www.hashids.org/" target="_blank">hashids</a> <small>&quot;A small PHP class to generate YouTube-like hashes from numbers&quot;</small></h4>
+		<div class="license">{{ utils.getLicenseMarkup('vendor/hashids/hashids/LICENSE')|raw }}</div>
+
+		<h4><a href="https://github.com/ircmaxell/password_compat" target="_blank">password_compat</a> <small>Secure password hashing for PHP < 5.5</small></h4>
+		<div class="license">{{ utils.getLicenseMarkup('vendor/ircmaxell/password-compat/LICENSE.md')|raw }}</div>
+
+		<h4><a href="https://github.com/ircmaxell/RandomLib" target="_blank">RandomLib</a> <small>&quot;A library for generating random numbers and strings of various strengths&quot;</small></h4>
+		<div class="license">{{ utils.getLicenseMarkup('vendor/ircmaxell/random-lib/LICENSE')|raw }}</div>
+
+		<h4><a href="http://silex.sensiolabs.org/" target="_blank">Silex</a> <small>&quot;The PHP micro-framework based on the Symfony2 Components&quot;</small></h4>
+		<div class="license">{{ utils.getLicenseMarkup('vendor/silex/silex/LICENSE')|raw }}</div>
+
+		<h4><a href="http://symfony.com/doc/current/components/yaml/introduction.html" target="_blank">Symfony Yaml Component</a> <small>&quot;The Symfony Yaml component parses YAML strings to convert them to PHP arrays.&quot;</small></h4>
+		<div class="license">{{ utils.getLicenseMarkup('vendor/symfony/yaml/Symfony/Component/Yaml/LICENSE')|raw }}</div>
+
+		<h4><a href="http://twig.sensiolabs.org/" target="_blank">Twig</a> <small>&quot;The flexible, fast, and secure template engine for PHP&quot;</small></h4>
+		<div class="license">{{ utils.getLicenseMarkup('vendor/twig/twig/LICENSE')|raw }}</div>
+
+		<h3>Assets</h3>
+
+		<h4><a href="http://www.getbootstrap.com/" target="_blank">Bootstrap</a> <small>&quot;Bootstrap is the most popular HTML, CSS, and JS framework for developing responsive, mobile first projects on the web.&quot;</small></h4>
+		<div class="license"><pre>The MIT License (MIT)
+
+Copyright (c) 2011-2014 Twitter, Inc
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</pre></div>
+
+		<h4><a href="https://github.com/ifightcrime/bootstrap-growl" target="_blank">bootstrap-growl</a> <small>&quot;Pretty simple jQuery plugin that turns standard Bootstrap alerts into hovering 'Growl-like' notifications.&quot;</small></h4>
+		<div class="license"><pre>The MIT License
+
+Copyright (c) Nick Larson, http://github.com/ifightcrime
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</pre></div>
+
+		<h4><a href="http://bootswatch.com/" target="_blank">Bootswatch</a> <small>&quot;Free themes for Bootstrap&quot;</small></h4>
+		<div class="license"><pre>The MIT License (MIT)
+
+Copyright (c) 2013 Thomas Park
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</pre></div>
+
+		<h4><a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">Font Awesome</a> <small>&quot;The iconic font and CSS toolkit&quot;</small></h4>
+		<div class="license">Fonts are licensed under SIL OFL 1.1, CSS code is licensed under MIT. See <a href="http://fortawesome.github.io/Font-Awesome/license/" target="_blank">Font Awesome's license page</a>.</div>
+
+		<h4><a href="http://jquery.com/" target="_blank">jQuery</a> <small>&quot;jQuery is a fast, small, and feature-rich JavaScript library.&quot;</small></h4>
+		<div class="license"><pre>Copyright 2014 jQuery Foundation and other contributors
+http://jquery.com/
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre></div>
+
+		<h4><a href="http://knockoutjs.com/" target="_blank">knockout.js</a> <small>&quot;Simplify dynamic JavaScript UIs with the Model-View-View Model (MVVM)&quot;</small></h4>
+		<div class="license"><pre>The MIT License (MIT) - http://www.opensource.org/licenses/mit-license.php
+
+Copyright (c) Steven Sanderson, the Knockout.js team, and other contributors
+http://knockoutjs.com/
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</pre></div>
+
+		<h4><a href="http://momentjs.com/" target="_blank">Moment.js</a> <small>&quot;A lightweight javascript date library for parsing, validating, manipulating, and formatting dates.&quot;</small></h4>
+		<div class="license"><pre>Copyright (c) 2011-2014 Tim Wood, Iskren Chernev, Moment.js contributors
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.</pre></div>
+
+		<h4><a href="http://amsul.ca/pickadate.js/" target="_blank">pickadate.js</a> <small>&quot;The mobile-friendly, responsive, and lightweight jQuery date & time input picker.&quot;</small></h4>
+		<div class="license"><pre>Copyright © 2013 Amsul, http://amsul.ca
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+“Software”), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre></div>
+
+		<h4><a href="http://ivaynberg.github.io/select2/" target="_blank">Select2</a> <small>&quot;Select2 is a jQuery based replacement for select boxes.&quot;</small></h4>
+		<div class="license"><pre>Copyright 2014 Igor Vaynberg
+
+This software is licensed under the Apache License, Version 2.0 (the "Apache License") or the GNU
+General Public License version 2 (the "GPL License"). You may choose either license to govern your
+use of this software only upon the condition that you accept all of the terms of either the Apache
+License or the GPL License.
+
+You may obtain a copy of the Apache License and the GPL License at:
+
+http://www.apache.org/licenses/LICENSE-2.0
+http://www.gnu.org/licenses/gpl-2.0.html
+
+Unless required by applicable law or agreed to in writing, software distributed under the Apache License
+or the GPL Licesnse is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied. See the Apache License and the GPL License for the specific language governing
+permissions and limitations under the Apache License and the GPL License.</pre></div>
+
+		<h4><a href="http://vitalets.github.io/x-editable/" target="_blank">X-editable</a> <small>&quot;In-place editing with Twitter Bootstrap, jQuery UI or pure jQuery.&quot;</small></h4>
+		<div class="license"><pre>Copyright (c) 2012 Vitaliy Potapov
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.</pre></div>
+	</div>
+</div>
+{% endblock %}

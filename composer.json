@@ -5,16 +5,12 @@
     "require": {
         "php": ">=5.4.0",
         "silex/silex": "~1.2",
-        "symfony/config": "2.5.*",
         "symfony/yaml": "2.5.*",
-        "symfony/console": "2.5.*",
         "doctrine/orm": "~2.4.3",
         "ircmaxell/password-compat": "~1.0.0",
         "ircmaxell/random-lib": "~1.0.0",
-        "league/fractal": "0.8.*",
         "hashids/hashids": "~0.3.0@dev",
-        "twig/twig": "~1.16",
-        "knplabs/console-service-provider": "dev-master#1f1a331540"
+        "twig/twig": "~1.16"
     },
     "autoload": {
         "psr-4": {

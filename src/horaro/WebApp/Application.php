@@ -39,6 +39,12 @@ class Application extends BaseApplication {
 			return new ErrorHandler($this);
 		});
 
+		$this['version'] = $this->share(function() {
+			$filename = HORARO_ROOT.'/version';
+
+			return file_exists($filename) ? trim(file_get_contents($filename)) : 'version N/A';
+		});
+
 		$this['csrf'] = $this->share(function() {
 			$factory   = new \RandomLib\Factory();
 			$generator = $factory->getMediumStrengthGenerator();
@@ -110,6 +116,7 @@ class Application extends BaseApplication {
 		$this->get   ('/-/logout',   'controller.index:logoutAction')->before('firewall:requireUser'); // TODO: This should be POST
 		$this->get   ('/-/register', 'controller.index:registerFormAction')->before('firewall:requireAnonymous');
 		$this->post  ('/-/register', 'controller.index:registerAction')->before('firewall:requireAnonymous');
+		$this->get   ('/-/licenses', 'controller.index:licensesAction');
 
 		$this->get   ('/-/home', 'controller.home:indexAction')->before('firewall:requireUser');
 

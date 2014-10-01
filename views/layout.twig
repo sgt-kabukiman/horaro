@@ -31,6 +31,22 @@
 
 	<div class="{{ fluid|default(false) ? 'container-fluid' : 'container' }}" id="content">
 		{% block content %}{% endblock %}
+
+		{% block footer %}
+		<footer class="text-muted">
+			<div class="row">
+				<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+					<small>
+						Horaro – <span><a href="https://bitbucket.org/sgt-kabukiman/horaro" target="_blank">open source</a> scheduling.</span> <span>Because we ♥ open data.</span><br>
+						<a href="/-/licenses">Acknowledgments</a>
+					</small>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-right">
+					<small>{{ app.version }}</small>
+				</div>
+			</div>
+		</footer>
+		{% endblock %}
 	</div>
 
 	{% block scripts %}{% endblock %}

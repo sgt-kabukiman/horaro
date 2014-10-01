@@ -121,4 +121,8 @@ class IndexController extends BaseController {
 
 		return $this->redirect('/');
 	}
+
+	public function licensesAction(Request $request) {
+		return $this->render('index/licenses.twig');
+	}
 }

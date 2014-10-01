@@ -28,4 +28,16 @@ class TwigUtils {
 
 		return mb_substr($string, 0, $maxlen).'…';
 	}
+
+	public function getLicenseMarkup($path) {
+		$file = HORARO_ROOT.'/'.$path;
+
+		if (!file_exists($file)) {
+			return '<p class="text-error">License file ('.htmlspecialchars($file, ENT_QUOTES, 'UTF-8').' not found.</p>';
+		}
+
+		$content = file_get_contents($file);
+
+		return '<pre>'.htmlspecialchars($content, ENT_QUOTES, 'UTF-8').'</pre>';
+	}
 }
