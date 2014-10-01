@@ -143,7 +143,7 @@ class ScheduleItemController extends BaseController {
 		// delete item and move followers one position up
 
 		$em = $this->getEntityManager();
-		$em->transactional(function($em) use ($item) {
+		$em->transactional(function($em) use ($item, $schedule) {
 			$qb    = $em->createQueryBuilder();
 			$query = $qb
 				->update('horaro\Library\Entity\ScheduleItem', 'i')
