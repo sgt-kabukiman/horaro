@@ -29,7 +29,12 @@
 			{% endif %}
 		</a>
 	</li>
-	<li><a href="/-/logout"><i class="fa fa-power-off"></i> Log-out</a></li>
+	<li>
+		<form method="post" action="/-/logout">
+			{{ macros.csrf_token() }}
+			<button type="submit" class="btn btn-link"><i class="fa fa-power-off"></i> Log-out</button>
+		</form>
+	</li>
 </ul>
 {% endblock %}
 
