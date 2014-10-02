@@ -57,7 +57,10 @@
 
 	<div class="col-lg-7 col-md-6 col-sm-6 h-formhelp-columnist">
 		<p>Each schedule has its own set of columns, which control what data you can edit in the schedule
-		(duh). You must have a least one column per schedule.</p>
+		(duh). There are two columns fixed columns for each schedule: the length (a time span like
+		<kbd>01:20:00</kbd>) and the scheduled time (automatically calculated). You cannot influence
+		those (i.e. you cannot move them around or remove them).<br>In addition, each
+		schedule must have at least one user defined columns and at most ten of those.</p>
 
 		<p>Use the handle on the left of each row to move columns up and down. Positioning is important
 		when you have more than two or three columns:</p>
@@ -69,6 +72,10 @@
 		easily consume a schedule with lots of columns. Depending on the device size, excessive columns
 		will be hidden by default and only shown when the user clicks on a link (pretty much like the
 		editing of schedules work).</p>
+
+		<p>On a phone in portait mode, only the first column is shown. In landscape mode (around 600px
+		in width), the second column and the length is shown. Then, for each ~200px more in width, one
+		more column is shown.</p>
 	</div>
 </div>
 
