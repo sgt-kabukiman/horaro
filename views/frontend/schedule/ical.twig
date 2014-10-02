@@ -8,10 +8,17 @@
 {% block fulltitle %}{{ schedule.name }} &ndash; {{ event.name }}{% endblock %}
 {% block body_attr %} class="theme-{{ theme }}"{% endblock %}
 
+{% block meta %}
+<meta name="description" content="Description of the iCal calendar feed for the {{ schedule.name }} of {{ event.name }}">
+	<meta name="author" content="{{ event.owner.displayName }}">
+	<link rel="canonical" href="{{ app.request.scheme }}://{{ app.request.host }}/{{ event.slug }}/{{ schedule.slug }}/ical">
+	<link rel="index" href="{{ app.request.scheme }}://{{ app.request.host }}/{{ event.slug }}">
+{% endblock %}
+
 {% block styles %}
 <link href="{{ macros.asset('css/theme-' ~ theme ~ '.min.css') }}" rel="stylesheet">
-<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-<link href="{{ macros.asset('css/app-frontend.min.css') }}" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="{{ macros.asset('css/app-frontend.min.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block navheader %}
