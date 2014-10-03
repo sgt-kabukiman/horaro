@@ -1,0 +1,15 @@
+{% extends "frontend/layout.twig" %}
+{% import "macros.twig" as macros %}
+
+{% block title %}You need the blue key.{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1 col-xs-12">
+		<h1 class="text-center text-danger"><i class="fa fa-ban fa-3x"></i></h1>
+		<h3>Ah ah ah… <small>you didn't say the magic word!</small></h3>
+		<p class="text-danger">{{ e.message }}</p>
+		<p class="text-center">{{ macros.back_button() }}</p>
+	</div>
+</div>
+{% endblock %}

@@ -11,6 +11,7 @@
 namespace horaro\WebApp\Controller;
 
 use horaro\Library\Entity\Schedule;
+use horaro\WebApp\Exception\NotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -92,9 +93,7 @@ class FrontendController extends BaseController {
 		$event     = $eventRepo->findOneBySlug($eventSlug);
 
 		if (!$event) {
-			$content = $this->render('errors/not_found.twig');
-
-			return new Response($content, 404);
+			throw new NotFoundException('There is no event named "'.$eventSlug.'".');
 		}
 
 		return $event;

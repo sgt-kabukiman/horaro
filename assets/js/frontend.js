@@ -114,6 +114,13 @@ jQuery(function($) {
 		$(this).text(moment($(this).attr('datetime')).format('HH:mm:ss'));
 	});
 
+	// setup back buttons
+
+	$('body').on('click', '.h-back-btn', function() {
+		history.back();
+		return false;
+	});
+
 	// remove previous day breaks (computed by the server, based on the schedule timezone)
 	$('.h-new-day').remove();
 

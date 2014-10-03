@@ -25,6 +25,13 @@ jQuery(function($) {
 		hiddenName: true
 	});
 
+	// setup back buttons
+
+	$('body').on('click', '.h-back-btn', function() {
+		history.back();
+		return false;
+	});
+
 	// setup Select2
 
 	$('select.h-fancy').select2();

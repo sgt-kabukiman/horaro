@@ -177,13 +177,6 @@ class Application extends BaseApplication {
 		$this->get   ('/{event}/{schedule}/',          'controller.frontend:scheduleAction');
 		$this->get   ('/{event}/{schedule}/ical-feed', 'controller.frontend:icalFaqAction');
 
-		$this->error('errorhandler:handleAuthErrors');
-		$this->error('errorhandler:handleReverseAuthErrors');
-		$this->error('errorhandler:handleBadCsrf');
-		$this->error('errorhandler:notFound');
-
-		if (!$this['debug']) {
-			$this->error('errorhandler:generic');
-		}
+		$this['errorhandler']->setupMiddleware($this['debug']);
 	}
 }
