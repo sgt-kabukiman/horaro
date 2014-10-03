@@ -10,11 +10,15 @@
 
 namespace horaro\WebApp;
 
+use horaro\Entity\User;
+
 class TwigUtils {
 	protected $versions = [];
+	protected $app;
 
-	public function __construct(array $assetVersions) {
+	public function __construct(array $assetVersions, Application $app) {
 		$this->versions = $assetVersions;
+		$this->app      = $app;
 	}
 
 	public function asset($path) {
@@ -39,5 +43,25 @@ class TwigUtils {
 		$content = file_get_contents($file);
 
 		return '<pre>'.htmlspecialchars($content, ENT_QUOTES, 'UTF-8').'</pre>';
+	}
+
+	public function userIsAdmin(User $user = null) {
+		$user = $user ?: $this->app['user'];
+
+		if (!$user) {
+			return false;
+		}
+
+		return $this->app['rolemanager']->userIsAdmin($user);
+	}
+
+	public function userHasRole($role, User $user = null) {
+		$user = $user ?: $this->app['user'];
+
+		if (!$user) {
+			return false;
+		}
+
+		return $this->app['rolemanager']->userHasRole($role, $user);
 	}
 }

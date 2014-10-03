@@ -26,6 +26,17 @@ class Firewall {
 		}
 	}
 
+	public function requireAdmin() {
+		$this->requireUser();
+
+		$user = $this->app['user'];
+		$rm   = $this->app['rolemanager'];
+
+		if (!$rm->userIsAdmin($user)) {
+			throw new UnauthorizedException('Forbidden.');
+		}
+	}
+
 	public function requireAnonymous() {
 		if ($this->app['user']) {
 			throw new TooAuthorizedException('You cannot do this while you are logged in.');

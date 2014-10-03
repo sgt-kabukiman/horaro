@@ -10,6 +10,8 @@
 
 namespace horaro\Library;
 
+use horaro\Library\Entity\User;
+
 class RoleManager {
 	protected $roles;
 
@@ -17,30 +19,37 @@ class RoleManager {
 		$this->roles = $roles;
 	}
 
-	public function getRoles($role) {
-		if (!isset($this->roles[$role])) {
+	public function getWeight($role) {
+		$weight = array_search($role, $this->roles);
+
+		if ($weight === false) {
 			throw new \InvalidArgumentException('Unknown role "'.$role.'" given.');
 		}
 
-		$result = [$role];
-		$stack  = $this->roles[$role];
-
-		while (!empty($stack)) {
-			$r = array_shift($stack);
-
-			if (!in_array($r, $result, true)) {
-				$result[] = $r;
-			}
-
-			foreach ($this->roles[$r] as $i) {
-				$stack[] = $i;
-			}
-		}
-
-		return $result;
+		return $weight;
 	}
 
 	public function isIncluded($role, $inThisRole) {
-		return in_array($role, $this->getRoles($inThisRole), true);
+		return $this->getWeight($role) <= $this->getWeight($inThisRole);
+	}
+
+	public function userHasRole($role, User $user) {
+		return $this->isIncluded($role, $user->getRole());
+	}
+
+	public function userIsSuperior(User $user, User $to) {
+		return $this->getWeight($to->getRole()) < $this->getWeight($user->getRole());
+	}
+
+	public function userIsColleague(User $user, User $to) {
+		return $to->getRole() === $user->getRole();
+	}
+
+	public function userIsOp(User $user) {
+		return $this->userHasRole('ROLE_OP', $user);
+	}
+
+	public function userIsAdmin(User $user) {
+		return $this->userHasRole('ROLE_ADMIN', $user);
 	}
 }

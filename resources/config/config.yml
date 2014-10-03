@@ -1,6 +1,8 @@
-roles:
-  ROLE_ADMIN:  [ROLE_USER]
-  ROLE_USER:   []
+roles: # the order is relevant here!
+  - ROLE_GHOST
+  - ROLE_USER
+  - ROLE_ADMIN
+  - ROLE_OP
 default_role: ROLE_USER
 themes:
   amelia:    Amelia
