@@ -6,3 +6,4 @@ tmp/*
 vendor/*
 www/assets/*
 version
+.ftppass
