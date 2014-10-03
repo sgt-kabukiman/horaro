@@ -37,7 +37,7 @@ class LoginValidator extends BaseValidator {
 			$login = strtolower($login);
 			$user  = $this->repo->findOneByLogin($login);
 
-			if (!$user) {
+			if (!$user || $user->getRole() === 'ROLE_GHOST') {
 				$this->addError('form', 'Invalid login credentials.');
 			}
 

@@ -49,13 +49,18 @@ class Firewall {
 		$cookies = $request->cookies;
 
 		if ($cookies->has($name)) {
-			$userID = $this->app['session']->get('horaro.user');
+			$session = $this->app['session'];
+			$userID  = $session->get('horaro.user');
 
 			if ($userID) {
 				$user = $this->app['entitymanager']->getRepository('horaro\Library\Entity\User')->findOneById($userID);
 
-				if ($user) {
+				// check if the user has been disabled since the session was opened
+				if ($user && $user->getRole() !== 'ROLE_GHOST') {
 					$this->app['user'] = $user;
+				}
+				else {
+					$session->invalidate();
 				}
 			}
 		}
