@@ -102,8 +102,7 @@ class UserController extends BaseController {
 			throw new ForbiddenException('You are not allowed to edit this user.');
 		}
 
-		$languages = $this->getLanguages();
-		$validator = new UserValidator(array_keys($languages), $this->getDefaultLanguage(), $this->app);
+		$validator = new UserValidator([], null, $this->app);
 		$result    = $validator->validatePasswordChange([
 			'password'  => $request->request->get('password'),
 			'password2' => $request->request->get('password2')

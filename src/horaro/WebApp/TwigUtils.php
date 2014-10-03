@@ -64,4 +64,12 @@ class TwigUtils {
 
 		return $this->app['rolemanager']->userHasRole($role, $user);
 	}
+
+	public function formValue(array $result = null, $key, $default = null) {
+		return isset($result[$key]) ? $result[$key]['filtered'] : $default;
+	}
+
+	public function formClass(array $result = null, $key) {
+		return empty($result[$key]['errors']) ? '' : ' has-error';
+	}
 }

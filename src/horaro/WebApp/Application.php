@@ -162,13 +162,14 @@ class Application extends BaseApplication {
 
 		$this->get   ('/-/admin', 'controller.admin.index:dashboardAction')->before('firewall:requireAdmin');
 
-		$this->get   ('/-/admin/users',               'controller.admin.user:indexAction')->before('firewall:requireAdmin');
-		$this->get   ('/-/admin/users/new',           'controller.admin.user:newAction')->before('firewall:requireAdmin');
-		$this->post  ('/-/admin/users',               'controller.admin.user:createAction')->before('firewall:requireAdmin');
-		$this->get   ('/-/admin/users/{user}/edit',   'controller.admin.user:editAction')->before('firewall:requireAdmin');
-		$this->put   ('/-/admin/users/{user}',        'controller.admin.user:updateAction')->before('firewall:requireAdmin');
-		$this->get   ('/-/admin/users/{user}/delete', 'controller.admin.user:confirmationAction')->before('firewall:requireAdmin');
-		$this->delete('/-/admin/users/{user}',        'controller.admin.user:deleteAction')->before('firewall:requireAdmin');
+		$this->get   ('/-/admin/users',                 'controller.admin.user:indexAction')->before('firewall:requireAdmin');
+		$this->get   ('/-/admin/users/new',             'controller.admin.user:newAction')->before('firewall:requireAdmin');
+		$this->post  ('/-/admin/users',                 'controller.admin.user:createAction')->before('firewall:requireAdmin');
+		$this->get   ('/-/admin/users/{user}/edit',     'controller.admin.user:editAction')->before('firewall:requireAdmin');
+		$this->put   ('/-/admin/users/{user}',          'controller.admin.user:updateAction')->before('firewall:requireAdmin');
+		$this->put   ('/-/admin/users/{user}/password', 'controller.admin.user:updatePasswordAction')->before('firewall:requireAdmin');
+		$this->get   ('/-/admin/users/{user}/delete',   'controller.admin.user:confirmationAction')->before('firewall:requireAdmin');
+		$this->delete('/-/admin/users/{user}',          'controller.admin.user:deleteAction')->before('firewall:requireAdmin');
 
 		$this->get   ('/{event}',                      'controller.frontend:eventAction');
 		$this->get   ('/{event}/',                     'controller.frontend:eventAction');

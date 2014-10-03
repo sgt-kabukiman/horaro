@@ -19,35 +19,35 @@
 					<legend>User Information</legend>
 					{{ macros.csrf_token() }}
 
-					<div class="form-group{% if result and result.login.errors %} has-error{% endif %}">
+					<div class="form-group{{ utils.formClass(result, 'login') }}">
 						<label class="col-lg-4 control-label" for="login">Username:</label>
 						<div class="col-lg-8">
-							<input type="text" class="form-control" id="login" name="login" autofocus required value="{{ result ? result.login.filtered : user.login }}">
+							<input type="text" class="form-control" id="login" name="login" autofocus required value="{{ utils.formValue(result, 'login', user.login) }}">
 							{{ macros.form_errors(result, 'login') }}
 						</div>
 					</div>
 
-					<div class="form-group{% if result and result.display_name.errors %} has-error{% endif %}">
+					<div class="form-group{{ utils.formClass(result, 'display_name') }}">
 						<label class="col-lg-4 control-label" for="display_name">Display Name:</label>
 						<div class="col-lg-8">
-							<input type="text" class="form-control" id="display_name" name="display_name" value="{{ result ? result.display_name.filtered : user.displayName }}">
+							<input type="text" class="form-control" id="display_name" name="display_name" value="{{ utils.formValue(result, 'display_name', user.displayName) }}">
 							{{ macros.form_errors(result, 'display_name') }}
 						</div>
 					</div>
 
-					<div class="form-group{% if result and result.gravatar.errors %} has-error{% endif %}">
+					<div class="form-group{{ utils.formClass(result, 'gravatar') }}">
 						<label class="col-lg-4 control-label" for="gravatar">Gravatar Info:</label>
 						<div class="col-lg-8">
-							<input type="text" class="form-control" id="gravatar" name="gravatar" value="{{ result ? result.gravatar.filtered : user.gravatarHash }}">
+							<input type="text" class="form-control" id="gravatar" name="gravatar" value="{{ utils.formValue(result, 'gravatar', user.gravatarHash) }}">
 							<span class="help-block">Enter the e-mail address or its MD5 hash.</span>
 							{{ macros.form_errors(result, 'gravatar') }}
 						</div>
 					</div>
 
-					<div class="form-group{% if result and result.language.errors %} has-error{% endif %}">
+					<div class="form-group{{ utils.formClass(result, 'language') }}">
 						<label class="col-lg-4 control-label" for="language">Language:</label>
 						<div class="col-lg-8">
-							{% set lng = result ? result.language.filtered : user.language %}
+							{% set lng = utils.formValue(result, 'language', user.language) %}
 							<select name="language" id="language" class="form-control h-fancy">
 							{% for language,name in languages %}
 								<option value="{{ language }}"{% if lng == language %} selected{% endif %}>{{ name }}</option>
@@ -59,10 +59,10 @@
 
 					{% set numEvents = user.events|length %}
 
-					<div class="form-group{% if result and result.max_events.errors %} has-error{% endif %}">
+					<div class="form-group{{ utils.formClass(result, 'max_events') }}">
 						<label class="col-lg-4 control-label" for="max_events">Max # of events:</label>
 						<div class="col-lg-8">
-							<input type="number" min="{{ numEvents }}" max="999" class="form-control" id="max_events" name="max_events" value="{{ result ? result.max_events.filtered : user.maxEvents }}">
+							<input type="number" min="{{ numEvents }}" max="999" class="form-control" id="max_events" name="max_events" value="{{ utils.formValue(result, 'max_events', user.maxEvents) }}">
 							<span class="help-block">This user already has {{ numEvents }} event{{ numEvents == 1 ? '' : 's' }}.</span>
 							{{ macros.form_errors(result, 'max_events') }}
 						</div>
@@ -75,9 +75,9 @@
 						</div>
 					</div>
 
-					{% set role = result ? result.role.filtered : user.role %}
+					{% set role = utils.formValue(result, 'role', user.role) %}
 
-					<div class="form-group">
+					<div class="form-group{{ utils.formClass(result, 'role') }}">
 						<label class="col-lg-4 control-label">Role:</label>
 						<div class="col-lg-8">
 							{% if app.user.id == user.id %}
@@ -96,6 +96,7 @@
 								<label><input type="radio" name="role" value="ROLE_GHOST"{{ role == 'ROLE_GHOST' ? ' checked' : '' }}> Ghost <span class="text-muted">(account disabled)</span></label>
 							</div>
 							{% endif %}
+							{{ macros.form_errors(result, 'role') }}
 						</div>
 					</div>
 
@@ -117,7 +118,7 @@
 					<legend>Change Password</legend>
 					{{ macros.csrf_token() }}
 
-					<div class="form-group{% if result and result.password.errors %} has-error{% endif %}">
+					<div class="form-group{{ utils.formClass(result, 'password') }}">
 						<label class="col-lg-4 control-label" for="password">New Password:</label>
 						<div class="col-lg-8">
 							<input type="password" class="form-control" id="password" name="password" required>
@@ -125,11 +126,10 @@
 						</div>
 					</div>
 
-					<div class="form-group{% if result and result.password2.errors %} has-error{% endif %}">
+					<div class="form-group{{ utils.formClass(result, 'password') }}">
 						<label class="col-lg-4 control-label" for="password2">New Password again:</label>
 						<div class="col-lg-8">
 							<input type="password" class="form-control" id="password2" name="password2" required>
-							{{ macros.form_errors(result, 'password2') }}
 						</div>
 					</div>
 

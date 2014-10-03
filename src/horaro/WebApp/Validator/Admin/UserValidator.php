@@ -41,7 +41,6 @@ class UserValidator extends BaseValidator {
 	public function validatePasswordChange(array $profile, User $user) {
 		$this->result = ['_errors' => false];
 
-		$this->setFilteredValue('current',  $this->validateCurrentPassword($profile['current'], $user));
 		$this->setFilteredValue('password', $this->validatePassword($profile['password'], $profile['password2']));
 
 		return $this->result;
