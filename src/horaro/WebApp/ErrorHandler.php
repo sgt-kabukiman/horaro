@@ -55,12 +55,12 @@ class ErrorHandler {
 		return $this->respond('errors/bad_csrf_token.twig', $e);
 	}
 
-	public function sfRoutingException(NotFoundHttpException $e) {
+	public function notFound(NotFoundException $e) {
 		return $this->respond('errors/not_found.twig', $e);
 	}
 
-	public function notFound(NotFoundException $e) {
-		return $this->respond('errors/not_found.twig', $e);
+	public function sfRoutingException(NotFoundHttpException $e) {
+		return $this->respond('errors/not_found.twig', $e, 404);
 	}
 
 	public function generic(\Exception $e) {
