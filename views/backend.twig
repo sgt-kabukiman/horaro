@@ -35,6 +35,11 @@
 			<button type="submit" class="btn btn-link"><i class="fa fa-power-off"></i> Log-out</button>
 		</form>
 	</li>
+	{% if utils.userIsAdmin() %}
+	<li>
+		<a href="/-/admin"><i class="fa fa-wrench"></i></a>
+	</li>
+	{% endif %}
 </ul>
 {% endblock %}
 

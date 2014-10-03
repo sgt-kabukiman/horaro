@@ -63,7 +63,7 @@ class Application extends BaseApplication {
 
 		$this->extend('twig', function($twig, $container) {
 			$versions = json_decode(file_get_contents(HORARO_ROOT.'/tmp/assets.json'), true);
-			$utils    = new TwigUtils($versions);
+			$utils    = new TwigUtils($versions, $this);
 
 			$twig->addGlobal('utils', $utils);
 			$twig->addFilter(new \Twig_SimpleFilter('shorten', function($string, $maxlen) use ($utils) {
@@ -103,6 +103,14 @@ class Application extends BaseApplication {
 
 		$this['controller.profile'] = $this->share(function() {
 			return new Controller\ProfileController($this);
+		});
+
+		$this['controller.admin.index'] = $this->share(function() {
+			return new Controller\Admin\IndexController($this);
+		});
+
+		$this['controller.admin.user'] = $this->share(function() {
+			return new Controller\Admin\UserController($this);
 		});
 	}
 
@@ -151,6 +159,16 @@ class Application extends BaseApplication {
 		$this->get   ('/-/profile',          'controller.profile:editAction')->before('firewall:requireUser');
 		$this->put   ('/-/profile',          'controller.profile:updateAction')->before('firewall:requireUser');
 		$this->put   ('/-/profile/password', 'controller.profile:updatePasswordAction')->before('firewall:requireUser');
+
+		$this->get   ('/-/admin', 'controller.admin.index:dashboardAction')->before('firewall:requireAdmin');
+
+		$this->get   ('/-/admin/users',               'controller.admin.user:indexAction')->before('firewall:requireAdmin');
+		$this->get   ('/-/admin/users/new',           'controller.admin.user:newAction')->before('firewall:requireAdmin');
+		$this->post  ('/-/admin/users',               'controller.admin.user:createAction')->before('firewall:requireAdmin');
+		$this->get   ('/-/admin/users/{user}/edit',   'controller.admin.user:editAction')->before('firewall:requireAdmin');
+		$this->put   ('/-/admin/users/{user}',        'controller.admin.user:updateAction')->before('firewall:requireAdmin');
+		$this->get   ('/-/admin/users/{user}/delete', 'controller.admin.user:confirmationAction')->before('firewall:requireAdmin');
+		$this->delete('/-/admin/users/{user}',        'controller.admin.user:deleteAction')->before('firewall:requireAdmin');
 
 		$this->get   ('/{event}',                      'controller.frontend:eventAction');
 		$this->get   ('/{event}/',                     'controller.frontend:eventAction');

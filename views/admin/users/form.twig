@@ -1,0 +1,146 @@
+{% extends "backend.twig" %}
+{% import "macros.twig" as macros %}
+
+{% block title %}{{ user.login }} &ndash; Admin{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h2><a href="/-/admin/users">Users</a> \ {{ user.login|shorten(40) }}{% if user.id == app.user.id %} <small class="text-info">This is you!</small>{% endif %}</h2>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-7">
+		<div class="well">
+			<form method="post" action="/-/admin/users/{{ user.id }}" class="form-horizontal">
+				<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
+				<fieldset>
+					<legend>User Information</legend>
+					{{ macros.csrf_token() }}
+
+					<div class="form-group{% if result and result.login.errors %} has-error{% endif %}">
+						<label class="col-lg-4 control-label" for="login">Username:</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="login" name="login" autofocus required value="{{ result ? result.login.filtered : user.login }}">
+							{{ macros.form_errors(result, 'login') }}
+						</div>
+					</div>
+
+					<div class="form-group{% if result and result.display_name.errors %} has-error{% endif %}">
+						<label class="col-lg-4 control-label" for="display_name">Display Name:</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="display_name" name="display_name" value="{{ result ? result.display_name.filtered : user.displayName }}">
+							{{ macros.form_errors(result, 'display_name') }}
+						</div>
+					</div>
+
+					<div class="form-group{% if result and result.gravatar.errors %} has-error{% endif %}">
+						<label class="col-lg-4 control-label" for="gravatar">Gravatar Info:</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="gravatar" name="gravatar" value="{{ result ? result.gravatar.filtered : user.gravatarHash }}">
+							<span class="help-block">Enter the e-mail address or its MD5 hash.</span>
+							{{ macros.form_errors(result, 'gravatar') }}
+						</div>
+					</div>
+
+					<div class="form-group{% if result and result.language.errors %} has-error{% endif %}">
+						<label class="col-lg-4 control-label" for="language">Language:</label>
+						<div class="col-lg-8">
+							{% set lng = result ? result.language.filtered : user.language %}
+							<select name="language" id="language" class="form-control h-fancy">
+							{% for language,name in languages %}
+								<option value="{{ language }}"{% if lng == language %} selected{% endif %}>{{ name }}</option>
+							{% endfor %}
+							</select>
+							{{ macros.form_errors(result, 'language') }}
+						</div>
+					</div>
+
+					{% set numEvents = user.events|length %}
+
+					<div class="form-group{% if result and result.max_events.errors %} has-error{% endif %}">
+						<label class="col-lg-4 control-label" for="max_events">Max # of events:</label>
+						<div class="col-lg-8">
+							<input type="number" min="{{ numEvents }}" max="999" class="form-control" id="max_events" name="max_events" value="{{ result ? result.max_events.filtered : user.maxEvents }}">
+							<span class="help-block">This user already has {{ numEvents }} event{{ numEvents == 1 ? '' : 's' }}.</span>
+							{{ macros.form_errors(result, 'max_events') }}
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-lg-4 control-label">Registered at:</label>
+						<div class="col-lg-8">
+							<p class="form-control-static">{{ user.createdAt|date('r') }}</p>
+						</div>
+					</div>
+
+					{% set role = result ? result.role.filtered : user.role %}
+
+					<div class="form-group">
+						<label class="col-lg-4 control-label">Role:</label>
+						<div class="col-lg-8">
+							{% if app.user.id == user.id %}
+							<p class="form-control-static text-warning">You cannot change your own role.</p>
+							{% else %}
+							{# ROLE_OP is not selectable because we do not want to allow making people ops via horaro directly. #}
+							{% if app.rolemanager.userIsOp(app.user) %}
+							<div class="radio">
+								<label><input type="radio" name="role" value="ROLE_ADMIN"{{ role == 'ROLE_ADMIN' ? ' checked' : '' }}> Administrator <span class="text-muted">(can edit regular users' stuff)</span></label>
+							</div>
+							{% endif %}
+							<div class="radio">
+								<label><input type="radio" name="role" value="ROLE_USER"{{ role == 'ROLE_USER' ? ' checked' : '' }}> Regular User <span class="text-muted">(can edit their own stuff)</span></label>
+							</div>
+							<div class="radio">
+								<label><input type="radio" name="role" value="ROLE_GHOST"{{ role == 'ROLE_GHOST' ? ' checked' : '' }}> Ghost <span class="text-muted">(account disabled)</span></label>
+							</div>
+							{% endif %}
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-lg-12 text-center">
+							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"> </i> Update User</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+
+	<div class="col-lg-6 col-md-6 col-sm-5 h-formhelp">
+		<div class="well">
+			<form method="post" action="/-/admin/users/{{ user.id }}/password" class="form-horizontal">
+				<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
+				<fieldset>
+					<legend>Change Password</legend>
+					{{ macros.csrf_token() }}
+
+					<div class="form-group{% if result and result.password.errors %} has-error{% endif %}">
+						<label class="col-lg-4 control-label" for="password">New Password:</label>
+						<div class="col-lg-8">
+							<input type="password" class="form-control" id="password" name="password" required>
+							{{ macros.form_errors(result, 'password') }}
+						</div>
+					</div>
+
+					<div class="form-group{% if result and result.password2.errors %} has-error{% endif %}">
+						<label class="col-lg-4 control-label" for="password2">New Password again:</label>
+						<div class="col-lg-8">
+							<input type="password" class="form-control" id="password2" name="password2" required>
+							{{ macros.form_errors(result, 'password2') }}
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-lg-12 text-center">
+							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"> </i> Change Password</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

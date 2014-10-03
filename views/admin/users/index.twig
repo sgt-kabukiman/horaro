@@ -1,0 +1,34 @@
+{% extends "backend.twig" %}
+{% import "macros.twig" as macros %}
+
+{% block title %}Users &ndash; Admin{% endblock %}
+
+{% block content %}
+<h2>Users</h2>
+
+<table class="table table-striped table-hover ">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Username</th>
+			<th>Display Name</th>
+			<th>Registered</th>
+			<th>Role</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		{% for idx,user in users %}
+		<tr>
+			<td>{{ user.id }}</td>
+			<td><a href="/-/admin/users/{{ user.id }}/edit">{{ user.login|shorten(40) }}</a></td>
+			<td style="overflow:hidden">{{ user.displayName|shorten(40) }}</td>
+			<td>{{ user.createdAt|date('r') }}</td>
+			<td>{{ user.role }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+{{ macros.render_pager(pager, '/-/admin/users') }}
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "backend.twig" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12">
+		<h2>Admin Dashboard</h2>
+	</div>
+</div>
+
+<div class="row h-tiles">
+	<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+		<div class="well well-sm">
+			<div>
+				<h4><a href="/-/admin/users">
+					<span><i class="fa fa-users fa-3x"></i></span>
+					<span>Users</span>
+				</a></h4>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+		<div class="well well-sm">
+			<div>
+				<h4><a href="/-/admin/events">
+					<span><i class="fa fa-gamepad fa-3x"></i></span>
+					<span>Events</span>
+				</a></h4>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+		<div class="well well-sm">
+			<div>
+				<h4><a href="/-/admin/schedules">
+					<span><i class="fa fa-calendar fa-3x"></i></span>
+					<span>Schedules</span>
+				</a></h4>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+		<div class="well well-sm">
+			<div>
+				<h4><a href="/-/admin/utils">
+					<span><i class="fa fa-magic fa-3x"></i></span>
+					<span>Utilities</span>
+				</a></h4>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

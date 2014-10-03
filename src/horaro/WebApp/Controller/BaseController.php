@@ -199,6 +199,23 @@ class BaseController {
 		return $column;
 	}
 
+	protected function getRequestedUser(Request $request) {
+		$id = $request->attributes->get('user');
+
+		if ($id === null) {
+			throw new Ex\NotFoundException('The user could not be found.');
+		}
+
+		$repo = $this->getRepository('User');
+		$user = $repo->findOneById($id);
+
+		if (!$user) {
+			throw new Ex\NotFoundException('User '.$id.' could not be found.');
+		}
+
+		return $user;
+	}
+
 	protected function getLanguages() {
 		return ['de_de' => 'Deutsch', 'en_us' => 'English (US)'];
 	}
