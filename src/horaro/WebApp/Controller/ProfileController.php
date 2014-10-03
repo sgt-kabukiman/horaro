@@ -78,6 +78,16 @@ class ProfileController extends BaseController {
 		$em->persist($user);
 		$em->flush();
 
+		// create a fresh session
+
+		$session = $this->app['session'];
+
+		$session->migrate();
+		$session->set('horaro.user', $user->getId());
+		$session->set('horaro.pwdhash', sha1($user->getPassword()));
+
+		$this->app['csrf']->initSession($session);
+
 		// done
 
 		$this->addSuccessMsg('Your password has been changed.');

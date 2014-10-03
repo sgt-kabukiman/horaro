@@ -110,6 +110,8 @@ class IndexController extends BaseController {
 		$session->start();
 		$session->migrate(); // create new session ID (prevents session fixation)
 		$session->set('horaro.user', $user->getId());
+		$session->set('horaro.pwdhash', sha1($user->getPassword()));
+
 		$this->app['csrf']->initSession($session);
 
 		return $this->redirect('/-/home');

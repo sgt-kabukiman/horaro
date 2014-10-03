@@ -57,7 +57,17 @@ class Firewall {
 
 				// check if the user has been disabled since the session was opened
 				if ($user && $user->getRole() !== 'ROLE_GHOST') {
-					$this->app['user'] = $user;
+					// in the session, we note a hash of the user's password hash. We use this to
+					// check if the password has been changed and kill the session in that case.
+					$storedHash = $session->get('horaro.pwdhash');
+					$actualHash = sha1($user->getPassword());
+
+					if ($storedHash !== $actualHash) {
+						$session->invalidate();
+					}
+					else {
+						$this->app['user'] = $user;
+					}
 				}
 				else {
 					$session->invalidate();
