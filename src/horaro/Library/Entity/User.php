@@ -239,12 +239,26 @@ class User {
 	}
 
 	/**
-	 * Get created_at
+	 * Get created_at (UTC)
 	 *
 	 * @return \DateTime
 	 */
 	public function getCreatedAt() {
-		return $this->created_at;
+		$tmpFrmt = 'Y-m-d H:i:s';
+
+		return \DateTime::createFromFormat($tmpFrmt, $this->created_at->format($tmpFrmt), new \DateTimeZone('UTC')); // "inject" proper timezone
+	}
+
+	/**
+	 * Get created_at with the proper local timezone
+	 *
+	 * @return \DateTime
+	 */
+	public function getLocalCreatedAt() {
+		$local = $this->getCreatedAt();
+		$local->setTimezone($this->getTimezoneInstance());
+
+		return $local;
 	}
 
 	/**
