@@ -72,4 +72,45 @@ class TwigUtils {
 	public function formClass(array $result = null, $key) {
 		return empty($result[$key]['errors']) ? '' : ' has-error';
 	}
+
+	public function roleIcon($role) {
+		$classes = [
+			'ROLE_OP'    => 'fa-android',
+			'ROLE_ADMIN' => 'fa-user-md',
+			'ROLE_USER'  => 'fa-user',
+			'ROLE_GHOST' => 'fa-ban'
+		];
+		$cls = isset($classes[$role]) ? $classes[$role] : 'fa-question';
+
+		return sprintf('<i class="fa %s"></i>', $cls);
+	}
+
+	public function roleBadge($role) {
+		$key        = strtolower(str_replace('ROLE_', '', $role));
+		$badgeClass = 'label h-role h-role-'.$key;
+
+		switch ($role) {
+			case 'ROLE_OP':
+				$badgeClass .= ' label-danger';
+				$text        = 'Operator';
+				break;
+
+			case 'ROLE_ADMIN':
+				$badgeClass .= ' label-warning';
+				$text        = 'Administrator';
+				break;
+
+			case 'ROLE_USER':
+				$badgeClass .= ' label-primary';
+				$text        = 'Regular User';
+				break;
+
+			case 'ROLE_GHOST':
+				$badgeClass .= ' label-default';
+				$text        = 'Ghost';
+				break;
+		}
+
+		return sprintf('<span class="%s">%s %s</span>', $badgeClass, $this->roleIcon($role), $text);
+	}
 }

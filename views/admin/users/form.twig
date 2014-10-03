@@ -86,14 +86,14 @@
 							{# ROLE_OP is not selectable because we do not want to allow making people ops via horaro directly. #}
 							{% if app.rolemanager.userIsOp(app.user) %}
 							<div class="radio">
-								<label><input type="radio" name="role" value="ROLE_ADMIN"{{ role == 'ROLE_ADMIN' ? ' checked' : '' }}> Administrator <span class="text-muted">(can edit regular users' stuff)</span></label>
+								<label><input type="radio" name="role" value="ROLE_ADMIN"{{ role == 'ROLE_ADMIN' ? ' checked' : '' }}> {{ utils.roleIcon('ROLE_ADMIN')|raw }} Administrator <span class="text-muted">(can edit regular users' stuff)</span></label>
 							</div>
 							{% endif %}
 							<div class="radio">
-								<label><input type="radio" name="role" value="ROLE_USER"{{ role == 'ROLE_USER' ? ' checked' : '' }}> Regular User <span class="text-muted">(can edit their own stuff)</span></label>
+								<label><input type="radio" name="role" value="ROLE_USER"{{ role == 'ROLE_USER' ? ' checked' : '' }}> {{ utils.roleIcon('ROLE_USER')|raw }} Regular User <span class="text-muted">(can edit their own stuff)</span></label>
 							</div>
 							<div class="radio">
-								<label><input type="radio" name="role" value="ROLE_GHOST"{{ role == 'ROLE_GHOST' ? ' checked' : '' }}> Ghost <span class="text-muted">(account disabled)</span></label>
+								<label><input type="radio" name="role" value="ROLE_GHOST"{{ role == 'ROLE_GHOST' ? ' checked' : '' }}> {{ utils.roleIcon('ROLE_GHOST')|raw }} Ghost <span class="text-muted">(account disabled)</span></label>
 							</div>
 							{% endif %}
 							{{ macros.form_errors(result, 'role') }}
