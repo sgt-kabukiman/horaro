@@ -12,6 +12,7 @@ namespace horaro\WebApp;
 
 use horaro\WebApp\Exception\TooAuthorizedException;
 use horaro\WebApp\Exception\UnauthorizedException;
+use horaro\WebApp\Exception\ForbiddenException;
 
 class Firewall {
 	protected $app;
@@ -33,7 +34,7 @@ class Firewall {
 		$rm   = $this->app['rolemanager'];
 
 		if (!$rm->userIsAdmin($user)) {
-			throw new UnauthorizedException('Forbidden.');
+			throw new ForbiddenException('You need to be an Administrator to wander these realms.');
 		}
 	}
 
