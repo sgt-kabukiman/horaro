@@ -32,3 +32,7 @@
 {% macro back_button() %}
 <button class="h-back-btn btn btn-default btn-sm"><i class="fa fa-arrow-left"></i> Go Back</button>
 {% endmacro %}
+
+{% macro backend_date(date) %}
+<time datetime="{{ date|date('Y-m-d\\TH:i:sP') }}" class="h-fancy">{{ date|date('r') }}</time>
+{% endmacro %}

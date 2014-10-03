@@ -23,7 +23,7 @@
 			<td>{{ user.id }}</td>
 			<td><a href="/-/admin/users/{{ user.id }}/edit">{{ user.login|shorten(40) }}</a></td>
 			<td style="overflow:hidden">{{ user.displayName|shorten(40) }}</td>
-			<td>{{ user.createdAt|date('r') }}</td>
+			<td>{{ macros.backend_date(user.createdAt) }}</td>
 			<td>{{ user.role }}</td>
 		</tr>
 		{% endfor %}

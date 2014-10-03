@@ -71,7 +71,7 @@
 					<div class="form-group">
 						<label class="col-lg-4 control-label">Registered at:</label>
 						<div class="col-lg-8">
-							<p class="form-control-static">{{ user.createdAt|date('r') }}</p>
+							<p class="form-control-static">{{ macros.backend_date(user.createdAt) }}</p>
 						</div>
 					</div>
 
