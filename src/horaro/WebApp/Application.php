@@ -130,6 +130,12 @@ class Application extends BaseApplication {
 
 			return new Validator\Admin\UserValidator($userRepo, $this['rolemanager'], array_keys($config['languages']));
 		});
+
+		$this['validator.admin.event'] = $this->share(function() {
+			$eventRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Event');
+
+			return new Validator\Admin\EventValidator($eventRepo);
+		});
 	}
 
 	public function setupRouting() {

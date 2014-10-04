@@ -1,0 +1,132 @@
+{% extends "admin/layout.twig" %}
+{% import "macros.twig" as macros %}
+
+{% set schedules    = event.schedules  %}
+{% set numSchedules = schedules|length %}
+
+{% block title %}{{ event.name }} &ndash; Admin{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h2><a href="/-/admin/events">Events</a> \ {{ event.name|shorten(40) }}{% if event.user.id == app.user.id %} <small class="text-info">This is yours!</small>{% endif %}</h2>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-7">
+		<div class="well">
+			<form method="post" action="/-/admin/events/{{ event.id }}" class="form-horizontal">
+				<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
+				<fieldset>
+					<legend>Event Information</legend>
+					{{ macros.csrf_token() }}
+
+					<div class="form-group">
+						<label class="col-lg-4 control-label">Owner:</label>
+						<div class="col-lg-8">
+							<p class="form-control-static"><a href="/-/admin/users/{{ event.user.id }}/edit">{{ utils.roleIcon(event.user.role)|raw}} {{ event.user.name|shorten(30) }}</a></p>
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'name') }}">
+						<label class="col-lg-4 control-label" for="name">Name:</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="name" name="name" autofocus required value="{{ utils.formValue(result, 'name', event.name) }}">
+							{{ macros.form_errors(result, 'name') }}
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'slug') }}">
+						<label class="col-lg-4 control-label" for="slug">Slug:</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="slug" name="slug" required value="{{ utils.formValue(result, 'slug', event.slug) }}">
+							{{ macros.form_errors(result, 'slug') }}
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'website') }}">
+						<label class="col-lg-4 control-label" for="website">Website:</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="website" name="website" value="{{ utils.formValue(result, 'website', event.website) }}">
+							{{ macros.form_errors(result, 'website') }}
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'twitch') }}">
+						<label class="col-lg-4 control-label" for="twitch">Twitch Stream:</label>
+						<div class="col-lg-8">
+							<div class="input-group">
+								<div class="input-group-addon">http://twitch.tv/</div>
+								<input type="text" class="form-control" id="twitch" name="twitch" value="{{ utils.formValue(result, 'twitch', event.twitch) }}">
+							</div>
+							{{ macros.form_errors(result, 'twitch') }}
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'twitter') }}">
+						<label class="col-lg-4 control-label" for="twitter">Twitter Account:</label>
+						<div class="col-lg-8">
+							<div class="input-group">
+								<div class="input-group-addon">@</div>
+								<input type="text" class="form-control" id="twitter" name="twitter" value="{{ utils.formValue(result, 'twitter', event.twitter) }}">
+							</div>
+							{{ macros.form_errors(result, 'twitter') }}
+						</div>
+					</div>
+
+
+					<div class="form-group{{ utils.formClass(result, 'max_schedules') }}">
+						<label class="col-lg-4 control-label" for="max_schedules">Max # of schedules:</label>
+						<div class="col-lg-8">
+							<input type="number" min="{{ numSchedules }}" max="999" class="form-control" id="max_schedules" name="max_schedules" value="{{ utils.formValue(result, 'max_schedules', event.maxSchedules) }}">
+							<span class="help-block">This schedule already has {{ numSchedules }} schedule{{ numSchedules == 1 ? '' : 's' }}.</span>
+							{{ macros.form_errors(result, 'max_schedules') }}
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-lg-12 text-center">
+							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"> </i> Update Event</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+
+	<div class="col-lg-6 col-md-6 col-sm-5 h-formhelp">
+		<legend>Schedules</legend>
+
+		{% if numSchedules == 0 %}
+		<div class="alert alert-info">
+			<i class="fa fa-info-circle"></i> This event has no schedules yet.
+		</div>
+		{% else %}
+		<ul class="row h-node-list">
+			{% for schedule in schedules %}
+			<li class="col-lg-12 col-md-12 col-sm12 col-xs-12">
+				{% set start = schedule.localStart %}
+				{% set end   = schedule.localEnd   %}
+				<div class="well well-sm">
+					<h4>
+						<a href="/-/admin/schedules/{{ schedule.id }}/edit"><i class="fa fa-calendar"></i> {{ schedule.name|shorten(30) }}</a>
+						<span class="badge">{{ schedule.items|length }}</span><br>
+						<small>
+							{% if start.format('Ymd') == end.format('Ymd') %}
+							<time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}">{{ start.format('H:i') }}</time> &ndash;
+							<time datetime="{{ end.format('Y-m-d\\TH:i:sP') }}">{{ end.format('H:i \\o\\n D, M d, Y') }}</time>
+							{% else %}
+							<time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}">{{ start.format('D, M d') }}</time> &ndash;
+							<time datetime="{{ end.format('Y-m-d\\TH:i:sP') }}">{{ end.format('D, M d, Y') }}</time>
+							{% endif %}
+						</small>
+					</h4>
+				</div>
+			</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

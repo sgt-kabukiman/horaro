@@ -11,7 +11,6 @@
 namespace horaro\WebApp\Validator\Admin;
 
 use horaro\Library\Entity\User;
-use horaro\WebApp\Application;
 use horaro\WebApp\Validator\BaseValidator;
 
 class UserValidator extends BaseValidator {
