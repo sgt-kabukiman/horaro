@@ -27,7 +27,7 @@ class ScheduleItemController extends BaseController {
 		}
 
 		$payload   = $this->getPayload($request);
-		$validator = new ScheduleItemValidator();
+		$validator = $this->app['validator.schedule.item'];
 		$result    = $validator->validateNew($payload, $schedule);
 
 		if ($result['_errors']) {
@@ -84,7 +84,7 @@ class ScheduleItemController extends BaseController {
 		$schedule  = $this->getRequestedSchedule($request);
 		$item      = $this->getRequestedScheduleItem($request, $schedule);
 		$payload   = $this->getPayload($request);
-		$validator = new ScheduleItemValidator();
+		$validator = $this->app['validator.schedule.item'];
 		$result    = $validator->validateUpdate($payload, $item, $schedule);
 
 		if ($result['_errors']) {

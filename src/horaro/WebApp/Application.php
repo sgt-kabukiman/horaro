@@ -73,44 +73,62 @@ class Application extends BaseApplication {
 			return $twig;
 		});
 
-		$this['controller.index'] = $this->share(function() {
-			return new Controller\IndexController($this);
+		$this['controller.index']           = $this->share(function() { return new Controller\IndexController($this);          });
+		$this['controller.frontend']        = $this->share(function() { return new Controller\FrontendController($this);       });
+		$this['controller.home']            = $this->share(function() { return new Controller\HomeController($this);           });
+		$this['controller.event']           = $this->share(function() { return new Controller\EventController($this);          });
+		$this['controller.schedule']        = $this->share(function() { return new Controller\ScheduleController($this);       });
+		$this['controller.schedule.item']   = $this->share(function() { return new Controller\ScheduleItemController($this);   });
+		$this['controller.schedule.column'] = $this->share(function() { return new Controller\ScheduleColumnController($this); });
+		$this['controller.profile']         = $this->share(function() { return new Controller\ProfileController($this);        });
+		$this['controller.admin.index']     = $this->share(function() { return new Controller\Admin\IndexController($this);    });
+		$this['controller.admin.user']      = $this->share(function() { return new Controller\Admin\UserController($this);     });
+		$this['controller.admin.event']     = $this->share(function() { return new Controller\Admin\EventController($this);    });
+
+		$this['validator.createaccount'] = $this->share(function() {
+			$userRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\User');
+
+			return new Validator\CreateAccountValidator($userRepo);
 		});
 
-		$this['controller.frontend'] = $this->share(function() {
-			return new Controller\FrontendController($this);
+		$this['validator.event'] = $this->share(function() {
+			$eventRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Event');
+
+			return new Validator\EventValidator($eventRepo);
 		});
 
-		$this['controller.home'] = $this->share(function() {
-			return new Controller\HomeController($this);
+		$this['validator.login'] = $this->share(function() {
+			$userRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\User');
+
+			return new Validator\LoginValidator($userRepo);
 		});
 
-		$this['controller.event'] = $this->share(function() {
-			return new Controller\EventController($this);
+		$this['validator.profile'] = $this->share(function() {
+			$config = $this['config'];
+
+			return new Validator\ProfileValidator(array_keys($config['languages']), $config['default_languages']);
 		});
 
-		$this['controller.schedule'] = $this->share(function() {
-			return new Controller\ScheduleController($this);
+		$this['validator.schedule'] = $this->share(function() {
+			$scheduleRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Schedule');
+			$config       = $this['config'];
+
+			return new Validator\ScheduleValidator($scheduleRepo, array_keys($config['themes']), $config['default_schedule_theme']);
 		});
 
-		$this['controller.schedule.item'] = $this->share(function() {
-			return new Controller\ScheduleItemController($this);
+		$this['validator.schedule.item'] = $this->share(function() {
+			return new Validator\ScheduleItemValidator();
 		});
 
-		$this['controller.schedule.column'] = $this->share(function() {
-			return new Controller\ScheduleColumnController($this);
+		$this['validator.schedule.column'] = $this->share(function() {
+			return new Validator\ScheduleColumnValidator();
 		});
 
-		$this['controller.profile'] = $this->share(function() {
-			return new Controller\ProfileController($this);
-		});
+		$this['validator.admin.user'] = $this->share(function() {
+			$userRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\User');
+			$config   = $this['config'];
 
-		$this['controller.admin.index'] = $this->share(function() {
-			return new Controller\Admin\IndexController($this);
-		});
-
-		$this['controller.admin.user'] = $this->share(function() {
-			return new Controller\Admin\UserController($this);
+			return new Validator\Admin\UserValidator($userRepo, $this['rolemanager'], array_keys($config['languages']));
 		});
 	}
 
@@ -166,6 +184,12 @@ class Application extends BaseApplication {
 		$this->get   ('/-/admin/users/{user}/edit',     'controller.admin.user:editAction')->before('firewall:requireAdmin');
 		$this->put   ('/-/admin/users/{user}',          'controller.admin.user:updateAction')->before('firewall:requireAdmin');
 		$this->put   ('/-/admin/users/{user}/password', 'controller.admin.user:updatePasswordAction')->before('firewall:requireAdmin');
+
+		$this->get   ('/-/admin/events',                'controller.admin.event:indexAction')->before('firewall:requireAdmin');
+		$this->get   ('/-/admin/events/{event}/edit',   'controller.admin.event:editAction')->before('firewall:requireAdmin');
+		$this->put   ('/-/admin/events/{event}',        'controller.admin.event:updateAction')->before('firewall:requireAdmin');
+		$this->get   ('/-/admin/events/{event}/delete', 'controller.admin.event:confirmationAction')->before('firewall:requireAdmin');
+		$this->delete('/-/admin/events/{event}',        'controller.admin.event:deleteAction')->before('firewall:requireAdmin');
 
 		$this->get   ('/{event}',                      'controller.frontend:eventAction');
 		$this->get   ('/{event}/',                     'controller.frontend:eventAction');

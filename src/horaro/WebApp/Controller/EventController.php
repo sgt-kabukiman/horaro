@@ -12,7 +12,6 @@ namespace horaro\WebApp\Controller;
 
 use horaro\Library\Entity\Event;
 use horaro\WebApp\Exception as Ex;
-use horaro\WebApp\Validator\EventValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -42,7 +41,7 @@ class EventController extends BaseController {
 			return $this->redirect('/-/home');
 		}
 
-		$validator = new EventValidator($this->getRepository('Event'));
+		$validator = $this->app['validator.event'];
 		$result    = $validator->validate([
 			'name'    => $request->request->get('name'),
 			'slug'    => $request->request->get('slug'),
@@ -91,7 +90,7 @@ class EventController extends BaseController {
 		$this->checkCsrfToken($request);
 
 		$event     = $this->getRequestedEvent($request);
-		$validator = new EventValidator($this->getRepository('Event'));
+		$validator = $this->app['validator.event'];
 		$result    = $validator->validate([
 			'name'    => $request->request->get('name'),
 			'slug'    => $request->request->get('slug'),

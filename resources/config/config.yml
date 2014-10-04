@@ -4,6 +4,10 @@ roles: # the order is relevant here!
   - ROLE_ADMIN
   - ROLE_OP
 default_role: ROLE_USER
+languages:
+  de_de: Deutsch
+  en_us: English (US)
+default_language: en_us
 themes:
   amelia:    Amelia
   cerulean:  Cerulean

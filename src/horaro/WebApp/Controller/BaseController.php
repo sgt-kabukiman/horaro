@@ -217,11 +217,11 @@ class BaseController {
 	}
 
 	protected function getLanguages() {
-		return ['de_de' => 'Deutsch', 'en_us' => 'English (US)'];
+		return $this->app['config']['languages'];
 	}
 
 	protected function getDefaultLanguage() {
-		return 'en_us';
+		return $this->app['config']['default_language'];
 	}
 
 	protected function addFlashMsg($type, $message) {

@@ -25,8 +25,7 @@ class ProfileController extends BaseController {
 		$this->checkCsrfToken($request);
 
 		$user      = $this->getCurrentUser();
-		$languages = $this->getLanguages();
-		$validator = new ProfileValidator(array_keys($languages), $this->getDefaultLanguage());
+		$validator = $this->app['validator.profile'];
 		$result    = $validator->validate([
 			'display_name' => $request->request->get('display_name'),
 			'language'     => $request->request->get('language'),
@@ -58,7 +57,7 @@ class ProfileController extends BaseController {
 		$this->checkCsrfToken($request);
 
 		$user      = $this->getCurrentUser();
-		$validator = new ProfileValidator([], null);
+		$validator = $this->app['validator.profile'];
 		$result    = $validator->validatePasswordChange([
 			'current'   => $request->request->get('current'),
 			'password'  => $request->request->get('password'),

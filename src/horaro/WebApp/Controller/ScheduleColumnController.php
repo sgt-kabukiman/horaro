@@ -38,7 +38,7 @@ class ScheduleColumnController extends BaseController {
 		}
 
 		$payload   = $this->getPayload($request);
-		$validator = new ScheduleColumnValidator();
+		$validator = $this->app['validator.schedule.column'];
 		$result    = $validator->validateNew($payload, $schedule);
 
 		if ($result['_errors']) {
@@ -93,7 +93,7 @@ class ScheduleColumnController extends BaseController {
 		$schedule  = $this->getRequestedSchedule($request);
 		$column    = $this->getRequestedScheduleColumn($request, $schedule);
 		$payload   = $this->getPayload($request);
-		$validator = new ScheduleColumnValidator();
+		$validator = $this->app['validator.schedule.column'];
 		$result    = $validator->validateUpdate($payload, $column, $schedule);
 
 		if ($result['_errors']) {

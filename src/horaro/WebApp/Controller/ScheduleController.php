@@ -205,9 +205,7 @@ class ScheduleController extends BaseController {
 	}
 
 	protected function getValidator() {
-		$config = $this->app['config'];
-
-		return new ScheduleValidator($this->getRepository('Schedule'), array_keys($config['themes']), $config['default_schedule_theme']);
+		return $this->app['validator.schedule'];
 	}
 
 	protected function renderForm(Event $event, Schedule $schedule = null, $result = null) {

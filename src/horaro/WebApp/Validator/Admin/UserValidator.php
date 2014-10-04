@@ -15,14 +15,14 @@ use horaro\WebApp\Application;
 use horaro\WebApp\Validator\BaseValidator;
 
 class UserValidator extends BaseValidator {
+	protected $userRepo;
+	protected $roleManager;
 	protected $languages;
-	protected $default;
-	protected $app;
 
-	public function __construct(array $languages, $default, Application $app) {
-		$this->languages = $languages;
-		$this->default   = $default;
-		$this->app       = $app;
+	public function __construct($userRepo, $roleManager, array $languages) {
+		$this->userRepo    = $userRepo;
+		$this->roleManager = $roleManager;
+		$this->languages   = $languages;
 	}
 
 	public function validate(array $profile, User $user, User $editor) {
@@ -54,9 +54,7 @@ class UserValidator extends BaseValidator {
 		}
 		else {
 			$login = strtolower($login);
-			$em    = $this->app['entitymanager'];
-			$repo  = $em->getRepository('horaro\Library\Entity\User');
-			$u     = $repo->findOneByLogin($login);
+			$u     = $this->userRepo->findOneByLogin($login);
 
 			if ($u && $u->getId() !== $user->getId()) {
 				$this->addError('login', 'This username has already been taken.');
@@ -70,17 +68,17 @@ class UserValidator extends BaseValidator {
 		return trim($name);
 	}
 
-	public function validateLanguage($language) {
+	public function validateLanguage($language, User $user) {
 		if (!is_string($language)) {
 			$this->addError('language', 'Malformed language.');
-			return $this->default;
+			return $user->getLanguage();
 		}
 
 		$language = strtolower(trim($language));
 
 		if (!in_array($language, $this->languages, true)) {
 			$this->addError('language', 'Unknown language chosen.');
-			return $this->default;
+			return $user->getLanguage();
 		}
 
 		return $language;
@@ -129,7 +127,7 @@ class UserValidator extends BaseValidator {
 			return $user->getRole();
 		}
 
-		$rm = $this->app['rolemanager'];
+		$rm = $this->roleManager;
 
 		// cannot change superior's or colleague's roles
 		if ($rm->userIsSuperior($user, $editor) || $rm->userIsColleague($user, $editor)) {
