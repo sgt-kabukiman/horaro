@@ -95,7 +95,7 @@ function ItemsViewModel(items) {
 
 	self.initDragAndDrop = function(reinit) {
 		$('.h-scheduler').sortable({
-			handle: '.h-handle',
+			handle: '.h-m',
 			items: '.h-item'
 		});
 
