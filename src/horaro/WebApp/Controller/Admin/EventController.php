@@ -93,6 +93,34 @@ class EventController extends BaseController {
 		return $this->redirect('/-/admin/events');
 	}
 
+	public function confirmationAction(Request $request) {
+		$event = $this->getRequestedEvent($request);
+
+		if (!$this->canEdit($event)) {
+			throw new ForbiddenException('You are not allowed to delete this event.');
+		}
+
+		return $this->render('admin/events/confirmation.twig', ['event' => $event]);
+	}
+
+	public function deleteAction(Request $request) {
+		$this->checkCsrfToken($request);
+
+		$event = $this->getRequestedEvent($request);
+
+		if (!$this->canEdit($event)) {
+			throw new ForbiddenException('You are not allowed to delete this event.');
+		}
+
+		$em = $this->getEntityManager();
+		$em->remove($event);
+		$em->flush();
+
+		$this->addSuccessMsg('The requested event has been deleted.');
+
+		return $this->redirect('/-/admin/events');
+	}
+
 	protected function renderForm(Event $event, array $result = null) {
 		return $this->render('admin/events/form.twig', [
 			'result' => $result,
