@@ -84,6 +84,7 @@ class Application extends BaseApplication {
 		$this['controller.admin.index']     = $this->share(function() { return new Controller\Admin\IndexController($this);    });
 		$this['controller.admin.user']      = $this->share(function() { return new Controller\Admin\UserController($this);     });
 		$this['controller.admin.event']     = $this->share(function() { return new Controller\Admin\EventController($this);    });
+		$this['controller.admin.schedule']  = $this->share(function() { return new Controller\Admin\ScheduleController($this); });
 
 		$this['validator.createaccount'] = $this->share(function() {
 			$userRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\User');
@@ -135,6 +136,12 @@ class Application extends BaseApplication {
 			$eventRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Event');
 
 			return new Validator\Admin\EventValidator($eventRepo);
+		});
+
+		$this['validator.admin.schedule'] = $this->share(function() {
+			$scheduleRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Schedule');
+
+			return new Validator\Admin\EventValidator($scheduleRepo);
 		});
 	}
 
@@ -196,6 +203,12 @@ class Application extends BaseApplication {
 		$this->put   ('/-/admin/events/{event}',        'controller.admin.event:updateAction')->before('firewall:requireAdmin');
 		$this->get   ('/-/admin/events/{event}/delete', 'controller.admin.event:confirmationAction')->before('firewall:requireAdmin');
 		$this->delete('/-/admin/events/{event}',        'controller.admin.event:deleteAction')->before('firewall:requireAdmin');
+
+		$this->get   ('/-/admin/schedules',                   'controller.admin.schedule:indexAction')->before('firewall:requireAdmin');
+		$this->get   ('/-/admin/schedules/{schedule}/edit',   'controller.admin.schedule:editAction')->before('firewall:requireAdmin');
+		$this->put   ('/-/admin/schedules/{schedule}',        'controller.admin.schedule:updateAction')->before('firewall:requireAdmin');
+		$this->get   ('/-/admin/schedules/{schedule}/delete', 'controller.admin.schedule:confirmationAction')->before('firewall:requireAdmin');
+		$this->delete('/-/admin/schedules/{schedule}',        'controller.admin.schedule:deleteAction')->before('firewall:requireAdmin');
 
 		$this->get   ('/{event}',                      'controller.frontend:eventAction');
 		$this->get   ('/{event}/',                     'controller.frontend:eventAction');

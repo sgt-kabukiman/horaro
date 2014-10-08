@@ -1,0 +1,125 @@
+{% extends "admin/layout.twig" %}
+{% import "macros.twig" as macros %}
+
+{% set event = schedule.event %}
+{% set owner = event.user     %}
+
+{% block title %}{{ schedule.name }} &ndash; Admin{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h2><a href="/-/admin/schedules">Schedules</a> \ {{ schedule.name|shorten(40) }} <small>{{ event.name|shorten(30) }}</small></h2>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-7">
+		<div class="well">
+			<form method="post" action="/-/admin/schedules/{{ schedule.id }}" class="form-horizontal">
+				<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
+				<fieldset>
+					<legend>Event Information</legend>
+					{{ macros.csrf_token() }}
+
+					<div class="form-group">
+						<label class="col-lg-4 control-label">Event:</label>
+						<div class="col-lg-8">
+							<p class="form-control-static"><a href="/-/admin/events/{{ event.id }}/edit">{{ event.name|shorten(30) }}</a></p>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-lg-4 control-label">Owner:</label>
+						<div class="col-lg-8">
+							<p class="form-control-static"><a href="/-/admin/users/{{ owner.id }}/edit">{{ utils.roleIcon(owner.role)|raw}} {{ owner.name|shorten(30) }}</a></p>
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'name') }}">
+						<label class="col-lg-4 control-label" for="name">Name:</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="name" name="name" autofocus required value="{{ utils.formValue(result, 'name', schedule.name) }}">
+							{{ macros.form_errors(result, 'name') }}
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'slug') }}">
+						<label class="col-lg-4 control-label" for="slug">Slug:</label>
+						<div class="col-lg-8">
+							<div class="input-group">
+								<div class="input-group-addon">/{{ event.slug }}/</div>
+								<input type="text" class="form-control" id="slug" name="slug" required value="{{ utils.formValue(result, 'slug', schedule.slug) }}">
+							</div>
+							{{ macros.form_errors(result, 'slug') }}
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'timezone') }}">
+						<label class="col-lg-4 control-label" for="timezone">Timezone:</label>
+						<div class="col-lg-8">
+							{% set tz = utils.formValue(result, 'timezone', schedule.timezone) %}
+							<select name="timezone" id="timezone" class="form-control h-fancy">
+							{% for timezone in timezones %}
+								<option{% if tz == timezone %} selected{% endif %}>{{ timezone }}</option>
+							{% endfor %}
+							</select>
+							{{ macros.form_errors(result, 'timezone') }}
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'start') }}">
+						<label class="col-lg-4 control-label" for="start_date">Start:</label>
+						<div class="col-lg-8">
+							<div class="row">
+  								<div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+									<input type="text" class="form-control" id="start_date" name="start_date" required placeholder="(click to edit)" data-value="{{ utils.formValue(result, 'start_date', schedule.start|date('Y-m-d')) }}">
+								</div>
+
+  								<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+									<input type="text" class="form-control" id="start_time" name="start_time" required placeholder="(click to edit)" data-value="{{ utils.formValue(result, 'start_time', schedule.start|date('H:i')) }}">
+								</div>
+							</div>
+
+							{{ macros.form_errors(result, 'start') }}
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'theme') }}">
+						<label class="col-lg-4 control-label" for="theme">Theme:</label>
+						<div class="col-lg-8">
+							{% set t = utils.formValue(result, 'theme', schedule.theme) %}
+							<select name="theme" id="theme" class="form-control h-fancy">
+							{% for themeKey,themeName in themes %}
+								<option value="{{ themeKey }}"{% if t == themeKey %} selected{% endif %}>{{ themeName }}</option>
+							{% endfor %}
+							</select>
+							{{ macros.form_errors(result, 'theme') }}
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'max_items') }}">
+						<label class="col-lg-4 control-label" for="max_items">Max # of items:</label>
+						<div class="col-lg-8">
+							<input type="number" min="{{ schedule.itemCount }}" max="999" class="form-control" id="max_items" name="max_items" value="{{ utils.formValue(result, 'max_items', schedule.maxItems) }}">
+							<span class="help-block">This schedule already has {{ schedule.itemCount }} item{{ schedule.itemCount == 1 ? '' : 's' }}.</span>
+							{{ macros.form_errors(result, 'max_items') }}
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-lg-12 text-center">
+							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"> </i> Update Schedule</button>
+							&ndash; or &ndash;
+							<a href="/-/admin/schedules/{{ schedule.id }}/delete" class="btn btn-warning btn-sm"><i class="fa fa-trash-o"></i> Delete Schedule</a>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+
+	<div class="col-lg-6 col-md-6 col-sm-5 h-formhelp">
+	</div>
+</div>
+{% endblock %}

@@ -1,23 +1,23 @@
 {% extends "admin/layout.twig" %}
 {% import "macros.twig" as macros %}
 
-{% block title %}{{ event.name }} &ndash; Admin{% endblock %}
+{% set owner = schedule.event.user %}
+
+{% block title %}{{ schedule.name }} &ndash; Admin{% endblock %}
 
 {% block content %}
 <div class="row">
 	<div class="col-lg-12 col-md-12">
-		<h2><a href="/-/admin/events">Events</a> \ {{ event.name|shorten(40) }}{% if event.user.id == app.user.id %} <small class="text-info">This is yours!</small>{% endif %}</h2>
+		<h2><a href="/-/admin/schedules">Schedules</a> \ {{ schedule.name|shorten(40) }} <small>{{ schedule.event.name|shorten(30) }}</small></h2>
 	</div>
 </div>
 
 <div class="row">
 	<div class="col-lg-12">
-		<p>Deleting an event will delete all associated data, i.e. schedules.</p>
-
 		<div class="alert alert-warning">
-			<i class="fa fa-info-circle"></i> <strong>Hold On! Only delete events that are obvious
+			<i class="fa fa-info-circle"></i> <strong>Hold On! Only delete schedules that are obvious
 			dummies, tests or spam.</strong><br>
-			If the event has been widely referenced and contains schedules of historic character,
+			If the schedule has been widely referenced and contains data of historic character,
 			it might be a better idea to disable the owner's account and keep the data alive. At
 			least consider making a backup as JSON/XML/SQL just in case.<br>
 		</div>
@@ -28,11 +28,11 @@
 
 <div class="row">
 	<div class="col-lg-3 col-lg-offset-3 col-md-3 col-md-offset-3 col-sm-4 col-sm-offset-2 col-xs-6 text-right">
-		<a href="/-/admin/events/{{ event.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-undo"></i> No thanks</a>
+		<a href="/-/admin/schedules/{{ schedule.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-undo"></i> No thanks</a>
 	</div>
 
 	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
-		<form method="post" action="/-/admin/events/{{ event.id }}">
+		<form method="post" action="/-/admin/schedules/{{ schedule.id }}">
 			<div>
 				{{ macros.csrf_token() }}
 				<input type="hidden" id="_method" name="_method" value="DELETE" />

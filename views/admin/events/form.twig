@@ -80,7 +80,7 @@
 						<label class="col-lg-4 control-label" for="max_schedules">Max # of schedules:</label>
 						<div class="col-lg-8">
 							<input type="number" min="{{ numSchedules }}" max="999" class="form-control" id="max_schedules" name="max_schedules" value="{{ utils.formValue(result, 'max_schedules', event.maxSchedules) }}">
-							<span class="help-block">This schedule already has {{ numSchedules }} schedule{{ numSchedules == 1 ? '' : 's' }}.</span>
+							<span class="help-block">This event already has {{ numSchedules }} schedule{{ numSchedules == 1 ? '' : 's' }}.</span>
 							{{ macros.form_errors(result, 'max_schedules') }}
 						</div>
 					</div>

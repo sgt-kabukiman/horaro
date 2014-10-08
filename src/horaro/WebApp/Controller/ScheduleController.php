@@ -92,8 +92,8 @@ class ScheduleController extends BaseController {
 			->setTimezone($result['timezone']['filtered'])
 			->setUpdatedAt(new \DateTime('now UTC'))
 			->setStart($result['start']['filtered'])
-			->setMaxItems($config['max_schedule_items'])
 			->setTheme($result['theme']['filtered'])
+			->setMaxItems($config['max_schedule_items'])
 		;
 
 		$column = new ScheduleColumn();
