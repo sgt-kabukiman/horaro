@@ -1,6 +1,7 @@
 horaro\Library\Entity\User:
   type: entity
   table: users
+  repositoryClass: horaro\Library\Repository\UserRepository
 
   id:
     id:
@@ -118,6 +119,7 @@ horaro\Library\Entity\UserTeamRelation:
 horaro\Library\Entity\Event:
   type: entity
   table: events
+  repositoryClass: horaro\Library\Repository\EventRepository
 
   id:
     id:
@@ -175,6 +177,7 @@ horaro\Library\Entity\Event:
 horaro\Library\Entity\Schedule:
   type: entity
   table: schedules
+  repositoryClass: horaro\Library\Repository\ScheduleRepository
 
   id:
     id:
@@ -231,6 +234,7 @@ horaro\Library\Entity\Schedule:
 horaro\Library\Entity\ScheduleItem:
   type: entity
   table: schedule_items
+  repositoryClass: horaro\Library\Repository\ScheduleItemRepository
 
   id:
     id:
@@ -260,6 +264,7 @@ horaro\Library\Entity\ScheduleItem:
 horaro\Library\Entity\ScheduleColumn:
   type: entity
   table: schedule_columns
+  repositoryClass: horaro\Library\Repository\ScheduleColumnRepository
 
   id:
     id:
