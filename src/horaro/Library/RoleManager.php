@@ -10,6 +10,8 @@
 
 namespace horaro\Library;
 
+use horaro\Library\Entity\Event;
+use horaro\Library\Entity\Schedule;
 use horaro\Library\Entity\User;
 
 class RoleManager {
@@ -51,5 +53,21 @@ class RoleManager {
 
 	public function userIsAdmin(User $user) {
 		return $this->userHasRole('ROLE_ADMIN', $user);
+	}
+
+	public function canEditUser(User $editor, User $toBeEdited) {
+		if ($editor->getId() === $toBeEdited->getId()) {
+			return true;
+		}
+
+		return !$this->userIsSuperior($toBeEdited, $editor) && !$this->userIsColleague($toBeEdited, $self);
+	}
+
+	public function canEditEvent(User $editor, Event $event) {
+		return $this->canEditUser($editor, $event->getUser());
+	}
+
+	public function canEditSchedule(User $editor, Schedule $schedule) {
+		return $this->canEditUser($editor, $schedule->getEvent()->getUser());
 	}
 }

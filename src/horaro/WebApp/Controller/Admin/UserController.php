@@ -135,14 +135,6 @@ class UserController extends BaseController {
 	}
 
 	protected function canEdit(User $user) {
-		$self = $this->getCurrentUser();
-
-		if ($self->getId() === $user->getId()) {
-			return true;
-		}
-
-		$rm = $this->app['rolemanager'];
-
-		return !$rm->userIsSuperior($user, $self) && !$rm->userIsColleague($user, $self);
+		return $this->app['rolemanager']->canEditUser($self, $user);
 	}
 }
