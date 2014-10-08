@@ -113,8 +113,7 @@ class UserController extends BaseController {
 
 		// update user
 
-		$costs = $this->app['config']['bcrypt_cost'];
-		$user->setPassword(password_hash($result['password']['filtered'], PASSWORD_DEFAULT, ['cost' => $costs]));
+		$user->setPassword($this->app['encoder']->encode($result['password']['filtered']));
 
 		$em = $this->getEntityManager();
 		$em->persist($user);

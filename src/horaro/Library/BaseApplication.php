@@ -78,6 +78,10 @@ class BaseApplication extends Application {
 			return new RoleManager($this['config']['roles']);
 		});
 
+		$this['encoder'] = $this->share(function() {
+			return new PasswordEncoder($this['config']['bcrypt_cost']);
+		});
+
 		$this['schedule-transformer-json'] = $this->share(function() {
 			return new ScheduleTransformer\JsonTransformer();
 		});
