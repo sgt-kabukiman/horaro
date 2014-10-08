@@ -141,6 +141,19 @@
 				</fieldset>
 			</form>
 		</div>
+
+		{% if user.events is empty %}
+		<div class="alert alert-info">
+			<i class="fa fa-info-circle"></i> This user has no events created yet.
+		</div>
+		{% else %}
+		<legend>Events</legend>
+		<ul>
+			{% for event in user.events %}
+			<li><a href="/-/admin/events/{{ event.id }}/edit">{{ event.name|shorten(40) }}</a> <span class="text-muted">(<a href="/{{ event.slug }}" target="_blank"><code>{{ event.slug|shorten(20) }}</code></a>)</span></li>
+			{% endfor %}
+		</ul>
+		{% endif %}
 	</div>
 </div>
 {% endblock %}
