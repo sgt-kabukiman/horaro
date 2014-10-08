@@ -12,6 +12,7 @@
 			<th>ID</th>
 			<th>Username</th>
 			<th>Display Name</th>
+			<th>Events</th>
 			<th>Registered</th>
 			<th>Role</th>
 		</tr>
@@ -23,7 +24,8 @@
 			<td>{{ user.id }}</td>
 			<td><a href="/-/admin/users/{{ user.id }}/edit">{{ user.login|shorten(40) }}</a></td>
 			<td style="overflow:hidden">{{ user.displayName|shorten(40) }}</td>
-			<td>{{ macros.backend_date(user.createdAt) }}</td>
+			<td class="text-right">{{ user.eventCount }}</td>
+			<td class="text-right">{{ macros.backend_date(user.createdAt) }}</td>
 			<td>{{ utils.roleBadge(user.role)|raw }}</td>
 		</tr>
 		{% endfor %}

@@ -26,11 +26,9 @@ class EventController extends BaseController {
 			$page = 0;
 		}
 
-		$userRepo = $this->getRepository('Event');
-		$events   = $userRepo->findBy([], ['name' => 'ASC'], $size, $page*$size);
-		$total    = $this->getEntityManager()
-			->createQuery('SELECT COUNT(e.id) FROM horaro\Library\Entity\Event e')
-			->getSingleScalarResult();
+		$eventRepo = $this->getRepository('Event');
+		$events    = $eventRepo->findBy([], ['name' => 'ASC'], $size, $page*$size);
+		$total     = $eventRepo->count();
 
 		return $this->render('admin/events/index.twig', [
 			'events' => $events,

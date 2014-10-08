@@ -26,11 +26,14 @@ class UserController extends BaseController {
 			$page = 0;
 		}
 
-		$userRepo = $this->getRepository('User');
-		$users    = $userRepo->findBy([], ['login' => 'ASC'], $size, $page*$size);
-		$total    = $this->getEntityManager()
-			->createQuery('SELECT COUNT(u.id) FROM horaro\Library\Entity\User u')
-			->getSingleScalarResult();
+		$eventRepo = $this->getRepository('Event');
+		$userRepo  = $this->getRepository('User');
+		$users     = $userRepo->findBy([], ['login' => 'ASC'], $size, $page*$size);
+		$total     = $userRepo->count();
+
+		foreach ($users as $user) {
+			$user->eventCount = $eventRepo->count($user);
+		}
 
 		return $this->render('admin/users/index.twig', [
 			'users' => $users,
