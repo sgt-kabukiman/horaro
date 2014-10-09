@@ -64,15 +64,16 @@ class ScheduleController extends BaseController {
 		$result    = $validator->validate([
 			'name'       => $request->request->get('name'),
 			'slug'       => $request->request->get('slug'),
+			'twitch'     => '',
 			'timezone'   => $request->request->get('timezone'),
 			'start_date' => $request->request->get('start_date'),
 			'start_time' => $request->request->get('start_time'),
 			'theme'      => $request->request->get('theme'),
 			'max_items'  => $request->request->get('max_items')
-		], $schedule);
+		], $schedule->getEvent(), $schedule);
 
 		if ($result['_errors']) {
-			return $this->renderForm($user, $result);
+			return $this->renderForm($schedule, $result);
 		}
 
 		// update schedule
@@ -84,7 +85,7 @@ class ScheduleController extends BaseController {
 			->setUpdatedAt(new \DateTime('now UTC'))
 			->setStart($result['start']['filtered'])
 			->setTheme($result['theme']['filtered'])
-			->setMaxItems($config['max_schedule_items'])
+			->setMaxItems($result['max_items']['filtered'])
 		;
 
 		$em = $this->getEntityManager();

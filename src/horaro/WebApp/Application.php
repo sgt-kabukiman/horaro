@@ -140,8 +140,9 @@ class Application extends BaseApplication {
 
 		$this['validator.admin.schedule'] = $this->share(function() {
 			$scheduleRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Schedule');
+			$config       = $this['config'];
 
-			return new Validator\Admin\EventValidator($scheduleRepo);
+			return new Validator\Admin\ScheduleValidator($scheduleRepo, array_keys($config['themes']), $config['default_schedule_theme']);
 		});
 	}
 

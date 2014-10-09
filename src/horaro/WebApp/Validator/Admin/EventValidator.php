@@ -28,12 +28,12 @@ class EventValidator extends BaseEventValidator {
 
 		if ($maxSchedules < $schedules) {
 			$this->addError('max_schedules', 'Cannot set the limit lower than the current value.');
-			return $user->getMaxSchedules();
+			return $event->getMaxSchedules();
 		}
 
 		if ($maxSchedules > 999) {
 			$this->addError('max_schedules', 'More than 999 seems a bit excessive, don\'t you think?');
-			return $user->getMaxSchedules();
+			return $event->getMaxSchedules();
 		}
 
 		return $maxSchedules;
