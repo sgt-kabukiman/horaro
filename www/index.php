@@ -13,5 +13,7 @@ require HORARO_ROOT.'/vendor/autoload.php';
 
 Symfony\Component\HttpFoundation\Request::enableHttpMethodParameterOverride();
 
+mb_internal_encoding('UTF-8');
+
 $app = new horaro\WebApp\Application();
 $app->run();
