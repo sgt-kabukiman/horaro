@@ -60,7 +60,7 @@ class RoleManager {
 			return true;
 		}
 
-		return !$this->userIsSuperior($toBeEdited, $editor) && !$this->userIsColleague($toBeEdited, $self);
+		return !$this->userIsSuperior($toBeEdited, $editor) && !$this->userIsColleague($toBeEdited, $editor);
 	}
 
 	public function canEditEvent(User $editor, Event $event) {

@@ -143,8 +143,6 @@ class ScheduleController extends BaseController {
 	}
 
 	protected function canEdit(Schedule $schedule) {
-		$self = $this->getCurrentUser();
-
-		return $this->app['rolemanager']->canEditSchedule($self, $schedule);
+		return $this->app['rolemanager']->canEditSchedule($this->getCurrentUser(), $schedule);
 	}
 }

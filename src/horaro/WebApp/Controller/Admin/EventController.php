@@ -127,8 +127,6 @@ class EventController extends BaseController {
 	}
 
 	protected function canEdit(Event $event) {
-		$self = $this->getCurrentUser();
-
-		return $this->app['rolemanager']->canEditEvent($self, $event);
+		return $this->app['rolemanager']->canEditEvent($this->getCurrentUser(), $event);
 	}
 }

@@ -138,6 +138,6 @@ class UserController extends BaseController {
 	}
 
 	protected function canEdit(User $user) {
-		return $this->app['rolemanager']->canEditUser($self, $user);
+		return $this->app['rolemanager']->canEditUser($this->getCurrentUser(), $user);
 	}
 }
