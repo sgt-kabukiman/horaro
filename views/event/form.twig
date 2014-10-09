@@ -4,7 +4,7 @@
 {% block title %}{% if event %}{{ event.name }}{% else %}New Event…{% endif %}{% endblock %}
 
 {% block content %}
-<ul class="breadcrumb" style="margin-bottom: 5px;">
+<ul class="breadcrumb h-jail" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
 	{% if event %}
 	<li><a href="/-/events/{{ event.id }}">{{ event.name|shorten(45) }}</a></li>

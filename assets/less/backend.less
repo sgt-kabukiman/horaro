@@ -20,6 +20,10 @@ dl.h-indented dd {
 	border-bottom: 1px dotted #aaa;
 }
 
+.h-jail {
+	overflow-y: hidden;
+}
+
 footer {
 	padding: 10px 0 15px 0;
 	margin-top: 20px;
@@ -266,6 +270,14 @@ table.h-columnist {
 .h-formhelp-columnist {
 	margin-top: 30px;
 	font-size: 14px;
+}
+
+/* jail the scheduler/columnist cells */
+
+.h-scheduler, .h-columnist {
+	td, th, dt, dd {
+		overflow-y: hidden;
+	}
 }
 
 /* event/schedule tiles */

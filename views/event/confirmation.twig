@@ -4,7 +4,7 @@
 {% block title %}{{ event.name }}{% endblock %}
 
 {% block content %}
-<ul class="breadcrumb" style="margin-bottom: 5px;">
+<ul class="breadcrumb h-jail" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
 	<li><a href="/-/events/{{ event.id }}">{{ event.name|shorten(45) }}</a></li>
 	<li>Delete Event</li>
@@ -12,7 +12,7 @@
 
 <div class="row">
 	<div class="col-lg-12">
-		<h2>You are about to delete &quot;{{ event.name }}&quot;!</h2>
+		<h2 class="h-jail">You are about to delete &quot;{{ event.name }}&quot;!</h2>
 		<p>Deleting an event will delete all associated data, i.e. schedules.<br>
 		<strong>There is no un-do for this.</strong></p>
 	</div>

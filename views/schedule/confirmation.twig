@@ -4,7 +4,7 @@
 {% block title %}{{ schedule.name }} &ndash; {{ schedule.event.name }}{% endblock %}
 
 {% block content %}
-<ul class="breadcrumb" style="margin-bottom: 5px;">
+<ul class="breadcrumb h-jail" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
 	<li><a href="/-/events/{{ schedule.event.id }}">{{ schedule.event.name|shorten(45) }}</a></li>
 	<li><a href="/-/schedules/{{ schedule.id }}">{{ schedule.name|shorten(45) }}</a></li>
@@ -13,7 +13,7 @@
 
 <div class="row">
 	<div class="col-lg-12">
-		<h2>You are about to delete &quot;{{ schedule.name }}&quot;!</h2>
+		<h2 class="h-jail">You are about to delete &quot;{{ schedule.name }}&quot;!</h2>
 		<p>Deleting a schedule will delete all scheduled items and settings, but leaves the event to
 		which the schedule belongs untouched.<br>
 		<strong>There is no un-do for this.</strong></p>

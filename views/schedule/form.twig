@@ -4,7 +4,7 @@
 {% block title %}{% if schedule %}{{ schedule.name }}{% else %}New Schedule…{% endif %} &ndash; {{ event.name }}{% endblock %}
 
 {% block content %}
-<ul class="breadcrumb" style="margin-bottom: 5px;">
+<ul class="breadcrumb h-jail" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
 	<li><a href="/-/events/{{ event.id }}">{{ event.name|shorten(45) }}</a></li>
 	{% if schedule %}
@@ -37,7 +37,7 @@
 					<div class="form-group{% if result and result.name.errors %} has-error{% endif %}">
 						<label class="col-lg-3 control-label" for="name">Belongs to:</label>
 						<div class="col-lg-9">
-							<p class="form-control-static">{{ event.name }}</p>
+							<p class="form-control-static h-jail">{{ event.name }}</p>
 						</div>
 					</div>
 

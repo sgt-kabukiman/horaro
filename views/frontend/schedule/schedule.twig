@@ -38,13 +38,13 @@
 {% block navigation %}
 <ul class="nav navbar-nav">
 	{% if event.schedules|length == 1 %}
-	<li><a href="/{{ event.slug }}/{{ event.schedules[0].slug }}"><i class="fa fa-calendar"></i> {{ event.schedules[0].name }}</a></li>
+	<li><a href="/{{ event.slug }}/{{ event.schedules[0].slug }}" class="h-jail"><i class="fa fa-calendar"></i> {{ event.schedules[0].name }}</a></li>
 	{% else %}
 	<li class="dropdown">
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-calendar"></i> Schedules <span class="caret"></span></a>
 		<ul class="dropdown-menu">
 			{% for sched in event.schedules %}
-			<li><a href="/{{ event.slug }}/{{ sched.slug }}">{{ sched.name }}</a></li>
+			<li><a href="/{{ event.slug }}/{{ sched.slug }}" class="h-jail">{{ sched.name }}</a></li>
 			{% endfor %}
 		</ul>
 	</li>
@@ -71,7 +71,7 @@
 {% block content %}
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-		<h2>{{ schedule.name }}</h2>
+		<h2 class="h-jail">{{ schedule.name }}</h2>
 	</div>
 </div>
 
