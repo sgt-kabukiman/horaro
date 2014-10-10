@@ -36,3 +36,7 @@
 {% macro backend_date(date) %}
 <time datetime="{{ date|date('Y-m-d\\TH:i:sP') }}" class="h-fancy">{{ date|date('r') }}</time>
 {% endmacro %}
+
+{% macro backend_user_link(user) %}
+<a href="/-/admin/users/{{ user.id }}/edit" class="text-{{ utils.roleClass(user.role) }}">{{ utils.roleIcon(user.role)|raw }} {{ user.name|shorten(30) }}</a>
+{% endmacro %}

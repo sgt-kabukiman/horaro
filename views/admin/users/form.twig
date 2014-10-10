@@ -16,7 +16,7 @@
 			<form method="post" action="/-/admin/users/{{ user.id }}" class="form-horizontal">
 				<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
 				<fieldset>
-					<legend>User Information</legend>
+					<legend>User Information <span class="text-muted">(ID {{ user.id|obscurify('user') }})</span></legend>
 					{{ macros.csrf_token() }}
 
 					<div class="form-group{{ utils.formClass(result, 'login') }}">

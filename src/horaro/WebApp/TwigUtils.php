@@ -85,32 +85,34 @@ class TwigUtils {
 		return sprintf('<i class="fa %s"></i>', $cls);
 	}
 
+	public function roleClass($role) {
+		$classes = [
+			'ROLE_OP'    => 'danger',
+			'ROLE_ADMIN' => 'warning',
+			'ROLE_USER'  => 'primary',
+			'ROLE_GHOST' => 'default'
+		];
+
+		return isset($classes[$role]) ? $classes[$role] : 'primary';
+	}
+
+	public function roleName($role) {
+		$names = [
+			'ROLE_OP'    => 'Operator',
+			'ROLE_ADMIN' => 'Administrator',
+			'ROLE_USER'  => 'Regular User',
+			'ROLE_GHOST' => 'Ghost'
+		];
+
+		return isset($names[$role]) ? $names[$role] : $role;
+	}
+
 	public function roleBadge($role) {
-		$key        = strtolower(str_replace('ROLE_', '', $role));
-		$badgeClass = 'label h-role h-role-'.$key;
+		$key = strtolower(str_replace('ROLE_', '', $role));
 
-		switch ($role) {
-			case 'ROLE_OP':
-				$badgeClass .= ' label-danger';
-				$text        = 'Operator';
-				break;
-
-			case 'ROLE_ADMIN':
-				$badgeClass .= ' label-warning';
-				$text        = 'Administrator';
-				break;
-
-			case 'ROLE_USER':
-				$badgeClass .= ' label-primary';
-				$text        = 'Regular User';
-				break;
-
-			case 'ROLE_GHOST':
-				$badgeClass .= ' label-default';
-				$text        = 'Ghost';
-				break;
-		}
-
-		return sprintf('<span class="%s">%s %s</span>', $badgeClass, $this->roleIcon($role), $text);
+		return sprintf(
+			'<span class="label h-role h-role-%s label-%s">%s %s</span>',
+			$key, $this->roleClass($role), $this->roleIcon($role), $this->roleName($role)
+		);
 	}
 }

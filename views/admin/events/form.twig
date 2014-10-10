@@ -19,13 +19,13 @@
 			<form method="post" action="/-/admin/events/{{ event.id }}" class="form-horizontal">
 				<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
 				<fieldset>
-					<legend>Event Information</legend>
+					<legend>Event Information <span class="text-muted">(ID {{ event.id|obscurify('event') }})</span></legend>
 					{{ macros.csrf_token() }}
 
 					<div class="form-group">
 						<label class="col-lg-4 control-label">Owner:</label>
 						<div class="col-lg-8">
-							<p class="form-control-static h-jail"><a href="/-/admin/users/{{ event.user.id }}/edit">{{ utils.roleIcon(event.user.role)|raw}} {{ event.user.name|shorten(30) }}</a></p>
+							<p class="form-control-static h-jail">{{ macros.backend_user_link(event.user) }}</p>
 						</div>
 					</div>
 

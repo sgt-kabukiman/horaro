@@ -17,12 +17,12 @@
 	<div class="col-lg-6 col-md-6 col-sm-7">
 		<div class="well form-horizontal">
 			<fieldset>
-				<legend>Event Information</legend>
+				<legend>Event Information <span class="text-muted">(ID {{ event.id|obscurify('event') }})</span></legend>
 
 				<div class="form-group">
 					<label class="col-lg-4 control-label">Owner:</label>
 					<div class="col-lg-8">
-						<p class="form-control-static h-jail"><a href="/-/admin/users/{{ event.user.id }}/edit">{{ utils.roleIcon(event.user.role)|raw}} {{ event.user.name|shorten(30) }}</a></p>
+						<p class="form-control-static h-jail">{{ macros.backend_user_link(event.user) }}</p>
 					</div>
 				</div>
 

@@ -19,7 +19,7 @@
 			<form method="post" action="/-/admin/schedules/{{ schedule.id }}" class="form-horizontal">
 				<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
 				<fieldset>
-					<legend>Schedule Information</legend>
+					<legend>Schedule Information <span class="text-muted">(ID {{ schedule.id|obscurify('schedule') }})</span></legend>
 					{{ macros.csrf_token() }}
 
 					<div class="form-group">
@@ -32,7 +32,7 @@
 					<div class="form-group">
 						<label class="col-lg-4 control-label">Owner:</label>
 						<div class="col-lg-8">
-							<p class="form-control-static h-jail"><a href="/-/admin/users/{{ owner.id }}/edit">{{ utils.roleIcon(owner.role)|raw}} {{ owner.name|shorten(30) }}</a></p>
+							<p class="form-control-static h-jail">{{ macros.backend_user_link(owner) }}</p>
 						</div>
 					</div>
 
