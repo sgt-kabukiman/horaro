@@ -1,15 +1,15 @@
 {% extends "admin/layout.twig" %}
 {% import "macros.twig" as macros %}
 
-{% set schedules    = event.schedules  %}
-{% set numSchedules = schedules|length %}
+{% set event = schedule.event %}
+{% set owner = event.user     %}
 
-{% block title %}{{ event.name }} &ndash; Admin{% endblock %}
+{% block title %}{{ schedule.name }} &ndash; Admin{% endblock %}
 
 {% block content %}
 <div class="row">
 	<div class="col-lg-12 col-md-12">
-		<h2><a href="/-/admin/events">Events</a> \ {{ event.name|shorten(40) }}{% if event.user.id == app.user.id %} <small class="text-info">This is yours!</small>{% endif %}</h2>
+		<h2 class="h-jail"><a href="/-/admin/schedules">Schedules</a> \ {{ schedule.name|shorten(40) }} <small>{{ event.name|shorten(30) }}</small></h2>
 	</div>
 </div>
 
@@ -17,96 +17,72 @@
 	<div class="col-lg-6 col-md-6 col-sm-7">
 		<div class="well form-horizontal">
 			<fieldset>
-				<legend>Event Information</legend>
+				<legend>Schedule Information</legend>
+
+				<div class="form-group">
+					<label class="col-lg-4 control-label">Event:</label>
+					<div class="col-lg-8">
+						<p class="form-control-static h-jail"><a href="/-/admin/events/{{ event.id }}/edit">{{ event.name|shorten(30) }}</a></p>
+					</div>
+				</div>
 
 				<div class="form-group">
 					<label class="col-lg-4 control-label">Owner:</label>
 					<div class="col-lg-8">
-						<p class="form-control-static"><a href="/-/admin/users/{{ event.user.id }}/edit">{{ utils.roleIcon(event.user.role)|raw}} {{ event.user.name|shorten(30) }}</a></p>
+						<p class="form-control-static h-jail"><a href="/-/admin/users/{{ owner.id }}/edit">{{ utils.roleIcon(owner.role)|raw}} {{ owner.name|shorten(30) }}</a></p>
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label class="col-lg-4 control-label">Name:</label>
 					<div class="col-lg-8">
-						<p class="form-control-static">{{ event.name }}</p>
+						<p class="form-control-static h-jail">{{ schedule.name }}</p>
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label class="col-lg-4 control-label">Slug:</label>
 					<div class="col-lg-8">
-						<p class="form-control-static"><a href="/{{ event.slug }}" target="_blank"><code>{{ event.slug }}</code></a></p>
+						<p class="form-control-static"><a href="/{{ event.slug }}" target="_blank"><code>{{ schedule.slug }}</code></a></p>
 					</div>
 				</div>
 
 				<div class="form-group">
-					<label class="col-lg-4 control-label">Website:</label>
+					<label class="col-lg-4 control-label">Timezone:</label>
 					<div class="col-lg-8">
-						<p class="form-control-static">{{ event.website|default('N/A') }}</p>
+						<p class="form-control-static">{{ schedule.timezone }}</p>
 					</div>
 				</div>
 
 				<div class="form-group">
-					<label class="col-lg-4 control-label">Twitch Stream:</label>
+					<label class="col-lg-4 control-label">Start:</label>
 					<div class="col-lg-8">
-						<p class="form-control-static">{{ event.twitch|default('N/A') }}</p>
+						<p class="form-control-static">{{ schedule.start|date('Y-m-d H:i:s') }}</p>
 					</div>
 				</div>
 
 				<div class="form-group">
-					<label class="col-lg-4 control-label">Twitter Account:</label>
+					<label class="col-lg-4 control-label">Theme:</label>
 					<div class="col-lg-8">
-						<p class="form-control-static">{{ event.twitter|default('N/A') }}</p>
+						<p class="form-control-static">{{ schedule.theme }}</p>
 					</div>
 				</div>
 
 				<div class="form-group">
-					<label class="col-lg-4 control-label">Max # of schedules:</label>
+					<label class="col-lg-4 control-label">Max # of items:</label>
 					<div class="col-lg-8">
-						<p class="form-control-static">{{ event.maxSchedules }} ({{ event.schedules|length }} used)</p>
+						<p class="form-control-static">{{ schedule.maxItems }} ({{ schedule.items|length }} used)</p>
 					</div>
 				</div>
 			</fieldset>
 		</div>
 
 		<div class="alert alert-warning">
-			<i class="fa fa-info-circle"></i> You cannot edit {{ event.name }}. You need the blue key first.
+			<i class="fa fa-info-circle"></i> You cannot edit this schedule. You need the blue key first.
 		</div>
 	</div>
 
 	<div class="col-lg-6 col-md-6 col-sm-5 h-formhelp">
-		<legend>Schedules</legend>
-
-		{% if numSchedules == 0 %}
-		<div class="alert alert-info">
-			<i class="fa fa-info-circle"></i> This event has no schedules yet.
-		</div>
-		{% else %}
-		<ul class="row h-node-list">
-			{% for schedule in schedules %}
-			<li class="col-lg-12 col-md-12 col-sm12 col-xs-12">
-				{% set start = schedule.localStart %}
-				{% set end   = schedule.localEnd   %}
-				<div class="well well-sm">
-					<h4>
-						<a href="/-/admin/schedules/{{ schedule.id }}/edit"><i class="fa fa-calendar"></i> {{ schedule.name|shorten(30) }}</a>
-						<span class="badge">{{ schedule.items|length }}</span><br>
-						<small>
-							{% if start.format('Ymd') == end.format('Ymd') %}
-							<time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}">{{ start.format('H:i') }}</time> &ndash;
-							<time datetime="{{ end.format('Y-m-d\\TH:i:sP') }}">{{ end.format('H:i \\o\\n D, M d, Y') }}</time>
-							{% else %}
-							<time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}">{{ start.format('D, M d') }}</time> &ndash;
-							<time datetime="{{ end.format('Y-m-d\\TH:i:sP') }}">{{ end.format('D, M d, Y') }}</time>
-							{% endif %}
-						</small>
-					</h4>
-				</div>
-			</li>
-			{% endfor %}
-		</ul>
-		{% endif %}
 	</div>
 </div>
 {% endblock %}

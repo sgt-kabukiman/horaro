@@ -9,7 +9,7 @@
 {% block content %}
 <div class="row">
 	<div class="col-lg-12 col-md-12">
-		<h2><a href="/-/admin/events">Events</a> \ {{ event.name|shorten(40) }}{% if event.user.id == app.user.id %} <small class="text-info">This is yours!</small>{% endif %}</h2>
+		<h2 class="h-jail"><a href="/-/admin/events">Events</a> \ {{ event.name|shorten(40) }}{% if event.user.id == app.user.id %} <small class="text-info">This is yours!</small>{% endif %}</h2>
 	</div>
 </div>
 
@@ -22,14 +22,14 @@
 				<div class="form-group">
 					<label class="col-lg-4 control-label">Owner:</label>
 					<div class="col-lg-8">
-						<p class="form-control-static"><a href="/-/admin/users/{{ event.user.id }}/edit">{{ utils.roleIcon(event.user.role)|raw}} {{ event.user.name|shorten(30) }}</a></p>
+						<p class="form-control-static h-jail"><a href="/-/admin/users/{{ event.user.id }}/edit">{{ utils.roleIcon(event.user.role)|raw}} {{ event.user.name|shorten(30) }}</a></p>
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label class="col-lg-4 control-label">Name:</label>
 					<div class="col-lg-8">
-						<p class="form-control-static">{{ event.name }}</p>
+						<p class="form-control-static h-jail">{{ event.name }}</p>
 					</div>
 				</div>
 
@@ -71,7 +71,7 @@
 		</div>
 
 		<div class="alert alert-warning">
-			<i class="fa fa-info-circle"></i> You cannot edit {{ event.name }}. You need the blue key first.
+			<i class="fa fa-info-circle"></i> You cannot edit this event. You need the blue key first.
 		</div>
 	</div>
 
@@ -89,7 +89,7 @@
 				{% set start = schedule.localStart %}
 				{% set end   = schedule.localEnd   %}
 				<div class="well well-sm">
-					<h4>
+					<h4 class="h-jail">
 						<a href="/-/admin/schedules/{{ schedule.id }}/edit"><i class="fa fa-calendar"></i> {{ schedule.name|shorten(30) }}</a>
 						<span class="badge">{{ schedule.items|length }}</span><br>
 						<small>
