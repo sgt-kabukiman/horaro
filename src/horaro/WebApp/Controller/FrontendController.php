@@ -81,7 +81,7 @@ class FrontendController extends BaseController {
 	}
 
 	protected function resolveEvent(Request $request) {
-		$eventSlug = mb_strtolower($request->attributes->get('event'));
+		$eventSlug = mb_strtolower($request->attributes->get('eventslug'));
 
 		// quickly fail if this is just a broken link somewhere in the backend or a missing asset
 		if (in_array($eventSlug, ['-', 'assets'], true)) {
@@ -105,7 +105,7 @@ class FrontendController extends BaseController {
 		if ($event instanceof Response) return [$event, null];
 
 		// resolve schedule
-		$scheduleSlug = mb_strtolower($request->attributes->get('schedule'));
+		$scheduleSlug = mb_strtolower($request->attributes->get('scheduleslug'));
 		$scheduleRepo = $this->getRepository('Schedule');
 		$schedule     = $scheduleRepo->findOneBy(['event' => $event, 'slug' => $scheduleSlug]);
 
