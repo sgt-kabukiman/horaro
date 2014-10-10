@@ -12,15 +12,17 @@ namespace horaro\Library\ScheduleTransformer;
 
 use horaro\Library\Entity\Schedule;
 use horaro\Library\Entity\ScheduleItem;
+use horaro\Library\ObscurityCodec;
 
 class ICalTransformer extends BaseTransformer {
-	const DATE_FORMAT     = 'Ymd\THis';
-	const DATE_FORMAT_UTC = 'Ymd\THis\Z';
+	const DATE_FORMAT = 'Ymd\THis\Z';
 
 	protected $secret;
 	protected $host;
 
-	public function __construct($secret, $hostname) {
+	public function __construct($secret, $hostname, ObscurityCodec $codec) {
+		parent::__construct($codec);
+
 		$this->secret = $secret;
 		$this->host   = $hostname;
 	}
@@ -71,12 +73,12 @@ class ICalTransformer extends BaseTransformer {
 			}
 
 			$lines[] = 'BEGIN:VEVENT';
-			$lines[] = 'DTSTART:'.$scheduled->format(self::DATE_FORMAT_UTC);
+			$lines[] = 'DTSTART:'.$scheduled->format(self::DATE_FORMAT);
 
 			$scheduled->add($item->getDateInterval());
 
-			$lines[] = 'DTEND:'.$scheduled->format(self::DATE_FORMAT_UTC);
-			$lines[] = 'DTSTAMP:'.$now->format(self::DATE_FORMAT_UTC);
+			$lines[] = 'DTEND:'.$scheduled->format(self::DATE_FORMAT);
+			$lines[] = 'DTSTAMP:'.$now->format(self::DATE_FORMAT);
 			$lines[] = 'UID:'.$this->generateUID($item);
 			$lines[] = $this->getString($summary, 'SUMMARY');
 
@@ -97,7 +99,7 @@ class ICalTransformer extends BaseTransformer {
 	public function generateUID(ScheduleItem $item) {
 		$event    = $item->getSchedule()->getEvent()->getSlug();
 		$schedule = $item->getSchedule()->getSlug();
-		$item     = substr(sha1($this->secret.'-'.$item->getId()), 0, 12);
+		$item     = $this->encodeID($item->getId(), 'schedule.item');
 
 		return sprintf('%s_%s_%s@%s', $event, $schedule, $item, $this->host);
 	}

@@ -20,7 +20,7 @@
 			{% for schedule in event.schedules %}
 			<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
 				<div class="well well-sm">
-					<h4><a href="/-/schedules/{{ schedule.id }}">
+					<h4><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}">
 						<span><i class="fa fa-calendar fa-3x"></i></span>
 						<span>{{ schedule.name|shorten(45) }}</span>
 					</a></h4>
@@ -31,7 +31,7 @@
 			{% if not isFull %}
 			<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
 				<div class="well well-sm h-adder">
-					<h4><a href="/-/events/{{ event.id }}/schedules/new" class="text-muted">
+					<h4><a href="/-/events/{{ event.id|obscurify('event') }}/schedules/new" class="text-muted">
 						<span><i class="fa fa-plus fa-3x"></i></span>
 						<span>New…</span>
 					</a></h4>
@@ -50,7 +50,7 @@
 	<div class="col-lg-4 col-md-5">
 		<div class="well">
 			<fieldset>
-				<legend>Event Information <a href="/-/events/{{ event.id }}/edit" class="btn btn-link btn-sm pull-right">Edit…</a></legend>
+				<legend>Event Information <a href="/-/events/{{ event.id|obscurify('event') }}/edit" class="btn btn-link btn-sm pull-right">Edit…</a></legend>
 
 				<dl class="h-indented">
 					<dt>Name</dt>
@@ -85,7 +85,7 @@
 				</dl>
 
 				<div class="text-center">
-					<a href="/-/events/{{ event.id }}/delete" class="btn btn-warning btn-sm"><i class="fa fa-trash-o"></i> Delete Event</a>
+					<a href="/-/events/{{ event.id|obscurify('event') }}/delete" class="btn btn-warning btn-sm"><i class="fa fa-trash-o"></i> Delete Event</a>
 				</div>
 			</fieldset>
 		</div>

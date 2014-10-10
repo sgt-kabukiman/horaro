@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "df909cc3fd6b38dcfacc8979a79ea52e",
+    "hash": "dcffa4739585c1f915720b7573e2dafd",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -473,16 +473,16 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "v2.4.5",
+            "version": "v2.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/doctrine2.git",
-                "reference": "c0d3cdbdfbf873871167050ab077e49b1ad02ab0"
+                "reference": "bebacf79d8d4dae9168f0f9bc6811e6c2cb6a4d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/c0d3cdbdfbf873871167050ab077e49b1ad02ab0",
-                "reference": "c0d3cdbdfbf873871167050ab077e49b1ad02ab0",
+                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/bebacf79d8d4dae9168f0f9bc6811e6c2cb6a4d9",
+                "reference": "bebacf79d8d4dae9168f0f9bc6811e6c2cb6a4d9",
                 "shasum": ""
             },
             "require": {
@@ -542,20 +542,20 @@
                 "database",
                 "orm"
             ],
-            "time": "2014-09-22 21:58:51"
+            "time": "2014-10-06 13:22:50"
         },
         {
             "name": "hashids/hashids",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ivanakimov/hashids.php.git",
-                "reference": "f913e0a04012a7e21a6cae7c2f2ebb698786e93b"
+                "reference": "69ea4bb3dda89f37ab5bf3ffd568863e5c5b5742"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ivanakimov/hashids.php/zipball/f913e0a04012a7e21a6cae7c2f2ebb698786e93b",
-                "reference": "f913e0a04012a7e21a6cae7c2f2ebb698786e93b",
+                "url": "https://api.github.com/repos/ivanakimov/hashids.php/zipball/69ea4bb3dda89f37ab5bf3ffd568863e5c5b5742",
+                "reference": "69ea4bb3dda89f37ab5bf3ffd568863e5c5b5742",
                 "shasum": ""
             },
             "require": {
@@ -599,7 +599,7 @@
                 "obfuscate",
                 "youtube"
             ],
-            "time": "2014-09-17 22:05:55"
+            "time": "2014-09-11 19:17:41"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -1370,9 +1370,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "hashids/hashids": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "platform": {
         "php": ">=5.4.0"

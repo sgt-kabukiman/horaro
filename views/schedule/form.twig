@@ -6,9 +6,9 @@
 {% block content %}
 <ul class="breadcrumb h-jail" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
-	<li><a href="/-/events/{{ event.id }}">{{ event.name|shorten(45) }}</a></li>
+	<li><a href="/-/events/{{ event.id|obscurify('event') }}">{{ event.name|shorten(45) }}</a></li>
 	{% if schedule %}
-	<li><a href="/-/schedules/{{ schedule.id }}">{{ schedule.name|shorten(45) }}</a></li>
+	<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}">{{ schedule.name|shorten(45) }}</a></li>
 	<li>Update Schedule…</li>
 	{% else %}
 	<li>New Schedule…</li>
@@ -25,10 +25,10 @@
 	<div class="col-lg-6 col-md-6 col-sm-7">
 		<div class="well">
 			{% if schedule %}
-			<form method="post" action="/-/schedules/{{ schedule.id }}" class="form-horizontal">
+			<form method="post" action="/-/schedules/{{ schedule.id|obscurify('schedule') }}" class="form-horizontal">
 				<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
 			{% else %}
-			<form method="post" action="/-/events/{{ event.id }}/schedules" class="form-horizontal">
+			<form method="post" action="/-/events/{{ event.id|obscurify('event') }}/schedules" class="form-horizontal">
 			{% endif %}
 				<fieldset>
 					<legend>Schedule Information</legend>
@@ -108,7 +108,7 @@
 							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"> </i> {% if schedule %}Update{% else %}Create{% endif %} Schedule</button>
 							{% if schedule %}
 							&ndash; or &ndash;
-							<a href="/-/schedules/{{ schedule.id }}/delete" class="btn btn-warning btn-sm"><i class="fa fa-trash-o"></i> Delete Schedule</a>
+							<a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}/delete" class="btn btn-warning btn-sm"><i class="fa fa-trash-o"></i> Delete Schedule</a>
 							{% endif %}
 						</div>
 					</div>

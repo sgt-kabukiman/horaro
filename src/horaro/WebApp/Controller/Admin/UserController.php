@@ -11,7 +11,6 @@
 namespace horaro\WebApp\Controller\Admin;
 
 use horaro\Library\Entity\User;
-use horaro\WebApp\Controller\BaseController;
 use horaro\WebApp\Pager;
 use horaro\WebApp\Validator\Admin\UserValidator;
 use horaro\WebApp\Exception\ForbiddenException;
@@ -52,8 +51,6 @@ class UserController extends BaseController {
 	}
 
 	public function updateAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$user = $this->getRequestedUser($request);
 
 		if (!$this->canEdit($user)) {
@@ -96,8 +93,6 @@ class UserController extends BaseController {
 	}
 
 	public function updatePasswordAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$user = $this->getRequestedUser($request);
 
 		if (!$this->canEdit($user)) {

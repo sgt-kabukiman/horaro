@@ -22,8 +22,6 @@ class ProfileController extends BaseController {
 	}
 
 	public function updateAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$user      = $this->getCurrentUser();
 		$validator = $this->app['validator.profile'];
 		$result    = $validator->validate([
@@ -54,8 +52,6 @@ class ProfileController extends BaseController {
 	}
 
 	public function updatePasswordAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$user      = $this->getCurrentUser();
 		$validator = $this->app['validator.profile'];
 		$result    = $validator->validatePasswordChange([

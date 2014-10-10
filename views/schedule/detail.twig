@@ -9,7 +9,7 @@
 {% block content %}
 <ul class="breadcrumb h-jail" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
-	<li><a href="/-/events/{{ schedule.event.id }}">{{ schedule.event.name|shorten(45) }}</a></li>
+	<li><a href="/-/events/{{ schedule.event.id|obscurify('event') }}">{{ schedule.event.name|shorten(45) }}</a></li>
 	<li>{{ schedule.name|shorten(45) }}</li>
 </ul>
 
@@ -24,13 +24,13 @@
 				<i class="fa fa-cog"></i> Actions <span class="caret"></span>
 			</button>
 			<ul class="dropdown-menu" role="menu">
-				<li><a href="/-/schedules/{{ schedule.id }}/edit"><i class="fa fa-columns"></i> Edit schedule…</a></li>
-				<li><a href="/-/schedules/{{ schedule.id }}/columns/edit"><i class="fa fa-columns"></i> Edit columns…</a></li>
+				<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}/edit"><i class="fa fa-columns"></i> Edit schedule…</a></li>
+				<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}/columns/edit"><i class="fa fa-columns"></i> Edit columns…</a></li>
 				<li class="divider"></li>
-				<li><a href="/-/schedules/{{ schedule.id }}/export?format=json"><i class="fa fa-save"></i> Export as JSON</a></li>
-				<li><a href="/-/schedules/{{ schedule.id }}/export?format=xml"><i class="fa fa-save"></i> Export as XML</a></li>
-				<li><a href="/-/schedules/{{ schedule.id }}/export?format=ical"><i class="fa fa-save"></i> Export as iCal</a></li>
-				<li><a href="/-/schedules/{{ schedule.id }}/export?format=csv"><i class="fa fa-save"></i> Export as CSV</a></li>
+				<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}/export?format=json"><i class="fa fa-save"></i> Export as JSON</a></li>
+				<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}/export?format=xml"><i class="fa fa-save"></i> Export as XML</a></li>
+				<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}/export?format=ical"><i class="fa fa-save"></i> Export as iCal</a></li>
+				<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}/export?format=csv"><i class="fa fa-save"></i> Export as CSV</a></li>
 			</ul>
 		</div>
 	</div>
@@ -109,7 +109,7 @@ var horaro = horaro||{};
 
 horaro.ui = 'scheduler';
 horaro.schedule = {
-	id: {{ schedule.id }},
+	id: {{ schedule.id|obscurify('schedule')|json_encode|raw }},
 	start: new Date("{{ start.format('Y-m-d\\TH:i:sP') }}"),
 	tz: "{{ start.format('P') }}",
 	columns: {{ columns|json_encode|raw }},

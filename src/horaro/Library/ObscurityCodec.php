@@ -8,12 +8,9 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-namespace horaro\WebApp\Controller\Admin;
+namespace horaro\Library;
 
-use Symfony\Component\HttpFoundation\Request;
-
-class IndexController extends BaseController {
-	public function dashboardAction(Request $request) {
-		return $this->render('admin/dashboard.twig');
-	}
+interface ObscurityCodec {
+	public function encode($id, $entityType = null);
+	public function decode($hash, $entityType = null);
 }

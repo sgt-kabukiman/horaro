@@ -12,6 +12,8 @@ namespace horaro\Library;
 
 use horaro\Library\Entity\Event;
 use horaro\Library\Entity\Schedule;
+use horaro\Library\Entity\ScheduleColumn;
+use horaro\Library\Entity\ScheduleItem;
 use horaro\Library\Entity\User;
 
 class RoleManager {
@@ -68,6 +70,30 @@ class RoleManager {
 	}
 
 	public function canEditSchedule(User $editor, Schedule $schedule) {
-		return $this->canEditUser($editor, $schedule->getEvent()->getUser());
+		return $this->canEditEvent($editor, $schedule->getEvent());
+	}
+
+	public function hasRegularAccess(User $user, $resource) {
+		$owner = $this->getUserFromResource($resource);
+
+		return $owner && $owner->getId() === $user->getId();
+	}
+
+	public function hasAdministrativeAccess(User $user, $resource) {
+		$owner = $this->getUserFromResource($resource);
+
+		return $owner && $this->isIncluded($owner->getRole(), $user->getRole());
+	}
+
+	protected function getUserFromResource($resource) {
+		$user = null;
+
+		if ($resource instanceof User)           $user     = $resource;
+		if ($resource instanceof ScheduleItem)   $resource = $resource->getSchedule();
+		if ($resource instanceof ScheduleColumn) $resource = $resource->getSchedule();
+		if ($resource instanceof Schedule)       $resource = $resource->getEvent();
+		if ($resource instanceof Event)          $user     = $resource->getOwner();
+
+		return $user;
 	}
 }

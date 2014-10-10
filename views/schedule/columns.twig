@@ -5,8 +5,8 @@
 {% block content %}
 <ul class="breadcrumb h-jail" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
-	<li><a href="/-/events/{{ schedule.event.id }}">{{ schedule.event.name|shorten(45) }}</a></li>
-	<li><a href="/-/schedules/{{ schedule.id }}">{{ schedule.name|shorten(45) }}</a></li>
+	<li><a href="/-/events/{{ schedule.event.id|obscurify('event') }}">{{ schedule.event.name|shorten(45) }}</a></li>
+	<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}">{{ schedule.name|shorten(45) }}</a></li>
 	<li>Edit Columns…</li>
 </ul>
 
@@ -84,7 +84,7 @@ var horaro = horaro||{};
 
 horaro.ui = 'columnist';
 horaro.schedule = {
-	id: {{ schedule.id }},
+	id: {{ schedule.id|obscurify('schedule')|json_encode|raw }},
 	columns: {{ columns|json_encode|raw }}
 };
 </script>

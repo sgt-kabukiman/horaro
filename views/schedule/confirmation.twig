@@ -6,8 +6,8 @@
 {% block content %}
 <ul class="breadcrumb h-jail" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
-	<li><a href="/-/events/{{ schedule.event.id }}">{{ schedule.event.name|shorten(45) }}</a></li>
-	<li><a href="/-/schedules/{{ schedule.id }}">{{ schedule.name|shorten(45) }}</a></li>
+	<li><a href="/-/events/{{ schedule.event.id|obscurify('event') }}">{{ schedule.event.name|shorten(45) }}</a></li>
+	<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}">{{ schedule.name|shorten(45) }}</a></li>
 	<li>Delete Schedule</li>
 </ul>
 
@@ -22,11 +22,11 @@
 
 <div class="row">
 	<div class="col-lg-3 col-lg-offset-3 col-md-3 col-md-offset-3 col-sm-4 col-sm-offset-2 col-xs-6 text-right">
-		<a href="/-/schedules/{{ schedule.id }}" class="btn btn-default btn-sm"><i class="fa fa-undo"></i> No thanks</a>
+		<a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}" class="btn btn-default btn-sm"><i class="fa fa-undo"></i> No thanks</a>
 	</div>
 
 	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
-		<form method="post" action="/-/schedules/{{ schedule.id }}">
+		<form method="post" action="/-/schedules/{{ schedule.id|obscurify('schedule') }}">
 			<div>
 				{{ macros.csrf_token() }}
 				<input type="hidden" id="_method" name="_method" value="DELETE" />

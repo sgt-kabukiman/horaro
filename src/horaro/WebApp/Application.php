@@ -11,6 +11,7 @@
 namespace horaro\WebApp;
 
 use horaro\Library\BaseApplication;
+use horaro\Library\ObscurityCodec;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Silex\Provider\TwigServiceProvider;
 
@@ -27,16 +28,8 @@ class Application extends BaseApplication {
 
 		$this['user'] = null;
 
-		$this['firewall'] = $this->share(function() {
-			return new Firewall($this);
-		});
-
 		$this['i18n'] = $this->share(function() {
 			return new I18N($this);
-		});
-
-		$this['errorhandler'] = $this->share(function() {
-			return new ErrorHandler($this);
 		});
 
 		$this['version'] = $this->share(function() {
@@ -53,6 +46,10 @@ class Application extends BaseApplication {
 			return new CsrfHandler($name, $generator);
 		});
 
+		$this['resource-resolver'] = $this->share(function() {
+			return new ResourceResolver($this['entitymanager'], $this['obscurity-codec']);
+		});
+
 		$this->register(new TwigServiceProvider(), array(
 			'twig.path' => HORARO_ROOT.'/views',
 			'twig.options' => [
@@ -66,11 +63,36 @@ class Application extends BaseApplication {
 			$utils    = new TwigUtils($versions, $this);
 
 			$twig->addGlobal('utils', $utils);
+
 			$twig->addFilter(new \Twig_SimpleFilter('shorten', function($string, $maxlen) use ($utils) {
 				return $utils->shorten($string, $maxlen);
 			}));
 
+			$twig->addFilter(new \Twig_SimpleFilter('obscurify', function($id, $entityType) use ($utils) {
+				return $this['obscurity-codec']->encode($id, $entityType);
+			}));
+
 			return $twig;
+		});
+
+		$this['middleware.firewall'] = $this->share(function() {
+			return new Middleware\Firewall($this);
+		});
+
+		$this['middleware.resolver'] = $this->share(function() {
+			return new Middleware\Resolver($this['resource-resolver']);
+		});
+
+		$this['middleware.errorhandler'] = $this->share(function() {
+			return new Middleware\ErrorHandler($this['twig']);
+		});
+
+		$this['middleware.csrf'] = $this->share(function() {
+			return new Middleware\Csrf($this['csrf']);
+		});
+
+		$this['middleware.acl'] = $this->share(function() {
+			return new Middleware\ACL($this['rolemanager']);
 		});
 
 		$this['controller.index']           = $this->share(function() { return new Controller\IndexController($this);          });
@@ -118,7 +140,7 @@ class Application extends BaseApplication {
 		});
 
 		$this['validator.schedule.item'] = $this->share(function() {
-			return new Validator\ScheduleItemValidator();
+			return new Validator\ScheduleItemValidator($this['obscurity-codec']);
 		});
 
 		$this['validator.schedule.column'] = $this->share(function() {
@@ -147,77 +169,111 @@ class Application extends BaseApplication {
 	}
 
 	public function setupRouting() {
-		$this->before('firewall:peekIntoSession');
+		$this->before($this['middleware.errorhandler']);
+		$this->before($this['middleware.csrf']);
+		$this->before($this['middleware.firewall']);
+		$this->before($this['middleware.resolver']);
+		$this->before($this['middleware.acl']);
 		$this->before('i18n:initLanguage');
 
-		$this->get   ('/',           'controller.index:welcomeAction');
-		$this->get   ('/-/login',    'controller.index:loginFormAction')->before('firewall:requireAnonymous');
-		$this->post  ('/-/login',    'controller.index:loginAction')->before('firewall:requireAnonymous');
-		$this->post  ('/-/logout',   'controller.index:logoutAction')->before('firewall:requireUser');
-		$this->get   ('/-/register', 'controller.index:registerFormAction')->before('firewall:requireAnonymous');
-		$this->post  ('/-/register', 'controller.index:registerAction')->before('firewall:requireAnonymous');
-		$this->get   ('/-/licenses', 'controller.index:licensesAction');
+		///////////////////////////////////////////////////////////////////////////////////////////
+		// general routes
 
-		$this->get   ('/-/home', 'controller.home:indexAction')->before('firewall:requireUser');
+		$this->route('GET',   '/',           'index:welcome');
+		$this->route('GET',   '/-/licenses', 'index:licenses');
+		$this->route('GET',   '/-/login',    'index:loginForm',    'ghost');
+		$this->route('POST',  '/-/login',    'index:login',        'ghost', true);
+		$this->route('GET',   '/-/register', 'index:registerForm', 'ghost');
+		$this->route('POST',  '/-/register', 'index:register',     'ghost', true);
+		$this->route('POST',  '/-/logout',   'index:logout',       'user');
 
-		$this->get   ('/-/events/new',            'controller.event:newAction')->before('firewall:requireUser');
-		$this->post  ('/-/events',                'controller.event:createAction')->before('firewall:requireUser');
-		$this->get   ('/-/events/{event}',        'controller.event:detailAction')->before('firewall:requireUser');
-		$this->get   ('/-/events/{event}/edit',   'controller.event:editAction')->before('firewall:requireUser');
-		$this->put   ('/-/events/{event}',        'controller.event:updateAction')->before('firewall:requireUser');
-		$this->get   ('/-/events/{event}/delete', 'controller.event:confirmationAction')->before('firewall:requireUser');
-		$this->delete('/-/events/{event}',        'controller.event:deleteAction')->before('firewall:requireUser');
+		///////////////////////////////////////////////////////////////////////////////////////////
+		// user backend
 
-		$this->get   ('/-/events/{event}/schedules/new', 'controller.schedule:newAction')->before('firewall:requireUser');
-		$this->post  ('/-/events/{event}/schedules',     'controller.schedule:createAction')->before('firewall:requireUser');
-		$this->get   ('/-/schedules/{schedule}',         'controller.schedule:detailAction')->before('firewall:requireUser');
-		$this->get   ('/-/schedules/{schedule}/edit',    'controller.schedule:editAction')->before('firewall:requireUser');
-		$this->put   ('/-/schedules/{schedule}',         'controller.schedule:updateAction')->before('firewall:requireUser');
-		$this->get   ('/-/schedules/{schedule}/delete',  'controller.schedule:confirmationAction')->before('firewall:requireUser');
-		$this->delete('/-/schedules/{schedule}',         'controller.schedule:deleteAction')->before('firewall:requireUser');
-		$this->get   ('/-/schedules/{schedule}/export',  'controller.schedule:exportAction')->before('firewall:requireUser');
+		$this->route('GET',    '/-/home',                                               'home:index',             'user');
 
-		$this->post  ('/-/schedules/{schedule}/items',        'controller.schedule.item:createAction')->before('firewall:requireUser');
-		$this->post  ('/-/schedules/{schedule}/items/move',   'controller.schedule.item:moveAction')->before('firewall:requireUser');
-		$this->patch ('/-/schedules/{schedule}/items/{item}', 'controller.schedule.item:patchAction')->before('firewall:requireUser');
-		$this->delete('/-/schedules/{schedule}/items/{item}', 'controller.schedule.item:deleteAction')->before('firewall:requireUser');
+		$this->route('GET',    '/-/events/new',                                         'event:new',              'user');
+		$this->route('POST',   '/-/events',                                             'event:create',           'user');
+		$this->route('GET',    '/-/events/{event_e}',                                   'event:detail',           'user');
+		$this->route('GET',    '/-/events/{event_e}/edit',                              'event:edit',             'user');
+		$this->route('PUT',    '/-/events/{event_e}',                                   'event:update',           'user');
+		$this->route('GET',    '/-/events/{event_e}/delete',                            'event:confirmation',     'user');
+		$this->route('DELETE', '/-/events/{event_e}',                                   'event:delete',           'user');
 
-		$this->get   ('/-/schedules/{schedule}/columns/edit',     'controller.schedule.column:editAction')->before('firewall:requireUser');
-		$this->post  ('/-/schedules/{schedule}/columns',          'controller.schedule.column:createAction')->before('firewall:requireUser');
-		$this->post  ('/-/schedules/{schedule}/columns/move',     'controller.schedule.column:moveAction')->before('firewall:requireUser');
-		$this->put   ('/-/schedules/{schedule}/columns/{column}', 'controller.schedule.column:updateAction')->before('firewall:requireUser');
-		$this->delete('/-/schedules/{schedule}/columns/{column}', 'controller.schedule.column:deleteAction')->before('firewall:requireUser');
+		$this->route('GET',    '/-/events/{event_e}/schedules/new',                     'schedule:new',           'user');
+		$this->route('POST',   '/-/events/{event_e}/schedules',                         'schedule:create',        'user');
+		$this->route('GET',    '/-/schedules/{schedule_e}',                             'schedule:detail',        'user');
+		$this->route('GET',    '/-/schedules/{schedule_e}/edit',                        'schedule:edit',          'user');
+		$this->route('PUT',    '/-/schedules/{schedule_e}',                             'schedule:update',        'user');
+		$this->route('GET',    '/-/schedules/{schedule_e}/delete',                      'schedule:confirmation',  'user');
+		$this->route('DELETE', '/-/schedules/{schedule_e}',                             'schedule:delete',        'user');
+		$this->route('GET',    '/-/schedules/{schedule_e}/export',                      'schedule:export',        'user');
 
-		$this->get   ('/-/profile',          'controller.profile:editAction')->before('firewall:requireUser');
-		$this->put   ('/-/profile',          'controller.profile:updateAction')->before('firewall:requireUser');
-		$this->put   ('/-/profile/password', 'controller.profile:updatePasswordAction')->before('firewall:requireUser');
+		$this->route('POST',   '/-/schedules/{schedule_e}/items',                       'schedule.item:create',   'user');
+		$this->route('POST',   '/-/schedules/{schedule_e}/items/move',                  'schedule.item:move',     'user');
+		$this->route('PATCH',  '/-/schedules/{schedule_e}/items/{schedule_item_e}',     'schedule.item:patch',    'user');
+		$this->route('DELETE', '/-/schedules/{schedule_e}/items/{schedule_item_e}',     'schedule.item:delete',   'user');
 
-		$this->get   ('/-/admin', 'controller.admin.index:dashboardAction')->before('firewall:requireAdmin');
+		$this->route('GET',    '/-/schedules/{schedule_e}/columns/edit',                'schedule.column:edit',   'user');
+		$this->route('POST',   '/-/schedules/{schedule_e}/columns',                     'schedule.column:create', 'user');
+		$this->route('POST',   '/-/schedules/{schedule_e}/columns/move',                'schedule.column:move',   'user');
+		$this->route('PUT',    '/-/schedules/{schedule_e}/columns/{schedule_column_e}', 'schedule.column:update', 'user');
+		$this->route('DELETE', '/-/schedules/{schedule_e}/columns/{schedule_column_e}', 'schedule.column:delete', 'user');
 
-		$this->get   ('/-/admin/users',                 'controller.admin.user:indexAction')->before('firewall:requireAdmin');
-		$this->get   ('/-/admin/users/{user}/edit',     'controller.admin.user:editAction')->before('firewall:requireAdmin');
-		$this->put   ('/-/admin/users/{user}',          'controller.admin.user:updateAction')->before('firewall:requireAdmin');
-		$this->put   ('/-/admin/users/{user}/password', 'controller.admin.user:updatePasswordAction')->before('firewall:requireAdmin');
+		$this->route('GET',    '/-/profile',                                            'profile:edit',           'user');
+		$this->route('PUT',    '/-/profile',                                            'profile:update',         'user');
+		$this->route('PUT',    '/-/profile/password',                                   'profile:updatePassword', 'user');
 
-		$this->get   ('/-/admin/events',                'controller.admin.event:indexAction')->before('firewall:requireAdmin');
-		$this->get   ('/-/admin/events/{event}/edit',   'controller.admin.event:editAction')->before('firewall:requireAdmin');
-		$this->put   ('/-/admin/events/{event}',        'controller.admin.event:updateAction')->before('firewall:requireAdmin');
-		$this->get   ('/-/admin/events/{event}/delete', 'controller.admin.event:confirmationAction')->before('firewall:requireAdmin');
-		$this->delete('/-/admin/events/{event}',        'controller.admin.event:deleteAction')->before('firewall:requireAdmin');
+		///////////////////////////////////////////////////////////////////////////////////////////
+		// admin backend
 
-		$this->get   ('/-/admin/schedules',                   'controller.admin.schedule:indexAction')->before('firewall:requireAdmin');
-		$this->get   ('/-/admin/schedules/{schedule}/edit',   'controller.admin.schedule:editAction')->before('firewall:requireAdmin');
-		$this->put   ('/-/admin/schedules/{schedule}',        'controller.admin.schedule:updateAction')->before('firewall:requireAdmin');
-		$this->get   ('/-/admin/schedules/{schedule}/delete', 'controller.admin.schedule:confirmationAction')->before('firewall:requireAdmin');
-		$this->delete('/-/admin/schedules/{schedule}',        'controller.admin.schedule:deleteAction')->before('firewall:requireAdmin');
+		$this->route('GET',    '/-/admin',                             'admin.index:dashboard',       'admin');
 
-		$this->get   ('/{event}',                      'controller.frontend:eventAction');
-		$this->get   ('/{event}/',                     'controller.frontend:eventAction');
-		$this->get   ('/{event}/{schedule}.{format}',  'controller.frontend:scheduleExportAction')->assert('format', '(json|xml|csv|ical)');
-		$this->get   ('/{event}/{schedule}',           'controller.frontend:scheduleAction');
-		$this->get   ('/{event}/{schedule}/',          'controller.frontend:scheduleAction');
-		$this->get   ('/{event}/{schedule}/ical-feed', 'controller.frontend:icalFaqAction');
+		$this->route('GET',    '/-/admin/users',                       'admin.user:index',            'admin');
+		$this->route('GET',    '/-/admin/users/{user}/edit',           'admin.user:edit',             'admin');
+		$this->route('PUT',    '/-/admin/users/{user}',                'admin.user:update',           'admin');
+		$this->route('PUT',    '/-/admin/users/{user}/password',       'admin.user:updatePassword',   'admin');
 
-		$this['errorhandler']->setupMiddleware($this['debug']);
+		$this->route('GET',    '/-/admin/events',                      'admin.event:index',           'admin');
+		$this->route('GET',    '/-/admin/events/{event}/edit',         'admin.event:edit',            'admin');
+		$this->route('PUT',    '/-/admin/events/{event}',              'admin.event:update',          'admin');
+		$this->route('GET',    '/-/admin/events/{event}/delete',       'admin.event:confirmation',    'admin');
+		$this->route('DELETE', '/-/admin/events/{event}',              'admin.event:delete',          'admin');
+
+		$this->route('GET',    '/-/admin/schedules',                   'admin.schedule:index',        'admin');
+		$this->route('GET',    '/-/admin/schedules/{schedule}/edit',   'admin.schedule:edit',         'admin');
+		$this->route('PUT',    '/-/admin/schedules/{schedule}',        'admin.schedule:update',       'admin');
+		$this->route('GET',    '/-/admin/schedules/{schedule}/delete', 'admin.schedule:confirmation', 'admin');
+		$this->route('DELETE', '/-/admin/schedules/{schedule}',        'admin.schedule:delete',       'admin');
+
+		///////////////////////////////////////////////////////////////////////////////////////////
+		// generic event/schedule routes
+
+		$this->route('GET', '/{eventslug}',                          'frontend:event');
+		$this->route('GET', '/{eventslug}/',                         'frontend:event');
+		$this->route('GET', '/{eventslug}/{scheduleslug}.{format}',  'frontend:scheduleExport')->assert('format', '(json|xml|csv|ical)');
+		$this->route('GET', '/{eventslug}/{scheduleslug}',           'frontend:schedule');
+		$this->route('GET', '/{eventslug}/{scheduleslug}/',          'frontend:schedule');
+		$this->route('GET', '/{eventslug}/{scheduleslug}/ical-feed', 'frontend:icalFaq');
+	}
+
+	protected function route($method, $pattern, $endpoint, $requiredRole = null, $noCsrf = false) {
+		$endpoint   = 'controller.'.$endpoint.'Action';
+		$controller = $this->match($pattern, $endpoint)->method($method);
+		$route      = $controller->getRoute();
+
+		if ($requiredRole) {
+			$route->setDefault(Middleware\Firewall::REQUIRED_ROLE, 'ROLE_'.strtoupper($requiredRole));
+
+			if ($requiredRole === 'admin') {
+				$route->setDefault(Middleware\ACL::ADMIN_MODE, true);
+			}
+		}
+
+		if ($noCsrf) {
+			$route->setDefault(Middleware\Csrf::REQUIRE_NO_CSRF_TOKEN, true);
+		}
+
+		return $controller;
 	}
 }

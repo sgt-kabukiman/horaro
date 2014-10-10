@@ -17,9 +17,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ScheduleItemController extends BaseController {
 	public function createAction(Request $request) {
-		// do not leak information, check CSRF token before checking for max items
-		$this->checkCsrfToken($request);
-
 		$schedule = $this->getRequestedSchedule($request);
 
 		if ($this->exceedsMaxScheduleItems($schedule)) {
@@ -68,21 +65,12 @@ class ScheduleItemController extends BaseController {
 
 		// respond
 
-		return $this->respondWithArray([
-			'data' => [
-				'id'      => $this->encodeID($item->getId(), 'schedule.item'),
-				'pos'     => $item->getPosition(),
-				'length'  => $item->getLengthInSeconds(),
-				'columns' => $item->getExtra()
-			]
-		], 201);
+		return $this->respondWithItem($item, 201);
 	}
 
 	public function patchAction(Request $request) {
-		$this->checkCsrfToken($request);
-
-		$schedule  = $this->getRequestedSchedule($request);
-		$item      = $this->getRequestedScheduleItem($request, $schedule);
+		$item      = $this->getRequestedScheduleItem($request);
+		$schedule  = $item->getSchedule();
 		$payload   = $this->getPayload($request);
 		$validator = $this->app['validator.schedule.item'];
 		$result    = $validator->validateUpdate($payload, $item, $schedule);
@@ -124,19 +112,10 @@ class ScheduleItemController extends BaseController {
 
 		// respond
 
-		return $this->respondWithArray([
-			'data' => [
-				'id'      => $this->encodeID($item->getId(), 'schedule.item'),
-				'pos'     => $item->getPosition(),
-				'length'  => $item->getLengthInSeconds(),
-				'columns' => $item->getExtra()
-			]
-		], 200);
+		return $this->respondWithItem($item, 200);
 	}
 
 	public function deleteAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$schedule = $this->getRequestedSchedule($request);
 		$item     = $this->getRequestedScheduleItem($request, $schedule);
 
@@ -166,8 +145,6 @@ class ScheduleItemController extends BaseController {
 	}
 
 	public function moveAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$schedule = $this->getRequestedSchedule($request);
 		$payload  = $this->getPayload($request);
 
@@ -177,8 +154,14 @@ class ScheduleItemController extends BaseController {
 			throw new Ex\BadRequestException('No item ID given.');
 		}
 
-		$itemID = $payload['item'];
-		$item   = $this->resolveScheduleItemID($itemID, $schedule);
+		$itemID   = $payload['item'];
+		$resolver = $this->app['resource-resolver'];
+		$item     = $resolver->resolveScheduleItemID($itemID, true);
+
+		if ($schedule->getId() !== $item->getSchedule()->getId()) {
+			throw new Ex\NotFoundException('Schedule item '.$itemID.' could not be found.');
+		}
+
 		$curPos = $item->getPosition();
 
 		// get the target position
@@ -245,5 +228,22 @@ class ScheduleItemController extends BaseController {
 				'pos' => $item->getPosition()
 			]
 		], 200);
+	}
+
+	protected function respondWithItem(ScheduleItem $item, $status) {
+		$extraData = [];
+
+		foreach ($item->getExtra() as $colID => $value) {
+			$extraData[$this->encodeID($colID, 'schedule.column')] = $value;
+		}
+
+		return $this->respondWithArray([
+			'data' => [
+				'id'      => $this->encodeID($item->getId(), 'schedule.item'),
+				'pos'     => $item->getPosition(),
+				'length'  => $item->getLengthInSeconds(),
+				'columns' => $extraData
+			]
+		], $status);
 	}
 }

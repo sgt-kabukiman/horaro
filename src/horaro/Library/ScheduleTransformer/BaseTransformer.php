@@ -10,18 +10,20 @@
 
 namespace horaro\Library\ScheduleTransformer;
 
+use horaro\Library\ObscurityCodec;
+
 class BaseTransformer {
+	protected $codec;
+
+	public function __construct(ObscurityCodec $codec) {
+		$this->codec = $codec;
+	}
+
 	protected function encodeID($id, $entityType = null) {
-		return $id;
+		return $this->codec->encode($id, $entityType);
 	}
 
 	protected function decodeID($hash, $entityType = null) {
-		if (!ctype_digit($hash)) {
-			return null;
-		}
-
-		$id = (int) $hash;
-
-		return $id ?: null;
+		return $this->codec->decode($hash, $entityType);
 	}
 }

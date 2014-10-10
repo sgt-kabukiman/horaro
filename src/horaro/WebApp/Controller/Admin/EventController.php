@@ -11,7 +11,6 @@
 namespace horaro\WebApp\Controller\Admin;
 
 use horaro\Library\Entity\Event;
-use horaro\WebApp\Controller\BaseController;
 use horaro\WebApp\Pager;
 use horaro\WebApp\Validator\Admin\UserValidator;
 use horaro\WebApp\Exception\ForbiddenException;
@@ -47,8 +46,6 @@ class EventController extends BaseController {
 	}
 
 	public function updateAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$event = $this->getRequestedEvent($request);
 
 		if (!$this->canEdit($event)) {
@@ -102,8 +99,6 @@ class EventController extends BaseController {
 	}
 
 	public function deleteAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$event = $this->getRequestedEvent($request);
 
 		if (!$this->canEdit($event)) {

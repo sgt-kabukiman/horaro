@@ -34,9 +34,6 @@ class EventController extends BaseController {
 	}
 
 	public function createAction(Request $request) {
-		// do not leak information, check CSRF token before checking for max events
-		$this->checkCsrfToken($request);
-
 		if ($this->exceedsMaxEvents($this->getCurrentUser())) {
 			return $this->redirect('/-/home');
 		}
@@ -77,7 +74,7 @@ class EventController extends BaseController {
 
 		$this->addSuccessMsg('Your new event has been created.');
 
-		return $this->redirect('/-/events/'.$event->getId());
+		return $this->redirect('/-/events/'.$this->encodeID($event->getId(), 'event'));
 	}
 
 	public function editAction(Request $request) {
@@ -87,8 +84,6 @@ class EventController extends BaseController {
 	}
 
 	public function updateAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$event     = $this->getRequestedEvent($request);
 		$validator = $this->app['validator.event'];
 		$result    = $validator->validate([
@@ -121,7 +116,7 @@ class EventController extends BaseController {
 
 		$this->addSuccessMsg('Your event has been updated.');
 
-		return $this->redirect('/-/events/'.$event->getId());
+		return $this->redirect('/-/events/'.$this->encodeID($event->getId(), 'event'));
 	}
 
 	public function confirmationAction(Request $request) {
@@ -131,8 +126,6 @@ class EventController extends BaseController {
 	}
 
 	public function deleteAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$event = $this->getRequestedEvent($request);
 		$em    = $this->getEntityManager();
 

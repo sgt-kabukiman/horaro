@@ -7,7 +7,7 @@
 <ul class="breadcrumb h-jail" style="margin-bottom: 5px;">
 	<li><a href="/-/home">Home</a></li>
 	{% if event %}
-	<li><a href="/-/events/{{ event.id }}">{{ event.name|shorten(45) }}</a></li>
+	<li><a href="/-/events/{{ event.id|obscurify('event') }}">{{ event.name|shorten(45) }}</a></li>
 	<li>Update Event…</li>
 	{% else %}
 	<li>New Event…</li>
@@ -24,7 +24,7 @@
 	<div class="col-lg-6 col-md-6 col-sm-7">
 		<div class="well">
 			{% if event %}
-			<form method="post" action="/-/events/{{ event.id }}" class="form-horizontal">
+			<form method="post" action="/-/events/{{ event.id|obscurify('event') }}" class="form-horizontal">
 				<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
 			{% else %}
 			<form method="post" action="/-/events" class="form-horizontal">

@@ -25,15 +25,21 @@ class ScheduleController extends BaseController {
 		$columnIDs = [];
 
 		foreach ($schedule->getItems() as $item) {
+			$extra = [];
+
+			foreach ($item->getExtra() as $colID => $value) {
+				$extra[$this->encodeID($colID, 'schedule.column')] = $value;
+			}
+
 			$items[] = [
-				$item->getId(),
+				$this->encodeID($item->getId(), 'schedule.item'),
 				$item->getLengthInSeconds(),
-				$item->getExtra()
+				$extra
 			];
 		}
 
 		foreach ($schedule->getColumns() as $column) {
-			$columnIDs[] = $column->getId();
+			$columnIDs[] = $this->encodeID($column->getId(), 'schedule.column');
 		}
 
 		return $this->render('schedule/detail.twig', [
@@ -55,9 +61,6 @@ class ScheduleController extends BaseController {
 	}
 
 	public function createAction(Request $request) {
-		// do not leak information, check CSRF token before checking for max schedules
-		$this->checkCsrfToken($request);
-
 		$event = $this->getRequestedEvent($request);
 
 		if ($this->exceedsMaxSchedules($event)) {
@@ -112,7 +115,7 @@ class ScheduleController extends BaseController {
 
 		$this->addSuccessMsg('Your new schedule has been created.');
 
-		return $this->redirect('/-/schedules/'.$schedule->getId());
+		return $this->redirect('/-/schedules/'.$this->encodeID($schedule->getId(), 'schedule'));
 	}
 
 	public function editAction(Request $request) {
@@ -122,8 +125,6 @@ class ScheduleController extends BaseController {
 	}
 
 	public function updateAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$schedule  = $this->getRequestedSchedule($request);
 		$event     = $schedule->getEvent();
 		$validator = $this->getValidator();
@@ -160,7 +161,7 @@ class ScheduleController extends BaseController {
 
 		$this->addSuccessMsg('Your schedule has been updated.');
 
-		return $this->redirect('/-/schedules/'.$schedule->getId());
+		return $this->redirect('/-/schedules/'.$this->encodeID($schedule->getId(), 'schedule'));
 	}
 
 	public function confirmationAction(Request $request) {
@@ -170,8 +171,6 @@ class ScheduleController extends BaseController {
 	}
 
 	public function deleteAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$schedule = $this->getRequestedSchedule($request);
 		$eventID  = $schedule->getEvent()->getId();
 		$em       = $this->getEntityManager();
@@ -181,7 +180,7 @@ class ScheduleController extends BaseController {
 
 		$this->addSuccessMsg('The requested schedule has been deleted.');
 
-		return $this->redirect('/-/events/'.$eventID);
+		return $this->redirect('/-/events/'.$this->encodeID($eventID, 'event'));
 	}
 
 	public function exportAction(Request $request) {

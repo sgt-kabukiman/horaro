@@ -12,8 +12,15 @@ namespace horaro\WebApp\Validator;
 
 use horaro\Library\Entity\Schedule;
 use horaro\Library\Entity\ScheduleItem;
+use horaro\Library\ObscurityCodec;
 
 class ScheduleItemValidator extends BaseValidator {
+	protected $codec;
+
+	public function __construct(ObscurityCodec $codec) {
+		$this->codec = $codec;
+	}
+
 	public function validateNew(array $item, Schedule $schedule) {
 		$this->result = ['_errors' => false];
 
@@ -59,10 +66,11 @@ class ScheduleItemValidator extends BaseValidator {
 		$result  = [];
 
 		foreach ($columns as $column) {
-			$colID = $column->getId();
+			$colID     = $column->getId();
+			$encodedID = $this->codec->encode($colID, 'schedule.column');
 
-			if (isset($data[$colID]) && is_string($data[$colID])) {
-				$val = trim(mb_substr(trim($data[$colID]), 0, 512));
+			if (isset($data[$encodedID]) && is_string($data[$encodedID])) {
+				$val = trim(mb_substr(trim($data[$encodedID]), 0, 512));
 
 				$result[$colID] = $val;
 			}

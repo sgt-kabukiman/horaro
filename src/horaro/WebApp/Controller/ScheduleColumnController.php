@@ -21,16 +21,13 @@ class ScheduleColumnController extends BaseController {
 		$columns  = [];
 
 		foreach ($schedule->getColumns() as $col) {
-			$columns[] = [$col->getID(), $col->getName()];
+			$columns[] = [$this->encodeID($col->getID(), 'schedule.column'), $col->getName()];
 		}
 
 		return $this->render('schedule/columns.twig', ['schedule' => $schedule, 'columns' => $columns]);
 	}
 
 	public function createAction(Request $request) {
-		// do not leak information, check CSRF token before checking for max columns
-		$this->checkCsrfToken($request);
-
 		$schedule = $this->getRequestedSchedule($request);
 
 		if ($this->exceedsMaxScheduleColumns($schedule)) {
@@ -88,10 +85,8 @@ class ScheduleColumnController extends BaseController {
 	}
 
 	public function updateAction(Request $request) {
-		$this->checkCsrfToken($request);
-
-		$schedule  = $this->getRequestedSchedule($request);
-		$column    = $this->getRequestedScheduleColumn($request, $schedule);
+		$column    = $this->getRequestedScheduleColumn($request);
+		$schedule  = $column->getSchedule();
 		$payload   = $this->getPayload($request);
 		$validator = $this->app['validator.schedule.column'];
 		$result    = $validator->validateUpdate($payload, $column, $schedule);
@@ -133,10 +128,8 @@ class ScheduleColumnController extends BaseController {
 	}
 
 	public function deleteAction(Request $request) {
-		$this->checkCsrfToken($request);
-
-		$schedule = $this->getRequestedSchedule($request);
-		$column   = $this->getRequestedScheduleColumn($request, $schedule);
+		$column   = $this->getRequestedScheduleColumn($request);
+		$schedule = $column->getSchedule();
 
 		// do not allow to delete the only column
 
@@ -172,8 +165,6 @@ class ScheduleColumnController extends BaseController {
 	}
 
 	public function moveAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$schedule = $this->getRequestedSchedule($request);
 		$payload  = $this->getPayload($request);
 
@@ -183,8 +174,14 @@ class ScheduleColumnController extends BaseController {
 			throw new Ex\BadRequestException('No column ID given.');
 		}
 
-		$colID  = $payload['column'];
-		$col    = $this->resolveScheduleColumnID($colID, $schedule);
+		$colID    = $payload['column'];
+		$resolver = $this->app['resource-resolver'];
+		$col      = $resolver->resolveScheduleColumnID($colID, true);
+
+		if ($schedule->getId() !== $col->getSchedule()->getId()) {
+			throw new Ex\NotFoundException('Schedule column '.$colID.' could not be found.');
+		}
+
 		$curPos = $col->getPosition();
 
 		// get the target position

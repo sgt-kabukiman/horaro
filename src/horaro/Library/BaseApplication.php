@@ -82,23 +82,27 @@ class BaseApplication extends Application {
 			return new PasswordEncoder($this['config']['bcrypt_cost']);
 		});
 
+		$this['obscurity-codec'] = $this->share(function() {
+			return $this['debug'] ? new ObscurityCodec\Debug() : new ObscurityCodec\Hashids($this['config']['secret'], 8);
+		});
+
 		$this['schedule-transformer-json'] = $this->share(function() {
-			return new ScheduleTransformer\JsonTransformer();
+			return new ScheduleTransformer\JsonTransformer($this['obscurity-codec']);
 		});
 
 		$this['schedule-transformer-xml'] = $this->share(function() {
-			return new ScheduleTransformer\XmlTransformer();
+			return new ScheduleTransformer\XmlTransformer($this['obscurity-codec']);
 		});
 
 		$this['schedule-transformer-csv'] = $this->share(function() {
-			return new ScheduleTransformer\CsvTransformer();
+			return new ScheduleTransformer\CsvTransformer($this['obscurity-codec']);
 		});
 
 		$this['schedule-transformer-ical'] = $this->share(function() {
 			$secret = $this['config']['secret'];
 			$host   = $this['request']->getHost();
 
-			return new ScheduleTransformer\ICalTransformer($secret, $host);
+			return new ScheduleTransformer\ICalTransformer($secret, $host, $this['obscurity-codec']);
 		});
 
 		// set Silex' debug flag

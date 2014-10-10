@@ -150,7 +150,7 @@
 		<legend>Events</legend>
 		<ul>
 			{% for event in user.events %}
-			<li><a href="/-/admin/events/{{ event.id }}/edit">{{ event.name|shorten(40) }}</a> <span class="text-muted">(<a href="/{{ event.slug }}" target="_blank"><code>{{ event.slug|shorten(20) }}</code></a>)</span></li>
+			<li class="h-jail-li"><a href="/-/admin/events/{{ event.id }}/edit">{{ event.name|shorten(40) }}</a> <span class="text-muted">(<a href="/{{ event.slug }}" target="_blank"><code>{{ event.slug|shorten(20) }}</code></a>)</span></li>
 			{% endfor %}
 		</ul>
 		{% endif %}

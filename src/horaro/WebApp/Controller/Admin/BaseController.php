@@ -10,10 +10,15 @@
 
 namespace horaro\WebApp\Controller\Admin;
 
+use horaro\WebApp\Controller\BaseController as RegularBaseController;
 use Symfony\Component\HttpFoundation\Request;
 
-class IndexController extends BaseController {
-	public function dashboardAction(Request $request) {
-		return $this->render('admin/dashboard.twig');
+class BaseController extends RegularBaseController {
+	protected function hasResourceAccess($resource) {
+		return $this->app['rolemanager']->hasAdministrativeAccess($this->getCurrentUser(), $resource);
+	}
+
+	protected function getRequestedUser(Request $request) {
+		return $request->attributes->get('user');
 	}
 }

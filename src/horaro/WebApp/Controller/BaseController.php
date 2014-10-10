@@ -35,6 +35,10 @@ class BaseController {
 		return $this->app['twig']->render($template, $params);
 	}
 
+	protected function hasResourceAccess($resource) {
+		return $this->app['rolemanager']->hasRegularAccess($this->getCurrentUser(), $resource);
+	}
+
 	protected function getEntityManager() {
 		return $this->app['entitymanager'];
 	}
@@ -48,17 +52,11 @@ class BaseController {
 	}
 
 	protected function encodeID($id, $entityType = null) {
-		return $id;
+		return $this->app['obscurity-codec']->encode($id, $entityType);
 	}
 
 	protected function decodeID($hash, $entityType = null) {
-		if (!ctype_digit($hash)) {
-			return null;
-		}
-
-		$id = (int) $hash;
-
-		return $id ?: null;
+		return $this->app['obscurity-codec']->decode($hash, $entityType);
 	}
 
 	protected function getPayload(Request $request, $asArray = true) {
@@ -83,137 +81,20 @@ class BaseController {
 		return $response;
 	}
 
-	protected function checkCsrfToken(Request $request) {
-		$this->app['csrf']->checkToken($request, $this->app['session']);
-	}
-
 	protected function getRequestedEvent(Request $request) {
-		return $this->resolveEventID($request->attributes->get('event'));
-	}
-
-	protected function resolveEventID($eventID) {
-		$id = $this->decodeID((string) $eventID, 'event');
-
-		if ($id === null) {
-			throw new Ex\NotFoundException('The event could not be found.');
-		}
-
-		$repo  = $this->getRepository('Event');
-		$event = $repo->findOneById($id);
-
-		if (!$event) {
-			throw new Ex\NotFoundException('Event '.$eventID.' could not be found.');
-		}
-
-		$user  = $this->getCurrentUser();
-		$owner = $event->getUser();
-
-		if (!$owner || $user->getId() !== $owner->getId()) {
-			throw new Ex\NotFoundException('Event '.$eventID.' could not be found.');
-		}
-
-		return $event;
+		return $request->attributes->get('event');
 	}
 
 	protected function getRequestedSchedule(Request $request) {
-		return $this->resolveScheduleID($request->attributes->get('schedule'));
+		return $request->attributes->get('schedule');
 	}
 
-	protected function resolveScheduleID($scheduleID) {
-		$id = $this->decodeID((string) $scheduleID, 'schedule');
-
-		if ($id === null) {
-			throw new Ex\NotFoundException('The schedule could not be found.');
-		}
-
-		$repo     = $this->getRepository('Schedule');
-		$schedule = $repo->findOneById($id);
-
-		if (!$schedule) {
-			throw new Ex\NotFoundException('Schedule '.$scheduleID.' could not be found.');
-		}
-
-		$user  = $this->getCurrentUser();
-		$owner = $schedule->getEvent()->getUser();
-
-		if (!$owner || $user->getId() !== $owner->getId()) {
-			throw new Ex\NotFoundException('Schedule '.$scheduleID.' could not be found.');
-		}
-
-		return $schedule;
+	protected function getRequestedScheduleItem(Request $request) {
+		return $request->attributes->get('schedule_item');
 	}
 
-	protected function getRequestedScheduleItem(Request $request, Schedule $schedule) {
-		return $this->resolveScheduleItemID($request->attributes->get('item'), $schedule);
-	}
-
-	protected function resolveScheduleItemID($itemID, Schedule $schedule) {
-		$id = $this->decodeID((string) $itemID, 'schedule.item');
-
-		if ($id === null) {
-			throw new Ex\NotFoundException('The item could not be found.');
-		}
-
-		$repo = $this->getRepository('ScheduleItem');
-		$item = $repo->findOneById($id);
-
-		if (!$item) {
-			throw new Ex\NotFoundException('Schedule item '.$itemID.' could not be found.');
-		}
-
-		$user  = $this->getCurrentUser();
-		$owner = $schedule->getEvent()->getUser();
-
-		if ($item->getSchedule()->getId() != $schedule->getId()) {
-			throw new Ex\NotFoundException('Schedule item '.$itemID.' could not be found.');
-		}
-
-		return $item;
-	}
-
-	protected function getRequestedScheduleColumn(Request $request, Schedule $schedule) {
-		return $this->resolveScheduleColumnID($request->attributes->get('column'), $schedule);
-	}
-
-	protected function resolveScheduleColumnID($columnID, Schedule $schedule) {
-		$id = $this->decodeID((string) $columnID, 'schedule.column');
-
-		if ($id === null) {
-			throw new Ex\NotFoundException('The column could not be found.');
-		}
-
-		$repo   = $this->getRepository('ScheduleColumn');
-		$column = $repo->findOneById($id);
-
-		if (!$column) {
-			throw new Ex\NotFoundException('Schedule column '.$columnID.' could not be found.');
-		}
-
-		$user  = $this->getCurrentUser();
-		$owner = $schedule->getEvent()->getUser();
-
-		if ($column->getSchedule()->getId() != $schedule->getId()) {
-			throw new Ex\NotFoundException('Schedule column '.$columnID.' could not be found.');
-		}
-
-		return $column;
-	}
-
-	protected function getRequestedUser(Request $request) {
-		$id = $request->attributes->get('user');
-
-		if ($id === null) {
-			throw new Ex\NotFoundException('The user could not be found.');
-		}
-
-		$repo = $this->getRepository('User');
-		$user = $repo->findOneById($id);
-
-		if (!$user) {
-			throw new Ex\NotFoundException('User '.$id.' could not be found.');
-		}
-
-		return $user;
+	protected function getRequestedScheduleColumn(Request $request) {
+		return $request->attributes->get('schedule_column');
 	}
 
 	protected function getLanguages() {
@@ -237,10 +118,7 @@ class BaseController {
 	}
 
 	protected function exceedsMaxUsers() {
-		$maxUsers = $this->app['config']['max_users'];
-		$total    = $this->getRepository('User')->count();
-
-		return $total >= $maxUsers;
+		return $this->getRepository('User')->count() >= $this->app['config']['max_users'];
 	}
 
 	protected function exceedsMaxEvents(User $u) {

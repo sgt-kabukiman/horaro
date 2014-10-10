@@ -9,7 +9,7 @@
         "doctrine/orm": "~2.4.3",
         "ircmaxell/password-compat": "~1.0.0",
         "ircmaxell/random-lib": "~1.0.0",
-        "hashids/hashids": "~0.3.0@dev",
+        "hashids/hashids": "~1.0.1",
         "twig/twig": "~1.16"
     },
     "autoload": {

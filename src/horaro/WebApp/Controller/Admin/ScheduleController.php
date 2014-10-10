@@ -11,7 +11,6 @@
 namespace horaro\WebApp\Controller\Admin;
 
 use horaro\Library\Entity\Schedule;
-use horaro\WebApp\Controller\BaseController;
 use horaro\WebApp\Pager;
 use horaro\WebApp\Validator\Admin\UserValidator;
 use horaro\WebApp\Exception\ForbiddenException;
@@ -52,8 +51,6 @@ class ScheduleController extends BaseController {
 	}
 
 	public function updateAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$schedule = $this->getRequestedSchedule($request);
 
 		if (!$this->canEdit($schedule)) {
@@ -110,8 +107,6 @@ class ScheduleController extends BaseController {
 	}
 
 	public function deleteAction(Request $request) {
-		$this->checkCsrfToken($request);
-
 		$schedule = $this->getRequestedSchedule($request);
 
 		if (!$this->canEdit($schedule)) {
