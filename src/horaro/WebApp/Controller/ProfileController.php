@@ -40,9 +40,7 @@ class ProfileController extends BaseController {
 		$user->setLanguage($result['language']['filtered']);
 		$user->setGravatarHash($result['gravatar']['filtered']);
 
-		$em = $this->getEntityManager();
-		$em->persist($user);
-		$em->flush();
+		$this->getEntityManager()->flush();
 
 		// done
 
@@ -68,9 +66,7 @@ class ProfileController extends BaseController {
 
 		$user->setPassword($this->app['encoder']->encode($result['password']['filtered']));
 
-		$em = $this->getEntityManager();
-		$em->persist($user);
-		$em->flush();
+		$this->getEntityManager()->flush();
 
 		// create a fresh session
 

@@ -77,9 +77,7 @@ class EventController extends BaseController {
 			->setMaxSchedules($result['max_schedules']['filtered'])
 		;
 
-		$em = $this->getEntityManager();
-		$em->persist($event);
-		$em->flush();
+		$this->getEntityManager()->flush();
 
 		// done
 

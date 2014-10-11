@@ -85,9 +85,7 @@ class ScheduleController extends BaseController {
 			->setMaxItems($result['max_items']['filtered'])
 		;
 
-		$em = $this->getEntityManager();
-		$em->persist($schedule);
-		$em->flush();
+		$this->getEntityManager()->flush();
 
 		// done
 

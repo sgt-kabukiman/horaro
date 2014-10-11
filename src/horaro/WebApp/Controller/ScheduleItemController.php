@@ -105,10 +105,7 @@ class ScheduleItemController extends BaseController {
 
 		// store it
 
-		$em = $this->getEntityManager();
-		$em->persist($schedule);
-		$em->persist($item);
-		$em->flush();
+		$this->getEntityManager()->flush();
 
 		// respond
 
@@ -134,7 +131,6 @@ class ScheduleItemController extends BaseController {
 
 			$schedule->touch();
 
-			$em->persist($schedule);
 			$em->remove($item);
 			$em->flush();
 		});
@@ -213,10 +209,8 @@ class ScheduleItemController extends BaseController {
 			$query->getResult();
 
 			$schedule->touch();
-
 			$item->setPosition($target);
-			$em->persist($schedule);
-			$em->persist($item);
+
 			$em->flush();
 		});
 

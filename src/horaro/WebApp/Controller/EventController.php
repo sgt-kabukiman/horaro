@@ -108,9 +108,7 @@ class EventController extends BaseController {
 			->setTwitter($result['twitter']['filtered'])
 		;
 
-		$em = $this->getEntityManager();
-		$em->persist($event);
-		$em->flush();
+		$this->getEntityManager()->flush();
 
 		// done
 

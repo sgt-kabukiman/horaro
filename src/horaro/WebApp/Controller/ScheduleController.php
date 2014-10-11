@@ -153,9 +153,7 @@ class ScheduleController extends BaseController {
 			->setTheme($result['theme']['filtered'])
 		;
 
-		$em = $this->getEntityManager();
-		$em->persist($schedule);
-		$em->flush();
+		$this->getEntityManager()->flush();
 
 		// done
 

@@ -81,9 +81,7 @@ class UserController extends BaseController {
 		$user->setMaxEvents($result['max_events']['filtered']);
 		$user->setRole($result['role']['filtered']);
 
-		$em = $this->getEntityManager();
-		$em->persist($user);
-		$em->flush();
+		$this->getEntityManager()->flush();
 
 		// done
 
@@ -113,9 +111,7 @@ class UserController extends BaseController {
 
 		$user->setPassword($this->app['encoder']->encode($result['password']['filtered']));
 
-		$em = $this->getEntityManager();
-		$em->persist($user);
-		$em->flush();
+		$this->getEntityManager()->flush();
 
 		// done
 

@@ -69,7 +69,6 @@ class ScheduleColumnController extends BaseController {
 		// store it
 
 		$em = $this->getEntityManager();
-		$em->persist($schedule);
 		$em->persist($col);
 		$em->flush();
 
@@ -111,10 +110,7 @@ class ScheduleColumnController extends BaseController {
 
 		// store it
 
-		$em = $this->getEntityManager();
-		$em->persist($schedule);
-		$em->persist($column);
-		$em->flush();
+		$this->getEntityManager()->flush();
 
 		// respond
 
@@ -152,7 +148,6 @@ class ScheduleColumnController extends BaseController {
 
 			$schedule->touch();
 
-			$em->persist($schedule);
 			$em->remove($column);
 			$em->flush();
 		});
@@ -233,7 +228,6 @@ class ScheduleColumnController extends BaseController {
 			$query->getResult();
 
 			$col->setPosition($target);
-			$em->persist($col);
 			$em->flush();
 		});
 
