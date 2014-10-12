@@ -23,7 +23,13 @@
 		<tr>
 			<td class="text-right">{{ user.id }}</td>
 			<td class="text-muted">({{ user.id|obscurify('user') }})</span></td>
-			<td><a href="/-/admin/users/{{ user.id }}/edit">{{ user.login|shorten(40) }}</a></td>
+			<td>
+				{% if utils.userHasAdministrativeAccess(user) %}
+				<a href="/-/admin/users/{{ user.id }}/edit">{{ user.login|shorten(40) }}</a>
+				{% else %}
+				{{ user.login|shorten(40) }}
+				{% endif %}
+			</td>
 			<td class="h-jail">{{ user.displayName|shorten(40) }}</td>
 			<td class="text-right">{{ user.eventCount }}</td>
 			<td class="text-right">{{ macros.backend_date(user.createdAt) }}</td>

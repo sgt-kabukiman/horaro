@@ -7,6 +7,9 @@
 	<li><a href="/-/admin/users"><i class="fa fa-users"></i> Users</a></li>
 	<li><a href="/-/admin/events"><i class="fa fa-gamepad"></i> Events</a></li>
 	<li><a href="/-/admin/schedules"><i class="fa fa-calendar"></i> Schedules</a></li>
+	{% if utils.userIsOp %}
+	<li><a href="/-/admin/utils"><i class="fa fa-magic"></i> Utilities</a></li>
+	{% endif %}
 </ul>
 
 <ul class="nav navbar-nav navbar-right">

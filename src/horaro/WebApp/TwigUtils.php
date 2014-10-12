@@ -55,6 +55,16 @@ class TwigUtils {
 		return $this->app['rolemanager']->userIsAdmin($user);
 	}
 
+	public function userIsOp(User $user = null) {
+		$user = $user ?: $this->app['user'];
+
+		if (!$user) {
+			return false;
+		}
+
+		return $this->app['rolemanager']->userIsOp($user);
+	}
+
 	public function userHasRole($role, User $user = null) {
 		$user = $user ?: $this->app['user'];
 
@@ -63,6 +73,16 @@ class TwigUtils {
 		}
 
 		return $this->app['rolemanager']->userHasRole($role, $user);
+	}
+
+	public function userHasAdministrativeAccess($resource, User $user = null) {
+		$user = $user ?: $this->app['user'];
+
+		if (!$user) {
+			return false;
+		}
+
+		return $this->app['rolemanager']->hasAdministrativeAccess($user, $resource);
 	}
 
 	public function formValue(array $result = null, $key, $default = null) {

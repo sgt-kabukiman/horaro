@@ -38,5 +38,9 @@
 {% endmacro %}
 
 {% macro backend_user_link(user) %}
+{% if utils.userHasAdministrativeAccess(user) %}
 <a href="/-/admin/users/{{ user.id }}/edit" class="text-{{ utils.roleClass(user.role) }}">{{ utils.roleIcon(user.role)|raw }} {{ user.name|shorten(30) }}</a>
+{% else %}
+<span class="text-{{ utils.roleClass(user.role) }}">{{ utils.roleIcon(user.role)|raw }} {{ user.name|shorten(30) }}</span>
+{% endif %}
 {% endmacro %}

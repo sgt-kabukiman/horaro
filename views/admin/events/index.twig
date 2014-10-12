@@ -24,7 +24,13 @@
 		<tr>
 			<td class="text-right">{{ event.id }}</td>
 			<td class="text-muted">({{ event.id|obscurify('event') }})</span></td>
-			<td class="h-jail"><a href="/-/admin/events/{{ event.id }}/edit">{{ event.name|shorten(40) }}</a></td>
+			<td class="h-jail">
+				{% if utils.userHasAdministrativeAccess(event) %}
+				<a href="/-/admin/events/{{ event.id }}/edit">{{ event.name|shorten(40) }}</a>
+				{% else %}
+				{{ event.name|shorten(40) }}
+				{% endif %}
+			</td>
 			<td><a href="/{{ event.slug }}" target="_blank"><code>{{ event.slug|shorten(20) }}</code></a></td>
 			<td class="h-jail">{{ macros.backend_user_link(event.user) }}</td>
 			<td>{{ event.website|shorten(30) }}</td>
