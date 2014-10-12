@@ -1,0 +1,168 @@
+{% extends "admin/utils/layout.twig" %}
+{% import "macros.twig" as macros %}
+
+{% block title %}Configuration &ndash; Admin{% endblock %}
+{% set active = 'config' %}
+
+{% block tabcontent %}
+<div class="well">
+	<form method="post" action="/-/admin/utils/config" class="form-horizontal">
+		<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
+		{{ macros.csrf_token() }}
+
+		<div class="form-group{{ utils.formClass(result, 'bcrypt_cost') }}">
+			<label class="col-lg-3 control-label" for="bcrypt_cost">bcrypt cost factor:</label>
+			<div class="col-lg-8">
+				<div class="row">
+					<div class="col-lg-2">
+						<input type="number" class="form-control" id="bcrypt_cost" name="bcrypt_cost" required value="{{ utils.formValue(result, 'bcrypt_cost', config.bcrypt_cost) }}" min="6" max="15">
+					</div>
+				</div>
+				{{ macros.form_errors(result, 'bcrypt_cost') }}
+				<span class="help-block">This cost factor has exponential growth. Be careful setting it too high (or hashing passwords will take several seconds).</span>
+			</div>
+		</div>
+
+		<div class="form-group{{ utils.formClass(result, 'cookie_lifetime') }}">
+			<label class="col-lg-3 control-label" for="cookie_lifetime">Cookie lifetime:</label>
+			<div class="col-lg-8">
+				<div class="row">
+					<div class="col-lg-4">
+						<div class="input-group">
+							<input type="text" class="form-control" id="cookie_lifetime" name="cookie_lifetime" required value="{{ utils.formValue(result, 'cookie_lifetime', config.cookie_lifetime) }}">
+							<div class="input-group-addon"> seconds</div>
+						</div>
+					</div>
+				</div>
+				{{ macros.form_errors(result, 'cookie_lifetime') }}
+				<span class="help-block">How long should cookies be stored on the browser side?</span>
+			</div>
+		</div>
+
+		<div class="form-group{{ utils.formClass(result, 'csrf_token_name') }}">
+			<label class="col-lg-3 control-label" for="csrf_token_name">CSRF token name:</label>
+			<div class="col-lg-8">
+				<div class="row">
+					<div class="col-lg-4">
+						<input type="text" class="form-control" id="csrf_token_name" name="csrf_token_name" required value="{{ utils.formValue(result, 'csrf_token_name', config.csrf_token_name) }}">
+					</div>
+				</div>
+				{{ macros.form_errors(result, 'csrf_token_name') }}
+				<span class="help-block">Must be alphanumeric and should be something unique to this installation, for example <code>csrf_token_kappa</code>. If in doubt, it's okay to leave this setting untouched.</span>
+			</div>
+		</div>
+
+		<div class="form-group{{ utils.formClass(result, 'default_language') }}">
+			<label class="col-lg-3 control-label" for="default_language">Default language:</label>
+			<div class="col-lg-8">
+				<div class="row">
+					<div class="col-lg-4">
+						{% set lng = utils.formValue(result, 'default_language', config.default_language) %}
+						<select name="default_language" id="default_language" class="form-control h-fancy">
+						{% for language,name in languages %}
+							<option value="{{ language }}"{% if lng == language %} selected{% endif %}>{{ name }}</option>
+						{% endfor %}
+						</select>
+					</div>
+				</div>
+				{{ macros.form_errors(result, 'default_language') }}
+				<span class="help-block">The language that will be pre-selected as the UI language for new users.</span>
+			</div>
+		</div>
+
+		<div class="form-group{{ utils.formClass(result, 'default_schedule_theme') }}">
+			<label class="col-lg-3 control-label" for="default_schedule_theme">Default schedule theme:</label>
+			<div class="col-lg-8">
+				<div class="row">
+					<div class="col-lg-4">
+						{% set thm = utils.formValue(result, 'default_schedule_theme', config.default_schedule_theme) %}
+						<select name="default_schedule_theme" id="default_schedule_theme" class="form-control h-fancy">
+						{% for themes,name in config.themes %}
+							<option value="{{ themes }}"{% if thm == themes %} selected{% endif %}>{{ name }}</option>
+						{% endfor %}
+						</select>
+					</div>
+				</div>
+				{{ macros.form_errors(result, 'default_schedule_theme') }}
+				<span class="help-block">The pre-selected theme for new schedules.</span>
+			</div>
+		</div>
+
+		<div class="form-group{{ utils.formClass(result, 'max_users') }}">
+			<label class="col-lg-3 control-label" for="max_users">Max # of users:</label>
+			<div class="col-lg-8">
+				<div class="row">
+					<div class="col-lg-2">
+						<input type="number" class="form-control" id="max_users" name="max_users" required value="{{ utils.formValue(result, 'max_users', config.max_users) }}" min="1">
+					</div>
+				</div>
+				{{ macros.form_errors(result, 'max_users') }}
+				<span class="help-block">
+					This limits the number of user accounts that can be created. Keep in mind that registration has no CAPTCHA,
+					so flodding the system is relatively easy. This is why you don't want to set this too high.
+				</span>
+			</div>
+		</div>
+
+		<div class="form-group{{ utils.formClass(result, 'max_events') }}">
+			<label class="col-lg-3 control-label" for="max_events">Max # of events:</label>
+			<div class="col-lg-8">
+				<div class="row">
+					<div class="col-lg-3">
+						<div class="input-group">
+							<input type="number" class="form-control" id="max_events" name="max_events" required value="{{ utils.formValue(result, 'max_events', config.max_events) }}" min="0">
+							<div class="input-group-addon"> per user</div>
+						</div>
+					</div>
+				</div>
+				{{ macros.form_errors(result, 'max_events') }}
+				<span class="help-block">
+					This limits the number of events per user. This can be overriden for each user independently, if necessary.
+				</span>
+			</div>
+		</div>
+
+		<div class="form-group{{ utils.formClass(result, 'max_schedules') }}">
+			<label class="col-lg-3 control-label" for="max_schedules">Max # of schedules:</label>
+			<div class="col-lg-8">
+				<div class="row">
+					<div class="col-lg-3">
+						<div class="input-group">
+							<input type="number" class="form-control" id="max_schedules" name="max_schedules" required value="{{ utils.formValue(result, 'max_schedules', config.max_schedules) }}" min="1">
+							<div class="input-group-addon"> per event</div>
+						</div>
+					</div>
+				</div>
+				{{ macros.form_errors(result, 'max_schedules') }}
+				<span class="help-block">
+					This limits the number of schedules per event. This can be overriden for each event independently, if necessary.
+				</span>
+			</div>
+		</div>
+
+		<div class="form-group{{ utils.formClass(result, 'max_schedule_items') }}">
+			<label class="col-lg-3 control-label" for="max_schedule_items">Max # of items (rows):</label>
+			<div class="col-lg-8">
+				<div class="row">
+					<div class="col-lg-4">
+						<div class="input-group">
+							<input type="number" class="form-control" id="max_schedule_items" name="max_schedule_items" required value="{{ utils.formValue(result, 'max_schedule_items', config.max_schedule_items) }}" min="1">
+							<div class="input-group-addon"> per schedule</div>
+						</div>
+					</div>
+				</div>
+				{{ macros.form_errors(result, 'max_schedule_items') }}
+				<span class="help-block">
+					This limits the number of items per schedule. This can be overriden for each schedule independently, if necessary.
+				</span>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-lg-offset-3 col-lg-3">
+				<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"> </i> Update Configuration</button>
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock %}

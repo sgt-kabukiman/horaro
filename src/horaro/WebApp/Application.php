@@ -101,18 +101,20 @@ class Application extends BaseApplication {
 			return new Middleware\ACL($this['rolemanager']);
 		});
 
-		$this['controller.index']           = $this->share(function() { return new Controller\IndexController($this);          });
-		$this['controller.frontend']        = $this->share(function() { return new Controller\FrontendController($this);       });
-		$this['controller.home']            = $this->share(function() { return new Controller\HomeController($this);           });
-		$this['controller.event']           = $this->share(function() { return new Controller\EventController($this);          });
-		$this['controller.schedule']        = $this->share(function() { return new Controller\ScheduleController($this);       });
-		$this['controller.schedule.item']   = $this->share(function() { return new Controller\ScheduleItemController($this);   });
-		$this['controller.schedule.column'] = $this->share(function() { return new Controller\ScheduleColumnController($this); });
-		$this['controller.profile']         = $this->share(function() { return new Controller\ProfileController($this);        });
-		$this['controller.admin.index']     = $this->share(function() { return new Controller\Admin\IndexController($this);    });
-		$this['controller.admin.user']      = $this->share(function() { return new Controller\Admin\UserController($this);     });
-		$this['controller.admin.event']     = $this->share(function() { return new Controller\Admin\EventController($this);    });
-		$this['controller.admin.schedule']  = $this->share(function() { return new Controller\Admin\ScheduleController($this); });
+		$this['controller.index']               = $this->share(function() { return new Controller\IndexController($this);              });
+		$this['controller.frontend']            = $this->share(function() { return new Controller\FrontendController($this);           });
+		$this['controller.home']                = $this->share(function() { return new Controller\HomeController($this);               });
+		$this['controller.event']               = $this->share(function() { return new Controller\EventController($this);              });
+		$this['controller.schedule']            = $this->share(function() { return new Controller\ScheduleController($this);           });
+		$this['controller.schedule.item']       = $this->share(function() { return new Controller\ScheduleItemController($this);       });
+		$this['controller.schedule.column']     = $this->share(function() { return new Controller\ScheduleColumnController($this);     });
+		$this['controller.profile']             = $this->share(function() { return new Controller\ProfileController($this);            });
+		$this['controller.admin.index']         = $this->share(function() { return new Controller\Admin\IndexController($this);        });
+		$this['controller.admin.user']          = $this->share(function() { return new Controller\Admin\UserController($this);         });
+		$this['controller.admin.event']         = $this->share(function() { return new Controller\Admin\EventController($this);        });
+		$this['controller.admin.schedule']      = $this->share(function() { return new Controller\Admin\ScheduleController($this);     });
+		$this['controller.admin.utils']         = $this->share(function() { return new Controller\Admin\Utils\BaseController($this);   });
+		$this['controller.admin.utils.config']  = $this->share(function() { return new Controller\Admin\Utils\ConfigController($this); });
 
 		$this['validator.createaccount'] = $this->share(function() {
 			$userRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\User');
@@ -171,6 +173,16 @@ class Application extends BaseApplication {
 			$config       = $this['config'];
 
 			return new Validator\Admin\ScheduleValidator($scheduleRepo, array_keys($config['themes']), $config['default_schedule_theme']);
+		});
+
+		$this['validator.admin.utils.config'] = $this->share(function() {
+			$config = $this['config'];
+			$languages       = array_keys($config['languages']);
+			$defaultLanguage = $config['default_language'];
+			$themes          = array_keys($config['themes']);
+			$defaultTheme    = $config['default_schedule_theme'];
+
+			return new Validator\Admin\Utils\ConfigValidator($languages, $defaultLanguage, $themes, $defaultTheme);
 		});
 	}
 
@@ -251,6 +263,11 @@ class Application extends BaseApplication {
 		$this->route('PUT',    '/-/admin/schedules/{schedule}',        'admin.schedule:update',       'admin');
 		$this->route('GET',    '/-/admin/schedules/{schedule}/delete', 'admin.schedule:confirmation', 'admin');
 		$this->route('DELETE', '/-/admin/schedules/{schedule}',        'admin.schedule:delete',       'admin');
+
+		$this->route('GET',    '/-/admin/utils',                        'admin.utils:index',          'op');
+
+		$this->route('GET',    '/-/admin/utils/config',                 'admin.utils.config:form',    'op');
+		$this->route('PUT',    '/-/admin/utils/config',                 'admin.utils.config:update',  'op');
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// generic event/schedule routes
