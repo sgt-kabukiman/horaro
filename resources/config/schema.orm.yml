@@ -1,3 +1,15 @@
+horaro\Library\Entity\Config:
+  type: entity
+  table: config
+
+  id:
+    keyname:
+      type: string
+
+  fields:
+    value:
+      type: text
+
 horaro\Library\Entity\User:
   type: entity
   table: users

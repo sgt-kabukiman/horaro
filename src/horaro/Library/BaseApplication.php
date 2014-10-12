@@ -37,10 +37,16 @@ class BaseApplication extends Application {
 			return $config;
 		});
 
-		$this['session.storage.options'] = [
-			'cookie_httponly' => true,
-			'cookie_lifetime' => $this['config']['cookie_lifetime']
-		];
+		$this['runtime-config'] = $this->share(function() {
+			return new RuntimeConfiguration($this['config'], $this['entitymanager']->getRepository('horaro\Library\Entity\Config'), $this['entitymanager']);
+		});
+
+		$this['session.storage.options'] = function() {
+			return [
+				'cookie_httponly' => true,
+				'cookie_lifetime' => $this['config']['cookie_lifetime']
+			];
+		};
 
 		$this['session.storage.handler'] = $this->share(function() {
 			$connection = $this['entitymanager']->getConnection();

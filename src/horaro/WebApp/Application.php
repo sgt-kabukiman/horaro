@@ -20,6 +20,12 @@ class Application extends BaseApplication {
 		parent::__construct($values);
 
 		$this->setupServices();
+
+		// Connect to DB and fetch runtime configuration, so the routing setup can properly build
+		// middleware instances without having to worry whether stuff like the CSRF token name are
+		// already known.
+		$this['runtime-config']->init();
+
 		$this->setupRouting();
 	}
 
