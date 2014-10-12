@@ -165,8 +165,13 @@ module.exports = function (grunt) {
 			},
 
 			images: {
-				src: 'www/assets/images/**/*',
+				src: 'www/assets/images/*.*',
 				dest: 'www/assets/images'
+			},
+
+			images_themes: {
+				src: 'www/assets/images/themes/*.png',
+				dest: 'www/assets/images/themes'
 			},
 
 			i18n: {
