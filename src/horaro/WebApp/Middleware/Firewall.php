@@ -77,6 +77,10 @@ class Firewall {
 
 			case 'ROLE_ADMIN':
 			case 'ROLE_OP':
+				if (!$user) {
+					throw new Ex\UnauthorizedException('Forbidden.');
+				}
+
 				if (!$app['rolemanager']->userHasRole($requiredRole, $user)) {
 					throw new Ex\ForbiddenException('You need to carry the title of "User with '.$requiredRole.' role" to wander these realms.');
 				}
