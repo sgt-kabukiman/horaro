@@ -126,4 +126,19 @@
 		must be at least two characters long.</p>
 	</div>
 </div>
+
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h3>Themes</h3>
+	</div>
+</div>
+
+<div class="row">
+	{% for key,name in app.config.themes %}
+	<div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 text-center">
+		<img src="{{ macros.asset('images/themes/' ~ key ~ '-small.png') }}" alt="Example screenshot of the {{ name }} theme in action" class="img-thumbnail">
+		<h4>{{ name }}</h4>
+	</div>
+	{% endfor %}
+</div>
 {% endblock %}

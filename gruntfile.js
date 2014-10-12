@@ -128,7 +128,7 @@ module.exports = function (grunt) {
 				files: [
 					{
 						expand: true,
-						src: ['assets/images/*'],
+						src: ['assets/images/**/*'],
 						dest: 'www'
 					}
 				]
@@ -165,7 +165,7 @@ module.exports = function (grunt) {
 			},
 
 			images: {
-				src: 'www/assets/images/*',
+				src: 'www/assets/images/**/*',
 				dest: 'www/assets/images'
 			},
 
