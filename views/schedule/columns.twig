@@ -3,7 +3,7 @@
 {% block title %}Columns… &ndash; {{ schedule.name }} &ndash; {{ schedule.event.name }}{% endblock %}
 
 {% block content %}
-<ul class="breadcrumb h-jail" style="margin-bottom: 5px;">
+<ul class="breadcrumb h-jail">
 	<li><a href="/-/home">Home</a></li>
 	<li><a href="/-/events/{{ schedule.event.id|obscurify('event') }}">{{ schedule.event.name|shorten(45) }}</a></li>
 	<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}">{{ schedule.name|shorten(45) }}</a></li>

@@ -4,7 +4,7 @@
 {% block title %}{{ event.name }}{% endblock %}
 
 {% block content %}
-<ul class="breadcrumb h-jail" style="margin-bottom: 5px;">
+<ul class="breadcrumb h-jail">
 	<li><a href="/-/home">Home</a></li>
 	<li><a href="/-/events/{{ event.id|obscurify('event') }}">{{ event.name|shorten(45) }}</a></li>
 	<li>Delete Event</li>

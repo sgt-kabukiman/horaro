@@ -52,6 +52,10 @@ class Application extends BaseApplication {
 			return new CsrfHandler($name, $generator);
 		});
 
+		$this['csp'] = $this->share(function() {
+			return new ContentSecurityPolicy();
+		});
+
 		$this['resource-resolver'] = $this->share(function() {
 			return new ResourceResolver($this['entitymanager'], $this['obscurity-codec']);
 		});
@@ -99,6 +103,10 @@ class Application extends BaseApplication {
 
 		$this['middleware.acl'] = $this->share(function() {
 			return new Middleware\ACL($this['rolemanager']);
+		});
+
+		$this['middleware.csp'] = $this->share(function() {
+			return new Middleware\CSP($this['csp']);
 		});
 
 		$this['controller.index']                  = $this->share(function() { return new Controller\IndexController($this);                  });
@@ -194,6 +202,9 @@ class Application extends BaseApplication {
 		$this->before($this['middleware.resolver']);
 		$this->before($this['middleware.acl']);
 		$this->before('i18n:initLanguage');
+
+		$this->before('middleware.csp:before');
+		$this->after('middleware.csp:after');
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// general routes

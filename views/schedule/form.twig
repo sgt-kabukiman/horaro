@@ -4,7 +4,7 @@
 {% block title %}{% if schedule %}{{ schedule.name }}{% else %}New Schedule…{% endif %} &ndash; {{ event.name }}{% endblock %}
 
 {% block content %}
-<ul class="breadcrumb h-jail" style="margin-bottom: 5px;">
+<ul class="breadcrumb h-jail">
 	<li><a href="/-/home">Home</a></li>
 	<li><a href="/-/events/{{ event.id|obscurify('event') }}">{{ event.name|shorten(45) }}</a></li>
 	{% if schedule %}
