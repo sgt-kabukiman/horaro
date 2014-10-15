@@ -54,13 +54,7 @@ class CSP {
 		$header = $this->policy->getHeader();
 
 		if (strlen($header) > 0) {
-			$name = 'Content-Security-Policy';
-
-			if ($this->reportOnly) {
-				$name .= '-Report-Only';
-			}
-
-			$response->headers->set($name, $header);
+			$response->headers->set('Content-Security-Policy', $header);
 		}
 	}
 }
