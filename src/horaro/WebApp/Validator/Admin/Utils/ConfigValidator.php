@@ -39,6 +39,7 @@ class ConfigValidator extends BaseValidator {
 		$this->setFilteredValue('max_schedule_items',     $this->validateMaxScheduleItems($config['max_schedule_items'], $ref));
 		$this->setFilteredValue('max_schedules',          $this->validateMaxSchedules($config['max_schedules'], $ref));
 		$this->setFilteredValue('max_users',              $this->validateMaxUsers($config['max_users'], $ref));
+		$this->setFilteredValue('sentry_dsn',             $this->validateSentryDSN($config['sentry_dsn'], $ref));
 
 		return $this->result;
 	}
@@ -170,5 +171,18 @@ class ConfigValidator extends BaseValidator {
 		}
 
 		return $maxUsers;
+	}
+
+	public function validateSentryDSN($dsn, Configuration $ref) {
+		if (!$dsn) return $dsn;
+
+		$parts = @parse_url($dsn);
+
+		if (!isset($parts['scheme']) || $parts['scheme'] !== 'https') {
+			$this->addError('sentry_dsn', 'The DSN must be a full URI using HTTPS.');
+			return $ref['sentry_dsn'];
+		}
+
+		return $dsn;
 	}
 }

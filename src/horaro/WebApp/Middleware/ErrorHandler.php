@@ -12,6 +12,7 @@ namespace horaro\WebApp\Middleware;
 
 use horaro\WebApp\Application;
 use horaro\WebApp\Exception as Ex;
+use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,10 +20,30 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Twig_Environment;
 
 class ErrorHandler {
+	protected $raven;
 	protected $twig;
+	protected $version;
 
-	public function __construct(Twig_Environment $twig) {
-		$this->twig = $twig;
+	public $levels = array(
+		E_WARNING           => 'Warning',
+		E_NOTICE            => 'Notice',
+		E_USER_ERROR        => 'User Error',
+		E_USER_WARNING      => 'User Warning',
+		E_USER_NOTICE       => 'User Notice',
+		E_STRICT            => 'Runtime Notice',
+		E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
+		E_DEPRECATED        => 'Deprecated',
+		E_USER_DEPRECATED   => 'User Deprecated',
+		E_ERROR             => 'Error',
+		E_CORE_ERROR        => 'Core Error',
+		E_COMPILE_ERROR     => 'Compile Error',
+		E_PARSE             => 'Parse',
+	);
+
+	public function __construct(\Raven_Client $client, Twig_Environment $twig, $version) {
+		$this->raven   = $client;
+		$this->twig    = $twig;
+		$this->version = $version;
 	}
 
 	public function __invoke(Request $request, Application $app) {
@@ -37,6 +58,23 @@ class ErrorHandler {
 		if (!$app['debug']) {
 			$app->error([$this, 'generic']);
 		}
+
+		// some of this has been copied from Symfony\Component\Debug\ErrorHandler
+		register_shutdown_function(function() {
+			if (null === $error = error_get_last()) {
+				return;
+			}
+
+			$type = $error['type'];
+			if (!in_array($type, array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE))) {
+				return;
+			}
+
+			$level   = isset($this->levels[$type]) ? $this->levels[$type] : $type;
+			$message = sprintf('%s: %s', $level, $error['message']);
+
+			$this->report(new FatalErrorException($message, 0, $type, $error['file'], $error['line']));
+		});
 	}
 
 	public function handleNotLoggedIn(Ex\UnauthorizedException $e) {
@@ -64,10 +102,14 @@ class ErrorHandler {
 	}
 
 	public function sfRoutingException(NotFoundHttpException $e) {
+		$this->report($e);
+
 		return $this->respond('errors/not_found.twig', $e, 404);
 	}
 
 	public function generic(\Exception $e) {
+		$this->report($e);
+
 		return $this->respond('errors/generic.twig', $e, 500);
 	}
 
@@ -75,5 +117,24 @@ class ErrorHandler {
 		$data = ['e' => $e, 'result' => null]; // result is only for the login view
 
 		return new Response($this->twig->render($template, $data), $status ?: $e->getHttpStatus());
+	}
+
+	protected function report(\Exception $e) {
+		// send exception to Sentry
+		preg_match('/^(\d+).(\d+).(\d+)/', PHP_VERSION, $match);
+		$php = sprintf('%d.%d.%d', $match[1], $match[2], $match[3]);
+
+		$this->raven->captureException($e, [
+			'tags' => [
+				'app_version' => $this->version,
+				'php_version' => $php
+			],
+			'extra' => [
+				'memory_usage'      => round(memory_get_usage(true) / (1024*1024), 2).' MiB',
+				'peak_memory_usage' => round(memory_get_peak_usage(true) / (1024*1024), 2).' MiB',
+				'system_load'       => function_exists('sys_getloadavg') ? implode(' / ', sys_getloadavg()) : 'N/A',
+				'full_php_version'  => PHP_VERSION
+			]
+		]);
 	}
 }

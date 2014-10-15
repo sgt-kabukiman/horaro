@@ -10,7 +10,8 @@
         "ircmaxell/password-compat": "~1.0.0",
         "ircmaxell/random-lib": "~1.0.0",
         "hashids/hashids": "~1.0.1",
-        "twig/twig": "~1.16"
+        "twig/twig": "~1.16",
+        "raven/raven": "0.10.*"
     },
     "autoload": {
         "psr-4": {

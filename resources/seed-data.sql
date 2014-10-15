@@ -13,4 +13,5 @@ INSERT INTO `config` (`key`, `value`) VALUES
 	('max_events',             '10'),
 	('max_schedule_items',     '200'),
 	('max_schedules',          '10'),
-	('max_users',              '50');
+	('max_users',              '50'),
+	('sentry_dsn',             '');

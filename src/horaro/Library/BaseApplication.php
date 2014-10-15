@@ -92,6 +92,10 @@ class BaseApplication extends Application {
 			return $this['debug'] ? new ObscurityCodec\Debug() : new ObscurityCodec\Hashids($this['config']['secret'], 8);
 		});
 
+		$this['raven-client'] = $this->share(function() {
+			return new \Raven_Client($this['config']['sentry_dsn']);
+		});
+
 		$this['schedule-transformer-json'] = $this->share(function() {
 			return new ScheduleTransformer\JsonTransformer($this['obscurity-codec']);
 		});

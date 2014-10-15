@@ -30,7 +30,8 @@ class ConfigController extends BaseController {
 			'max_events'             => $request->request->get('max_events'),
 			'max_schedule_items'     => $request->request->get('max_schedule_items'),
 			'max_schedules'          => $request->request->get('max_schedules'),
-			'max_users'              => $request->request->get('max_users')
+			'max_users'              => $request->request->get('max_users'),
+			'sentry_dsn'             => $request->request->get('sentry_dsn')
 		], $config);
 
 		if ($result['_errors']) {
@@ -50,6 +51,7 @@ class ConfigController extends BaseController {
 			->set('max_schedule_items',     $result['max_schedule_items']['filtered'])
 			->set('max_schedules',          $result['max_schedules']['filtered'])
 			->set('max_users',              $result['max_users']['filtered'])
+			->set('sentry_dsn',             $result['sentry_dsn']['filtered'])
 		;
 
 		$this->getEntityManager()->flush();
