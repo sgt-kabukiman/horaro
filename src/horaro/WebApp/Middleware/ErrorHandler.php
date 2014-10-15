@@ -30,6 +30,7 @@ class ErrorHandler {
 		$app->error([$this, 'handleAccessDenied']);
 		$app->error([$this, 'handleReverseAuthErrors']);
 		$app->error([$this, 'handleBadCsrf']);
+		$app->error([$this, 'handleBadRequest']);
 		$app->error([$this, 'sfRoutingException']);
 		$app->error([$this, 'notFound']);
 
@@ -52,6 +53,10 @@ class ErrorHandler {
 
 	public function handleBadCsrf(Ex\BadCsrfTokenException $e) {
 		return $this->respond('errors/bad_csrf_token.twig', $e);
+	}
+
+	public function handleBadRequest(Ex\BadRequestException $e) {
+		return $this->respond('errors/bad_request.twig', $e);
 	}
 
 	public function notFound(Ex\NotFoundException $e) {
