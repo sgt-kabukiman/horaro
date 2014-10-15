@@ -18,7 +18,7 @@ class Debug implements ObscurityCodec {
 	}
 
 	public function decode($hash, $entityType = null) {
-		if (!ctype_digit($hash)) {
+		if (!ctype_digit((string) $hash)) {
 			return null;
 		}
 
