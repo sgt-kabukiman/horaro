@@ -35,17 +35,29 @@ class FrontendController extends BaseController {
 		if ($schedule instanceof Response) return $schedule;
 
 		$format  = strtolower($request->attributes->get('format'));
-		$formats = ['json', 'xml', 'csv', 'ical'];
+		$formats = ['json', 'jsonp', 'xml', 'csv', 'ical'];
 
 		if (!in_array($format, $formats, true)) {
 			throw new Ex\BadRequestException('Invalid format "'.$format.'" given.');
 		}
 
+		// auto-switch to JSONP if there is a callback parameter
+		if ($format === 'json' && $request->query->has('callback')) {
+			$format = 'jsonp';
+		}
+
 		$id          = 'schedule-transformer-'.$format;
 		$transformer = $this->app[$id];
-		$data        = $transformer->transform($schedule, true);
-		$filename    = sprintf('%s-%s.%s', $event->getSlug(), $schedule->getSlug(), $transformer->getFileExtension());
-		$headers     = ['Content-Type' => $transformer->getContentType()];
+
+		try {
+			$data = $transformer->transform($schedule, true);
+		}
+		catch (\InvalidArgumentException $e) {
+			throw new Ex\BadRequestException($e->getMessage());
+		}
+
+		$filename = sprintf('%s-%s.%s', $event->getSlug(), $schedule->getSlug(), $transformer->getFileExtension());
+		$headers  = ['Content-Type' => $transformer->getContentType()];
 
 		if ($request->query->get('named')) {
 			$headers['Content-Disposition'] = 'filename="'.$filename.'"';

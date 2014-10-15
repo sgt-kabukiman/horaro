@@ -96,6 +96,10 @@ class BaseApplication extends Application {
 			return new ScheduleTransformer\JsonTransformer($this['obscurity-codec']);
 		});
 
+		$this['schedule-transformer-jsonp'] = $this->share(function() {
+			return new ScheduleTransformer\JsonpTransformer($this['request'], $this['obscurity-codec']);
+		});
+
 		$this['schedule-transformer-xml'] = $this->share(function() {
 			return new ScheduleTransformer\XmlTransformer($this['obscurity-codec']);
 		});

@@ -35,6 +35,9 @@ class XmlTransformer extends BaseTransformer {
 		$xml->startDocument('1.0', 'UTF-8', 'yes');
 
 		$xml->startElement('export');
+			$xml->startElement('meta');
+				$xml->writeElement('exported', gmdate(self::DATE_FORMAT_UTC));
+			$xml->endElement();
 			$xml->startElement('schedule');
 				if (!$public) {
 					$xml->writeAttribute('id', $this->encodeID($schedule->getId(), 'schedule'));
@@ -91,9 +94,6 @@ class XmlTransformer extends BaseTransformer {
 					}
 				$xml->endElement();
 
-			$xml->endElement();
-			$xml->startElement('meta');
-				$xml->writeElement('exported', gmdate(self::DATE_FORMAT_UTC));
 			$xml->endElement();
 		$xml->endElement();
 

@@ -16,6 +16,8 @@ class JsonTransformer extends BaseTransformer {
 	const DATE_FORMAT_TZ  = 'Y-m-d\TH:i:sP';
 	const DATE_FORMAT_UTC = 'Y-m-d\TH:i:s\Z';
 
+	protected $hint = true;
+
 	public function getContentType() {
 		return 'application/json; charset=UTF-8';
 	}
@@ -56,9 +58,10 @@ class JsonTransformer extends BaseTransformer {
 			$scheduled->add($item->getDateInterval());
 		}
 
-		$scheduleData =
-
 		$data = [
+			'meta' => [
+				'exported' => gmdate(self::DATE_FORMAT_UTC)
+			],
 			'schedule' => [
 				'id'       => $this->encodeID($schedule->getId(), 'schedule'),
 				'name'     => $schedule->getName(),
@@ -75,15 +78,16 @@ class JsonTransformer extends BaseTransformer {
 				],
 				'columns'  => $columns,
 				'items'    => $items
-			],
-			'meta' => [
-				'exported' => gmdate(self::DATE_FORMAT_UTC)
 			]
 		];
 
 		if ($public) {
 			unset($data['schedule']['id']);
 			unset($data['schedule']['event']['id']);
+
+			if ($this->hint) {
+				$data['meta']['hint'] = 'Use ?callback=yourcallback to use this document via JSONP.';
+			}
 		}
 
 		return json_encode($data, JSON_UNESCAPED_SLASHES);

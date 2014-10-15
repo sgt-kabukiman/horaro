@@ -292,7 +292,7 @@ class Application extends BaseApplication {
 
 		$this->route('GET', '/{eventslug}',                          'frontend:event');
 		$this->route('GET', '/{eventslug}/',                         'frontend:event');
-		$this->route('GET', '/{eventslug}/{scheduleslug}.{format}',  'frontend:scheduleExport')->assert('format', '(json|xml|csv|ical)');
+		$this->route('GET', '/{eventslug}/{scheduleslug}.{format}',  'frontend:scheduleExport')->assert('format', '(jsonp?|xml|csv|ical)');
 		$this->route('GET', '/{eventslug}/{scheduleslug}',           'frontend:schedule');
 		$this->route('GET', '/{eventslug}/{scheduleslug}/',          'frontend:schedule');
 		$this->route('GET', '/{eventslug}/{scheduleslug}/ical-feed', 'frontend:icalFaq');
