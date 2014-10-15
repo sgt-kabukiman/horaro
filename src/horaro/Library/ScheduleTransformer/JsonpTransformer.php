@@ -29,7 +29,7 @@ class JsonpTransformer extends JsonTransformer {
 	}
 
 	public function getFileExtension() {
-		return 'jsonp';
+		return 'js';
 	}
 
 	public function transform(Schedule $schedule, $public = false) {
