@@ -21,6 +21,7 @@ class EventController extends BaseController {
 
 		return $this->render('event/detail.twig', [
 			'event'  => $event,
+			'themes' => $this->app['config']['themes'],
 			'isFull' => $this->exceedsMaxSchedules($event)
 		]);
 	}
@@ -30,7 +31,7 @@ class EventController extends BaseController {
 			return $this->redirect('/-/home');
 		}
 
-		return $this->render('event/form.twig', ['event' => null, 'result' => null]);
+		return $this->renderForm(null, null);
 	}
 
 	public function createAction(Request $request) {
@@ -44,11 +45,12 @@ class EventController extends BaseController {
 			'slug'    => $request->request->get('slug'),
 			'website' => $request->request->get('website'),
 			'twitch'  => $request->request->get('twitch'),
-			'twitter' => $request->request->get('twitter')
+			'twitter' => $request->request->get('twitter'),
+			'theme'   => $request->request->get('theme')
 		]);
 
 		if ($result['_errors']) {
-			return $this->render('event/form.twig', ['event' => null, 'result' => $result]);
+			return $this->renderForm(null, $result);
 		}
 
 		// create event
@@ -63,6 +65,7 @@ class EventController extends BaseController {
 			->setWebsite($result['website']['filtered'])
 			->setTwitch($result['twitch']['filtered'])
 			->setTwitter($result['twitter']['filtered'])
+			->setTheme($result['theme']['filtered'])
 			->setMaxSchedules($this->app['config']['max_schedules'])
 		;
 
@@ -80,7 +83,7 @@ class EventController extends BaseController {
 	public function editAction(Request $request) {
 		$event = $this->getRequestedEvent($request);
 
-		return $this->render('event/form.twig', ['event' => $event, 'result' => null]);
+		return $this->renderForm($event, null);
 	}
 
 	public function updateAction(Request $request) {
@@ -91,11 +94,12 @@ class EventController extends BaseController {
 			'slug'    => $request->request->get('slug'),
 			'website' => $request->request->get('website'),
 			'twitch'  => $request->request->get('twitch'),
-			'twitter' => $request->request->get('twitter')
+			'twitter' => $request->request->get('twitter'),
+			'theme'   => $request->request->get('theme')
 		], $event);
 
 		if ($result['_errors']) {
-			return $this->render('event/form.twig', ['event' => $event, 'result' => $result]);
+			return $this->renderForm($event, $result);
 		}
 
 		// update
@@ -106,6 +110,7 @@ class EventController extends BaseController {
 			->setWebsite($result['website']['filtered'])
 			->setTwitch($result['twitch']['filtered'])
 			->setTwitter($result['twitter']['filtered'])
+			->setTheme($result['theme']['filtered'])
 		;
 
 		$this->getEntityManager()->flush();
@@ -133,5 +138,16 @@ class EventController extends BaseController {
 		$this->addSuccessMsg('The requested event has been deleted.');
 
 		return $this->redirect('/-/home');
+	}
+
+	protected function renderForm(Event $event = null, $result = null) {
+		$config = $this->app['config'];
+
+		return $this->render('event/form.twig', [
+			'event'        => $event,
+			'result'       => $result,
+			'themes'       => $config['themes'],
+			'defaultTheme' => $config['default_event_theme']
+		]);
 	}
 }

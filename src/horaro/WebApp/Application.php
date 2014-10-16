@@ -133,8 +133,9 @@ class Application extends BaseApplication {
 
 		$this['validator.event'] = $this->share(function() {
 			$eventRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Event');
+			$config    = $this['config'];
 
-			return new Validator\EventValidator($eventRepo);
+			return new Validator\EventValidator($eventRepo, array_keys($config['themes']), $config['default_event_theme']);
 		});
 
 		$this['validator.login'] = $this->share(function() {
@@ -153,7 +154,7 @@ class Application extends BaseApplication {
 			$scheduleRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Schedule');
 			$config       = $this['config'];
 
-			return new Validator\ScheduleValidator($scheduleRepo, array_keys($config['themes']), $config['default_schedule_theme']);
+			return new Validator\ScheduleValidator($scheduleRepo, array_keys($config['themes']));
 		});
 
 		$this['validator.schedule.item'] = $this->share(function() {
@@ -173,23 +174,24 @@ class Application extends BaseApplication {
 
 		$this['validator.admin.event'] = $this->share(function() {
 			$eventRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Event');
+			$config    = $this['config'];
 
-			return new Validator\Admin\EventValidator($eventRepo);
+			return new Validator\Admin\EventValidator($eventRepo, array_keys($config['themes']), $config['default_event_theme']);
 		});
 
 		$this['validator.admin.schedule'] = $this->share(function() {
 			$scheduleRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Schedule');
 			$config       = $this['config'];
 
-			return new Validator\Admin\ScheduleValidator($scheduleRepo, array_keys($config['themes']), $config['default_schedule_theme']);
+			return new Validator\Admin\ScheduleValidator($scheduleRepo, array_keys($config['themes']));
 		});
 
 		$this['validator.admin.utils.config'] = $this->share(function() {
-			$config = $this['config'];
+			$config          = $this['config'];
 			$languages       = array_keys($config['languages']);
 			$defaultLanguage = $config['default_language'];
 			$themes          = array_keys($config['themes']);
-			$defaultTheme    = $config['default_schedule_theme'];
+			$defaultTheme    = $config['default_event_theme'];
 
 			return new Validator\Admin\Utils\ConfigValidator($languages, $defaultLanguage, $themes, $defaultTheme);
 		});

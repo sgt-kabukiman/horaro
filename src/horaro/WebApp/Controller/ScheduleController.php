@@ -215,7 +215,7 @@ class ScheduleController extends BaseController {
 			'schedule'     => $schedule,
 			'result'       => $result,
 			'themes'       => $config['themes'],
-			'defaultTheme' => $config['default_schedule_theme']
+			'defaultTheme' => $event->getTheme()
 		]);
 	}
 }

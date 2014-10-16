@@ -161,6 +161,9 @@ horaro\Library\Entity\Event:
     max_schedules:
       type: integer
       options: { unsigned: true }
+    theme:
+      type: string
+      length: 100
 
   oneToMany:
     schedules:

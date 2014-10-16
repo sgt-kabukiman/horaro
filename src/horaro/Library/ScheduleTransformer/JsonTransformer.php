@@ -60,7 +60,8 @@ class JsonTransformer extends BaseTransformer {
 
 		$data = [
 			'meta' => [
-				'exported' => gmdate(self::DATE_FORMAT_UTC)
+				'exported' => gmdate(self::DATE_FORMAT_UTC),
+				'hint'     => 'Use ?callback=yourcallback to use this document via JSONP.'
 			],
 			'schedule' => [
 				'id'       => $this->encodeID($schedule->getId(), 'schedule'),
@@ -69,12 +70,14 @@ class JsonTransformer extends BaseTransformer {
 				'timezone' => $schedule->getTimezone(),
 				'start'    => $start->format(self::DATE_FORMAT_TZ),
 				'start_t'  => (int) $start->format('U'),
+				'theme'    => $schedule->getTheme(),
 				'updated'  => $schedule->getUpdatedAt()->format(self::DATE_FORMAT_UTC), // updated is stored as UTC, so it's okay to disregard the sys timezone here and force UTC
 				'url'      => sprintf('/%s/%s', $event->getSlug(), $schedule->getSlug()),
 				'event'    => [
-					'id'   => $this->encodeID($event->getId(), 'event'),
-					'name' => $event->getName(),
-					'slug' => $event->getSlug()
+					'id'    => $this->encodeID($event->getId(), 'event'),
+					'name'  => $event->getName(),
+					'slug'  => $event->getSlug(),
+					'theme' => $event->getTheme()
 				],
 				'columns'  => $columns,
 				'items'    => $items
@@ -83,11 +86,13 @@ class JsonTransformer extends BaseTransformer {
 
 		if ($public) {
 			unset($data['schedule']['id']);
+			unset($data['schedule']['theme']);
 			unset($data['schedule']['event']['id']);
+			unset($data['schedule']['event']['theme']);
+		}
 
-			if ($this->hint) {
-				$data['meta']['hint'] = 'Use ?callback=yourcallback to use this document via JSONP.';
-			}
+		if (!$this->hint || !$public) {
+			unset($data['meta']['hint']);
 		}
 
 		return json_encode($data, JSON_UNESCAPED_SLASHES);

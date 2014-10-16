@@ -16,12 +16,10 @@ use horaro\Library\Entity\Schedule;
 class ScheduleValidator extends BaseValidator {
 	protected $repo;
 	protected $themes;
-	protected $defaultTheme;
 
-	public function __construct($scheduleRepo, array $themes, $defaultTheme) {
-		$this->repo         = $scheduleRepo;
-		$this->themes       = $themes;
-		$this->defaultTheme = $defaultTheme;
+	public function __construct($scheduleRepo, array $themes) {
+		$this->repo   = $scheduleRepo;
+		$this->themes = $themes;
 	}
 
 	public function validate(array $schedule, Event $event, Schedule $ref = null) {
@@ -143,7 +141,7 @@ class ScheduleValidator extends BaseValidator {
 		if (!in_array($theme, $this->themes, true)) {
 			$this->addError('theme', 'Your selected theme is invalid.');
 
-			return $this->defaultTheme;
+			return $ref ? $ref->getTheme() : $event->getTheme();
 		}
 
 		return $theme;

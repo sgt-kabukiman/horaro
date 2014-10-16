@@ -52,6 +52,11 @@ class Event {
 	private $max_schedules;
 
 	/**
+	 * @var string
+	 */
+	private $theme;
+
+	/**
 	 * @var \Doctrine\Common\Collections\Collection
 	 */
 	private $schedules;
@@ -233,6 +238,27 @@ class Event {
 	 */
 	public function getMaxSchedules() {
 		return $this->max_schedules;
+	}
+
+	/**
+	 * Set theme
+	 *
+	 * @param string $theme
+	 * @return Schedule
+	 */
+	public function setTheme($theme) {
+		$this->theme = $theme;
+
+		return $this;
+	}
+
+	/**
+	 * Get theme
+	 *
+	 * @return string
+	 */
+	public function getTheme() {
+		return $this->theme;
 	}
 
 	/**

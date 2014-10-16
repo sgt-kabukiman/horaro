@@ -1,6 +1,6 @@
 {% extends "frontend/layout.twig" %}
 
-{% set theme = 'yeti' %}
+{% set theme = event.theme %}
 
 {% block fulltitle %}{{ event.name }}{% endblock %}
 {% block body_attr %} class="theme-{{ theme }}"{% endblock %}

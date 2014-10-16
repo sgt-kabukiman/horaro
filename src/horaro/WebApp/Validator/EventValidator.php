@@ -14,9 +14,13 @@ use horaro\Library\Entity\Event;
 
 class EventValidator extends BaseValidator {
 	protected $repo;
+	protected $themes;
+	protected $defaultTheme;
 
-	public function __construct($eventRepo) {
-		$this->repo = $eventRepo;
+	public function __construct($eventRepo, array $themes, $defaultTheme) {
+		$this->repo         = $eventRepo;
+		$this->themes       = $themes;
+		$this->defaultTheme = $defaultTheme;
 	}
 
 	public function validate(array $event, Event $ref = null) {
@@ -27,6 +31,7 @@ class EventValidator extends BaseValidator {
 		$this->setFilteredValue('website', $this->validateWebsite($event['website'], $ref));
 		$this->setFilteredValue('twitch',  $this->validateTwitchAccount($event['twitch'], $ref));
 		$this->setFilteredValue('twitter', $this->validateTwitterAccount($event['twitter'], $ref));
+		$this->setFilteredValue('theme',   $this->validateTheme($event['theme'], $ref));
 
 		return $this->result;
 	}
@@ -104,5 +109,17 @@ class EventValidator extends BaseValidator {
 		}
 
 		return $account === '' ? null : $account;
+	}
+
+	public function validateTheme($theme, Event $event = null) {
+		$theme = trim($theme);
+
+		if (!in_array($theme, $this->themes, true)) {
+			$this->addError('theme', 'Your selected theme is invalid.');
+
+			return $this->defaultTheme;
+		}
+
+		return $theme;
 	}
 }

@@ -22,16 +22,16 @@ class ConfigController extends BaseController {
 		$config    = $this->app['config'];
 		$validator = $this->app['validator.admin.utils.config'];
 		$result    = $validator->validate([
-			'bcrypt_cost'            => $request->request->get('bcrypt_cost'),
-			'cookie_lifetime'        => $request->request->get('cookie_lifetime'),
-			'csrf_token_name'        => $request->request->get('csrf_token_name'),
-			'default_language'       => $request->request->get('default_language'),
-			'default_schedule_theme' => $request->request->get('default_schedule_theme'),
-			'max_events'             => $request->request->get('max_events'),
-			'max_schedule_items'     => $request->request->get('max_schedule_items'),
-			'max_schedules'          => $request->request->get('max_schedules'),
-			'max_users'              => $request->request->get('max_users'),
-			'sentry_dsn'             => $request->request->get('sentry_dsn')
+			'bcrypt_cost'         => $request->request->get('bcrypt_cost'),
+			'cookie_lifetime'     => $request->request->get('cookie_lifetime'),
+			'csrf_token_name'     => $request->request->get('csrf_token_name'),
+			'default_event_theme' => $request->request->get('default_event_theme'),
+			'default_language'    => $request->request->get('default_language'),
+			'max_events'          => $request->request->get('max_events'),
+			'max_schedule_items'  => $request->request->get('max_schedule_items'),
+			'max_schedules'       => $request->request->get('max_schedules'),
+			'max_users'           => $request->request->get('max_users'),
+			'sentry_dsn'          => $request->request->get('sentry_dsn')
 		], $config);
 
 		if ($result['_errors']) {
@@ -42,16 +42,16 @@ class ConfigController extends BaseController {
 
 		$rtconfig = $this->app['runtime-config'];
 		$rtconfig
-			->set('bcrypt_cost',            $result['bcrypt_cost']['filtered'])
-			->set('cookie_lifetime',        $result['cookie_lifetime']['filtered'])
-			->set('csrf_token_name',        $result['csrf_token_name']['filtered'])
-			->set('default_language',       $result['default_language']['filtered'])
-			->set('default_schedule_theme', $result['default_schedule_theme']['filtered'])
-			->set('max_events',             $result['max_events']['filtered'])
-			->set('max_schedule_items',     $result['max_schedule_items']['filtered'])
-			->set('max_schedules',          $result['max_schedules']['filtered'])
-			->set('max_users',              $result['max_users']['filtered'])
-			->set('sentry_dsn',             $result['sentry_dsn']['filtered'])
+			->set('bcrypt_cost',         $result['bcrypt_cost']['filtered'])
+			->set('cookie_lifetime',     $result['cookie_lifetime']['filtered'])
+			->set('csrf_token_name',     $result['csrf_token_name']['filtered'])
+			->set('default_event_theme', $result['default_event_theme']['filtered'])
+			->set('default_language',    $result['default_language']['filtered'])
+			->set('max_events',          $result['max_events']['filtered'])
+			->set('max_schedule_items',  $result['max_schedule_items']['filtered'])
+			->set('max_schedules',       $result['max_schedules']['filtered'])
+			->set('max_users',           $result['max_users']['filtered'])
+			->set('sentry_dsn',          $result['sentry_dsn']['filtered'])
 		;
 
 		$this->getEntityManager()->flush();

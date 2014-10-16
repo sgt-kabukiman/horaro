@@ -70,21 +70,21 @@
 			</div>
 		</div>
 
-		<div class="form-group{{ utils.formClass(result, 'default_schedule_theme') }}">
-			<label class="col-lg-3 control-label" for="default_schedule_theme">Default schedule theme:</label>
+		<div class="form-group{{ utils.formClass(result, 'default_event_theme') }}">
+			<label class="col-lg-3 control-label" for="default_event_theme">Default event theme:</label>
 			<div class="col-lg-8">
 				<div class="row">
 					<div class="col-lg-4">
-						{% set thm = utils.formValue(result, 'default_schedule_theme', config.default_schedule_theme) %}
-						<select name="default_schedule_theme" id="default_schedule_theme" class="form-control h-fancy">
+						{% set thm = utils.formValue(result, 'default_event_theme', config.default_event_theme) %}
+						<select name="default_event_theme" id="default_event_theme" class="form-control h-fancy">
 						{% for themes,name in config.themes %}
 							<option value="{{ themes }}"{% if thm == themes %} selected{% endif %}>{{ name }}</option>
 						{% endfor %}
 						</select>
 					</div>
 				</div>
-				{{ macros.form_errors(result, 'default_schedule_theme') }}
-				<span class="help-block">The pre-selected theme for new schedules.</span>
+				{{ macros.form_errors(result, 'default_event_theme') }}
+				<span class="help-block">The pre-selected theme for new events.</span>
 			</div>
 		</div>
 

@@ -51,6 +51,10 @@ class XmlTransformer extends BaseTransformer {
 					$xml->text($start->format(self::DATE_FORMAT_TZ));
 				$xml->endElement();
 
+				if (!$public) {
+					$xml->writeElement('theme', $schedule->getTheme());
+				}
+
 				$xml->writeElement('updated', $schedule->getUpdatedAt()->format(self::DATE_FORMAT_UTC)); // updated is stored as UTC, so it's okay to disregard the sys timezone here and force UTC
 				$xml->writeElement('url', sprintf('/%s/%s', $event->getSlug(), $schedule->getSlug()));
 
@@ -60,6 +64,10 @@ class XmlTransformer extends BaseTransformer {
 					}
 					$xml->writeElement('name', $event->getName());
 					$xml->writeElement('slug', $event->getSlug());
+
+					if (!$public) {
+						$xml->writeElement('theme', $event->getTheme());
+					}
 				$xml->endElement();
 
 				$xml->startElement('columns');

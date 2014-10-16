@@ -59,6 +59,7 @@ class EventController extends BaseController {
 			'website'       => $request->request->get('website'),
 			'twitch'        => $request->request->get('twitch'),
 			'twitter'       => $request->request->get('twitter'),
+			'theme'         => $request->request->get('theme'),
 			'max_schedules' => $request->request->get('max_schedules')
 		], $event);
 
@@ -74,6 +75,7 @@ class EventController extends BaseController {
 			->setWebsite($result['website']['filtered'])
 			->setTwitch($result['twitch']['filtered'])
 			->setTwitter($result['twitter']['filtered'])
+			->setTheme($result['theme']['filtered'])
 			->setMaxSchedules($result['max_schedules']['filtered'])
 		;
 
@@ -115,7 +117,8 @@ class EventController extends BaseController {
 	protected function renderForm(Event $event, array $result = null) {
 		return $this->render('admin/events/form.twig', [
 			'result' => $result,
-			'event'  => $event
+			'event'  => $event,
+			'themes' => $this->app['config']['themes']
 		]);
 	}
 

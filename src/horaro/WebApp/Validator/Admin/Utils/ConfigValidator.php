@@ -30,16 +30,16 @@ class ConfigValidator extends BaseValidator {
 	public function validate(array $config, Configuration $ref) {
 		$this->result = ['_errors' => false];
 
-		$this->setFilteredValue('bcrypt_cost',            $this->validateBcryptCost($config['bcrypt_cost'], $ref));
-		$this->setFilteredValue('cookie_lifetime',        $this->validateCookieLifetime($config['cookie_lifetime'], $ref));
-		$this->setFilteredValue('csrf_token_name',        $this->validateCsrfTokenName($config['csrf_token_name'], $ref));
-		$this->setFilteredValue('default_language',       $this->validateDefaultLanguage($config['default_language'], $ref));
-		$this->setFilteredValue('default_schedule_theme', $this->validateDefaultScheduleTheme($config['default_schedule_theme'], $ref));
-		$this->setFilteredValue('max_events',             $this->validateMaxEvents($config['max_events'], $ref));
-		$this->setFilteredValue('max_schedule_items',     $this->validateMaxScheduleItems($config['max_schedule_items'], $ref));
-		$this->setFilteredValue('max_schedules',          $this->validateMaxSchedules($config['max_schedules'], $ref));
-		$this->setFilteredValue('max_users',              $this->validateMaxUsers($config['max_users'], $ref));
-		$this->setFilteredValue('sentry_dsn',             $this->validateSentryDSN($config['sentry_dsn'], $ref));
+		$this->setFilteredValue('bcrypt_cost',         $this->validateBcryptCost($config['bcrypt_cost'], $ref));
+		$this->setFilteredValue('cookie_lifetime',     $this->validateCookieLifetime($config['cookie_lifetime'], $ref));
+		$this->setFilteredValue('csrf_token_name',     $this->validateCsrfTokenName($config['csrf_token_name'], $ref));
+		$this->setFilteredValue('default_event_theme', $this->validateDefaultEventTheme($config['default_event_theme'], $ref));
+		$this->setFilteredValue('default_language',    $this->validateDefaultLanguage($config['default_language'], $ref));
+		$this->setFilteredValue('max_events',          $this->validateMaxEvents($config['max_events'], $ref));
+		$this->setFilteredValue('max_schedule_items',  $this->validateMaxScheduleItems($config['max_schedule_items'], $ref));
+		$this->setFilteredValue('max_schedules',       $this->validateMaxSchedules($config['max_schedules'], $ref));
+		$this->setFilteredValue('max_users',           $this->validateMaxUsers($config['max_users'], $ref));
+		$this->setFilteredValue('sentry_dsn',          $this->validateSentryDSN($config['sentry_dsn'], $ref));
 
 		return $this->result;
 	}
@@ -100,7 +100,7 @@ class ConfigValidator extends BaseValidator {
 		return $language;
 	}
 
-	public function validateDefaultScheduleTheme($theme) {
+	public function validateDefaultEventTheme($theme) {
 		if (!is_string($theme)) {
 			$this->addError('default_theme', 'Malformed theme.');
 			return $this->defaultTheme;
