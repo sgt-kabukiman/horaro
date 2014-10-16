@@ -3,12 +3,12 @@
 jQuery(function($) {
 	'use strict';
 
-	var scheduleColumns, scheduleID, viewModel, items, columns, csrfToken, csrfTokenName;
+	var scheduleColumns, scheduleID, scheduleStart, scheduleTZ, viewModel, items, columns, maxItems;
 
 	// init CSRF token information
 
-	csrfToken     = $('meta[name="csrf_token"]').attr('content');
-	csrfTokenName = $('meta[name="csrf_token_name"]').attr('content');
+	var csrfToken     = $('meta[name="csrf_token"]').attr('content');
+	var csrfTokenName = $('meta[name="csrf_token_name"]').attr('content');
 
 	// init date and time pickers
 
@@ -50,7 +50,7 @@ jQuery(function($) {
 		$.bootstrapGrowl(msg, growlOpt);
 	}
 
-	if (typeof horaro !== 'undefined' && horaro.flashes) {
+	if ($('#h-flashes').length > 0) {
 		var growlOpt = {
 			ele:             'body',
 			type:            'info', // (null, 'info', 'error', 'success')
@@ -62,10 +62,12 @@ jQuery(function($) {
 			stackup_spacing: 5
 		};
 
-		for (var flashType in horaro.flashes) {
+		var flashes = JSON.parse($('#h-flashes').text());
+
+		for (var flashType in flashes) {
 			growlOpt.type = flashType;
 
-			horaro.flashes[flashType].forEach(growl);
+			flashes[flashType].forEach(growl);
 		}
 	}
 
@@ -106,26 +108,37 @@ jQuery(function($) {
 	//= src/Column.js
 	//= src/ColumnsViewModel.js
 
-	if (typeof horaro !== 'undefined' && horaro.schedule) {
-		scheduleColumns = horaro.schedule.columns;
-		scheduleID      = horaro.schedule.id;
+	var ui = $('body').data('ui');
 
-		if (horaro.ui === 'scheduler') {
-			items = [];
+	if (ui) {
+		if (ui === 'scheduler') {
+			var dataNode = $('.h-scheduler');
+			var itemData = JSON.parse($('#h-item-data').text());
 
-			if (horaro.schedule.items) {
-				horaro.schedule.items.forEach(function(item, idx) {
+			scheduleID      = dataNode.data('id');
+			scheduleColumns = dataNode.data('columns').split(',');
+			scheduleStart   = new Date(dataNode.data('start'));
+			scheduleTZ      = dataNode.data('tz');
+			maxItems        = parseInt(dataNode.data('maxitems'), 10);
+			items           = [];
+
+			if (itemData) {
+				itemData.forEach(function(item, idx) {
 					items.push(new Item(item[0], item[1], item[2], idx + 1));
 				});
 			}
 
 			viewModel = new ItemsViewModel(items);
 		}
-		else if (horaro.ui === 'columnist') {
-			columns = [];
+		else if (ui === 'columnist') {
+			var dataNode = $('.h-columnist');
+			var colData  = JSON.parse($('#h-column-data').text());
 
-			if (horaro.schedule.columns) {
-				horaro.schedule.columns.forEach(function(column, idx) {
+			scheduleID = dataNode.data('id');
+			columns    = [];
+
+			if (colData) {
+				colData.forEach(function(column, idx) {
 					columns.push(new Column(column[0], column[1], idx + 1));
 				});
 			}
@@ -134,6 +147,14 @@ jQuery(function($) {
 		}
 
 		if (viewModel) {
+			var options = {
+				attribute: 'data-bind',        // default "data-sbind"
+				globals: window,               // default {}
+				bindings: ko.bindingHandlers,  // default ko.bindingHandlers
+				noVirtualElements: false       // default true
+			};
+			ko.bindingProvider.instance = new ko.secureBindingsProvider(options);
+
 			ko.applyBindings(viewModel);
 			viewModel.initDragAndDrop(false);
 			$('#h-scheduler-loading').hide();

@@ -1,6 +1,7 @@
 {% extends "backend.twig" %}
 
 {% block title %}Columns… &ndash; {{ schedule.name }} &ndash; {{ schedule.event.name }}{% endblock %}
+{% block body_attr %} data-ui="columnist"{% endblock %}
 
 {% block content %}
 <ul class="breadcrumb h-jail">
@@ -24,7 +25,7 @@
 
 <div class="row">
 	<div class="col-lg-5 col-md-6 col-sm-6">
-		<table class="table h-columnist">
+		<table class="table h-columnist" data-id="{{ schedule.id|obscurify('schedule') }}">
 			<thead>
 				<tr>
 					<th class="h-handle">&nbsp;</th>
@@ -79,13 +80,7 @@
 	</div>
 </div>
 
-<script type="text/javascript">
-var horaro = horaro||{};
-
-horaro.ui = 'columnist';
-horaro.schedule = {
-	id: {{ schedule.id|obscurify('schedule')|json_encode|raw }},
-	columns: {{ columns|json_encode|raw }}
-};
+<script type="application/json" id="h-column-data">
+{{ columns|json_encode|raw }}
 </script>
 {% endblock %}

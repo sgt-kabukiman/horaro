@@ -1,4 +1,5 @@
-<tbody data-bind="attr: {'data-itemid': id, 'class': 'h-item ' + ($index() % 2 ? 'h-odd' : 'h-even')}">
+{# Do not use the ternary operator because the secure bindings for Knockout do not support them. #}
+<tbody data-bind="attr: {'data-itemid': id, 'class': 'h-item ' + ($index() % 2 ===1 && 'h-odd' || 'h-even')}">
 	<!-- ko if: dateSwitch -->
 	<tr class="h-new-day">
 		<td colspan="{{ numCols + 4 }}" data-bind="text: dateSwitch"></td>
@@ -28,7 +29,7 @@
 				<button class="btn btn-link btn-xs" data-bind="click: toggle, activate: toggle, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
 				<button class="btn btn-link btn-xs" data-bind="click: toggle, activate: toggle, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
 			</span>
-			<button data-bind="click: confirmDelete, activate: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + (id() === -1 ? ' disabled' : '') }"><i class="fa fa-trash-o"></i></button>
+			<button data-bind="click: confirmDelete, activate: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + (id() === -1 && ' disabled' || '') }"><i class="fa fa-trash-o"></i></button>
 			<!-- /ko -->
 
 			<!-- ko if: deleting() -->

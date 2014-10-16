@@ -5,6 +5,7 @@
         "pickadate": "3.5.*",
         "bootswatch": "3.2.*",
         "moment": "2.8.*",
-        "bootstrap-growl": "1.1.*"
+        "bootstrap-growl": "1.1.*",
+        "knockout-secure-binding": "~0.5.1"
     }
 }

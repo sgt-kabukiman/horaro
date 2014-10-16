@@ -32,6 +32,7 @@ module.exports = function (grunt) {
 					'assets/vendor/pickadate/lib/compressed/picker.time.js',
 					'assets/vendor/moment/min/moment.min.js',
 					'assets/vendor/bootstrap-growl/jquery.bootstrap-growl.min.js',
+					'assets/vendor/knockout-secure-binding/dist/knockout-secure-binding.min.js',
 					'assets/js/html.sortable.patched.js',      // TODO: minify this manually
 					'assets/js/knockout.x-editable.patched.js' // TODO: minify this manually
 				],

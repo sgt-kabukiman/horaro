@@ -44,7 +44,7 @@ function Item(id, length, columns, pos) {
 	});
 
 	self.formattedSchedule = ko.pureComputed(function() {
-		return moment.unix(self.scheduled() / 1000).zone(horaro.schedule.tz).format('LT');
+		return moment.unix(self.scheduled() / 1000).zone(scheduleTZ).format('LT');
 	}, self);
 
 	self.rowClass = ko.pureComputed(function() {
@@ -131,7 +131,7 @@ function Item(id, length, columns, pos) {
 				self.length(result.data.length);
 				self.errors(false);
 
-				horaro.schedule.columns.forEach(function(id) {
+				scheduleColumns.forEach(function(id) {
 					var key   = 'col_' + id;
 					var value = id in result.data.columns ? result.data.columns[id] : '';
 

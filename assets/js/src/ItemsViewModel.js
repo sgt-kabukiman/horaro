@@ -8,7 +8,7 @@ function ItemsViewModel(items) {
 	}, self);
 
 	self.isFull = ko.pureComputed(function() {
-		return self.items().length >= horaro.schedule.maxItems;
+		return self.items().length >= maxItems;
 	});
 
 	self.calculateSchedule = function(startIdx) {
@@ -18,7 +18,7 @@ function ItemsViewModel(items) {
 		items    = self.items();
 
 		if (startIdx === 0) {
-			start = horaro.schedule.start.getTime();
+			start = scheduleStart.getTime();
 		}
 		else {
 			start = items[startIdx].scheduled() + (items[startIdx].length() * 1000);
@@ -33,7 +33,7 @@ function ItemsViewModel(items) {
 			item.scheduled(scheduled);
 			item.dateSwitch(false);
 
-			date       = moment.unix(scheduled / 1000).zone(horaro.schedule.tz);
+			date       = moment.unix(scheduled / 1000).zone(scheduleTZ);
 			dayOfYear  = date.dayOfYear();
 			scheduled += (item.length() * 1000);
 
@@ -48,7 +48,7 @@ function ItemsViewModel(items) {
 	self.add = function() {
 		var data = {};
 
-		horaro.schedule.columns.forEach(function(id) {
+		scheduleColumns.forEach(function(id) {
 			data[id] = '';
 		});
 

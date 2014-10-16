@@ -5,6 +5,7 @@
 {% set fluid   = numCols > 3         %}
 
 {% block title %}{{ schedule.name }} &ndash; {{ schedule.event.name }}{% endblock %}
+{% block body_attr %} data-ui="scheduler"{% endblock %}
 
 {% block content %}
 <ul class="breadcrumb h-jail">
@@ -59,7 +60,14 @@
 </div>
 
 <div id="h-scheduler-container">
-	<table class="table h-scheduler h-l{{ numCols }}">
+	<table
+		class="table h-scheduler h-l{{ numCols }}"
+		data-id="{{ schedule.id|obscurify('schedule') }}"
+		data-start="{{ start.format('Y-m-d\\TH:i:sP') }}"
+		data-tz="{{ start.format('P') }}"
+		data-columns="{{ columns|join(',') }}"
+		data-maxitems="{{ maxItems }}"
+	>
 		<thead>
 			<tr>
 				<th class="h-m">&nbsp;</th>
@@ -104,17 +112,7 @@
 	<!-- /ko -->
 </div>
 
-<script type="text/javascript">
-var horaro = horaro||{};
-
-horaro.ui = 'scheduler';
-horaro.schedule = {
-	id: {{ schedule.id|obscurify('schedule')|json_encode|raw }},
-	start: new Date("{{ start.format('Y-m-d\\TH:i:sP') }}"),
-	tz: "{{ start.format('P') }}",
-	columns: {{ columns|json_encode|raw }},
-	items: {{ items|json_encode|raw }},
-	maxItems: {{ maxItems }}
-};
+<script type="application/json" id="h-item-data">
+{{ items|json_encode|raw }}
 </script>
 {% endblock %}
