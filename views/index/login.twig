@@ -11,17 +11,11 @@
 				<fieldset>
 					<legend>Log-in Required</legend>
 
-					<div class="form-group{% if result and result.login.errors %} has-error{% endif %}">
-						<label class="col-lg-3 control-label" for="username">Username:</label>
+					<div class="form-group{{ utils.formClass(result, 'login') }}">
+						<label class="col-lg-3 control-label" for="login">Username:</label>
 						<div class="col-lg-9">
-							<input type="text" class="form-control" id="username" name="username" autofocus required value="{% if result %}{{ result.login.filtered }}{% endif %}">
-							{% if result and result.login.errors and result.login.messages %}
-							<span class="help-block"><strong>
-								{% for message in result.login.messages %}
-									{{ message }}<br>
-								{% endfor %}
-							</strong></span>
-							{% endif %}
+							<input type="text" class="form-control" id="login" name="login" autofocus required value="{{ utils.formValue(result, 'login', '') }}">
+							{{ macros.form_errors(result, 'login') }}
 						</div>
 					</div>
 
