@@ -75,7 +75,7 @@ class XmlTransformer extends BaseTransformer {
 						$xml->startElement('item');
 							$xml->startElement('length');
 								$xml->writeAttribute('seconds', $item->getLengthInSeconds());
-								$xml->text($item->getLength()->format('H:i:s'));
+								$xml->text($item->getISODuration());
 							$xml->endElement();
 							$xml->startElement('scheduled');
 								$xml->writeAttribute('timestamp', $scheduled->format('U'));

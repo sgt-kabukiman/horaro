@@ -41,7 +41,7 @@ class JsonTransformer extends BaseTransformer {
 		foreach ($schedule->getItems() as $item) {
 			$extra = $item->getExtra();
 			$node  = [
-				'length'      => $item->getLength()->format('H:i:s'),
+				'length'      => $item->getISODuration(),
 				'length_t'    => $item->getLengthInSeconds(),
 				'scheduled'   => $scheduled->format(self::DATE_FORMAT_TZ),
 				'scheduled_t' => (int) $scheduled->format('U'),
