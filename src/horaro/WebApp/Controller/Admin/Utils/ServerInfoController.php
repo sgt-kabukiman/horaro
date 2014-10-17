@@ -14,6 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ServerInfoController extends BaseController {
 	public function formAction() {
+		if (function_exists('phpinfo')) {
+			$this->app['csp']->addFrameSource('self');
+		}
+
 		return $this->render('admin/utils/serverinfo.twig', [
 			'phpversion' => PHP_VERSION,
 			'root'       => HORARO_ROOT,
