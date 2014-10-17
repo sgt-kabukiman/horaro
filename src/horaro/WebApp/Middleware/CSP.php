@@ -47,6 +47,7 @@ class CSP {
 			->addImageSource('self')
 			->addImageSource('data:')
 			->addImageSource($proto.'://www.gravatar.com/')
+			->addImageSource($proto.'://cdnjs.cloudflare.com/')
 		;
 	}
 
