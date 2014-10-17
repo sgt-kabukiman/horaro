@@ -43,7 +43,28 @@
 				<div class="form-group">
 					<label class="col-lg-4 control-label">Slug:</label>
 					<div class="col-lg-8">
-						<p class="form-control-static"><a href="/{{ event.slug }}" target="_blank"><code>{{ schedule.slug }}</code></a></p>
+						<p class="form-control-static"><a href="/{{ event.slug }}/{{ schedule.slug }}" target="_blank"><code>{{ schedule.slug }}</code></a></p>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-lg-4 control-label">Website:</label>
+					<div class="col-lg-8">
+						<p class="form-control-static">{{ schedule.website|default('N/A') }}</p>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-lg-4 control-label">Twitch Stream:</label>
+					<div class="col-lg-8">
+						<p class="form-control-static">{{ schedule.twitch|default('N/A') }}</p>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-lg-4 control-label">Twitter Account:</label>
+					<div class="col-lg-8">
+						<p class="form-control-static">{{ schedule.twitter|default('N/A') }}</p>
 					</div>
 				</div>
 

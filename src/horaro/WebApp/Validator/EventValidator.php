@@ -29,8 +29,8 @@ class EventValidator extends BaseValidator {
 		$this->setFilteredValue('name',    $this->validateName($event['name'], $ref));
 		$this->setFilteredValue('slug',    $this->validateSlug($event['slug'], $ref));
 		$this->setFilteredValue('website', $this->validateWebsite($event['website'], $ref));
-		$this->setFilteredValue('twitch',  $this->validateTwitchAccount($event['twitch'], $ref));
 		$this->setFilteredValue('twitter', $this->validateTwitterAccount($event['twitter'], $ref));
+		$this->setFilteredValue('twitch',  $this->validateTwitchAccount($event['twitch'], $ref));
 		$this->setFilteredValue('theme',   $this->validateTheme($event['theme'], $ref));
 
 		return $this->result;
@@ -86,16 +86,6 @@ class EventValidator extends BaseValidator {
 		return $website === '' ? null : $website;
 	}
 
-	public function validateTwitchAccount($account, Event $ref = null) {
-		$account = trim($account);
-
-		if (mb_strlen($account) > 0 && !preg_match('/^[a-zA-Z0-9_-]+$/', $account)) {
-			$this->addError('twitch', 'The Twitch account name contains invalid characters.');
-		}
-
-		return $account === '' ? null : $account;
-	}
-
 	public function validateTwitterAccount($account, Event $ref = null) {
 		$account = trim($account);
 
@@ -106,6 +96,16 @@ class EventValidator extends BaseValidator {
 			else {
 				$account = $match[1];
 			}
+		}
+
+		return $account === '' ? null : $account;
+	}
+
+	public function validateTwitchAccount($account, Event $ref = null) {
+		$account = trim($account);
+
+		if (mb_strlen($account) > 0 && !preg_match('/^[a-zA-Z0-9_-]+$/', $account)) {
+			$this->addError('twitch', 'The Twitch account name contains invalid characters.');
 		}
 
 		return $account === '' ? null : $account;

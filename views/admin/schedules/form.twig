@@ -55,6 +55,36 @@
 						</div>
 					</div>
 
+					<div class="form-group{{ utils.formClass(result, 'website') }}">
+						<label class="col-lg-4 control-label" for="website">Website:</label>
+						<div class="col-lg-8">
+							<input type="text" class="form-control" id="website" name="website" value="{{ utils.formValue(result, 'website', schedule.website) }}">
+							{{ macros.form_errors(result, 'website') }}
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'twitch') }}">
+						<label class="col-lg-4 control-label" for="twitch">Twitch Stream:</label>
+						<div class="col-lg-8">
+							<div class="input-group">
+								<div class="input-group-addon">http://twitch.tv/</div>
+								<input type="text" class="form-control" id="twitch" name="twitch" value="{{ utils.formValue(result, 'twitch', schedule.twitch) }}">
+							</div>
+							{{ macros.form_errors(result, 'twitch') }}
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'twitter') }}">
+						<label class="col-lg-4 control-label" for="twitter">Twitter Account:</label>
+						<div class="col-lg-8">
+							<div class="input-group">
+								<div class="input-group-addon">@</div>
+								<input type="text" class="form-control" id="twitter" name="twitter" value="{{ utils.formValue(result, 'twitter', schedule.twitter) }}">
+							</div>
+							{{ macros.form_errors(result, 'twitter') }}
+						</div>
+					</div>
+
 					<div class="form-group{{ utils.formClass(result, 'timezone') }}">
 						<label class="col-lg-4 control-label" for="timezone">Timezone:</label>
 						<div class="col-lg-8">

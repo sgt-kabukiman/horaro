@@ -46,7 +46,7 @@ class IndexController extends BaseController {
 
 		$validator = $this->app['validator.createaccount'];
 		$result    = $validator->validate([
-			'login'        => $request->request->get('username'),
+			'login'        => $request->request->get('login'),
 			'password'     => $request->request->get('password'),
 			'password2'    => $request->request->get('password2'),
 			'display_name' => $request->request->get('display_name')
@@ -92,7 +92,7 @@ class IndexController extends BaseController {
 	public function loginAction(Request $request) {
 		$validator = $this->app['validator.login'];
 		$result    = $validator->validate([
-			'login'    => $request->request->get('username'),
+			'login'    => $request->request->get('login'),
 			'password' => $request->request->get('password')
 		]);
 

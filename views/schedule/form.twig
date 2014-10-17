@@ -60,6 +60,39 @@
 						</div>
 					</div>
 
+					<div class="form-group{{ utils.formClass(result, 'website') }}">
+						<label class="col-lg-3 control-label" for="website">Website:</label>
+						<div class="col-lg-9">
+							<input type="text" class="form-control" id="website" name="website" placeholder="http://www.pongathon.org/" value="{{ utils.formValue(result, 'website', schedule ? schedule.website : '') }}">
+							{{ macros.form_errors(result, 'website') }}
+							<span class="help-block">If you leave this empty, the event's website {% if event.website %}({{ event.websitehost }}) {% endif %}will be used.</span>
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'twitch') }}">
+						<label class="col-lg-3 control-label" for="twitch">Twitch Stream:</label>
+						<div class="col-lg-9">
+							<div class="input-group">
+								<div class="input-group-addon">http://twitch.tv/</div>
+								<input type="text" class="form-control" id="twitch" name="twitch" placeholder="pongathon" value="{{ utils.formValue(result, 'twitch', schedule ? schedule.twitch : '') }}">
+							</div>
+							{{ macros.form_errors(result, 'twitch') }}
+							<span class="help-block">If you leave this empty, the event's stream {% if event.twitch %}({{ event.twitch }}) {% endif %}will be used.</span>
+						</div>
+					</div>
+
+					<div class="form-group{{ utils.formClass(result, 'twitter') }}">
+						<label class="col-lg-3 control-label" for="twitter">Twitter Account:</label>
+						<div class="col-lg-9">
+							<div class="input-group">
+								<div class="input-group-addon">@</div>
+								<input type="text" class="form-control" id="twitter" name="twitter" placeholder="pongathon" value="{{ utils.formValue(result, 'twitter', schedule ? schedule.twitter : '') }}">
+							</div>
+							{{ macros.form_errors(result, 'twitter') }}
+							<span class="help-block">If you leave this empty, the event's account {% if event.twitter %}(@{{ event.twitter }}) {% endif %}will be used.</span>
+						</div>
+					</div>
+
 					<div class="form-group{{ utils.formClass(result, 'timezone') }}">
 						<label class="col-lg-3 control-label" for="timezone">Timezone:</label>
 						<div class="col-lg-9">

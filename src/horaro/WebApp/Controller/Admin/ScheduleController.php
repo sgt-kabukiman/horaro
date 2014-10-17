@@ -61,10 +61,12 @@ class ScheduleController extends BaseController {
 		$result    = $validator->validate([
 			'name'       => $request->request->get('name'),
 			'slug'       => $request->request->get('slug'),
-			'twitch'     => '',
 			'timezone'   => $request->request->get('timezone'),
 			'start_date' => $request->request->get('start_date'),
 			'start_time' => $request->request->get('start_time'),
+			'website'    => $request->request->get('website'),
+			'twitter'    => $request->request->get('twitter'),
+			'twitch'     => $request->request->get('twitch'),
 			'theme'      => $request->request->get('theme'),
 			'max_items'  => $request->request->get('max_items')
 		], $schedule->getEvent(), $schedule);
@@ -79,10 +81,13 @@ class ScheduleController extends BaseController {
 			->setName($result['name']['filtered'])
 			->setSlug($result['slug']['filtered'])
 			->setTimezone($result['timezone']['filtered'])
-			->setUpdatedAt(new \DateTime('now UTC'))
 			->setStart($result['start']['filtered'])
+			->setWebsite($result['website']['filtered'])
+			->setTwitter($result['twitter']['filtered'])
+			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
 			->setMaxItems($result['max_items']['filtered'])
+			->setUpdatedAt(new \DateTime('now UTC'))
 		;
 
 		$this->getEntityManager()->flush();

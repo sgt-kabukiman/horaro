@@ -44,8 +44,8 @@ class EventController extends BaseController {
 			'name'    => $request->request->get('name'),
 			'slug'    => $request->request->get('slug'),
 			'website' => $request->request->get('website'),
-			'twitch'  => $request->request->get('twitch'),
 			'twitter' => $request->request->get('twitter'),
+			'twitch'  => $request->request->get('twitch'),
 			'theme'   => $request->request->get('theme')
 		]);
 
@@ -63,8 +63,8 @@ class EventController extends BaseController {
 			->setName($result['name']['filtered'])
 			->setSlug($result['slug']['filtered'])
 			->setWebsite($result['website']['filtered'])
-			->setTwitch($result['twitch']['filtered'])
 			->setTwitter($result['twitter']['filtered'])
+			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
 			->setMaxSchedules($this->app['config']['max_schedules'])
 		;
@@ -93,8 +93,8 @@ class EventController extends BaseController {
 			'name'    => $request->request->get('name'),
 			'slug'    => $request->request->get('slug'),
 			'website' => $request->request->get('website'),
-			'twitch'  => $request->request->get('twitch'),
 			'twitter' => $request->request->get('twitter'),
+			'twitch'  => $request->request->get('twitch'),
 			'theme'   => $request->request->get('theme')
 		], $event);
 
@@ -108,8 +108,8 @@ class EventController extends BaseController {
 			->setName($result['name']['filtered'])
 			->setSlug($result['slug']['filtered'])
 			->setWebsite($result['website']['filtered'])
-			->setTwitch($result['twitch']['filtered'])
 			->setTwitter($result['twitter']['filtered'])
+			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
 		;
 

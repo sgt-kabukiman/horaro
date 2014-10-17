@@ -28,8 +28,10 @@ class ScheduleValidator extends BaseValidator {
 		$this->setFilteredValue('name',     $this->validateName($schedule['name'], $event, $ref));
 		$this->setFilteredValue('slug',     $this->validateSlug($schedule['slug'], $event, $ref));
 		$this->setFilteredValue('timezone', $this->validateTimezone($schedule['timezone'], $event, $ref));
-		$this->setFilteredValue('twitch',   $this->validateTwitchAccount($schedule['twitch'], $event, $ref));
 		$this->setFilteredValue('start',    $this->validateStart($schedule['start_date'], $schedule['start_time'], $event, $ref));
+		$this->setFilteredValue('website',  $this->validateWebsite($schedule['website'], $event, $ref));
+		$this->setFilteredValue('twitter',  $this->validateTwitterAccount($schedule['twitter'], $event, $ref));
+		$this->setFilteredValue('twitch',   $this->validateTwitchAccount($schedule['twitch'], $event, $ref));
 		$this->setFilteredValue('theme',    $this->validateTheme($schedule['theme'], $event, $ref));
 
 		return $this->result;
@@ -81,16 +83,6 @@ class ScheduleValidator extends BaseValidator {
 		return $timezone;
 	}
 
-	public function validateTwitchAccount($account, Event $event, Schedule $ref = null) {
-		$account = trim($account);
-
-		if (mb_strlen($account) > 0 && !preg_match('/^[a-zA-Z0-9_-]+$/', $account)) {
-			$this->addError('twitch', 'The Twitch stream contains invalid characters.');
-		}
-
-		return $account === '' ? null : $account;
-	}
-
 	public function validateStart($date, $time, Event $event, Schedule $ref = null) {
 		$this->setFilteredValue('start_date', $date);
 		$this->setFilteredValue('start_time', $time);
@@ -133,6 +125,45 @@ class ScheduleValidator extends BaseValidator {
 		}
 
 		return $okay ? \DateTime::createFromFormat('Y-m-d G:i', "$date $time") : null;
+	}
+
+	public function validateWebsite($website, Event $event, Schedule $ref = null) {
+		$website = trim($website);
+
+		if (mb_strlen($website) > 0) {
+			$parts = parse_url($website);
+
+			if (!isset($parts['scheme']) || !in_array($parts['scheme'], ['http', 'https'], true)) {
+				$this->addError('website', 'The website must use either HTTP or HTTPS.');
+			}
+		}
+
+		return $website === '' ? null : $website;
+	}
+
+	public function validateTwitterAccount($account, Event $event, Schedule $ref = null) {
+		$account = trim($account);
+
+		if (mb_strlen($account) > 0) {
+			if (!preg_match('/^@?([a-zA-Z0-9-_]+)$/', $account, $match)) {
+				$this->addError('twitter', 'The Twitter account name contains invalid characters.');
+			}
+			else {
+				$account = $match[1];
+			}
+		}
+
+		return $account === '' ? null : $account;
+	}
+
+	public function validateTwitchAccount($account, Event $event, Schedule $ref = null) {
+		$account = trim($account);
+
+		if (mb_strlen($account) > 0 && !preg_match('/^[a-zA-Z0-9_-]+$/', $account)) {
+			$this->addError('twitch', 'The Twitch account name contains invalid characters.');
+		}
+
+		return $account === '' ? null : $account;
 	}
 
 	public function validateTheme($theme, Event $event, Schedule $ref = null) {

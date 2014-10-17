@@ -70,6 +70,9 @@ class JsonTransformer extends BaseTransformer {
 				'timezone' => $schedule->getTimezone(),
 				'start'    => $start->format(self::DATE_FORMAT_TZ),
 				'start_t'  => (int) $start->format('U'),
+				'website'  => $schedule->getWebsite() ?: $schedule->getWebsite(),
+				'twitter'  => $schedule->getTwitter() ?: $schedule->getTwitter(),
+				'twitch'   => $schedule->getTwitch() ?: $schedule->getTwitch(),
 				'theme'    => $schedule->getTheme(),
 				'updated'  => $schedule->getUpdatedAt()->format(self::DATE_FORMAT_UTC), // updated is stored as UTC, so it's okay to disregard the sys timezone here and force UTC
 				'url'      => sprintf('/%s/%s', $event->getSlug(), $schedule->getSlug()),

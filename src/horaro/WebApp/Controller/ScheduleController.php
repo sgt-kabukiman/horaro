@@ -72,9 +72,11 @@ class ScheduleController extends BaseController {
 			'name'       => $request->request->get('name'),
 			'slug'       => $request->request->get('slug'),
 			'timezone'   => $request->request->get('timezone'),
-			'twitch'     => $request->request->get('twitch'),
 			'start_date' => $request->request->get('start_date'),
 			'start_time' => $request->request->get('start_time'),
+			'website'    => $request->request->get('website'),
+			'twitter'    => $request->request->get('twitter'),
+			'twitch'     => $request->request->get('twitch'),
 			'theme'      => $request->request->get('theme')
 		], $event);
 
@@ -93,10 +95,13 @@ class ScheduleController extends BaseController {
 			->setName($result['name']['filtered'])
 			->setSlug($result['slug']['filtered'])
 			->setTimezone($result['timezone']['filtered'])
-			->setUpdatedAt(new \DateTime('now UTC'))
 			->setStart($result['start']['filtered'])
+			->setWebsite($result['website']['filtered'])
+			->setTwitter($result['twitter']['filtered'])
+			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
 			->setMaxItems($config['max_schedule_items'])
+			->setUpdatedAt(new \DateTime('now UTC'))
 		;
 
 		$column = new ScheduleColumn();
@@ -132,9 +137,11 @@ class ScheduleController extends BaseController {
 			'name'       => $request->request->get('name'),
 			'slug'       => $request->request->get('slug'),
 			'timezone'   => $request->request->get('timezone'),
-			'twitch'     => $request->request->get('twitch'),
 			'start_date' => $request->request->get('start_date'),
 			'start_time' => $request->request->get('start_time'),
+			'website'    => $request->request->get('website'),
+			'twitter'    => $request->request->get('twitter'),
+			'twitch'     => $request->request->get('twitch'),
 			'theme'      => $request->request->get('theme')
 		], $event, $schedule);
 
@@ -148,9 +155,12 @@ class ScheduleController extends BaseController {
 			->setName($result['name']['filtered'])
 			->setSlug($result['slug']['filtered'])
 			->setTimezone($result['timezone']['filtered'])
-			->setUpdatedAt(new \DateTime('now UTC'))
 			->setStart($result['start']['filtered'])
+			->setWebsite($result['website']['filtered'])
+			->setTwitter($result['twitter']['filtered'])
+			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
+			->setUpdatedAt(new \DateTime('now UTC'))
 		;
 
 		$this->getEntityManager()->flush();

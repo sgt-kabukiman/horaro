@@ -47,14 +47,14 @@ class Event {
 	private $twitch;
 
 	/**
-	 * @var integer
-	 */
-	private $max_schedules;
-
-	/**
 	 * @var string
 	 */
 	private $theme;
+
+	/**
+	 * @var integer
+	 */
+	private $max_schedules;
 
 	/**
 	 * @var \Doctrine\Common\Collections\Collection

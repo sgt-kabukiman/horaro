@@ -40,12 +40,27 @@ class Schedule {
 	/**
 	 * @var \DateTime
 	 */
-	private $updated_at;
+	private $start;
 
 	/**
-	 * @var \DateTime
+	 * @var string
 	 */
-	private $start;
+	private $website;
+
+	/**
+	 * @var string
+	 */
+	private $twitter;
+
+	/**
+	 * @var string
+	 */
+	private $twitch;
+
+	/**
+	 * @var string
+	 */
+	private $theme;
 
 	/**
 	 * @var integer
@@ -53,9 +68,9 @@ class Schedule {
 	private $max_items;
 
 	/**
-	 * @var string
+	 * @var \DateTime
 	 */
-	private $theme;
+	private $updated_at;
 
 	/**
 	 * @var \Doctrine\Common\Collections\Collection
@@ -305,6 +320,81 @@ class Schedule {
 	 */
 	public function getTheme() {
 		return $this->theme;
+	}
+
+	/**
+	 * Set website
+	 *
+	 * @param string $website
+	 * @return Event
+	 */
+	public function setWebsite($website) {
+		$this->website = $website;
+
+		return $this;
+	}
+
+	/**
+	 * Get website
+	 *
+	 * @return string
+	 */
+	public function getWebsite() {
+		return $this->website;
+	}
+
+	/**
+	 * Get website
+	 *
+	 * @return string
+	 */
+	public function getWebsiteHost() {
+		$website = $this->getWebsite();
+		if (!$website) return null;
+
+		return parse_url($website, PHP_URL_HOST);
+	}
+
+	/**
+	 * Set twitter
+	 *
+	 * @param string $twitter
+	 * @return Event
+	 */
+	public function setTwitter($twitter) {
+		$this->twitter = $twitter;
+
+		return $this;
+	}
+
+	/**
+	 * Get twitter
+	 *
+	 * @return string
+	 */
+	public function getTwitter() {
+		return $this->twitter;
+	}
+
+	/**
+	 * Set twitch
+	 *
+	 * @param string $twitch
+	 * @return Event
+	 */
+	public function setTwitch($twitch) {
+		$this->twitch = $twitch;
+
+		return $this;
+	}
+
+	/**
+	 * Get twitch
+	 *
+	 * @return string
+	 */
+	public function getTwitch() {
+		return $this->twitch;
 	}
 
 	/**

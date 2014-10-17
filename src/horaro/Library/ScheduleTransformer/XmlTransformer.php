@@ -55,6 +55,9 @@ class XmlTransformer extends BaseTransformer {
 					$xml->writeElement('theme', $schedule->getTheme());
 				}
 
+				$xml->writeElement('website', $schedule->getWebsite() ?: $event->getWebsite());
+				$xml->writeElement('twitter', $schedule->getTwitter() ?: $event->getTwitter());
+				$xml->writeElement('twitch', $schedule->getTwitch() ?: $event->getTwitch());
 				$xml->writeElement('updated', $schedule->getUpdatedAt()->format(self::DATE_FORMAT_UTC)); // updated is stored as UTC, so it's okay to disregard the sys timezone here and force UTC
 				$xml->writeElement('url', sprintf('/%s/%s', $event->getSlug(), $schedule->getSlug()));
 

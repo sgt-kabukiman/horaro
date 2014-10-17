@@ -158,12 +158,12 @@ horaro\Library\Entity\Event:
       type: string
       length: 255
       nullable: true
-    max_schedules:
-      type: integer
-      options: { unsigned: true }
     theme:
       type: string
       length: 100
+    max_schedules:
+      type: integer
+      options: { unsigned: true }
 
   oneToMany:
     schedules:
@@ -210,17 +210,28 @@ horaro\Library\Entity\Schedule:
     timezone:
       type: string
       length: 100
-    updated_at:
-      type: datetime
     start:
       type: datetime
+    website:
+      type: string
+      length: 255
       nullable: true
-    max_items:
-      type: integer
-      options: { unsigned: true }
+    twitter:
+      type: string
+      length: 255
+      nullable: true
+    twitch:
+      type: string
+      length: 255
+      nullable: true
     theme:
       type: string
       length: 100
+    max_items:
+      type: integer
+      options: { unsigned: true }
+    updated_at:
+      type: datetime
 
   uniqueConstraints:
     unique_slug:
