@@ -19,6 +19,20 @@
 			<li><a href="/-/events/new">New…</a></li>
 		</ul>
 	</li>
+	<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-calendar"></i> My Schedules <span class="caret"></span></a>
+		<ul class="dropdown-menu">
+			{% for event in app.user.events %}
+				{% for schedule in event.schedules %}
+				<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}" class="h-jail">{{ schedule.name|shorten(20) }} <small>({{ event.name|shorten(35) }})</small></a></li>
+				{% endfor %}
+			{% endfor %}
+
+			{% if app.user.events|length > 0 %}
+			<li class="divider"></li>
+			{% endif %}
+		</ul>
+	</li>
 </ul>
 
 <ul class="nav navbar-nav navbar-right">
