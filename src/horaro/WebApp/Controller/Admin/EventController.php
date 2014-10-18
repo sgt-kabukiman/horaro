@@ -60,6 +60,7 @@ class EventController extends BaseController {
 			'twitter'       => $request->request->get('twitter'),
 			'twitch'        => $request->request->get('twitch'),
 			'theme'         => $request->request->get('theme'),
+			'secret'        => $request->request->get('secret'),
 			'max_schedules' => $request->request->get('max_schedules')
 		], $event);
 
@@ -76,6 +77,7 @@ class EventController extends BaseController {
 			->setTwitter($result['twitter']['filtered'])
 			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
+			->setSecret($result['secret']['filtered'])
 			->setMaxSchedules($result['max_schedules']['filtered'])
 		;
 

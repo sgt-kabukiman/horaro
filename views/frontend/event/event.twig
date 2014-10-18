@@ -1,6 +1,7 @@
 {% extends "frontend/layout.twig" %}
 
-{% set theme = event.theme %}
+{% set theme    = event.theme              %}
+{% set appendix = key ? '?key=' ~ key : '' %}
 
 {% block fulltitle %}{{ event.name }}{% endblock %}
 {% block body_attr %} class="theme-{{ theme }}"{% endblock %}
@@ -8,8 +9,10 @@
 {% block meta %}
 <meta name="description" content="A list of schedules created for {{ event.name }}">
 	<meta name="author" content="{{ event.owner.displayName }}">
-	<link rel="canonical" href="{{ app.request.scheme }}://{{ app.request.host }}/{{ event.slug }}">
-	<link rel="index" href="{{ app.request.scheme }}://{{ app.request.host }}/{{ event.slug }}">
+	<link rel="canonical" href="{{ app.request.scheme }}://{{ app.request.host }}/{{ event.slug ~ appendix }}">
+	<link rel="index" href="{{ app.request.scheme }}://{{ app.request.host }}/{{ event.slug ~ appendix }}">
+	{% if isPrivate %}<meta name="robots" content="noindex">
+{% endif %}
 {% endblock %}
 
 {% block styles %}
@@ -26,20 +29,20 @@
 		<span class="icon-bar"></span>
 		<span class="icon-bar"></span>
 	</button>
-	<a href="/{{ event.slug }}" class="navbar-brand">{{ event.name }}</a>
+	<a href="/{{ event.slug ~ appendix }}" class="navbar-brand">{{ event.name }}</a>
 </div>
 {% endblock %}
 
 {% block navigation %}
 <ul class="nav navbar-nav">
-	{% if event.schedules|length == 1 %}
-	<li><a href="/{{ event.slug }}/{{ event.schedules[0].slug }}" class="h-jail"><i class="fa fa-calendar"></i> {{ event.schedules[0].name }}</a></li>
-	{% else %}
+	{% if schedules|length == 1 %}
+	<li><a href="/{{ event.slug }}/{{ schedules[0].slug ~ appendix }}" class="h-jail"><i class="fa fa-calendar"></i> {{ schedules[0].name }}</a></li>
+	{% elseif schedules|length != 0 %}
 	<li class="dropdown">
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-calendar"></i> Schedules <span class="caret"></span></a>
 		<ul class="dropdown-menu">
-			{% for sched in event.schedules %}
-			<li><a href="/{{ event.slug }}/{{ sched.slug }}" class="h-jail">{{ sched.name }}</a></li>
+			{% for sched in schedules %}
+			<li><a href="/{{ event.slug }}/{{ sched.slug ~ appendix }}" class="h-jail">{{ sched.name }}</a></li>
 			{% endfor %}
 		</ul>
 	</li>
@@ -60,7 +63,7 @@
 	</div>
 </div>
 
-{% if event.schedules is empty %}
+{% if schedules is empty %}
 <div class="row">
 	<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1 col-xs-12">
 		<div class="alert alert-info">
@@ -70,13 +73,13 @@
 </div>
 {% else %}
 <ul class="row h-schedule-list">
-	{% for schedule in event.schedules %}
+	{% for schedule in schedules %}
 	<li class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 		{% set start = schedule.localStart %}
 		{% set end   = schedule.localEnd   %}
 		<div class="well well-sm">
 			<h3 class="h-jail">
-				<a href="/{{ event.slug }}/{{ schedule.slug }}"><i class="fa fa-calendar"></i> {{ schedule.name|shorten(30) }}</a>
+				<a href="/{{ event.slug }}/{{ schedule.slug ~ appendix }}"><i class="fa fa-calendar"></i> {{ schedule.name|shorten(30) }}</a>
 				<span class="badge">{{ schedule.items|length }}</span><br>
 				<small>
 					{% if start.format('Ymd') == end.format('Ymd') %}

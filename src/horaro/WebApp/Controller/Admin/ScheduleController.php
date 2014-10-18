@@ -68,6 +68,7 @@ class ScheduleController extends BaseController {
 			'twitter'    => $request->request->get('twitter'),
 			'twitch'     => $request->request->get('twitch'),
 			'theme'      => $request->request->get('theme'),
+			'secret'     => $request->request->get('secret'),
 			'max_items'  => $request->request->get('max_items')
 		], $schedule->getEvent(), $schedule);
 
@@ -86,6 +87,7 @@ class ScheduleController extends BaseController {
 			->setTwitter($result['twitter']['filtered'])
 			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
+			->setSecret($result['secret']['filtered'])
 			->setMaxItems($result['max_items']['filtered'])
 			->setUpdatedAt(new \DateTime('now UTC'))
 		;

@@ -52,6 +52,11 @@ class Event {
 	private $theme;
 
 	/**
+	 * @var string
+	 */
+	private $secret;
+
+	/**
 	 * @var integer
 	 */
 	private $max_schedules;
@@ -142,6 +147,21 @@ class Event {
 	 */
 	public function getSlug() {
 		return $this->slug;
+	}
+
+	/**
+	 * Get link
+	 *
+	 * @return string
+	 */
+	public function getLink() {
+		$url = '/'.$this->getSlug();
+
+		if ($this->getSecret()) {
+			$url .= '?key='.$this->getSecret();
+		}
+
+		return $url;
 	}
 
 	/**
@@ -259,6 +279,27 @@ class Event {
 	 */
 	public function getTheme() {
 		return $this->theme;
+	}
+
+	/**
+	 * Set secret
+	 *
+	 * @param string $secret
+	 * @return Schedule
+	 */
+	public function setSecret($secret) {
+		$this->secret = $secret;
+
+		return $this;
+	}
+
+	/**
+	 * Get secret
+	 *
+	 * @return string
+	 */
+	public function getSecret() {
+		return $this->secret;
 	}
 
 	/**

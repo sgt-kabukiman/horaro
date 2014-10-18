@@ -53,6 +53,7 @@ class XmlTransformer extends BaseTransformer {
 
 				if (!$public) {
 					$xml->writeElement('theme', $schedule->getTheme());
+					$xml->writeElement('secret', $schedule->getSecret());
 				}
 
 				$xml->writeElement('website', $schedule->getWebsite() ?: $event->getWebsite());
@@ -70,6 +71,7 @@ class XmlTransformer extends BaseTransformer {
 
 					if (!$public) {
 						$xml->writeElement('theme', $event->getTheme());
+						$xml->writeElement('secret', $event->getSecret());
 					}
 				$xml->endElement();
 

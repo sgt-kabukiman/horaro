@@ -92,6 +92,14 @@
 						</div>
 					</div>
 
+					<div class="form-group{{ utils.formClass(result, 'secret') }}">
+						<label class="col-lg-3 control-label" for="secret">Secret:</label>
+						<div class="col-lg-9">
+							<input type="text" class="form-control" id="secret" name="secret" maxlength="20" value="{{ utils.formValue(result, 'secret', event ? event.secret : '') }}">
+							{{ macros.form_errors(result, 'secret') }}
+						</div>
+					</div>
+
 					<div class="form-group">
 						<div class="col-lg-12 text-center">
 							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"> </i> {% if event %}Update{% else %}Create{% endif %} Event</button>
@@ -120,6 +128,13 @@
 
 		<p>The <strong>website</strong>, <strong>Twitter account</strong> and <strong>Twitch stream</strong>
 		are optional and purely informational. They will be shown on the public event information page.</p>
+
+		<p>The <strong>secret</strong> is used to make an event private. It should be something alphanumeric
+		and short (at most 20 characters). If you give a secret, the event will only be available if you give
+		the secret in the event URL (for example, like <code>/myevent?key=yoursecret</code>).<br>
+		You can also make single schedules private by giving them a secret. Note that the event secret, if
+		also configured, has preceedence. This means that by knowing the event secret, you are allowed to
+		see all schedules, regardless of their secrets.</p>
 	</div>
 </div>
 

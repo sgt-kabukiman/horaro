@@ -77,7 +77,8 @@ class ScheduleController extends BaseController {
 			'website'    => $request->request->get('website'),
 			'twitter'    => $request->request->get('twitter'),
 			'twitch'     => $request->request->get('twitch'),
-			'theme'      => $request->request->get('theme')
+			'theme'      => $request->request->get('theme'),
+			'secret'     => $request->request->get('secret')
 		], $event);
 
 		if ($result['_errors']) {
@@ -100,6 +101,7 @@ class ScheduleController extends BaseController {
 			->setTwitter($result['twitter']['filtered'])
 			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
+			->setSecret($result['secret']['filtered'])
 			->setMaxItems($config['max_schedule_items'])
 			->setUpdatedAt(new \DateTime('now UTC'))
 		;
@@ -142,7 +144,8 @@ class ScheduleController extends BaseController {
 			'website'    => $request->request->get('website'),
 			'twitter'    => $request->request->get('twitter'),
 			'twitch'     => $request->request->get('twitch'),
-			'theme'      => $request->request->get('theme')
+			'theme'      => $request->request->get('theme'),
+			'secret'     => $request->request->get('secret')
 		], $event, $schedule);
 
 		if ($result['_errors']) {
@@ -160,6 +163,7 @@ class ScheduleController extends BaseController {
 			->setTwitter($result['twitter']['filtered'])
 			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
+			->setSecret($result['secret']['filtered'])
 			->setUpdatedAt(new \DateTime('now UTC'))
 		;
 

@@ -74,13 +74,15 @@ class JsonTransformer extends BaseTransformer {
 				'twitter'  => $schedule->getTwitter() ?: $schedule->getTwitter(),
 				'twitch'   => $schedule->getTwitch() ?: $schedule->getTwitch(),
 				'theme'    => $schedule->getTheme(),
+				'secret'   => $schedule->getSecret(),
 				'updated'  => $schedule->getUpdatedAt()->format(self::DATE_FORMAT_UTC), // updated is stored as UTC, so it's okay to disregard the sys timezone here and force UTC
 				'url'      => sprintf('/%s/%s', $event->getSlug(), $schedule->getSlug()),
 				'event'    => [
-					'id'    => $this->encodeID($event->getId(), 'event'),
-					'name'  => $event->getName(),
-					'slug'  => $event->getSlug(),
-					'theme' => $event->getTheme()
+					'id'     => $this->encodeID($event->getId(), 'event'),
+					'name'   => $event->getName(),
+					'slug'   => $event->getSlug(),
+					'theme'  => $event->getTheme(),
+					'secret' => $event->getSecret()
 				],
 				'columns'  => $columns,
 				'items'    => $items
@@ -90,8 +92,10 @@ class JsonTransformer extends BaseTransformer {
 		if ($public) {
 			unset($data['schedule']['id']);
 			unset($data['schedule']['theme']);
+			unset($data['schedule']['secret']);
 			unset($data['schedule']['event']['id']);
 			unset($data['schedule']['event']['theme']);
+			unset($data['schedule']['event']['secret']);
 		}
 
 		if (!$this->hint || !$public) {

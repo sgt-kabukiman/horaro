@@ -46,7 +46,8 @@ class EventController extends BaseController {
 			'website' => $request->request->get('website'),
 			'twitter' => $request->request->get('twitter'),
 			'twitch'  => $request->request->get('twitch'),
-			'theme'   => $request->request->get('theme')
+			'theme'   => $request->request->get('theme'),
+			'secret'  => $request->request->get('secret')
 		]);
 
 		if ($result['_errors']) {
@@ -66,6 +67,7 @@ class EventController extends BaseController {
 			->setTwitter($result['twitter']['filtered'])
 			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
+			->setSecret($result['secret']['filtered'])
 			->setMaxSchedules($this->app['config']['max_schedules'])
 		;
 
@@ -95,7 +97,8 @@ class EventController extends BaseController {
 			'website' => $request->request->get('website'),
 			'twitter' => $request->request->get('twitter'),
 			'twitch'  => $request->request->get('twitch'),
-			'theme'   => $request->request->get('theme')
+			'theme'   => $request->request->get('theme'),
+			'secret'   => $request->request->get('secret')
 		], $event);
 
 		if ($result['_errors']) {
@@ -111,6 +114,7 @@ class EventController extends BaseController {
 			->setTwitter($result['twitter']['filtered'])
 			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
+			->setSecret($result['secret']['filtered'])
 		;
 
 		$this->getEntityManager()->flush();

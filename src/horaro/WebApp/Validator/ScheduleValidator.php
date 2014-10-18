@@ -33,6 +33,7 @@ class ScheduleValidator extends BaseValidator {
 		$this->setFilteredValue('twitter',  $this->validateTwitterAccount($schedule['twitter'], $event, $ref));
 		$this->setFilteredValue('twitch',   $this->validateTwitchAccount($schedule['twitch'], $event, $ref));
 		$this->setFilteredValue('theme',    $this->validateTheme($schedule['theme'], $event, $ref));
+		$this->setFilteredValue('secret',   $this->validateSecret($schedule['secret']));
 
 		return $this->result;
 	}
@@ -176,5 +177,19 @@ class ScheduleValidator extends BaseValidator {
 		}
 
 		return $theme;
+	}
+
+	public function validateSecret($secret) {
+		$secret = trim($secret);
+
+		if (mb_strlen($secret) > 20) {
+			$this->addError('secret', 'The secret can only be up to 20 characters in length.');
+		}
+
+		if (mb_strlen($secret) > 0 && !preg_match('/^[a-zA-Z0-9_-]+$/', $secret)) {
+			$this->addError('secret', 'The secret can only use the characters a-z, 0-9, dash and underscore.');
+		}
+
+		return $secret === '' ? null : $secret;
 	}
 }

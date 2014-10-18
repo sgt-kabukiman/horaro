@@ -44,3 +44,27 @@
 <span class="text-{{ utils.roleClass(user.role) }}">{{ utils.roleIcon(user.role)|raw }} {{ user.name|shorten(30) }}</span>
 {% endif %}
 {% endmacro %}
+
+{% macro backend_event_link(event) %}
+{% spaceless %}
+	{% if utils.userHasAdministrativeAccess(event) %}
+	<a href="/-/admin/events/{{ event.id }}/edit" class="text-{{ event.secret ? 'warning' : 'success' }}">
+	{% else %}
+	<span class="text-{{ event.secret ? 'warning' : 'success' }}">
+	{% endif %}
+	<i class="fa fa-{{ event.secret ? 'lock' : 'unlock' }}"></i> {{ event.name|shorten(40) }}
+	{% if utils.userHasAdministrativeAccess(event) %}</a>{% endif %}
+{% endspaceless %}
+{% endmacro %}
+
+{% macro backend_schedule_link(schedule) %}
+{% spaceless %}
+	{% if utils.userHasAdministrativeAccess(schedule) %}
+	<a href="/-/admin/schedules/{{ schedule.id }}/edit" class="text-{{ schedule.secret ? 'warning' : 'success' }}">
+	{% else %}
+	<span class="text-{{ schedule.secret ? 'warning' : 'success' }}">
+	{% endif %}
+	<i class="fa fa-{{ schedule.secret ? 'lock' : 'unlock' }}"></i> {{ schedule.name|shorten(30) }}
+	{% if utils.userHasAdministrativeAccess(schedule) %}</a>{% endif %}
+{% endspaceless %}
+{% endmacro %}

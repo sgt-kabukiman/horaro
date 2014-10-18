@@ -63,6 +63,11 @@ class Schedule {
 	private $theme;
 
 	/**
+	 * @var string
+	 */
+	private $secret;
+
+	/**
 	 * @var integer
 	 */
 	private $max_items;
@@ -395,6 +400,47 @@ class Schedule {
 	 */
 	public function getTwitch() {
 		return $this->twitch;
+	}
+
+	/**
+	 * Set secret
+	 *
+	 * @param string $secret
+	 * @return Schedule
+	 */
+	public function setSecret($secret) {
+		$this->secret = $secret;
+
+		return $this;
+	}
+
+	/**
+	 * Get secret
+	 *
+	 * @return string
+	 */
+	public function getSecret() {
+		return $this->secret;
+	}
+
+	/**
+	 * Get link
+	 *
+	 * @return string
+	 */
+	public function getLink() {
+		$event = $this->getEvent();
+		$url   = '/'.$event->getSlug().'/'.$this->getSlug();
+
+		// for convenience reasons, create links that have access to the whole event if possible
+		if ($event->getSecret()) {
+			$url .= '?key='.$event->getSecret();
+		}
+		elseif ($this->getSecret()) {
+			$url .= '?key='.$this->getSecret();
+		}
+
+		return $url;
 	}
 
 	/**

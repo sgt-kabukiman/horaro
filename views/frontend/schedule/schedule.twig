@@ -1,11 +1,12 @@
 {% extends "frontend/layout.twig" %}
 
-{% set theme     = schedule.theme      %}
-{% set start     = schedule.localStart %}
-{% set scheduled = schedule.localStart %}
-{% set columns   = schedule.columns    %}
-{% set numCols   = columns|length      %}
-{% set fluid     = numCols > 4         %}
+{% set theme     = schedule.theme           %}
+{% set start     = schedule.localStart      %}
+{% set scheduled = schedule.localStart      %}
+{% set columns   = schedule.columns         %}
+{% set numCols   = columns|length           %}
+{% set fluid     = numCols > 4              %}
+{% set appendix  = key ? '?key=' ~ key : '' %}
 
 {% block fulltitle %}{{ schedule.name }} &ndash; {{ event.name }}{% endblock %}
 {% block body_attr %} class="theme-{{ theme }}"{% endblock %}
@@ -13,8 +14,10 @@
 {% block meta %}
 <meta name="description" content="{{ schedule.name }} of {{ event.name }}">
 	<meta name="author" content="{{ event.owner.displayName }}">
-	<link rel="canonical" href="{{ app.request.scheme }}://{{ app.request.host }}/{{ event.slug }}/{{ schedule.slug }}">
-	<link rel="index" href="{{ app.request.scheme }}://{{ app.request.host }}/{{ event.slug }}">
+	<link rel="canonical" href="{{ app.request.scheme }}://{{ app.request.host }}/{{ event.slug }}/{{ schedule.slug ~ appendix }}">
+	<link rel="index" href="{{ app.request.scheme }}://{{ app.request.host }}/{{ event.slug ~ appendix }}">
+	{% if isPrivate %}<meta name="robots" content="noindex">
+{% endif %}
 {% endblock %}
 
 {% block styles %}
@@ -31,20 +34,20 @@
 		<span class="icon-bar"></span>
 		<span class="icon-bar"></span>
 	</button>
-	<a href="/{{ event.slug }}" class="navbar-brand">{{ event.name }}</a>
+	<a href="/{{ event.slug ~ appendix }}" class="navbar-brand">{{ event.name }}</a>
 </div>
 {% endblock %}
 
 {% block navigation %}
 <ul class="nav navbar-nav">
-	{% if event.schedules|length == 1 %}
-	<li><a href="/{{ event.slug }}/{{ event.schedules[0].slug }}" class="h-jail"><i class="fa fa-calendar"></i> {{ event.schedules[0].name }}</a></li>
-	{% else %}
+	{% if schedules|length == 1 %}
+	<li><a href="/{{ event.slug }}/{{ schedules[0].slug ~ appendix }}" class="h-jail"><i class="fa fa-calendar"></i> {{ schedules[0].name }}</a></li>
+	{% elseif schedules|length != 0 %}
 	<li class="dropdown">
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-calendar"></i> Schedules <span class="caret"></span></a>
 		<ul class="dropdown-menu">
-			{% for sched in event.schedules %}
-			<li><a href="/{{ event.slug }}/{{ sched.slug }}" class="h-jail">{{ sched.name }}</a></li>
+			{% for sched in schedules %}
+			<li><a href="/{{ event.slug }}/{{ sched.slug ~ appendix }}" class="h-jail">{{ sched.name }}</a></li>
 			{% endfor %}
 		</ul>
 	</li>
@@ -52,11 +55,11 @@
 	<li class="dropdown">
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wrench"></i> Tools <span class="caret"></span></a>
 		<ul class="dropdown-menu">
-			<li><a href="/{{ event.slug }}/{{ schedule.slug }}/ical-feed"><i class="fa fa-calendar"></i> iCal Feed</a></li>
+			<li><a href="/{{ event.slug }}/{{ schedule.slug }}/ical-feed{{ appendix }}"><i class="fa fa-calendar"></i> iCal Feed</a></li>
 			<li class="divider"></li>
-			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.json?named=true"><i class="fa fa-download"></i> Export as JSON</a></li>
-			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.xml?named=true"><i class="fa fa-download"></i> Export as XML</a></li>
-			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.csv?named=true"><i class="fa fa-download"></i> Export as CSV</a></li>
+			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.json?named=true{{ key ? '&key=' ~ key : '' }}"><i class="fa fa-download"></i> Export as JSON</a></li>
+			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.xml?named=true{{ key ? '&key=' ~ key : '' }}"><i class="fa fa-download"></i> Export as XML</a></li>
+			<li><a href="/{{ event.slug }}/{{ schedule.slug }}.csv?named=true{{ key ? '&key=' ~ key : '' }}"><i class="fa fa-download"></i> Export as CSV</a></li>
 		</ul>
 	</li>
 </ul>
