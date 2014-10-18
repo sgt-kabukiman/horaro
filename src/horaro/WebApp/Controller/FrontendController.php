@@ -26,17 +26,18 @@ class FrontendController extends BaseController {
 		$result = $this->handleScheduleAccess($event, $schedule, $key);
 		if ($result instanceof Response) return $result;
 
-		$content = $this->render('frontend/schedule/schedule.twig', [
+		$isPrivate = $this->isPrivatePage($event);
+		$content   = $this->render('frontend/schedule/schedule.twig', [
 			'event'     => $event,
 			'schedule'  => $schedule,
 			'key'       => $key,
 			'schedules' => $this->getAllowedSchedules($event, $key),
-			'isPrivate' => $this->isPrivatePage($event)
+			'isPrivate' => $isPrivate
 		]);
 
 		$response = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
 
-		return $this->setCachingHeader($schedule, $response);
+		return $this->setCachingHeader($schedule, $response, $isPrivate);
 	}
 
 	public function scheduleExportAction(Request $request) {
@@ -77,9 +78,10 @@ class FrontendController extends BaseController {
 			$headers['Content-Disposition'] = 'filename="'.$filename.'"';
 		}
 
-		$response = new Response($data, 200, $headers);
+		$response  = new Response($data, 200, $headers);
+		$isPrivate = $this->isPrivatePage($event);
 
-		return $this->setCachingHeader($schedule, $response);
+		return $this->setCachingHeader($schedule, $response, $isPrivate);
 	}
 
 	public function icalFaqAction(Request $request) {
@@ -91,17 +93,18 @@ class FrontendController extends BaseController {
 		$result = $this->handleScheduleAccess($event, $schedule, $key);
 		if ($result instanceof Response) return $result;
 
-		$content = $this->render('frontend/schedule/ical.twig', [
+		$isPrivate = $this->isPrivatePage($event);
+		$content   = $this->render('frontend/schedule/ical.twig', [
 			'event'     => $event,
 			'schedule'  => $schedule,
 			'key'       => $key,
 			'schedules' => $this->getAllowedSchedules($event, $key),
-			'isPrivate' => $this->isPrivatePage($event)
+			'isPrivate' => $isPrivate
 		]);
 
 		$response = new Response($content, 200, ['Content-Type' => 'text/html; charset=UTF-8']);
 
-		return $this->setCachingHeader($schedule, $response);
+		return $this->setCachingHeader($schedule, $response, $isPrivate);
 	}
 
 	public function eventAction(Request $request) {
@@ -115,16 +118,17 @@ class FrontendController extends BaseController {
 			throw new Ex\ForbiddenException('This event is private.');
 		}
 
-		$content = $this->render('frontend/event/event.twig', [
+		$isPrivate = $this->isPrivatePage($event);
+		$content   = $this->render('frontend/event/event.twig', [
 			'event'     => $event,
 			'key'       => $key,
 			'schedules' => $this->getAllowedSchedules($event, $key),
-			'isPrivate' => $this->isPrivatePage($event)
+			'isPrivate' => $isPrivate
 		]);
 
-		$response = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
+		$response  = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
 
-		return $this->setCachingHeader(null, $response);
+		return $this->setCachingHeader(null, $response, $isPrivate);
 	}
 
 	protected function resolveEvent(Request $request) {
@@ -183,7 +187,7 @@ class FrontendController extends BaseController {
 
 	protected function hasGoodSchedulesKey(Event $event, $key) {
 		foreach ($event->getSchedules() as $schedule) {
-			if ($this->hasGoodScheduleKey($schedule, $key)) {
+			if (strlen($schedule->getSecret()) > 0 && $this->hasGoodScheduleKey($schedule, $key)) {
 				return true;
 			}
 		}
@@ -196,7 +200,7 @@ class FrontendController extends BaseController {
 	}
 
 	private function hasGoodKey($secret, $key) {
-		return !$secret || $key === $secret;
+		return strlen($secret) === 0 || $key === $secret;
 	}
 
 	protected function getAllowedSchedules(Event $event, $key) {
@@ -279,12 +283,18 @@ class FrontendController extends BaseController {
 		]);
 	}
 
-	protected function setCachingHeader(Schedule $schedule = null, Response $response) {
+	protected function setCachingHeader(Schedule $schedule = null, Response $response, $isPrivate) {
 		if ($schedule) {
 			$response->setLastModified($schedule->getUpdatedAt());
 		}
 
-		$response->setTtl(5*60);       // 5 minutes
+		if ($isPrivate) {
+			$response->setPrivate();
+		}
+		else {
+			$response->setTtl(5*60);       // 5 minutes
+		}
+
 		$response->setClientTtl(5*60);
 
 		return $response;
