@@ -116,7 +116,7 @@ jQuery(function($) {
 			var itemData = JSON.parse($('#h-item-data').text());
 
 			scheduleID      = dataNode.data('id');
-			scheduleColumns = dataNode.data('columns').split(',');
+			scheduleColumns = (''+dataNode.data('columns')).split(',');
 			scheduleStart   = new Date(dataNode.data('start'));
 			scheduleTZ      = dataNode.data('tz');
 			maxItems        = parseInt(dataNode.data('maxitems'), 10);
