@@ -55,7 +55,10 @@ in your shell:
 
 Now that the source is ready, you need to prepare your database by creating a
 new one and executing ``resources/schema.sql``, which will create the needed
-tables.
+tables. Afterwards, execute the ``resources/seed-data.sql``, which will
+initialize the configuration and create your very first account: **operator**
+with the password **operator** (you should obviously change that as soon as
+possible).
 
 As the last step, duplicate the ``resources/config/parameters.dist.yml`` as
 ``resources/config/parameters.yml`` and edit the duplicated file. Follow the
