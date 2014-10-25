@@ -13,10 +13,14 @@ namespace horaro\WebApp\Validator;
 class BaseValidator {
 	protected $result;
 
-	protected function addError($field, $message) {
+	protected function addError($field, $message, $throwUp = false) {
 		$this->result['_errors'] = true;
 		$this->result[$field]['errors'] = true;
 		$this->result[$field]['messages'][] = $message;
+
+		if ($throwUp) {
+			throw new \Exception($message);
+		}
 
 		return $this->result;
 	}

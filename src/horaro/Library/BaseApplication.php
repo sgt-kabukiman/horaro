@@ -119,16 +119,19 @@ class BaseApplication extends Application {
 			return new ScheduleTransformer\ICalTransformer($secret, $host, $this['obscurity-codec']);
 		});
 
+		// FIXME: The validators belong to the WebApp and should not be referenced in here.
+		//        We break this rule at the moment to avoid having to duplicate validation rules.
+
 		$this['schedule-importer-csv'] = $this->share(function() {
-			return new ScheduleImporter\CsvImporter($this['entitymanager']);
+			return new ScheduleImporter\CsvImporter($this['entitymanager'], $this['validator.schedule']);
 		});
 
 		$this['schedule-importer-json'] = $this->share(function() {
-			return new ScheduleImporter\JsonImporter($this['entitymanager']);
+			return new ScheduleImporter\JsonImporter($this['entitymanager'], $this['validator.schedule']);
 		});
 
 		$this['schedule-importer-xml'] = $this->share(function() {
-			return new ScheduleImporter\XmlImporter($this['entitymanager']);
+			return new ScheduleImporter\XmlImporter($this['entitymanager'], $this['validator.schedule']);
 		});
 
 		// set Silex' debug flag

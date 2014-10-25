@@ -147,8 +147,128 @@ class JsonImporter extends BaseImporter {
 			$this->persist($item);
 		}
 
+		if ($updateMetadata) {
+			$this->updateMetadata($schedule, $data->schedule);
+		}
+
 		$this->flush();
 
 		return $this->returnLog();
+	}
+
+	protected function updateMetadata(Schedule $schedule, \stdClass $data) {
+		if (isset($data->name)) {
+			$schedule->setName($data->name);
+			$this->log('ok', 'Updated schedule name with "'.$data->name.'"');
+		}
+
+		if (isset($data->slug)) {
+			try {
+				$slug = $this->validator->validateSlug($data->slug, $schedule->getEvent(), $schedule, true);
+
+				$schedule->setSlug($slug);
+				$this->log('ok', 'Updated schedule slug with "'.$slug.'"');
+			}
+			catch (\Exception $e) {
+				$this->log('warn', 'Bad slug: '.$e->getMessage());
+			}
+		}
+
+		if (isset($data->timezone)) {
+			try {
+				$timezone = $this->validator->validateTimezone($data->timezone, $schedule->getEvent(), $schedule, true);
+
+				$schedule->setTimezone($timezone);
+				$this->log('ok', 'Updated schedule timezone with "'.$timezone.'"');
+			}
+			catch (\Exception $e) {
+				$this->log('warn', 'Bad timezone: '.$e->getMessage());
+			}
+		}
+
+		if (isset($data->start) || isset($data->start_t)) {
+			try {
+				$tz = new \DateTimezone($schedule->getTimezone());
+
+				if (isset($data->start)) {
+					$start = new \DateTime($data->start, $tz);
+				}
+				else {
+					$start = new \DateTime('@'.$data->start);
+				}
+
+				// if needed, convert the time to the correct timezone, because start time is always
+				// stored in the schedule timezone
+				$start->setTimezone($tz);
+
+				$this->validator->validateStart($start->format('Y-m-d'), $start->format('H:i'), $schedule->getEvent(), $schedule, true);
+
+				$schedule->setStart($start);
+				$this->log('ok', 'Updated schedule start with "'.$start->format('r').'"');
+			}
+			catch (\Exception $e) {
+				$this->log('warn', 'Bad start date/time: '.$e->getMessage());
+			}
+		}
+
+		if (isset($data->website)) {
+			try {
+				$website = $this->validator->validateWebsite($data->website, $schedule->getEvent(), $schedule, true);
+
+				$schedule->setWebsite($website);
+				$this->log('ok', 'Updated schedule website with "'.$website.'"');
+			}
+			catch (\Exception $e) {
+				$this->log('warn', 'Bad website: '.$e->getMessage());
+			}
+		}
+
+		if (isset($data->twitch)) {
+			try {
+				$twitch = $this->validator->validateTwitchAccount($data->twitch, $schedule->getEvent(), $schedule, true);
+
+				$schedule->setTwitch($twitch);
+				$this->log('ok', 'Updated schedule twitch account with "'.$twitch.'"');
+			}
+			catch (\Exception $e) {
+				$this->log('warn', 'Bad twitch account: '.$e->getMessage());
+			}
+		}
+
+		if (isset($data->twitter)) {
+			try {
+				$twitter = $this->validator->validateTwitterAccount($data->twitter, $schedule->getEvent(), $schedule, true);
+
+				$schedule->setTwitter($twitter);
+				$this->log('ok', 'Updated schedule twitter account with "'.$twitter.'"');
+			}
+			catch (\Exception $e) {
+				$this->log('warn', 'Bad twitter account: '.$e->getMessage());
+			}
+		}
+
+		if (isset($data->theme)) {
+			try {
+				$theme = $this->validator->validateTheme($data->theme, $schedule->getEvent(), $schedule, true);
+
+				$schedule->setTheme($theme);
+				$this->log('ok', 'Updated schedule theme with "'.$theme.'"');
+			}
+			catch (\Exception $e) {
+				$this->log('warn', 'Bad theme: '.$e->getMessage());
+			}
+		}
+
+		if (isset($data->secret)) {
+			try {
+				$secret = $this->validator->validateSecret($data->secret, true);
+
+				$schedule->setSecret($secret);
+				$this->log('ok', 'Updated schedule secret with "'.$secret.'"');
+			}
+			catch (\Exception $e) {
+				$this->log('warn', 'Bad secret: '.$e->getMessage());
+			}
+		}
 	}
 }

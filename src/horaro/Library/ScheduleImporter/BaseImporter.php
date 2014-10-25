@@ -10,16 +10,19 @@
 
 namespace horaro\Library\ScheduleImporter;
 
-use horaro\Library\Entity\Schedule;
 use Doctrine\ORM\EntityManager;
+use horaro\Library\Entity\Schedule;
+use horaro\WebApp\Validator\ScheduleValidator;
 
 class BaseImporter {
 	protected $em;
 	protected $log;
+	protected $validator;
 
-	public function __construct(EntityManager $em) {
-		$this->em  = $em;
-		$this->log = [];
+	public function __construct(EntityManager $em, ScheduleValidator $validator) {
+		$this->em        = $em;
+		$this->validator = $validator;
+		$this->log       = [];
 	}
 
 	protected function persist($o) {
@@ -32,18 +35,6 @@ class BaseImporter {
 
 	protected function flush() {
 		$this->em->flush();
-	}
-
-	protected function wipeSchedule(Schedule $s) {
-		// remove all existing items
-		foreach ($s->getItems() as $item) {
-			$this->em->remove($item);
-		}
-
-		// remove all existing columns
-		foreach ($s->getColumns() as $col) {
-			$this->em->remove($col);
-		}
 	}
 
 	protected function log($type, $msg) {
