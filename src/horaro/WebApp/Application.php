@@ -116,6 +116,7 @@ class Application extends BaseApplication {
 		$this['controller.schedule']               = $this->share(function() { return new Controller\ScheduleController($this);               });
 		$this['controller.schedule.item']          = $this->share(function() { return new Controller\ScheduleItemController($this);           });
 		$this['controller.schedule.column']        = $this->share(function() { return new Controller\ScheduleColumnController($this);         });
+		$this['controller.schedule.import']        = $this->share(function() { return new Controller\ScheduleImportController($this);         });
 		$this['controller.profile']                = $this->share(function() { return new Controller\ProfileController($this);                });
 		$this['controller.admin.index']            = $this->share(function() { return new Controller\Admin\IndexController($this);            });
 		$this['controller.admin.user']             = $this->share(function() { return new Controller\Admin\UserController($this);             });
@@ -163,6 +164,10 @@ class Application extends BaseApplication {
 
 		$this['validator.schedule.column'] = $this->share(function() {
 			return new Validator\ScheduleColumnValidator();
+		});
+
+		$this['validator.schedule.import'] = $this->share(function() {
+			return new Validator\ScheduleImportValidator();
 		});
 
 		$this['validator.admin.user'] = $this->share(function() {
@@ -251,6 +256,9 @@ class Application extends BaseApplication {
 		$this->route('POST',   '/-/schedules/{schedule_e}/columns/move',                'schedule.column:move',   'user');
 		$this->route('PUT',    '/-/schedules/{schedule_e}/columns/{schedule_column_e}', 'schedule.column:update', 'user');
 		$this->route('DELETE', '/-/schedules/{schedule_e}/columns/{schedule_column_e}', 'schedule.column:delete', 'user');
+
+		$this->route('GET',    '/-/schedules/{schedule_e}/import',                      'schedule.import:form',   'user');
+		$this->route('POST',   '/-/schedules/{schedule_e}/import',                      'schedule.import:import', 'user');
 
 		$this->route('GET',    '/-/profile',                                            'profile:edit',           'user');
 		$this->route('PUT',    '/-/profile',                                            'profile:update',         'user');

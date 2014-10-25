@@ -1,3 +1,8 @@
+php_value upload_max_filesize 2M
+php_value default_charset UTF-8
+php_value mbstring.internal_encoding UTF-8
+php_value max_input_vars 100
+
 RewriteEngine On
 
 <IfModule expires_module>

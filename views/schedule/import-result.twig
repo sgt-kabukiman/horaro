@@ -1,0 +1,66 @@
+{% extends "backend.twig" %}
+{% import "macros.twig" as macros %}
+
+{% set event = schedule.event %}
+
+{% block title %}{{ schedule.name }} &ndash; {{ event.name }}{% endblock %}
+
+{% block content %}
+<ul class="breadcrumb h-jail">
+	<li><a href="/-/home">Home</a></li>
+	<li><a href="/-/events/{{ event.id|obscurify('event') }}">{{ event.name|shorten(45) }}</a></li>
+	<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}">{{ schedule.name|shorten(45) }}</a></li>
+	<li>Import…</li>
+</ul>
+
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h2>Import Result</h2>
+
+		{% if failed %}
+			<div class="alert alert-danger">
+				<i class="fa fa-exclamation-triangle"></i> {{ log.message|nl2br }}
+			</div>
+
+			<div class="text-center">{{ macros.back_button() }}</div>
+		{% else %}
+			{% if stopped %}
+				<div class="alert alert-warning">
+					<i class="fa fa-exclamation-triangle"></i> The importer found an error in <strong>{{ upload.clientOriginalName|shorten(50) }}</strong> and aborted the import.<br>
+					No changes have been applied to the schedule.
+				</div>
+
+				<div class="text-center">{{ macros.back_button() }}</div>
+			{% else %}
+				<div class="alert alert-success">
+					<i class="fa fa-info-circle"></i> The file <strong>{{ upload.clientOriginalName|shorten(50) }}</strong> has been imported successfully!
+				</div>
+
+				{% if errors %}
+					<div class="alert alert-warning">
+						<i class="fa fa-exclamation-triangle"></i> There have been errors in your data, please see the log below for more information.
+					</div>
+					<div class="text-center">
+						{{ macros.back_button() }} &ndash; or &ndash;
+						<a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}" class="btn btn-primary btn-sm"><i class="fa fa-arrow-right"></i> Go to Schedule</a>
+					</div>
+				{% else %}
+					<div class="text-center">
+						<a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}" class="btn btn-primary btn-sm"><i class="fa fa-arrow-right"></i> Go to Schedule</a>
+					</div>
+				{% endif %}
+			{% endif %}
+
+			<h3>Import Log</h3>
+			<ul class="h-importlog">
+				{% for row in log %}
+				<li class="text-{{ row[0] == 'ok' ? 'success' : (row[0] == 'warn' ? 'warning' : 'danger') }}">
+					<i class="fa fa-{{ row[0] == 'ok' ? 'check' : (row[0] == 'warn' ? 'exclamation' : 'times') }}-circle"></i>
+					{{ row[1] }}
+				</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

@@ -119,6 +119,18 @@ class BaseApplication extends Application {
 			return new ScheduleTransformer\ICalTransformer($secret, $host, $this['obscurity-codec']);
 		});
 
+		$this['schedule-importer-csv'] = $this->share(function() {
+			return new ScheduleImporter\CsvImporter($this['entitymanager']);
+		});
+
+		$this['schedule-importer-json'] = $this->share(function() {
+			return new ScheduleImporter\JsonImporter($this['entitymanager']);
+		});
+
+		$this['schedule-importer-xml'] = $this->share(function() {
+			return new ScheduleImporter\XmlImporter($this['entitymanager']);
+		});
+
 		// set Silex' debug flag
 		$this['debug'] = $this['config']['debug'];
 	}

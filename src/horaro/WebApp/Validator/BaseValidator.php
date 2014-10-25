@@ -17,6 +17,8 @@ class BaseValidator {
 		$this->result['_errors'] = true;
 		$this->result[$field]['errors'] = true;
 		$this->result[$field]['messages'][] = $message;
+
+		return $this->result;
 	}
 
 	protected function setFilteredValue($field, $value) {

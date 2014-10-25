@@ -1,0 +1,107 @@
+{
+    "type": "object",
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "required": ["schedule"],
+    "properties": {
+        "schedule": {
+            "type": "object",
+            "required": ["columns", "items"],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "slug": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "timezone": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "start": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "start_t": {
+                    "type": "integer"
+                },
+                "website": {
+                    "type": ["string", "null"]
+                },
+                "twitter": {
+                    "type": ["string", "null"]
+                },
+                "twitch": {
+                    "type": ["string", "null"]
+                },
+                "updated": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "url": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "event": {
+                    "type": "object",
+                    "required": ["name", "slug"],
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "slug": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                },
+                "columns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "minItems": 1,
+                    "maxItems": 10
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["data"],
+                        "properties": {
+                            "length": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "length_t": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 604800
+                            },
+                            "scheduled": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "scheduled_t": {
+                                "type": "integer"
+                            },
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": ["string", "null"],
+                                    "maxLength": 512
+                                },
+                                "minItems": 1,
+                                "maxItems": 10
+                            }
+                        }
+                    },
+                    "minItems": 1
+                }
+            }
+        }
+    }
+}

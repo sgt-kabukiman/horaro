@@ -1,0 +1,74 @@
+{% extends "backend.twig" %}
+{% import "macros.twig" as macros %}
+
+{% set event = schedule.event %}
+
+{% block title %}{{ schedule.name }} &ndash; {{ event.name }}{% endblock %}
+
+{% block content %}
+<ul class="breadcrumb h-jail">
+	<li><a href="/-/home">Home</a></li>
+	<li><a href="/-/events/{{ event.id|obscurify('event') }}">{{ event.name|shorten(45) }}</a></li>
+	<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}">{{ schedule.name|shorten(45) }}</a></li>
+	<li>Import…</li>
+</ul>
+
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h2>Import Schedule</h2>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-7">
+		<div class="well">
+			<form method="post" action="/-/schedules/{{ schedule.id|obscurify('schedule') }}/import" class="form-horizontal" enctype="multipart/form-data">
+				<fieldset>
+					<legend>File Selection</legend>
+					{{ macros.csrf_token() }}
+
+					<div class="form-group{{ utils.formClass(result, 'file') }}">
+						<label class="col-lg-3 control-label" for="file">Import File:</label>
+						<div class="col-lg-9">
+							<input type="file" class="form-control" id="file" name="file" autofocus required>
+							{{ macros.form_errors(result, 'file') }}
+							<span class="help-block">Maximum allowed file size is <strong>{{ max_size }} KiB</strong>.</span>
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="metadata" value="1"> Update schedule metadata if possible.
+								</label>
+							</div>
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="ignore" value="1"> Ignore broken rows and keep on importing.
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-lg-12 text-center">
+							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-upload"> </i> Start Import</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+
+	<div class="col-lg-6 col-md-6 col-sm-5 h-formhelp">
+		<legend><span class="hidden-xs">Side</span><span class="hidden-lg hidden-md hidden-sm">Foot</span> Notes</legend>
+		<p>Importing a schedule means <strong>overwriting</strong> the current schedule rows with whatever you choose
+		to import, so all existing rows will be removed. This also modifies the schedule columns to match the import
+		data.</p>
+
+		<p>If you choose a Horaro format like JSON or XML, you can optionally also import the schedule metadata like its
+		timezone, theme or website. The simpler formats like CSV do only contain the schedule rows, so the metadata is
+		left untouched.</p>
+
+		<p>Only the maximum number of allowed rows for this schedule (which is {{ schedule.maxItems }}) will be imported,
+		all other data in the import file will be ignored. Same goes for the columns: Only the first 10 (plus the time
+		column) will be processed during the import.</p>
+	</div>
+</div>
+{% endblock %}
