@@ -47,4 +47,43 @@ class BaseImporter {
 
 		return $l;
 	}
+
+	protected function replaceColumns(Schedule $schedule, array $columns) {
+		foreach ($schedule->getColumns() as $col) {
+			$this->remove($col);
+		}
+
+		foreach ($columns as $col) {
+			$col->setSchedule($schedule);
+			$this->persist($col);
+		}
+
+		$this->flush();
+
+		$columnIDs = [];
+
+		foreach ($columns as $col) {
+			$columnIDs[] = $col->getId();
+		}
+
+		return $columnIDs;
+	}
+
+	protected function replaceItems(Schedule $schedule, array $items, array $columnIDs) {
+		foreach ($schedule->getItems() as $item) {
+			$this->remove($item);
+		}
+
+		foreach ($items as $item) {
+			$extra = [];
+
+			foreach ($item->tmpExtra as $idx => $value) {
+				$columnID = $columnIDs[$idx];
+				$extra[$columnID] = $value;
+			}
+
+			$item->setSchedule($schedule)->setExtra($extra);
+			$this->persist($item);
+		}
+	}
 }

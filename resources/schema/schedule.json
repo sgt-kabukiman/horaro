@@ -35,6 +35,12 @@
                 "twitch": {
                     "type": ["string", "null"]
                 },
+                "theme": {
+                    "type": ["string", "null"]
+                },
+                "secret": {
+                    "type": ["string", "null"]
+                },
                 "updated": {
                     "type": "string",
                     "minLength": 1
@@ -61,7 +67,8 @@
                     "type": "array",
                     "items": {
                         "type": "string",
-                        "minLength": 1
+                        "minLength": 1,
+                        "maxLength": 128
                     },
                     "minItems": 1,
                     "maxItems": 10

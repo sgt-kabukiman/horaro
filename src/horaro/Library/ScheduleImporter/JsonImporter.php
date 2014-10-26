@@ -65,6 +65,8 @@ class JsonImporter extends BaseImporter {
 		$maxItems = $schedule->getMaxItems();
 
 		foreach ($data->schedule->items as $idx => $it) {
+			$seconds = 0;
+
 			// at the very least, we need a valid length for this item
 			if (isset($it->length)) {
 				try {
@@ -113,39 +115,10 @@ class JsonImporter extends BaseImporter {
 
 		// Now we have the columns and items, but nothing is persisted yet. We will now replace the
 		// columns with the new ones, so they get their ID assigned.
-		foreach ($schedule->getColumns() as $col) {
-			$this->remove($col);
-		}
-
-		foreach ($columns as $col) {
-			$col->setSchedule($schedule);
-			$this->persist($col);
-		}
-
-		$this->flush();
-
-		$columnIDs = [];
-
-		foreach ($columns as $col) {
-			$columnIDs[] = $col->getId();
-		}
+		$columnIDs = $this->replaceColumns($schedule, $columns);
 
 		// Now we can fix the extra data on the items and insert the column IDs.
-		foreach ($schedule->getItems() as $item) {
-			$this->remove($item);
-		}
-
-		foreach ($items as $item) {
-			$extra = [];
-
-			foreach ($item->tmpExtra as $idx => $value) {
-				$columnID = $columnIDs[$idx];
-				$extra[$columnID] = $value;
-			}
-
-			$item->setSchedule($schedule)->setExtra($extra);
-			$this->persist($item);
-		}
+		$this->replaceItems($schedule, $items, $columnIDs);
 
 		if ($updateMetadata) {
 			$this->updateMetadata($schedule, $data->schedule);
