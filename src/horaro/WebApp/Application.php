@@ -124,6 +124,7 @@ class Application extends BaseApplication {
 		$this['controller.admin.schedule']         = $this->share(function() { return new Controller\Admin\ScheduleController($this);         });
 		$this['controller.admin.utils']            = $this->share(function() { return new Controller\Admin\Utils\BaseController($this);       });
 		$this['controller.admin.utils.config']     = $this->share(function() { return new Controller\Admin\Utils\ConfigController($this);     });
+		$this['controller.admin.utils.tools']      = $this->share(function() { return new Controller\Admin\Utils\ToolsController($this);      });
 		$this['controller.admin.utils.serverinfo'] = $this->share(function() { return new Controller\Admin\Utils\ServerInfoController($this); });
 
 		$this['validator.createaccount'] = $this->share(function() {
@@ -289,13 +290,17 @@ class Application extends BaseApplication {
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// operator-only extensions to the admin interface
 
-		$this->route('GET', '/-/admin/utils',                    'admin.utils:index',              'op');
+		$this->route('GET',  '/-/admin/utils',                      'admin.utils:index',                'op');
 
-		$this->route('GET', '/-/admin/utils/config',             'admin.utils.config:form',        'op');
-		$this->route('PUT', '/-/admin/utils/config',             'admin.utils.config:update',      'op');
+		$this->route('GET',  '/-/admin/utils/config',               'admin.utils.config:form',          'op');
+		$this->route('PUT',  '/-/admin/utils/config',               'admin.utils.config:update',        'op');
 
-		$this->route('GET', '/-/admin/utils/serverinfo',         'admin.utils.serverinfo:form',    'op');
-		$this->route('GET', '/-/admin/utils/serverinfo/phpinfo', 'admin.utils.serverinfo:phpinfo', 'op');
+		$this->route('GET',  '/-/admin/utils/tools',                'admin.utils.tools:form',           'op');
+		$this->route('POST', '/-/admin/utils/tools/cleartwigcache', 'admin.utils.tools:cleartwigcache', 'op');
+		$this->route('POST', '/-/admin/utils/tools/fixpositions',   'admin.utils.tools:fixpositions',   'op');
+
+		$this->route('GET',  '/-/admin/utils/serverinfo',           'admin.utils.serverinfo:form',      'op');
+		$this->route('GET',  '/-/admin/utils/serverinfo/phpinfo',   'admin.utils.serverinfo:phpinfo',   'op');
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// generic event/schedule routes

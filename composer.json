@@ -12,6 +12,7 @@
         "league/csv": "~6.0.0",
         "raven/raven": "~0.10.0",
         "silex/silex": "~1.2.0",
+        "symfony/finder": "~2.5.5",
         "symfony/yaml": "~2.5.5",
         "twig/twig": "~1.16"
     },

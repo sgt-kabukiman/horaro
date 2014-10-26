@@ -1,0 +1,36 @@
+{% extends "admin/utils/layout.twig" %}
+{% import "macros.twig" as macros %}
+
+{% block title %}Tools &ndash; Admin{% endblock %}
+{% set active = 'tools' %}
+
+{% block tabcontent %}
+<div class="row">
+	<div class="col-lg-3 col-md-4 col-sm-4 col-xs-6 text-right">
+		<form method="post" action="/-/admin/utils/tools/cleartwigcache">
+			{{ macros.csrf_token() }}
+			<button type="submit" class="btn btn-default btn-sm btn-block"><i class="fa fa-eraser"> </i> Clear Twig cache</button>
+		</form>
+	</div>
+
+	<div class="col-lg-9 col-md-8 col-sm-8 col-xs-6">
+		<p>Use this after deploying a new version of Horaro. When running in production mode, Twig will not
+		automatically refresh the template cache, so you either have to delete the files manually or this tool.</p>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-3 col-md-4 col-sm-4 col-xs-6 text-right">
+		<form method="post" action="/-/admin/utils/tools/fixpositions">
+			{{ macros.csrf_token() }}
+			<button type="submit" class="btn btn-default btn-sm btn-block"><i class="fa fa-medkit"> </i> Fix schedule item order</button>
+		</form>
+	</div>
+
+	<div class="col-lg-9 col-md-8 col-sm-8 col-xs-6">
+		<p>Under heavy load, it can happen that the order of schedule rows (each one has a <code>position</code> number)
+		gets damaged. This results in errors when trying to move rows up and down. This tool will simply re-number all
+		schedules.</p>
+	</div>
+</div>
+{% endblock %}
