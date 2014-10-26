@@ -20,7 +20,8 @@ class ScheduleImportValidator extends BaseValidator {
 
 		$upload = $request->files->get('file');
 
-		if (!$upload) {
+		// do not compare with "if (!$upload)", because of PHP bug #65213
+		if (!($upload instanceof UploadedFile)) {
 			return $this->addError('file', 'No file was uploaded.');
 		}
 
