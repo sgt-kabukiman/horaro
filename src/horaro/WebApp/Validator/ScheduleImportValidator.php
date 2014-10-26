@@ -68,7 +68,6 @@ class ScheduleImportValidator extends BaseValidator {
 		$mime = $file->getMimeType();
 
 		// hooray if the mime magic on this system was actually this specific
-		if (preg_match('#^(text/xml|application/xml)#',   $mime)) return 'xml';
 		if (preg_match('#^(text/json|application/json)#', $mime)) return 'json';
 		if (preg_match('#^text/csv#',                     $mime)) return 'csv';
 
@@ -80,6 +79,6 @@ class ScheduleImportValidator extends BaseValidator {
 		// go by the file extension
 		$ext = $file->getClientOriginalExtension();
 
-		return in_array($ext, ['csv', 'json', 'xml'], true) ? $ext : null;
+		return in_array($ext, ['csv', 'json'], true) ? $ext : null;
 	}
 }

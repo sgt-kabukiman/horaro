@@ -32,7 +32,7 @@
 						<div class="col-lg-9">
 							<input type="file" class="form-control" id="file" name="file" autofocus required>
 							{{ macros.form_errors(result, 'file') }}
-							<span class="help-block">Maximum allowed file size is <strong>{{ max_size }} KiB</strong>.</span>
+							<span class="help-block"><strong>JSON</strong> or <strong>CSV</strong>; maximum allowed file size is <strong>{{ max_size }} KiB</strong>.</span>
 							<div class="checkbox">
 								<label>
 									<input type="checkbox" name="metadata" value="1"> Update schedule metadata if possible.
@@ -62,13 +62,43 @@
 		to import, so all existing rows will be removed. This also modifies the schedule columns to match the import
 		data.</p>
 
-		<p>If you choose a Horaro format like JSON or XML, you can optionally also import the schedule metadata like its
-		timezone, theme or website. The simpler formats like CSV do only contain the schedule rows, so the metadata is
-		left untouched.</p>
+		<p>If you choose a Horaro format like JSON (XML import is currently not implemented, sorry), you can optionally
+		also import the schedule metadata like its timezone, theme or website. The simpler formats like CSV do only
+		contain the schedule rows, so the metadata is left untouched.</p>
 
 		<p>Only the maximum number of allowed rows for this schedule (which is {{ schedule.maxItems }}) will be imported,
 		all other data in the import file will be ignored. Same goes for the columns: Only the first 10 (plus the time
 		column) will be processed during the import.</p>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h3>Format-specific Notes</h3>
+		<h4>CSV</h4>
+		<p>CSV files can use commas, semicolons and tabs as separators. They <strong>must</strong> have a header row,
+		containing the column names. There must be at least one column named <strong>length</strong>, <strong>estimate(d)</strong>,
+		<strong>duration</strong> or contain the word <strong>setup</strong>, containing a row's length (time). There
+		can be multiple columns containing lengths &ndash; their values will be added together. The length can be
+		given as <kbd>MM</kbd>, <kbd>HH:MM</kbd>, <kbd>HH:MM:SS</kbd> or an ISO time duration (e.g. <kbd>PT20M</kbd>).</p>
+
+		<p>A good CSV file looks something like this:</p>
+
+		<pre>game;runners;length;comments
+Pong 1;Somebody;00:20:00;any%
+Pong 2;Somegirl;01:40:00;100%
+Pong 2 Redux;"Somedude; maybe someone will join";00:15:00;</pre>
+
+		<p>In many cases the CSV data will come from a spreadsheet, which will also contain the scheduled date and time.
+		Horaro will import such a column as well, but you can (and should) simply delete the column after importing.</p>
+
+		<p>CSV files cannot contain any schedule metadata.</p>
+
+		<h4>JSON</h4>
+		<p>JSON files must basically look like whatever Horaro is generating. If you need more details, consult the
+		<a href="https://bitbucket.org/sgt-kabukiman/horaro/src/tip/resources/schema/schedule.json">JSON schema</a>.
+		All metadata is optional, but if you include it, it must be syntactically correct (e.g. websites must be
+		full URLs).</p>
 	</div>
 </div>
 {% endblock %}

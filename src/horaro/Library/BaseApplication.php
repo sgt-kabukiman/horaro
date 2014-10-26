@@ -130,10 +130,6 @@ class BaseApplication extends Application {
 			return new ScheduleImporter\JsonImporter($this['entitymanager'], $this['validator.schedule']);
 		});
 
-		$this['schedule-importer-xml'] = $this->share(function() {
-			return new ScheduleImporter\XmlImporter($this['entitymanager'], $this['validator.schedule']);
-		});
-
 		// set Silex' debug flag
 		$this['debug'] = $this['config']['debug'];
 	}
