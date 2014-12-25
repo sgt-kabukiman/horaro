@@ -10,6 +10,7 @@ INSERT INTO `config` (`key`, `value`) VALUES
 	('csrf_token_name',     '_csrf_token'),
 	('default_language',    '"en_us"'),
 	('default_event_theme', '"yeti"'),
+	('featured_events',     '[]'),
 	('max_events',          '10'),
 	('max_schedule_items',  '200'),
 	('max_schedules',       '10'),
