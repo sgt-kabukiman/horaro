@@ -194,6 +194,9 @@ jQuery(function($) {
 
 	$('#localized-note small').toggle();
 
+	window.setInterval(updateRelativeTimes, 5000);
+	updateRelativeTimes();
+
 	// Add funky behaviour to the schedule
 	if ($('#controls').length > 0) {
 		$('.h-schedule tbody tr.h-primary').append($('#controls').html());
@@ -240,9 +243,7 @@ jQuery(function($) {
 
 		// update ticker
 		window.setInterval(updateTicker, 5000);
-		window.setInterval(updateRelativeTimes, 5000);
 		updateTicker();
-		updateRelativeTimes();
 
 		$('.h-jumper').on('click', function() {
 			var item = findCurrentItem();

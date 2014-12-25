@@ -26,8 +26,40 @@ class IndexController extends BaseController {
 		// this needs to be done in a general pre-controller filter
 //		$this->app['locale'] = strtolower($request->getPreferredLanguage(['de_DE', 'en_US']));
 
+		// find upcoming event schedules (blatenly ignoring that the starting times
+		// in the database are not in UTC).
+
+		$scheduleRepo = $this->getRepository('Schedule');
+		$schedules    = $scheduleRepo->findUpcoming(3132, 10);
+		$upcoming     = [];
+
+		// group by event
+		foreach ($schedules as $schedule) {
+			$event   = $schedule->getEvent();
+			$eventID = $event->getID();
+
+			$upcoming[$eventID]['event']       = $event;
+			$upcoming[$eventID]['schedules'][] = $schedule;
+		}
+
+		// find featured, old events
+		$ids       = $this->app['runtime-config']->get('featured_events', []);
+		$eventRepo = $this->getRepository('Event');
+		$featured  = $eventRepo->findById($ids);
+
+		// remove featured events that are already included in the upcoming list
+		foreach ($featured as $idx => $event) {
+			$eventID = $event->getID();
+
+			if (isset($upcoming[$eventID])) {
+				unset($featured[$idx]);
+			}
+		}
+
 		return $this->render('index/welcome.twig', [
-			'noRegister' => $this->exceedsMaxUsers()
+			'noRegister' => $this->exceedsMaxUsers(),
+			'upcoming'   => array_slice($upcoming, 0, 5),
+			'featured'   => array_slice($featured, 0, 5)
 		]);
 	}
 

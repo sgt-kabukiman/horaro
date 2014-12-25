@@ -81,10 +81,30 @@ class EventController extends BaseController {
 			->setMaxSchedules($result['max_schedules']['filtered'])
 		;
 
-		$this->getEntityManager()->flush();
+		// update list of featured events
+
+		$config   = $this->app['runtime-config'];
+		$eventID  = $event->getID();
+		$featured = $config->get('featured_events', []);
+
+		if ($request->request->get('featured')) {
+			if (!in_array($eventID, $featured)) {
+				$featured[] = $eventID;
+				sort($featured);
+
+				$config->set('featured_events', $featured);
+			}
+		}
+		elseif (($pos = array_search($eventID, $featured)) !== false) {
+			unset($featured[$pos]);
+			$featured = array_values($featured);
+
+			$config->set('featured_events', $featured);
+		}
 
 		// done
 
+		$this->getEntityManager()->flush();
 		$this->addSuccessMsg('Event '.$event->getName().' has been updated.');
 
 		return $this->redirect('/-/admin/events');
@@ -117,10 +137,14 @@ class EventController extends BaseController {
 	}
 
 	protected function renderForm(Event $event, array $result = null) {
+		$config   = $this->app['runtime-config'];
+		$featured = $config->get('featured_events', []);
+
 		return $this->render('admin/events/form.twig', [
-			'result' => $result,
-			'event'  => $event,
-			'themes' => $this->app['config']['themes']
+			'result'   => $result,
+			'event'    => $event,
+			'themes'   => $this->app['config']['themes'],
+			'featured' => in_array($event->getID(), $featured)
 		]);
 	}
 

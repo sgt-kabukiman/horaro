@@ -30,4 +30,15 @@ class ScheduleRepository extends EntityRepository {
 
 		return (int) $query->getSingleScalarResult();
 	}
+
+	public function findUpcoming($days) {
+		$start = gmdate('Y-m-d H:i:s', time() + $days*24*3600);
+		$dql   = 'SELECT s FROM horaro\Library\Entity\Schedule s WHERE s.secret IS NULL AND s.start > :now AND s.start <= :start ORDER BY s.start ASC';
+		$query = $this->_em->createQuery($dql);
+
+		$query->setParameter('now', gmdate('Y-m-d H:i:s'));
+		$query->setParameter('start', $start);
+
+		return $query->getResult();
+	}
 }
