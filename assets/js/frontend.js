@@ -3,6 +3,17 @@
 jQuery(function($) {
 	'use strict';
 
+	// http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+	function qs(name) {
+		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+
+		var
+			regex   = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+			results = regex.exec(location.search);
+
+		return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+	}
+
 	function updateRelativeTimes() {
 		var now = new Date();
 
@@ -100,6 +111,44 @@ jQuery(function($) {
 		current.find('.h-primary').addClass('success');
 	}
 
+	function highlightRows(termString) {
+		var terms = [];
+
+		$.each(termString.split(','), function(i, term) {
+			term = term.trim();
+
+			if (term.match(/^[a-z0-9-_&=;:#% ]+$/i)) {
+				terms.push(term);
+			}
+		});
+
+		// unset previous highlights
+		$('.h-schedule .danger').removeClass('danger');
+
+		if (terms.length === 0) {
+			return;
+		}
+
+		var rows = $('.h-schedule .h-primary');
+
+		// do not use "\b" because we allow some special characters and those would give bad results
+		// when combined with \b
+
+		var search = new RegExp('(^|[^a-z0-9_])(' + terms.join('|') + ')($|[^a-z0-9_])', 'i');
+
+		for (var height = rows.length, y = 0; y < height; y++) {
+			var row   = $(rows[y]);
+			var cells = $('td:not(.h-s):not(.h-l):not(.h-co)', row);
+
+			for (var width = cells.length, x = 0; x < width; x++) {
+				if ($(cells[x]).text().match(search)) {
+					row.addClass('danger');
+					break;
+				}
+			}
+		}
+	}
+
 	$('html').addClass('js');
 
 	var prev = null;
@@ -134,6 +183,13 @@ jQuery(function($) {
 		}
 
 		prev = d.getDate();
+	});
+
+	// highlight rows containing a search term
+	highlightRows(window.location.hash.replace('#', '') || qs('highlight'));
+
+	$(window).on('hashchange', function(e) {
+		highlightRows(window.location.hash.replace('#', '') || qs('highlight'));
 	});
 
 	$('#localized-note small').toggle();
