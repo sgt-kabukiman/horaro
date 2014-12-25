@@ -37,7 +37,7 @@ class RuntimeConfiguration {
 		$existing = $this->repo->findOneByKeyname($key);
 
 		if (!$existing) {
-			$existing = new Config($key, $value);
+			$existing = new Entity\Config($key, $value);
 			$this->em->persist($existing);
 		}
 
