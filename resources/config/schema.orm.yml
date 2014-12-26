@@ -240,6 +240,8 @@ horaro\Library\Entity\Schedule:
       options: { unsigned: true }
     updated_at:
       type: datetime
+    extra:
+      type: text
 
   uniqueConstraints:
     unique_slug:

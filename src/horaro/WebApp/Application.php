@@ -228,42 +228,43 @@ class Application extends BaseApplication {
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// user backend
 
-		$this->route('GET',    '/-/home',                                               'home:index',             'user');
+		$this->route('GET',    '/-/home',                                               'home:index',                  'user');
 
-		$this->route('GET',    '/-/events/new',                                         'event:new',              'user');
-		$this->route('POST',   '/-/events',                                             'event:create',           'user');
-		$this->route('GET',    '/-/events/{event_e}',                                   'event:detail',           'user');
-		$this->route('GET',    '/-/events/{event_e}/edit',                              'event:edit',             'user');
-		$this->route('PUT',    '/-/events/{event_e}',                                   'event:update',           'user');
-		$this->route('GET',    '/-/events/{event_e}/delete',                            'event:confirmation',     'user');
-		$this->route('DELETE', '/-/events/{event_e}',                                   'event:delete',           'user');
+		$this->route('GET',    '/-/events/new',                                         'event:new',                   'user');
+		$this->route('POST',   '/-/events',                                             'event:create',                'user');
+		$this->route('GET',    '/-/events/{event_e}',                                   'event:detail',                'user');
+		$this->route('GET',    '/-/events/{event_e}/edit',                              'event:edit',                  'user');
+		$this->route('PUT',    '/-/events/{event_e}',                                   'event:update',                'user');
+		$this->route('GET',    '/-/events/{event_e}/delete',                            'event:confirmation',          'user');
+		$this->route('DELETE', '/-/events/{event_e}',                                   'event:delete',                'user');
 
-		$this->route('GET',    '/-/events/{event_e}/schedules/new',                     'schedule:new',           'user');
-		$this->route('POST',   '/-/events/{event_e}/schedules',                         'schedule:create',        'user');
-		$this->route('GET',    '/-/schedules/{schedule_e}',                             'schedule:detail',        'user');
-		$this->route('GET',    '/-/schedules/{schedule_e}/edit',                        'schedule:edit',          'user');
-		$this->route('PUT',    '/-/schedules/{schedule_e}',                             'schedule:update',        'user');
-		$this->route('GET',    '/-/schedules/{schedule_e}/delete',                      'schedule:confirmation',  'user');
-		$this->route('DELETE', '/-/schedules/{schedule_e}',                             'schedule:delete',        'user');
-		$this->route('GET',    '/-/schedules/{schedule_e}/export',                      'schedule:export',        'user');
+		$this->route('GET',    '/-/events/{event_e}/schedules/new',                     'schedule:new',                'user');
+		$this->route('POST',   '/-/events/{event_e}/schedules',                         'schedule:create',             'user');
+		$this->route('GET',    '/-/schedules/{schedule_e}',                             'schedule:detail',             'user');
+		$this->route('GET',    '/-/schedules/{schedule_e}/edit',                        'schedule:edit',               'user');
+		$this->route('PUT',    '/-/schedules/{schedule_e}',                             'schedule:update',             'user');
+		$this->route('GET',    '/-/schedules/{schedule_e}/delete',                      'schedule:confirmation',       'user');
+		$this->route('DELETE', '/-/schedules/{schedule_e}',                             'schedule:delete',             'user');
+		$this->route('GET',    '/-/schedules/{schedule_e}/export',                      'schedule:export',             'user');
 
-		$this->route('POST',   '/-/schedules/{schedule_e}/items',                       'schedule.item:create',   'user');
-		$this->route('POST',   '/-/schedules/{schedule_e}/items/move',                  'schedule.item:move',     'user');
-		$this->route('PATCH',  '/-/schedules/{schedule_e}/items/{schedule_item_e}',     'schedule.item:patch',    'user');
-		$this->route('DELETE', '/-/schedules/{schedule_e}/items/{schedule_item_e}',     'schedule.item:delete',   'user');
+		$this->route('POST',   '/-/schedules/{schedule_e}/items',                       'schedule.item:create',        'user');
+		$this->route('POST',   '/-/schedules/{schedule_e}/items/move',                  'schedule.item:move',          'user');
+		$this->route('PATCH',  '/-/schedules/{schedule_e}/items/{schedule_item_e}',     'schedule.item:patch',         'user');
+		$this->route('DELETE', '/-/schedules/{schedule_e}/items/{schedule_item_e}',     'schedule.item:delete',        'user');
 
-		$this->route('GET',    '/-/schedules/{schedule_e}/columns/edit',                'schedule.column:edit',   'user');
-		$this->route('POST',   '/-/schedules/{schedule_e}/columns',                     'schedule.column:create', 'user');
-		$this->route('POST',   '/-/schedules/{schedule_e}/columns/move',                'schedule.column:move',   'user');
-		$this->route('PUT',    '/-/schedules/{schedule_e}/columns/{schedule_column_e}', 'schedule.column:update', 'user');
-		$this->route('DELETE', '/-/schedules/{schedule_e}/columns/{schedule_column_e}', 'schedule.column:delete', 'user');
+		$this->route('GET',    '/-/schedules/{schedule_e}/columns/edit',                'schedule.column:edit',        'user');
+		$this->route('POST',   '/-/schedules/{schedule_e}/columns',                     'schedule.column:create',      'user');
+		$this->route('POST',   '/-/schedules/{schedule_e}/columns/move',                'schedule.column:move',        'user');
+		$this->route('PUT',    '/-/schedules/{schedule_e}/columns/fixed/{column_key}',  'schedule.column:updateFixed', 'user');
+		$this->route('PUT',    '/-/schedules/{schedule_e}/columns/{schedule_column_e}', 'schedule.column:update',      'user');
+		$this->route('DELETE', '/-/schedules/{schedule_e}/columns/{schedule_column_e}', 'schedule.column:delete',      'user');
 
-		$this->route('GET',    '/-/schedules/{schedule_e}/import',                      'schedule.import:form',   'user');
-		$this->route('POST',   '/-/schedules/{schedule_e}/import',                      'schedule.import:import', 'user');
+		$this->route('GET',    '/-/schedules/{schedule_e}/import',                      'schedule.import:form',        'user');
+		$this->route('POST',   '/-/schedules/{schedule_e}/import',                      'schedule.import:import',      'user');
 
-		$this->route('GET',    '/-/profile',                                            'profile:edit',           'user');
-		$this->route('PUT',    '/-/profile',                                            'profile:update',         'user');
-		$this->route('PUT',    '/-/profile/password',                                   'profile:updatePassword', 'user');
+		$this->route('GET',    '/-/profile',                                            'profile:edit',                'user');
+		$this->route('PUT',    '/-/profile',                                            'profile:update',              'user');
+		$this->route('PUT',    '/-/profile/password',                                   'profile:updatePassword',      'user');
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// admin backend

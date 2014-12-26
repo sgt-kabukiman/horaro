@@ -125,7 +125,7 @@ class JsonImporter extends BaseImporter {
 		}
 
 		// mark the schedule as updated
-		$schedule->setUpdatedAt(new \DateTime('now UTC'));
+		$schedule->touch();
 
 		$this->flush();
 

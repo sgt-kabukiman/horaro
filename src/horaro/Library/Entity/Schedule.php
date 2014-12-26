@@ -17,6 +17,9 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Schedule
  */
 class Schedule {
+	const COLUMN_SCHEDULED = 'col-scheduled';
+	const COLUMN_ESTIMATE  = 'col-estimate';
+
 	/**
 	 * @var integer
 	 */
@@ -76,6 +79,11 @@ class Schedule {
 	 * @var \DateTime
 	 */
 	private $updated_at;
+
+	/**
+	 * @var string
+	 */
+	private $extra;
 
 	/**
 	 * @var \Doctrine\Common\Collections\Collection
@@ -441,6 +449,34 @@ class Schedule {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Set extra
+	 *
+	 * @param array $extra
+	 * @return Schedule
+	 */
+	public function setExtra(array $extra) {
+		ksort($extra);
+		$this->extra = json_encode($extra);
+
+		return $this;
+	}
+
+	/**
+	 * Get extra
+	 *
+	 * @return array
+	 */
+	public function getExtra() {
+		return $this->extra === null ? [] : json_decode($this->extra, true);
+	}
+
+	public function getText($key) {
+		$extra = $this->getExtra();
+
+		return isset($extra['texts'][$key]) ? $extra['texts'][$key] : null;
 	}
 
 	/**

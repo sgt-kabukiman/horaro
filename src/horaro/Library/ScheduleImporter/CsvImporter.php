@@ -179,7 +179,7 @@ class CsvImporter extends BaseImporter {
 		$this->replaceItems($schedule, $items, $columnIDs);
 
 		// mark the schedule as updated
-		$schedule->setUpdatedAt(new \DateTime('now UTC'));
+		$schedule->touch();
 
 		$this->flush();
 

@@ -10,6 +10,7 @@
 
 namespace horaro\WebApp\Controller;
 
+use horaro\Library\Entity\Schedule;
 use horaro\Library\Entity\ScheduleColumn;
 use horaro\WebApp\Exception as Ex;
 use horaro\WebApp\Validator\ScheduleColumnValidator;
@@ -18,10 +19,14 @@ use Symfony\Component\HttpFoundation\Request;
 class ScheduleColumnController extends BaseController {
 	public function editAction(Request $request) {
 		$schedule = $this->getRequestedSchedule($request);
-		$columns  = [];
+		$extra    = $schedule->getExtra();
+		$columns  = [
+			[Schedule::COLUMN_SCHEDULED, isset($extra['texts'][Schedule::COLUMN_SCHEDULED]) ? $extra['texts'][Schedule::COLUMN_SCHEDULED] : 'Scheduled', -1, true],
+			[Schedule::COLUMN_ESTIMATE,  isset($extra['texts'][Schedule::COLUMN_ESTIMATE])  ? $extra['texts'][Schedule::COLUMN_ESTIMATE]  : 'Estimated',  0, true]
+		];
 
 		foreach ($schedule->getColumns() as $col) {
-			$columns[] = [$this->encodeID($col->getID(), 'schedule.column'), $col->getName()];
+			$columns[] = [$this->encodeID($col->getID(), 'schedule.column'), $col->getName(), $col->getPosition(), false];
 		}
 
 		return $this->render('schedule/columns.twig', ['schedule' => $schedule, 'columns' => $columns]);
@@ -119,6 +124,54 @@ class ScheduleColumnController extends BaseController {
 				'id'   => $this->encodeID($column->getId(), 'schedule.column'),
 				'pos'  => $column->getPosition(),
 				'name' => $column->getName(),
+			]
+		], 200);
+	}
+
+	public function updateFixedAction(Request $request) {
+		$schedule = $this->getRequestedSchedule($request);
+		$key      = $request->attributes->get('column_key');
+
+		if (!in_array($key, [Schedule::COLUMN_SCHEDULED, Schedule::COLUMN_ESTIMATE], true)) {
+			return $this->respondWithArray('Column not found.', 404);
+		}
+
+		$payload = $this->getPayload($request);
+
+		try {
+			if (!isset($payload['name']) || !is_string($payload['name'])) {
+				throw new \Exception('No valid name given.');
+			}
+
+			$name = trim($payload['name']);
+
+			if (mb_strlen($name) === 0) {
+				throw new \Exception('A column name cannot be empty.');
+			}
+		}
+		catch (\Exception $e) {
+			return $this->respondWithArray(['errors' => ['name' => $e->getMessage()]], 400);
+		}
+
+		// update column
+
+		$extra = $schedule->getExtra();
+		$extra['texts'][$key] = $name;
+
+		$schedule->setExtra($extra);
+		$schedule->touch();
+
+		// store it
+
+		$this->getEntityManager()->flush();
+
+		// respond
+
+		return $this->respondWithArray([
+			'data' => [
+				'id'   => $key,
+				'pos'  => $key === Schedule::COLUMN_SCHEDULED ? -1 : 0,
+				'name' => $name,
 			]
 		], 200);
 	}

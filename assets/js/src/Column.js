@@ -1,10 +1,11 @@
-function Column(id, name, pos) {
+function Column(id, name, pos, fixed) {
 	var self = this;
 
 	// setup simple data properties
 
-	self.id   = ko.observable(id);
-	self.name = ko.observable(name);
+	self.id    = ko.observable(id);
+	self.name  = ko.observable(name);
+	self.fixed = fixed;
 
 	// setup properties for managing app state
 
@@ -43,6 +44,10 @@ function Column(id, name, pos) {
 		var colID = self.id();
 		var isNew = colID === -1;
 		var url   = '/-/schedules/' + scheduleID + '/columns';
+
+		if (self.fixed) {
+			url += '/fixed';
+		}
 
 		if (!isNew) {
 			url += '/' + colID + '?_method=PUT';
