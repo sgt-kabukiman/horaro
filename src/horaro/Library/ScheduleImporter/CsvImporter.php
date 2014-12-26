@@ -177,6 +177,10 @@ class CsvImporter extends BaseImporter {
 
 		// Now we can fix the extra data on the items and insert the column IDs.
 		$this->replaceItems($schedule, $items, $columnIDs);
+
+		// mark the schedule as updated
+		$schedule->setUpdatedAt(new \DateTime('now UTC'));
+
 		$this->flush();
 
 		return $this->returnLog();

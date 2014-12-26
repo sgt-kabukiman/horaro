@@ -124,6 +124,9 @@ class JsonImporter extends BaseImporter {
 			$this->updateMetadata($schedule, $data->schedule);
 		}
 
+		// mark the schedule as updated
+		$schedule->setUpdatedAt(new \DateTime('now UTC'));
+
 		$this->flush();
 
 		return $this->returnLog();
