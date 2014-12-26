@@ -43,7 +43,7 @@
 	<tr class="h-secondary">
 		<td colspan="{{ numCols + 4 }}">
 			<dl class="dl-horizontal">
-				<dt class="h-e-l">Estimated:</dt>
+				<dt class="h-e-l">{{ schedule.text('col-estimate')|default('Estimate') }}:</dt>
 				<dd class="h-e-l">&nbsp;</dd>
 				{% for idx,column in columns.slice(1) %}
 				<dt class="h-e-{{ idx }}">{{ column.name }}:</dt>
