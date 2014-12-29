@@ -242,6 +242,7 @@ horaro\Library\Entity\Schedule:
       type: datetime
     extra:
       type: text
+      nullable: true
 
   uniqueConstraints:
     unique_slug:
