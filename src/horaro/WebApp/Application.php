@@ -217,13 +217,14 @@ class Application extends BaseApplication {
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// general routes
 
-		$this->route('GET',   '/',           'index:welcome');
-		$this->route('GET',   '/-/licenses', 'index:licenses');
-		$this->route('GET',   '/-/login',    'index:loginForm',    'ghost');
-		$this->route('POST',  '/-/login',    'index:login',        'ghost', true);
-		$this->route('GET',   '/-/register', 'index:registerForm', 'ghost');
-		$this->route('POST',  '/-/register', 'index:register',     'ghost', true);
-		$this->route('POST',  '/-/logout',   'index:logout',       'user');
+		$this->route('GET',   '/',                          'index:welcome');
+		$this->route('GET',   '/-/licenses',                'index:licenses');
+		$this->route('GET',   '/-/calendar/{year}/{month}', 'index:calendar');
+		$this->route('GET',   '/-/login',                   'index:loginForm',    'ghost');
+		$this->route('POST',  '/-/login',                   'index:login',        'ghost', true);
+		$this->route('GET',   '/-/register',                'index:registerForm', 'ghost');
+		$this->route('POST',  '/-/register',                'index:register',     'ghost', true);
+		$this->route('POST',  '/-/logout',                  'index:logout',       'user');
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// user backend

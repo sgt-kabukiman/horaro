@@ -64,6 +64,181 @@ footer {
 	}
 }
 
+.h-calendar, .h-calendar-vertical {
+	width: 100%;
+
+	th {
+		font-size: 16px;
+		padding: 0 0 5px 5px;
+		font-weight: normal;
+	}
+}
+
+.h-cal-cell {
+	height: 37 + 2*28px;
+	width: 100% / 7;
+	border: 1px solid #aaa;
+	position: relative;
+	vertical-align: top;
+	background: rgba(175, 175, 175, 0.2);
+
+	.loopy(@counter) when (@counter =< 10) {
+		&.height-@{counter} {
+			height: 37 + @counter * 28px;
+		}
+
+		.loopy((@counter + 1));
+	}
+
+	.loopy(4);
+
+	.day {
+		position: absolute;
+		color: #777;
+		right: 4px;
+		bottom: 2px;
+		font-size: 20px;
+	}
+
+	&.weekend {
+		background: rgba(175, 175, 175, 0.4);
+	}
+
+	&.overflow {
+		background: transparent;
+
+		.day {
+			color: #ddd;
+		}
+	}
+
+	.bar {
+		height: 24px;
+		margin: 2px 0;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		position: relative;
+
+		.jail {
+			line-height: 22px;
+			padding: 0 5px;
+			position: absolute;
+			right: 0;
+			left: 0;
+			white-space: nowrap;
+
+			a {
+				color: #222;
+			}
+		}
+
+		&.fill {
+			border-color: transparent;
+		}
+
+		&.state-begin {
+			margin-left: 2px;
+			border-top-left-radius: 4px;
+			border-bottom-left-radius: 4px;
+			border-left-width: 1px;
+			border-left-style: solid;
+		}
+
+		&.state-end {
+			margin-right: 2px;
+			border-top-right-radius: 4px;
+			border-bottom-right-radius: 4px;
+			border-right-width: 1px;
+			border-right-style: solid;
+
+			.jail {
+				overflow: hidden;
+			}
+		}
+	}
+}
+
+.bar-theme-a { background: rgba( 26, 188, 156, 0.4); border-color: rgba( 26, 188, 156, 0.8); }
+.bar-theme-b { background: rgba( 52, 152, 219, 0.4); border-color: rgba( 52, 152, 219, 0.8); }
+.bar-theme-c { background: rgba(155,  89, 182, 0.4); border-color: rgba(155,  89, 182, 0.8); }
+.bar-theme-d { background: rgba( 52,  73,  94, 0.4); border-color: rgba( 52,  73,  94, 0.8); }
+.bar-theme-e { background: rgba(241, 196,  15, 0.4); border-color: rgba(241, 196,  15, 0.8); }
+.bar-theme-f { background: rgba(230, 126,  34, 0.4); border-color: rgba(230, 126,  34, 0.8); }
+.bar-theme-g { background: rgba(231,  76,  60, 0.4); border-color: rgba(231,  76,  60, 0.8); }
+.bar-theme-h { background: rgba(127, 140, 141, 0.4); border-color: rgba(127, 140, 141, 0.8); }
+
+.h-day {
+	td {
+		border: 1px solid #aaa;
+		vertical-align: top;
+		padding: 3px;
+	}
+
+	&.weekend td {
+		background: rgba(175, 175, 175, 0.1);
+	}
+
+	.day {
+		width: 70px;
+
+		.num {
+			font-size: 18px;
+		}
+
+		.name {
+			float: right;
+			font-size: 13px;
+			line-height: 24px;
+		}
+	}
+
+	.schedules ul {
+		padding-left: 0;
+		margin-bottom: 0;
+	}
+
+	.schedule {
+		list-style-type: none;
+		font-size: 14px;
+		line-height: 24px;
+
+		a {
+			padding: 2px;
+			border-radius: 4px;
+			color: #222;
+		}
+
+		small {
+			padding-left: 3px;
+		}
+	}
+}
+
+.h-calendar-nav {
+	margin: 10px 0;
+
+	> span:first-child {
+		margin-right: 10px;
+	}
+
+	select {
+		display: inline-block;
+		width: auto;
+		font-size: 18px;
+		padding: 4px 0;
+		height: auto;
+		border: 0 none;
+		box-shadow: none;
+		vertical-align: middle;
+	}
+
+	a, span {
+		vertical-align: middle;
+	}
+}
+
 /* Schedule */
 /* The following are basically all the hide/show rules for the schedule. All the colors and padding */
 /* adjustments are done below, on a per-theme basis. */

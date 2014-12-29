@@ -1,0 +1,141 @@
+{% extends "frontend.twig" %}
+
+{% set curMonth = month.firstDay.format('m') %}
+{% set curYear  = month.firstDay.format('Y') %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h1>Event Calendar</h1>
+
+		<nav class="h-calendar-nav text-center">{% spaceless %}
+			<span>
+				{% if prevMonth.format('Y') < minYear %}
+					<span class="btn btn-link btn-xs disabled"><i class="fa fa-ban"></i></span>
+				{% else %}
+					<a href="/-/calendar/{{ prevMonth.format('Y/m') }}" class="btn btn-link btn-xs"><i class="fa fa-backward"></i></a>
+				{% endif %}
+
+				<select name="month" id="month" class="form-control">
+					{% for month in 1..12 %}
+						{% set m = curYear ~ '-' ~ month ~ '-13' %}
+						<option value="{{ m|date('Y/m') }}"{% if month == curMonth %} selected{% endif %}>{{ m|date('F') }}</option>
+					{% endfor %}
+				</select>
+
+				{% if nextMonth.format('Y') > maxYear %}
+					<span class="btn btn-link btn-xs disabled"><i class="fa fa-ban"></i></span>
+				{% else %}
+					<a href="/-/calendar/{{ nextMonth.format('Y/m') }}" class="btn btn-link btn-xs"><i class="fa fa-forward"></i></a>
+				{% endif %}
+			</span>
+
+			<span>
+				{% if prevYear.format('Y') < minYear %}
+					<span class="btn btn-link btn-xs disabled"><i class="fa fa-ban"></i></span>
+				{% else %}
+					<a href="/-/calendar/{{ prevYear.format('Y/m') }}" class="btn btn-link btn-xs"><i class="fa fa-backward"></i></a>
+				{% endif %}
+
+				<select name="month" id="month" class="form-control">
+					{% for year in (curYear - 3)..(curYear + 3) %}
+						{% if year >= minYear and year <= maxYear %}
+							<option value="{{ year }}/{{ curMonth }}"{% if year == curYear %} selected{% endif %}>{{ year }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
+
+				{% if nextYear.format('Y') > maxYear %}
+					<span class="btn btn-link btn-xs disabled"><i class="fa fa-ban"></i></span>
+				{% else %}
+					<a href="/-/calendar/{{ nextYear.format('Y/m') }}" class="btn btn-link btn-xs"><i class="fa fa-forward"></i></a>
+				{% endif %}
+			</span>
+		{% endspaceless %}</nav>
+
+		<div class="hidden-xs">
+			<table class="h-calendar res-month">
+				<thead>{% spaceless %}
+					<tr>
+						{% for day in month.weeks()[0].days %}
+							<th>{{ day.date().format('l') }}</th>
+						{% endfor %}
+					</tr>
+				{% endspaceless %}</thead>
+				<tbody>{% spaceless %}
+					{% for week in month.weeks %}
+						<tr>
+							{% for day in week.days %}
+								{% set key   = day.date().format('Y-m-d') %}
+								{% set stack = stacks[key]|default([])    %}
+								<td class="h-cal-cell{{ day.isOverflow ? ' overflow' : '' }} height-{{ stack|length }}{{ day.date().format('N') >= 6 ? ' weekend' : '' }}">
+										<span class="day">{{ day.date().format('d') }}</span>
+										{% for bar in stack %}
+											{% if bar == 'fill' %}
+											<div class="bar fill">&nbsp;</div>
+											{% else %}
+											<div class="bar {% if bar.state == 'single' %}state-begin state-end{% else %}state-{{ bar.state }}{% endif %} bar-theme-{{ bar.color }}">
+												<div class="jail">{% spaceless %}
+													{% if bar.state in ['single', 'begin'] %}
+													<a href="{{ bar.url }}" title="{{ bar.title }}"><i class="fa fa-gamepad"></i> {{ bar.title|shorten(30) }}</a>
+													{% else %}
+													&nbsp;
+													{% endif %}
+												{% endspaceless %}</div>
+											</div>
+											{% endif %}
+										{% endfor %}
+								</td>
+							{% endfor %}
+						</tr>
+					{% endfor %}
+				{% endspaceless %}</tbody>
+			</table>
+		</div>
+
+		<div class="visible-xs">
+			<table class="h-calendar-vertical res-month">{% spaceless %}
+			{% for week in month.weeks %}
+				<tbody class="week">
+				{% for day in week.days %}
+					{% set date  = day.date()              %}
+					{% set key   = date.format('Y-m-d')    %}
+					{% set stack = stacks[key]|default([]) %}
+
+					{% if not day.isOverflow %}
+					<tr class="h-day{{ date.format('N') >= 6 ? ' weekend' : '' }}">
+						<td class="day">
+							<span class="num">{{ date.format('d') }}</span>
+							<span class="name text-muted">{{ date.format('D') }}</span>
+						</td>
+						<td class="schedules">
+							{% if stack|length > 0 %}
+							<ul>
+								{% for bar in stack %}
+									{% if bar != 'fill' and bar.state != 'progress' %}
+									<li class="schedule">
+										<div class="h-jail">
+											{% if bar.state == 'begin' %}
+												<a href="{{ bar.url }}" title="{{ bar.title }}" class="bar-theme-{{ bar.color }}"><i class="fa fa-gamepad"></i> {{ bar.title|shorten(30) }}</a> <small class="text-muted">begins.</small>
+											{% elseif bar.state == 'end' %}
+												<a href="{{ bar.url }}" title="{{ bar.title }}" class="bar-theme-{{ bar.color }}"><i class="fa fa-flag-checkered"></i> {{ bar.title|shorten(30) }}</a> <small class="text-muted">ends.</small>
+											{% else %}
+												<a href="{{ bar.url }}" title="{{ bar.title }}" class="bar-theme-{{ bar.color }}"><i class="fa fa-gamepad"></i> {{ bar.title|shorten(30) }}</a>
+											{% endif %}
+										</div>
+									</li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+							{% endif %}
+						</td>
+					</tr>
+					{% endif %}
+				{% endfor %}
+				</tbody>
+			{% endfor %}
+			{% endspaceless %}</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

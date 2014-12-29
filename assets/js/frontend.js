@@ -257,4 +257,10 @@ jQuery(function($) {
 			return false;
 		});
 	}
+
+	// calendar navigation
+
+	$('.h-calendar-nav select').on('change', function() {
+		window.location = '/-/calendar/' + $(this).val();
+	});
 });

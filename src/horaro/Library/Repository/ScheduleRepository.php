@@ -41,4 +41,16 @@ class ScheduleRepository extends EntityRepository {
 
 		return $query->getResult();
 	}
+
+	public function findPublic(\DateTime $startFrom, \DateTime $startTo) {
+		$from  = $startFrom->format('Y-m-d H:i:s');
+		$to    = $startTo->format('Y-m-d H:i:s');
+		$dql   = 'SELECT s, e FROM horaro\Library\Entity\Schedule s JOIN s.event e WHERE e.secret IS NULL AND s.secret IS NULL AND s.start BETWEEN :a AND :b ORDER BY s.start ASC';
+		$query = $this->_em->createQuery($dql);
+
+		$query->setParameter('a', $from);
+		$query->setParameter('b', $to);
+
+		return $query->getResult();
+	}
 }
