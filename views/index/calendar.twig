@@ -68,7 +68,7 @@
 							{% for day in week.days %}
 								{% set key   = day.date().format('Y-m-d') %}
 								{% set stack = stacks[key]|default([])    %}
-								<td class="h-cal-cell{{ day.isOverflow ? ' overflow' : '' }} height-{{ stack|length }}{{ day.date().format('N') >= 6 ? ' weekend' : '' }}">
+								<td class="h-cal-cell{{ day.isOverflow ? ' overflow' : '' }} height-{{ stack|length }}{{ day.date().format('N') >= 6 ? ' weekend' : '' }}{{ day.date().format('N') == 7 ? ' sunday' : '' }}">
 										<span class="day">{{ day.date().format('d') }}</span>
 										{% for bar in stack %}
 											{% if bar == 'fill' %}
