@@ -6,7 +6,7 @@ php_value max_input_vars 100
 RewriteEngine On
 
 <IfModule expires_module>
-	<FilesMatch "[0-9a-f]{8}\.(css|js)$">
+	<FilesMatch "[0-9a-f]{8}\.(css|js|png)$">
 		ExpiresActive On
 		ExpiresDefault "access plus 6 months"
 	</FilesMatch>
