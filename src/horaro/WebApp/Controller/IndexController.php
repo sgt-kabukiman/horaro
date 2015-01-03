@@ -18,12 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends BaseController {
 	public function welcomeAction(Request $request) {
-		$user = $this->getCurrentUser();
-
-		if ($user) {
-			return $this->redirect('/-/home');
-		}
-
 		// find upcoming event schedules (blatenly ignoring that the starting times
 		// in the database are not in UTC).
 
@@ -54,10 +48,19 @@ class IndexController extends BaseController {
 			}
 		}
 
+		// if someone is logged in, find their recent activity
+		$user   = $this->getCurrentUser();
+		$recent = [];
+
+		if ($user) {
+			$recent = $scheduleRepo->findRecentlyUpdated($user, 7);
+		}
+
 		return $this->render('index/welcome.twig', [
 			'noRegister' => $this->exceedsMaxUsers(),
 			'upcoming'   => array_slice($upcoming, 0, 5),
-			'featured'   => array_slice($featured, 0, 5)
+			'featured'   => array_slice($featured, 0, 5),
+			'recent'     => $recent
 		]);
 	}
 
@@ -142,7 +145,7 @@ class IndexController extends BaseController {
 
 		$this->app['csrf']->initSession($session);
 
-		return $this->redirect('/-/home');
+		return $this->redirect('/');
 	}
 
 	public function logoutAction(Request $request) {

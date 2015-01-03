@@ -1,26 +1,2 @@
 {% extends "backend.twig" %}
 {% import "macros.twig" as macros %}
-
-{% block navigation %}
-<ul class="nav navbar-nav">
-	<li><a href="/-/admin"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-	<li><a href="/-/admin/users"><i class="fa fa-users"></i> Users</a></li>
-	<li><a href="/-/admin/events"><i class="fa fa-gamepad"></i> Events</a></li>
-	<li><a href="/-/admin/schedules"><i class="fa fa-calendar"></i> Schedules</a></li>
-	{% if utils.userIsOp %}
-	<li><a href="/-/admin/utils"><i class="fa fa-magic"></i> Utilities</a></li>
-	{% endif %}
-</ul>
-
-<ul class="nav navbar-nav navbar-right">
-	<li>
-		<form method="post" action="/-/logout">
-			{{ macros.csrf_token() }}
-			<button type="submit" class="btn btn-link"><i class="fa fa-power-off"></i> Log-out</button>
-		</form>
-	</li>
-	<li>
-		<a href="/-/home"><i class="fa fa-home"></i> <span class="hidden-lg hidden-md hidden-sm">Regular Backend</span></a>
-	</li>
-</ul>
-{% endblock %}

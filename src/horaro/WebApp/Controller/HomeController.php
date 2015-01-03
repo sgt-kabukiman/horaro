@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class HomeController extends BaseController {
 	public function indexAction(Request $request) {
+		$this->app['session']->set('navbar', 'regular');
+
 		return $this->render('home/home.twig', [
 			'isFull' => $this->exceedsMaxEvents($this->getCurrentUser())
 		]);

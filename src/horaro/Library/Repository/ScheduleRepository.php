@@ -12,6 +12,7 @@ namespace horaro\Library\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use horaro\Library\Entity\Event;
+use horaro\Library\Entity\User;
 
 /**
  * Schedule Repository
@@ -50,6 +51,16 @@ class ScheduleRepository extends EntityRepository {
 
 		$query->setParameter('a', $from);
 		$query->setParameter('b', $to);
+
+		return $query->getResult();
+	}
+
+	public function findRecentlyUpdated(User $user, $max) {
+		$dql   = 'SELECT s, e FROM horaro\Library\Entity\Schedule s JOIN s.event e WHERE e.user = :user ORDER BY s.updated_at ASC';
+		$query = $this->_em->createQuery($dql);
+
+		$query->setParameter('user', $user);
+		$query->setMaxResults($max);
 
 		return $query->getResult();
 	}

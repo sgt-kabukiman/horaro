@@ -1,0 +1,89 @@
+{% if not app.user %}
+	<form method="post" action="/-/login" class="navbar-form navbar-right">
+		<div class="form-group">
+			<input type="text" name="login" placeholder="username" class="form-control" required>
+		</div>
+		<div class="form-group">
+			<input type="password" name="password" placeholder="password" class="form-control" required>
+		</div>
+		<div class="form-group">
+			<button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-sign-in"></i> Log-in</button>
+		</div>
+	</form>
+{% elseif app.session.get('navbar') == 'admin' %}
+	<ul class="nav navbar-nav">
+		<li><a href="/-/admin"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+		<li><a href="/-/admin/users"><i class="fa fa-users"></i> Users</a></li>
+		<li><a href="/-/admin/events"><i class="fa fa-gamepad"></i> Events</a></li>
+		<li><a href="/-/admin/schedules"><i class="fa fa-calendar"></i> Schedules</a></li>
+		{% if utils.userIsOp %}
+		<li><a href="/-/admin/utils"><i class="fa fa-magic"></i> Utilities</a></li>
+		{% endif %}
+	</ul>
+
+	<ul class="nav navbar-nav navbar-right">
+		<li>
+			<form method="post" action="/-/logout">
+				{{ macros.csrf_token() }}
+				<button type="submit" class="btn btn-link"><i class="fa fa-power-off"></i> Log-out</button>
+			</form>
+		</li>
+		<li>
+			<a href="/-/home"><i class="fa fa-home"></i> <span class="hidden-lg hidden-md hidden-sm">Regular Backend</span></a>
+		</li>
+	</ul>
+{% else %}
+	<ul class="nav navbar-nav">
+		<li><a href="/-/home"><i class="fa fa-home"></i> Home</a></li>
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gamepad"></i> My Events <span class="caret"></span></a>
+			<ul class="dropdown-menu">
+				{% for event in app.user.events %}
+				<li><a href="/-/events/{{ event.id|obscurify('event') }}" class="h-jail">{{ event.name }}</a></li>
+				{% endfor %}
+
+				{% if app.user.events|length > 0 %}
+				<li class="divider"></li>
+				{% endif %}
+				<li><a href="/-/events/new">New…</a></li>
+			</ul>
+		</li>
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-calendar"></i> My Schedules <span class="caret"></span></a>
+			<ul class="dropdown-menu">
+				{% for event in app.user.events %}
+					{% for schedule in event.schedules %}
+					<li><a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}" class="h-jail">{{ schedule.name|shorten(20) }} <small>({{ event.name|shorten(35) }})</small></a></li>
+					{% endfor %}
+				{% endfor %}
+
+				{% if app.user.events|length > 0 %}
+				<li class="divider"></li>
+				{% endif %}
+			</ul>
+		</li>
+	</ul>
+
+	<ul class="nav navbar-nav navbar-right">
+		<li>
+			<a href="/-/profile" class="h-jail">
+				<i class="fa fa-cog"></i>
+				{{ app.user.name }}
+				{% if app.user.gravatarHash %}
+				<img src="//www.gravatar.com/avatar/{{ app.user.gravatarHash }}?size=23&amp;d=retro&amp;r=pg" class="h-avatar" alt="" />
+				{% endif %}
+			</a>
+		</li>
+		<li>
+			<form method="post" action="/-/logout">
+				{{ macros.csrf_token() }}
+				<button type="submit" class="btn btn-link"><i class="fa fa-power-off"></i> Log-out</button>
+			</form>
+		</li>
+		{% if utils.userIsAdmin() %}
+		<li>
+			<a href="/-/admin"><i class="fa fa-wrench"></i> <span class="hidden-lg hidden-md hidden-sm">Admin Dashboard</span></a>
+		</li>
+		{% endif %}
+	</ul>
+{% endif %}

@@ -7,7 +7,7 @@
 	{% block meta %}{% endblock %}
 	{% block styles %}{% endblock %}
 </head>
-<body{% block body_attr %}{% endblock %}>
+<body{% block body_attr %} class="theme-horaro"{% endblock %}>
 	{% block navbar %}
 	<nav class="navbar navbar-default navbar-static-top" id="top" role="navigation">
 		<div class="{{ fluid|default(false) ? 'container-fluid' : 'container' }}">
@@ -24,7 +24,7 @@
 			{% endblock %}
 
 			<div class="collapse navbar-collapse" id="h-collapse-nav">
-				{% block navigation %}{% endblock %}
+				{% block navigation %}{% include "navigation.twig" %}{% endblock %}
 			</div>
 		</div>
 	</nav>

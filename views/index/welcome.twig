@@ -3,6 +3,28 @@
 {% block content %}
 <div class="row">
 	<div class="col-lg-5 col-md-5">
+		{% if app.user %}
+		<h3>Your Recent Schedules</h3>
+
+		{% if recent|length > 0 %}
+		<ul class="h-mru">
+			{% for schedule in recent %}
+			<li class="h-jail">
+				<a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}" class="item"><i class="fa fa-calendar"></i> {{ schedule.name|shorten(25) }}</a>
+				<small class="text-muted">{{ schedule.event.name|shorten(45) }}</small>
+			</li>
+			{% endfor %}
+		</ul>
+		<p class="text-center">
+			<a href="/-/events/new" class="btn btn-sm btn-default"><i class="fa fa-plus"></i> Create New Event</a>
+		</p>
+		{% else %}
+		<p>It seems like you have not created anything yet.</p>
+		<p class="text-center">
+			<a href="/-/events/new" class="btn btn-primary"><i class="fa fa-gamepad"></i> Create Your First Event</a>
+		</p>
+		{% endif %}
+		{% else %}
 		<div class="jumbotron">
 			<h1>Welcome to Horaro</h1>
 			{% if not noRegister %}
@@ -19,6 +41,7 @@
 				{% endif %}
 			</p>
 		</div>
+		{% endif %}
 	</div>
 
 	<div class="col-lg-7 col-md-7">
@@ -29,7 +52,7 @@
 			{% for row in upcoming %}
 			<li class="h-jail">
 				{% set start = row.schedules[0].start %}
-				<a href="/{{ row.event.slug }}" class="event"><i class="fa fa-gamepad"></i> {{ row.event.name|shorten(45) }}</a>
+				<a href="/{{ row.event.slug }}" class="item"><i class="fa fa-gamepad"></i> {{ row.event.name|shorten(45) }}</a>
 				<time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}" title="{{ start.format('l, F d, Y \\a\\t H:i') }} ({{ row.schedules[0].timezone }} time)" class="h-relative h-fuzzy text-muted">on {{ start.format('l, F d, Y') }}</time>
 				({% for schedule in row.schedules %}<i class="fa fa-calendar"></i> <a href="/{{ row.event.slug }}/{{ schedule.slug }}">{{ schedule.name|shorten(45) }}</a>{% if not loop.last %}, {% endif %}{% endfor %})
 			</li>
@@ -46,7 +69,7 @@
 		{% if featured|length > 0 %}
 		<ul class="h-eventlist">
 			{% for event in featured %}
-			<li class="h-jail"><a href="/{{ event.slug }}" class="event"><i class="fa fa-gamepad"></i> {{ event.name|shorten(45) }}</a></li>
+			<li class="h-jail"><a href="/{{ event.slug }}" class="item"><i class="fa fa-gamepad"></i> {{ event.name|shorten(45) }}</a></li>
 			{% endfor %}
 		</ul>
 		{% endif %}

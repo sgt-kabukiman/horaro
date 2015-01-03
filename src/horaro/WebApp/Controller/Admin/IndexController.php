@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class IndexController extends BaseController {
 	public function dashboardAction(Request $request) {
+		$this->app['session']->set('navbar', 'admin');
+
 		return $this->render('admin/dashboard.twig');
 	}
 }
