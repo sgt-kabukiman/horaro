@@ -256,6 +256,16 @@ jQuery(function($) {
 
 			return false;
 		});
+
+		// allow to show the full table
+		$('#h-toggle-usability').on('click', function() {
+			//var isUsable = $('html').is('.js');
+
+			$('html').toggleClass('js');
+			$('.h-secondary').remove();
+			$('.h-schedule .expanded').removeClass('expanded');
+			$('.h-schedule .h-co').toggle();
+		});
 	}
 
 	// calendar navigation
