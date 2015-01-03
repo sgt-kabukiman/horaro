@@ -51,7 +51,7 @@
 		<ul class="h-eventlist">
 			{% for row in upcoming %}
 			<li class="h-jail">
-				{% set start = row.schedules[0].start %}
+				{% set start = row.schedules[0].localStart %}
 				<a href="/{{ row.event.slug }}" class="item"><i class="fa fa-gamepad"></i> {{ row.event.name|shorten(45) }}</a>
 				<time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}" title="{{ start.format('l, F d, Y \\a\\t H:i') }} ({{ row.schedules[0].timezone }} time)" class="h-relative h-fuzzy text-muted">on {{ start.format('l, F d, Y') }}</time>
 				({% for schedule in row.schedules %}<i class="fa fa-calendar"></i> <a href="/{{ row.event.slug }}/{{ schedule.slug }}">{{ schedule.name|shorten(45) }}</a>{% if not loop.last %}, {% endif %}{% endfor %})
