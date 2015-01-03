@@ -417,7 +417,8 @@ class Schedule {
 	 * @return Schedule
 	 */
 	public function setSecret($secret) {
-		$this->secret = $secret;
+		$secret       = trim($secret);
+		$this->secret = mb_strlen($secret) === 0 ? null : $secret;
 
 		return $this;
 	}
@@ -429,6 +430,15 @@ class Schedule {
 	 */
 	public function getSecret() {
 		return $this->secret;
+	}
+
+	/**
+	 * Get whether the schedule and its parent event are public
+	 *
+	 * @return boolean
+	 */
+	public function isPublic() {
+		return !$this->getSecret() && $this->getEvent()->isPublic();
 	}
 
 	/**

@@ -288,7 +288,8 @@ class Event {
 	 * @return Schedule
 	 */
 	public function setSecret($secret) {
-		$this->secret = $secret;
+		$secret       = trim($secret);
+		$this->secret = mb_strlen($secret) === 0 ? null : $secret;
 
 		return $this;
 	}
@@ -300,6 +301,15 @@ class Event {
 	 */
 	public function getSecret() {
 		return $this->secret;
+	}
+
+	/**
+	 * Get whether the event is public
+	 *
+	 * @return boolean
+	 */
+	public function isPublic() {
+		return !$this->getSecret();
 	}
 
 	/**

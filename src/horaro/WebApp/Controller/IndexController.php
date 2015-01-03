@@ -43,7 +43,7 @@ class IndexController extends BaseController {
 		foreach ($featured as $idx => $event) {
 			$eventID = $event->getID();
 
-			if (isset($upcoming[$eventID])) {
+			if (isset($upcoming[$eventID]) || !$event->isPublic()) {
 				unset($featured[$idx]);
 			}
 		}
