@@ -76,6 +76,7 @@
 	</div>
 </div>
 
+{% if not app.user %}
 <div class="row">
 	<div class="col-lg-12 col-md-12">
 		<h3>Some Features</h3>
@@ -131,4 +132,5 @@
 		<p><small>Subscribe to a schedule to get all dates constantly updated in your personal calendar.</small></p>
 	</div>
 </div>
+{% endif %}
 {% endblock %}
