@@ -56,7 +56,7 @@ class ScheduleRepository extends EntityRepository {
 	}
 
 	public function findRecentlyUpdated(User $user, $max) {
-		$dql   = 'SELECT s, e FROM horaro\Library\Entity\Schedule s JOIN s.event e WHERE e.user = :user ORDER BY s.updated_at ASC';
+		$dql   = 'SELECT s, e FROM horaro\Library\Entity\Schedule s JOIN s.event e WHERE e.user = :user ORDER BY s.updated_at DESC';
 		$query = $this->_em->createQuery($dql);
 
 		$query->setParameter('user', $user);
