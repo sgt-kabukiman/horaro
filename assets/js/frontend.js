@@ -194,9 +194,6 @@ jQuery(function($) {
 
 	$('#localized-note small').toggle();
 
-	window.setInterval(updateRelativeTimes, 5000);
-	updateRelativeTimes();
-
 	// Add funky behaviour to the schedule
 	if ($('#controls').length > 0) {
 		$('.h-schedule tbody tr.h-primary').append($('#controls').html());
@@ -267,6 +264,9 @@ jQuery(function($) {
 			$('.h-schedule .h-co').toggle();
 		});
 	}
+
+	window.setInterval(updateRelativeTimes, 5000);
+	updateRelativeTimes();
 
 	// calendar navigation
 
