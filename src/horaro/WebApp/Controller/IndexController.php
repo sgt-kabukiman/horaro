@@ -201,9 +201,9 @@ class IndexController extends BaseController {
 		$calViewEnd   = $lastWeek->weekEnd()->format('Y-m-d');
 
 		// define range for the database query
-		// Since the database doesn't know the end, we mus manually make sure that schedules that
+		// Since the database doesn't know the end, we must manually make sure that schedules that
 		// start before $calStart but end after $claStart are included. To do so, we set the search
-		// begin date one month back. Should work well enough.
+		// beginning date one month back. Should work well enough.
 
 		$queryBegin = clone $firstDay;
 		$queryEnd   = new \DateTime($calEnd.' 23:59:59');

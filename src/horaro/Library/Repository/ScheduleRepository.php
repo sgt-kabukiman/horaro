@@ -33,14 +33,29 @@ class ScheduleRepository extends EntityRepository {
 	}
 
 	public function findUpcoming($days) {
-		$start = gmdate('Y-m-d H:i:s', time() + $days*24*3600);
-		$dql   = 'SELECT s, e FROM horaro\Library\Entity\Schedule s JOIN s.event e WHERE e.secret IS NULL AND s.secret IS NULL AND s.start > :now AND s.start <= :start ORDER BY s.start ASC';
+		$end   = gmdate('Y-m-d H:i:s', time() + $days*24*3600);
+		$dql   = 'SELECT s, e FROM horaro\Library\Entity\Schedule s JOIN s.event e WHERE e.secret IS NULL AND s.secret IS NULL AND s.start > :begin AND s.start <= :end ORDER BY s.start ASC';
 		$query = $this->_em->createQuery($dql);
 
-		$query->setParameter('now', gmdate('Y-m-d H:i:s'));
-		$query->setParameter('start', $start);
+		// search begins at "now minus 1 day" to include events with different timezones as well;
+		// this requires filtering the schedules later on by their actual start date/time.
 
-		return $query->getResult();
+		$query->setParameter('begin', gmdate('Y-m-d H:i:s', time() - 24*3600));
+		$query->setParameter('end', $end);
+
+		$schedules = $query->getResult();
+		$result    = [];
+		$now       = time();
+
+		foreach ($schedules as $schedule) {
+			$start = $schedule->getLocalStart()->format('U');
+
+			if ($start > $now) {
+				$result[] = $schedule;
+			}
+		}
+
+		return $result;
 	}
 
 	public function findPublic(\DateTime $startFrom, \DateTime $startTo) {
