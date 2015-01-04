@@ -78,7 +78,7 @@
 											{% else %}
 											<div class="bar {% if bar.state == 'single' %}state-begin state-end{% else %}state-{{ bar.state }}{% endif %} bar-theme-{{ bar.color }}">
 												<div class="jail">{% spaceless %}
-													{% if bar.state in ['single', 'begin'] %}
+													{% if bar.state in ['single', 'begin'] or bar.continued %}
 													<a href="{{ bar.url }}" title="{{ bar.title }}"><i class="fa fa-gamepad"></i> {{ bar.title|shorten(30) }}</a>
 													{% else %}
 													&nbsp;

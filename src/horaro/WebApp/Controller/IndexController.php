@@ -184,6 +184,22 @@ class IndexController extends BaseController {
 		$calStart = $firstDay->format('Y-m-d');
 		$calEnd   = $month->lastDay()->format('Y-m-d');
 
+		// find date range shown in the actual calendar (which shows overflowing dates)
+
+		$firstWeek = null;
+		$lastWeek  = null;
+
+		foreach ($month->weeks() as $week) {
+			if ($firstWeek === null) {
+				$firstWeek = $week;
+			}
+
+			$lastWeek = $week;
+		}
+
+		$calViewStart = $firstWeek->weekStart()->format('Y-m-d');
+		$calViewEnd   = $lastWeek->weekEnd()->format('Y-m-d');
+
 		// define range for the database query
 		// Since the database doesn't know the end, we mus manually make sure that schedules that
 		// start before $calStart but end after $claStart are included. To do so, we set the search
@@ -244,8 +260,9 @@ class IndexController extends BaseController {
 
 		// collect raw schedule data, grouped by day
 
-		$data    = []; // {YYYY-MM-DD: {scheduleID: info, scheduleID: info, ...}}
-		$lengths = []; // {scheduleID: numofdays, scheduleID: numofdays, ...}
+		$data       = []; // {YYYY-MM-DD: {scheduleID: info, scheduleID: info, ...}}
+		$lengths    = []; // {scheduleID: numofdays, scheduleID: numofdays, ...}
+		$calStartTS = strtotime($calViewStart);
 
 		foreach ($calElements as $calElement) {
 			list ($schedule, $linkTo) = $calElement;
@@ -270,7 +287,7 @@ class IndexController extends BaseController {
 				$url   = '/'.$event->getSlug().'/'.$schedule->getSlug();
 			}
 
-			// walk through the schedulr date range, day by day, and add one element
+			// walk through the scheduler date range, day by day, and add one element
 			// per day to $data
 
 			while ($cursor <= $end) {
@@ -288,11 +305,12 @@ class IndexController extends BaseController {
 				}
 
 				$data[$date][$id] = [
-					'id'    => $id,
-					'state' => $state,
-					'group' => $event->getID(),
-					'title' => $title,
-					'url'   => $url
+					'id'        => $id,
+					'state'     => $state,
+					'group'     => $event->getID(),
+					'title'     => $title,
+					'url'       => $url,
+					'continued' => in_array($state, ['progress', 'end']) && $cursor === $calStartTS
 				];
 
 				$cursor = strtotime('+1 day', $cursor);
@@ -304,6 +322,14 @@ class IndexController extends BaseController {
 
 		// sort by date
 		ksort($data);
+
+		// remove dates prior/after the selected month
+
+		foreach (array_keys($data) as $day) {
+			if ($day < $calViewStart || $day > $calViewEnd) {
+				unset($data[$day]);
+			}
+		}
 
 		// build up the stacks. in the calendar, each day has a stack of rows, up to $height many.
 
