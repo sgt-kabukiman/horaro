@@ -30,4 +30,11 @@ class EventRepository extends EntityRepository {
 
 		return (int) $query->getSingleScalarResult();
 	}
+
+	public function findPublic() {
+		$dql   = 'SELECT e FROM horaro\Library\Entity\Event e WHERE e.secret IS NULL ORDER BY e.id ASC';
+		$query = $this->_em->createQuery($dql);
+
+		return $query->getResult();
+	}
 }

@@ -114,6 +114,7 @@ class Application extends BaseApplication {
 		$this['controller.home']                   = $this->share(function() { return new Controller\HomeController($this);                   });
 		$this['controller.event']                  = $this->share(function() { return new Controller\EventController($this);                  });
 		$this['controller.schedule']               = $this->share(function() { return new Controller\ScheduleController($this);               });
+		$this['controller.sitemap']                = $this->share(function() { return new Controller\SitemapController($this);                });
 		$this['controller.schedule.item']          = $this->share(function() { return new Controller\ScheduleItemController($this);           });
 		$this['controller.schedule.column']        = $this->share(function() { return new Controller\ScheduleColumnController($this);         });
 		$this['controller.schedule.import']        = $this->share(function() { return new Controller\ScheduleImportController($this);         });
@@ -225,6 +226,8 @@ class Application extends BaseApplication {
 		$this->route('GET',   '/-/register',                'index:registerForm', 'ghost');
 		$this->route('POST',  '/-/register',                'index:register',     'ghost', true);
 		$this->route('POST',  '/-/logout',                  'index:logout',       'user');
+
+		$this->route('GET',   '/-/sitemap',                 'sitemap:generate');
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// user backend
