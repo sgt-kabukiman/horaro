@@ -219,51 +219,6 @@ module.exports = function (grunt) {
 				files: ['assets/js/**/*'],
 				tasks: ['rig', 'uglify']
 			}
-		},
-
-		'ftp-deploy': {
-			src: {
-				auth: {
-					host: 'horaro.kabukiman.org',
-					port: 21
-				},
-				src: 'src',
-				dest: '/horaro.kabukiman.org/src'
-			},
-			views: {
-				auth: {
-					host: 'horaro.kabukiman.org',
-					port: 21
-				},
-				src: 'views',
-				dest: '/horaro.kabukiman.org/views'
-			},
-			assets: {
-				auth: {
-					host: 'horaro.kabukiman.org',
-					port: 21
-				},
-				src: 'www/assets',
-				dest: '/horaro.kabukiman.org/www/assets'
-			},
-			tmp: {
-				auth: {
-					host: 'horaro.kabukiman.org',
-					port: 21
-				},
-				src: 'tmp',
-				dest: '/horaro.kabukiman.org/tmp',
-				exclusions: ['tmp/twig', 'tmp/assets']
-			},
-			resources: {
-				auth: {
-					host: 'horaro.kabukiman.org',
-					port: 21
-				},
-				src: 'resources',
-				dest: '/horaro.kabukiman.org/resources',
-				exclusions: ['resources/config/parameters.yml']
-			}
 		}
 	});
 
@@ -277,7 +232,6 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-filerev');
 	grunt.loadNpmTasks('grunt-filerev-assets');
-	grunt.loadNpmTasks('grunt-ftp-deploy');
 	grunt.loadNpmTasks('grunt-lineending');
 	grunt.loadNpmTasks('grunt-rigger');
 	grunt.loadNpmTasks('grunt-shell');

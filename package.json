@@ -12,7 +12,6 @@
         "grunt-contrib-watch": "0.5.*",
         "grunt-filerev": "0.2.*",
         "grunt-filerev-assets": "0.3.*",
-        "grunt-ftp-deploy": "0.1.*",
         "grunt-lineending": "0.2.*",
         "grunt-rigger": "0.6.*",
         "grunt-shell": "0.7.*"
