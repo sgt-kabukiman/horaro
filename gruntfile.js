@@ -5,7 +5,8 @@ module.exports = function (grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 
 		clean: {
-			assets:  ['www/assets/', 'tmp/assets/']
+			tmp:     ['tmp/assets/'],
+			assets:  ['www/assets/']
 		},
 
 		less: {
@@ -240,9 +241,14 @@ module.exports = function (grunt) {
 	grunt.registerTask('css',      ['less:app', 'concat:vendor_css_backend', 'copy:themes', 'cssmin']);
 	grunt.registerTask('js',       ['concat:vendor_js_backend', 'concat:vendor_js_frontend', 'rig', 'i18n', 'uglify']);
 	grunt.registerTask('i18n',     ['concat:i18n_en_us', 'concat:i18n_de_de']);
-	grunt.registerTask('assets',   ['clean:assets', 'css', 'js', 'copy:images']);
+	grunt.registerTask('assets',   ['css', 'js', 'copy:images']);
 	grunt.registerTask('doctrine', ['shell:schema', 'lineending:schema', 'shell:proxies']);
 	grunt.registerTask('version',  ['filerev', 'filerev_assets']);
-	grunt.registerTask('ship',     ['clean', 'assets', 'i18n', 'version']);
-	grunt.registerTask('default',  ['assets']);
+	grunt.registerTask('default',  ['clean', 'assets']);
+	grunt.registerTask('ship',     ['default', 'i18n', 'version']);
+
+	// do not clean www/assets or else cached pages will link to non-existing assets
+	// this will also re-version already versioned items, so make sure to call clean
+	// from time to time
+	grunt.registerTask('prod',     ['clean:tmp', 'assets', 'i18n', 'version']);
 };
