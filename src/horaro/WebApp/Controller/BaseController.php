@@ -152,6 +152,7 @@ class BaseController {
 		}
 		elseif ($ttl > 0) {
 			$response->setTtl($ttl * 60);
+			$response->headers->set('X-Accel-Expires', $ttl * 60); // nginx will not honor s-maxage set by setTtl() above
 		}
 
 		return $response;
