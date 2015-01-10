@@ -105,7 +105,7 @@ class ScheduleValidator extends BaseValidator {
 				$year = $d->format('Y');
 				$now  = date('Y');
 
-				if ($year < $now-2 || $year > $now+2) {
+				if ($year < 2000 || $year > $now+2) {
 					$this->addError('start', 'The given start date is out of range.', $throwUp);
 					$okay = false;
 				}
