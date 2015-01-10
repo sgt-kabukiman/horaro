@@ -155,10 +155,12 @@ class IndexController extends BaseController {
 	}
 
 	public function logoutAction(Request $request) {
-		$session = $this->app['session'];
-		$session->invalidate();
+		session_destroy();
 
-		return $this->redirect('/');
+		$response = $this->redirect('/');
+		$response->headers->clearCookie($request->getSession()->getName());
+
+		return $response;
 	}
 
 	public function licensesAction(Request $request) {
