@@ -37,3 +37,13 @@ session:
   db_id_col:   id
   db_data_col: data
   db_time_col: mtime
+
+# Cache times.
+# These determine how long (in minutes) responses of certain kinds (schedules,
+# events, calendar, ...) should be cached on intermediate proxies.
+cache_ttls:
+  schedule:  1
+  event:    10
+  homepage: 10
+  calendar: 60
+  other:    60

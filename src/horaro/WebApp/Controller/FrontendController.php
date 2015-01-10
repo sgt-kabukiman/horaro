@@ -26,18 +26,17 @@ class FrontendController extends BaseController {
 		$result = $this->handleScheduleAccess($event, $schedule, $key);
 		if ($result instanceof Response) return $result;
 
-		$isPrivate = $this->isPrivatePage($event);
-		$content   = $this->render('frontend/schedule/schedule.twig', [
+		$content = $this->render('frontend/schedule/schedule.twig', [
 			'event'     => $event,
 			'schedule'  => $schedule,
 			'key'       => $key,
 			'schedules' => $this->getAllowedSchedules($event, $key),
-			'isPrivate' => $isPrivate
+			'isPrivate' => $this->isPrivatePage($event)
 		]);
 
 		$response = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
 
-		return $this->setCachingHeader($schedule, $response, $isPrivate);
+		return $this->setScheduleCachingHeader($schedule, $response);
 	}
 
 	public function scheduleExportAction(Request $request) {
@@ -78,10 +77,9 @@ class FrontendController extends BaseController {
 			$headers['Content-Disposition'] = 'filename="'.$filename.'"';
 		}
 
-		$response  = new Response($data, 200, $headers);
-		$isPrivate = $this->isPrivatePage($event);
+		$response = new Response($data, 200, $headers);
 
-		return $this->setCachingHeader($schedule, $response, $isPrivate);
+		return $this->setScheduleCachingHeader($schedule, $response);
 	}
 
 	public function icalFaqAction(Request $request) {
@@ -104,7 +102,7 @@ class FrontendController extends BaseController {
 
 		$response = new Response($content, 200, ['Content-Type' => 'text/html; charset=UTF-8']);
 
-		return $this->setCachingHeader($schedule, $response, $isPrivate);
+		return $this->setCachingHeader($response, 'other');
 	}
 
 	public function eventAction(Request $request) {
@@ -128,7 +126,11 @@ class FrontendController extends BaseController {
 
 		$response  = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
 
-		return $this->setCachingHeader(null, $response, $isPrivate);
+		if (!$isPrivate) {
+			$response = $this->setCachingHeader($response, 'event');
+		}
+
+		return $response;
 	}
 
 	protected function resolveEvent(Request $request) {
@@ -283,20 +285,12 @@ class FrontendController extends BaseController {
 		]);
 	}
 
-	protected function setCachingHeader(Schedule $schedule = null, Response $response, $isPrivate) {
-		if ($schedule) {
-			$response->setLastModified($schedule->getUpdatedAt());
-		}
-
-		if ($isPrivate) {
-			$response->setPrivate();
+	protected function setScheduleCachingHeader(Schedule $schedule, Response $response) {
+		if ($this->isPrivatePage($schedule->getEvent())) {
+			return $response;
 		}
 		else {
-			$response->setTtl(5*60);       // 5 minutes
+			return parent::setCachingHeader($response, 'schedule', $schedule->getUpdatedAt());
 		}
-
-		$response->setClientTtl(5*60);
-
-		return $response;
 	}
 }

@@ -56,12 +56,14 @@ class IndexController extends BaseController {
 			$recent = $scheduleRepo->findRecentlyUpdated($user, 7);
 		}
 
-		return $this->render('index/welcome.twig', [
+		$html = $this->render('index/welcome.twig', [
 			'noRegister' => $this->exceedsMaxUsers(),
 			'upcoming'   => array_slice($upcoming, 0, 5),
 			'featured'   => array_slice($featured, 0, 5),
 			'recent'     => $recent
 		]);
+
+		return $this->setCachingHeader(new Response($html), 'homepage');
 	}
 
 	public function registerFormAction(Request $request) {
@@ -69,7 +71,9 @@ class IndexController extends BaseController {
 			return $this->redirect('/');
 		}
 
-		return $this->render('index/register.twig', ['result' => null]);
+		$html = $this->render('index/register.twig', ['result' => null]);
+
+		return $this->setCachingHeader(new Response($html), 'other');
 	}
 
 	public function registerAction(Request $request) {
@@ -86,7 +90,7 @@ class IndexController extends BaseController {
 		]);
 
 		if ($result['_errors']) {
-			return $this->render('index/register.twig', ['result' => $result]);
+			return new Response($this->render('index/register.twig', ['result' => $result]), 400);
 		}
 
 		// create new user
@@ -119,7 +123,9 @@ class IndexController extends BaseController {
 	}
 
 	public function loginFormAction(Request $request) {
-		return $this->render('index/login.twig', ['result' => null]);
+		$html = $this->render('index/login.twig', ['result' => null]);
+
+		return $this->setCachingHeader(new Response($html), 'other');
 	}
 
 	public function loginAction(Request $request) {
@@ -130,7 +136,7 @@ class IndexController extends BaseController {
 		]);
 
 		if ($result['_errors']) {
-			return $this->render('index/login.twig', ['result' => $result]);
+			return new Response($this->render('index/login.twig', ['result' => $result]), 401);
 		}
 
 		// open session
@@ -156,7 +162,9 @@ class IndexController extends BaseController {
 	}
 
 	public function licensesAction(Request $request) {
-		return $this->render('index/licenses.twig');
+		$html = $this->render('index/licenses.twig');
+
+		return $this->setCachingHeader(new Response($html), 'other');
 	}
 
 	public function calendarAction(Request $request) {
@@ -454,7 +462,7 @@ class IndexController extends BaseController {
 		$prevYear->modify('-1 year');
 		$nextYear->modify('+1 year');
 
-		return $this->render('index/calendar.twig', [
+		$html = $this->render('index/calendar.twig', [
 			'stacks'    => $stacks,
 			'month'     => $month,
 			'prevMonth' => $prevMonth,
@@ -464,5 +472,7 @@ class IndexController extends BaseController {
 			'minYear'   => $minYear,
 			'maxYear'   => $maxYear
 		]);
+
+		return $this->setCachingHeader(new Response($html), 'calendar');
 	}
 }

@@ -19,6 +19,7 @@ use horaro\WebApp\Exception as Ex;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class BaseController {
 	protected $app;
@@ -135,5 +136,24 @@ class BaseController {
 
 	protected function exceedsMaxScheduleColumns(Schedule $s) {
 		return $this->getRepository('ScheduleColumn')->count($s) >= 10;
+	}
+
+	protected function setCachingHeader(Response $response, $resourceType, \DateTime $lastModified = null) {
+		if ($lastModified) {
+			$response->setLastModified($lastModified);
+		}
+
+		$times = $this->app['config']['cache_ttls'];
+		$user  = $this->app['user'];
+		$ttl   = $times[$resourceType];
+
+		if ($user) {
+			$response->setPrivate();
+		}
+		elseif ($ttl > 0) {
+			$response->setTtl($ttl * 60);
+		}
+
+		return $response;
 	}
 }
