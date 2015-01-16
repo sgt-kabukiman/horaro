@@ -176,6 +176,11 @@ module.exports = function (grunt) {
 				dest: 'www/assets/images/themes'
 			},
 
+			images_favicons: {
+				src: 'www/assets/images/favicons/*.*',
+				dest: 'www/assets/images/favicons'
+			},
+
 			i18n: {
 				src: 'www/assets/js/i18n/*.js',
 				dest: 'www/assets/js/i18n'

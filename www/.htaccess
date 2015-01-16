@@ -6,11 +6,14 @@ php_value max_input_vars 100
 RewriteEngine On
 
 <IfModule expires_module>
-	<FilesMatch "[0-9a-f]{8}\.(css|js|png)$">
+	<FilesMatch "[0-9a-f]{8}\.(css|js|png|ico)$">
 		ExpiresActive On
 		ExpiresDefault "access plus 6 months"
 	</FilesMatch>
 </IfModule>
+
+# make sure dumb clients get a proper favicon
+RewriteRule ^favicon.ico assets/images/favicons/favicon.ico [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule .* index.php [QSA]
