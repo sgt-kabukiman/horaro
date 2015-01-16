@@ -44,7 +44,8 @@ class BaseApplication extends Application {
 		$this['session.storage.options'] = function() {
 			return [
 				'cookie_httponly' => true,
-				'cookie_lifetime' => $this['config']['cookie_lifetime']
+				'cookie_lifetime' => $this['config']['cookie_lifetime'],
+				'cookie_secure'   => $this['config']['cookie_secure']
 			];
 		};
 

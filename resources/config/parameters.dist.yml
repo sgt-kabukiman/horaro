@@ -47,3 +47,10 @@ cache_ttls:
   homepage: 10
   calendar: 60
   other:    60
+
+# Lifetime of session cookies in seconds.
+cookie_lifetime: 86400
+
+# This controls the `secure` flag on cookies. Set this to true when you operate
+# Horaro only via SSL/TLS.
+cookie_secure: false
