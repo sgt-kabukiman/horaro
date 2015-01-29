@@ -57,43 +57,45 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
-	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-		<h2 class="h-jail">{{ event.name }} <small>Schedules</small></h2>
+<div itemscope itemtype="http://schema.org/Event">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<h2 class="h-jail"><span itemprop="name">{{ event.name }}</span> <small>Schedules</small></h2>
+		</div>
 	</div>
-</div>
 
-{% if schedules is empty %}
-<div class="row">
-	<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1 col-xs-12">
-		<div class="alert alert-info">
-			<i class="fa fa-info-circle"></i> This event does not have any schedules yet. Check back later.
+	{% if schedules is empty %}
+	<div class="row">
+		<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1 col-xs-12">
+			<div class="alert alert-info">
+				<i class="fa fa-info-circle"></i> This event does not have any schedules yet. Check back later.
+			</div>
 		</div>
 	</div>
+	{% else %}
+	<ul class="row h-schedule-list">
+		{% for schedule in schedules %}
+		<li class="col-lg-6 col-md-6 col-sm-12 col-xs-12" itemprop="subEvent" itemscope itemtype="http://schema.org/Event">
+			{% set start = schedule.localStart %}
+			{% set end   = schedule.localEnd   %}
+			<div class="well well-sm">
+				<h3 class="h-jail">
+					<a href="/{{ event.slug }}/{{ schedule.slug ~ appendix }}"><i class="fa fa-calendar"></i> <span itemprop="name">{{ schedule.name|shorten(30) }}</span></a>
+					<span class="badge">{{ schedule.items|length }}</span><br>
+					<small>
+						{% if start.format('Ymd') == end.format('Ymd') %}
+						<span itemprop="startDate"><time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}">{{ start.format('H:i') }}</time></span> &ndash;
+						<span itemprop="endDate"><time datetime="{{ end.format('Y-m-d\\TH:i:sP') }}">{{ end.format('H:i \\o\\n D, M d, Y') }}</time></span>
+						{% else %}
+						<span itemprop="startDate"><time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}">{{ start.format('D, M d') }}</time></span> &ndash;
+						<span itemprop="endDate"><time datetime="{{ end.format('Y-m-d\\TH:i:sP') }}">{{ end.format('D, M d, Y') }}</time></span>
+						{% endif %}
+					</small>
+				</h3>
+			</div>
+		</li>
+		{% endfor %}
+	</ul>
 </div>
-{% else %}
-<ul class="row h-schedule-list">
-	{% for schedule in schedules %}
-	<li class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-		{% set start = schedule.localStart %}
-		{% set end   = schedule.localEnd   %}
-		<div class="well well-sm">
-			<h3 class="h-jail">
-				<a href="/{{ event.slug }}/{{ schedule.slug ~ appendix }}"><i class="fa fa-calendar"></i> {{ schedule.name|shorten(30) }}</a>
-				<span class="badge">{{ schedule.items|length }}</span><br>
-				<small>
-					{% if start.format('Ymd') == end.format('Ymd') %}
-					<time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}">{{ start.format('H:i') }}</time> &ndash;
-					<time datetime="{{ end.format('Y-m-d\\TH:i:sP') }}">{{ end.format('H:i \\o\\n D, M d, Y') }}</time>
-					{% else %}
-					<time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}">{{ start.format('D, M d') }}</time> &ndash;
-					<time datetime="{{ end.format('Y-m-d\\TH:i:sP') }}">{{ end.format('D, M d, Y') }}</time>
-					{% endif %}
-				</small>
-			</h3>
-		</div>
-	</li>
-	{% endfor %}
-</ul>
 {% endif %}
 {% endblock %}
