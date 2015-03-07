@@ -257,11 +257,34 @@ class Schedule {
 	/**
 	 * Get start time with the proper local timezone
 	 *
+	 * The timezone will be fixed to the UTC offset of the starting date and time.
+	 * This is done to prevent issues when a schedule uses a timezone that changes
+	 * DST during it. In that case, PHP would switch the timezone offset internally,
+	 * e.g.:
+	 *     2015-03-08 01:13:00 - 05:00
+	 *   +            02:45:00
+	 *   = 2015-03-08 03:58:00 - 04:00
+	 *
+	 * I would consider this a bug in PHP's DateTime::add() implementation. To
+	 * avoid this, we take away the DST effect by fixing the offset right now.
+	 *
 	 * @return \DateTime
 	 */
 	public function getLocalStart() {
-		$tz      = $this->getTimezoneInstance();
-		$tmpFrmt = 'Y-m-d H:i:s';
+		$tz = $this->getTimezoneInstance();
+
+		// and now the PHP dance to get the UTC offset of $tz as "[+-]HH:MM"
+		$offset   = $tz->getOffset(new \DateTime('now'));
+		$negative = $offset < 0;
+		$tmpFrmt  = 'Y-m-d H:i:s';
+
+		$offset  = abs($offset);
+		$hours   = floor($offset / 3600);
+		$minutes = floor(($offset - $hours*3600) / 60);
+		$offset  = sprintf('%s%02d:%02d', $negative ? '-' : '+', $hours, $minutes);
+
+		// finally...
+		$tz = new \DateTimeZone($offset);
 
 		return \DateTime::createFromFormat($tmpFrmt, $this->getStart()->format($tmpFrmt), $tz); // "inject" proper timezone
 	}
