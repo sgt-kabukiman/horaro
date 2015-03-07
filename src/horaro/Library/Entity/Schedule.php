@@ -283,10 +283,7 @@ class Schedule {
 		$minutes = floor(($offset - $hours*3600) / 60);
 		$offset  = sprintf('%s%02d:%02d', $negative ? '-' : '+', $hours, $minutes);
 
-		// finally...
-		$tz = new \DateTimeZone($offset);
-
-		return \DateTime::createFromFormat($tmpFrmt, $this->getStart()->format($tmpFrmt), $tz); // "inject" proper timezone
+		return \DateTime::createFromFormat($tmpFrmt.'P', $this->getStart()->format($tmpFrmt).$offset); // "inject" proper timezone
 	}
 
 	/**
