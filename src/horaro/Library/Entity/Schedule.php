@@ -271,19 +271,20 @@ class Schedule {
 	 * @return \DateTime
 	 */
 	public function getLocalStart() {
-		$tz = $this->getTimezoneInstance();
+		$tmpFrmt = 'Y-m-d H:i:s';
+		$start   = $this->getStart()->format($tmpFrmt);
+		$tz      = $this->getTimezoneInstance();
 
 		// and now the PHP dance to get the UTC offset of $tz as "[+-]HH:MM"
-		$offset   = $tz->getOffset(new \DateTime('now'));
+		$offset   = $tz->getOffset(new \DateTime($start));
 		$negative = $offset < 0;
-		$tmpFrmt  = 'Y-m-d H:i:s';
 
 		$offset  = abs($offset);
 		$hours   = floor($offset / 3600);
 		$minutes = floor(($offset - $hours*3600) / 60);
 		$offset  = sprintf('%s%02d:%02d', $negative ? '-' : '+', $hours, $minutes);
 
-		return \DateTime::createFromFormat($tmpFrmt.'P', $this->getStart()->format($tmpFrmt).$offset); // "inject" proper timezone
+		return \DateTime::createFromFormat($tmpFrmt.'P', $start.$offset); // "inject" proper timezone
 	}
 
 	/**
