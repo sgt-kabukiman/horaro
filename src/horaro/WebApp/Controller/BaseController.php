@@ -75,7 +75,7 @@ class BaseController {
 	protected function respondWithArray($content = [], $status = 200, array $headers = []) {
 		$response = new JsonResponse($content, $status, $headers);
 
-		$response->setExpires(new \DateTime('1924-10-10 12:00:00 UTC'));
+		$response->setExpires(new \DateTime('1924-10-10 12:00:00', new \DateTimeZone('UTC')));
 		$response->headers->addCacheControlDirective('no-cache', true);
 		$response->headers->addCacheControlDirective('private', true);
 

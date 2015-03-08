@@ -207,7 +207,7 @@ class Schedule {
 	 * @return Schedule
 	 */
 	public function touch() {
-		return $this->setUpdatedAt(new \DateTime('now UTC'));
+		return $this->setUpdatedAt(new \DateTime('now', new \DateTimeZone('UTC')));
 	}
 
 	/**

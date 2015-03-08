@@ -89,7 +89,7 @@ class ScheduleController extends BaseController {
 			->setTheme($result['theme']['filtered'])
 			->setSecret($result['secret']['filtered'])
 			->setMaxItems($result['max_items']['filtered'])
-			->setUpdatedAt(new \DateTime('now UTC'))
+			->touch()
 		;
 
 		$this->getEntityManager()->flush();

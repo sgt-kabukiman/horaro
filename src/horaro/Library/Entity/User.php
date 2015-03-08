@@ -78,7 +78,7 @@ class User {
 	public function __construct() {
 		$this->teams      = new ArrayCollection();
 		$this->events     = new ArrayCollection();
-		$this->created_at = new \DateTime('now UTC');
+		$this->created_at = new \DateTime('now', new \DateTimeZone('UTC'));
 	}
 
 	public function getName() {

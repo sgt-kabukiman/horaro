@@ -36,7 +36,7 @@ class ICalTransformer extends BaseTransformer {
 	}
 
 	public function transform(Schedule $schedule, $public = false) {
-		$now         = new \DateTime('now UTC');
+		$now         = new \DateTime('now', new \DateTimeZone('UTC'));
 		$tz          = $schedule->getTimezone();
 		$scheduled   = $schedule->getUTCStart();
 		$columns     = $schedule->getColumns();

@@ -103,7 +103,7 @@ class ScheduleController extends BaseController {
 			->setTheme($result['theme']['filtered'])
 			->setSecret($result['secret']['filtered'])
 			->setMaxItems($config['max_schedule_items'])
-			->setUpdatedAt(new \DateTime('now UTC'))
+			->touch()
 		;
 
 		$column = new ScheduleColumn();
@@ -164,7 +164,7 @@ class ScheduleController extends BaseController {
 			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
 			->setSecret($result['secret']['filtered'])
-			->setUpdatedAt(new \DateTime('now UTC'))
+			->touch()
 		;
 
 		$this->getEntityManager()->flush();
