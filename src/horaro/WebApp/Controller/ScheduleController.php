@@ -42,6 +42,9 @@ class ScheduleController extends BaseController {
 			$columnIDs[] = $this->encodeID($column->getId(), 'schedule.column');
 		}
 
+		// we need to manually calculate table widths during runtime, so we need inline styles.
+		$this->app['csp']->addStyleSource('unsafe-inline');
+
 		return $this->render('schedule/detail.twig', [
 			'schedule' => $schedule,
 			'items'    => $items ?: null,

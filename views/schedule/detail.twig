@@ -62,14 +62,7 @@
 </div>
 
 <div id="h-scheduler-container">
-	<table
-		class="table h-scheduler h-l{{ numCols }}"
-		data-id="{{ schedule.id|obscurify('schedule') }}"
-		data-start="{{ start.format('Y-m-d\\TH:i:sP') }}"
-		data-tz="{{ start.format('P') }}"
-		data-columns="{{ columns|join(',') }}"
-		data-maxitems="{{ maxItems }}"
-	>
+	<table class="table h-l{{ numCols }}">
 		<thead>
 			<tr>
 				<th class="h-m">&nbsp;</th>
@@ -81,7 +74,16 @@
 				<th class="h-co">&nbsp;</th>
 			</tr>
 		</thead>
+	</table>
 
+	<table
+		class="table h-scheduler h-l{{ numCols }}"
+		data-id="{{ schedule.id|obscurify('schedule') }}"
+		data-start="{{ start.format('Y-m-d\\TH:i:sP') }}"
+		data-tz="{{ start.format('P') }}"
+		data-columns="{{ columns|join(',') }}"
+		data-maxitems="{{ maxItems }}"
+	>
 		<!-- ko foreach: items -->
 		{% include 'schedule/item.twig' with {'schedule': schedule, 'items': schedule.items, 'columns': schedule.columns, 'numCols' : numCols} %}
 		<!-- /ko -->

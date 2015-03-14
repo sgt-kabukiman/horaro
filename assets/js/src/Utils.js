@@ -34,3 +34,16 @@ function hasNewModel(models) {
 		return model.id() === -1;
 	}).length > 0;
 }
+
+function mirrorColumnWidths(sourceTable, targets) {
+	var sources = $('tr:first > *', sourceTable);
+
+	for (var i = 0, len = sources.length; i < len; ++i) {
+		var w = $(sources[i]).innerWidth();
+
+		$(targets[i]).css({
+			maxWidth: w,
+			width: w
+		});
+	}
+}

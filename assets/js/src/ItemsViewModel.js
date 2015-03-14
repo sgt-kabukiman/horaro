@@ -57,9 +57,12 @@ function ItemsViewModel(items) {
 	};
 
 	self.move = function(itemID, newPos) {
-		var items = self.items;
-		var item  = self.findItem(itemID);
-		var data  = { item: itemID, position: newPos };
+		var item = self.findItem(itemID);
+		var data = { item: itemID, position: newPos };
+
+		if (item.position == newPos) {
+			return;
+		}
 
 		data[csrfTokenName] = csrfToken;
 
@@ -76,8 +79,12 @@ function ItemsViewModel(items) {
 			}
 		});
 
+		self.syncOrderWithDom();
+	};
+
+	self.syncOrderWithDom = function() {
 		// go by HTML node order to avoid problems with "concurrent" sorting operations
-		var scheduler = $('.h-scheduler');
+		var scheduler = $('.h-scheduler'), items = self.items;
 
 		items().forEach(function(item) {
 			item.position = scheduler.find('tbody[data-itemid="' + item.id() + '"]').index() + 1;
@@ -85,7 +92,7 @@ function ItemsViewModel(items) {
 
 		// this kicks off the computed property afterwards to re-calculate the schedule
 		items.sort(function(a, b) {
-			return a.position - b.position;
+			return a.position === b.position ? 0 : (a.position < b.position ? -1 : 1);
 		});
 	};
 
@@ -93,21 +100,16 @@ function ItemsViewModel(items) {
 		return findModelByID(self.items(), itemID);
 	};
 
-	self.initDragAndDrop = function(reinit) {
-		$('.h-scheduler').sortable({
-			handle: '.h-m',
-			items: '.h-item'
-		});
-
-		if (!reinit) {
-			$('.h-scheduler').on('sortupdate', function(event, stuff) {
-				var row    = stuff.item;
-				var newPos = row.index();    // 1-based
+	self.initDragAndDrop = function() {
+		nativesortable($('.h-scheduler')[0], {
+			change: function(table, tbody) {
+				var row    = $(tbody);
+				var newPos = row.index() + 1;
 				var itemID = row.data('itemid');
 
 				self.move(itemID, newPos);
-			});
-		}
+			}
+		});
 	};
 
 	ko.computed(function() {

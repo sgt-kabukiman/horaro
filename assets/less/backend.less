@@ -76,6 +76,15 @@ footer {
 
 #h-scheduler-container {
 	display: none;
+
+	table:first-child {
+		margin: 0;
+	}
+
+	thead th {
+		border-bottom-width: 1px;
+		padding: 3px 5px;
+	}
 }
 
 table.h-scheduler {
@@ -136,6 +145,8 @@ table.h-scheduler {
 .h-s, .h-l {
 	white-space: nowrap;
 	width: 50px;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .h-new-day td {
@@ -233,21 +244,17 @@ tbody.h-odd td {
 
 /* Columnist */
 
-table.h-columnist {
-	font-size: 14px;
+#h-columnist-container {
+	table {
+		font-size: 14px;
 
-	tbody.h-flexible .h-handle {
-		width: 25px;
-		text-align: center;
-		cursor: move;
+		> tbody + tbody {
+			border-top: 1px solid #dddddd;
+		}
 	}
 
 	thead th {
-		padding: 3px 5px !important;
-	}
-
-	> tbody + tbody {
-		border-top: 1px solid #dddddd;
+		padding: 3px 5px;
 	}
 
 	tbody {
@@ -255,11 +262,27 @@ table.h-columnist {
 			padding: 3px 5px;
 			vertical-align: middle;
 		}
+
+		.h-handle {
+			width: 25px;
+		}
 	}
 
 	.h-controls {
 		white-space: nowrap;
-		max-width: 100px;
+		max-width: 70px;
+		width: 70px;
+	}
+
+	table:first-child {
+		margin: 0;
+	}
+}
+
+table.h-columnist {
+	tbody .h-handle {
+		text-align: center;
+		cursor: move;
 	}
 }
 
@@ -423,6 +446,13 @@ a.editable-click {
 
 .popover {
 	font-weight: normal;
+}
+
+/* custom html.sortable styling helpers to avoid inline styles (CSP) */
+
+.sortable-placeholder.active {
+	opacity: 0.5;
+	filter: alpha(opacity=50);
 }
 
 /* custom Select2 styling */

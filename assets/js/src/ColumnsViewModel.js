@@ -3,26 +3,42 @@ function ColumnsViewModel(columns) {
 
 	self.columns = ko.observableArray(columns);
 
+	self.fixedColumns = ko.pureComputed(function() {
+		return ko.utils.arrayFilter(self.columns(), function(col) {
+			return col.fixed === true;
+		});
+	});
+
+	self.flexibleColumns = ko.pureComputed(function() {
+		return ko.utils.arrayFilter(self.columns(), function(col) {
+			return col.fixed === false;
+		});
+	});
+
 	self.hasNewColumn = ko.pureComputed(function() {
 		return hasNewModel(self.columns());
 	}, self);
 
 	self.numOfFlexibleColumns = ko.pureComputed(function() {
-		for (var cols = self.columns(), i = 0, n = 0; i < cols.length; ++i) {
-			if (!cols[i].fixed) {
-				n++;
-			}
-		}
-
-		return n;
+		return self.flexibleColumns().length;
 	});
 
 	self.numOfFixedItems = ko.pureComputed(function() {
-		return self.columns().length - self.numOfFlexibleColumns();
+		return self.fixedColumns().length;
 	});
 
 	self.isFull = ko.pureComputed(function() {
 		return self.numOfFlexibleColumns() >= 10;
+	});
+
+	self.isMinimal = ko.pureComputed(function() {
+		for (var acc = 0, i = 0, cols = self.columns(), len = cols.length; i < len; ++i) {
+			if (cols[i].fixed === false && cols[i].id() !== -1) {
+				acc++;
+			}
+		}
+
+		return acc <= 1;
 	});
 
 	self.add = function() {
@@ -31,10 +47,12 @@ function ColumnsViewModel(columns) {
 	};
 
 	self.move = function(columnID, newPos) {
-		var columns  = self.columns;
-		var fixedLen = self.numOfFixedItems();
-		var col      = self.findColumn(columnID);
-		var data     = { column: columnID, position: newPos };
+		var col  = self.findColumn(columnID);
+		var data = { column: columnID, position: newPos };
+
+		if (col.position == newPos) {
+			return;
+		}
 
 		data[csrfTokenName] = csrfToken;
 
@@ -51,17 +69,25 @@ function ColumnsViewModel(columns) {
 			}
 		});
 
-		// escape to floats for simple re-sorting goodness
-		col.position = (newPos < col.position) ? (newPos - 0.5) : (newPos + 0.5);
+		self.syncOrderWithDom();
+	};
 
-		columns.sort(function(a, b) {
-			if (a.fixed === b.fixed) return a.position - b.position;
-			return a.fixed ? -1 : 1;
+	self.syncOrderWithDom = function() {
+		// go by HTML node order to avoid problems with "concurrent" sorting operations
+		var columnist = $('.h-columnist'), columns = self.columns;
+
+		columns().forEach(function(col) {
+			if (col.fixed === false) {
+				col.position = columnist.find('tbody[data-colid="' + col.id() + '"]').index() + 1;
+			}
 		});
 
-		// re-number the list
-		columns().forEach(function(col, idx) {
-			col.position = (idx - fixedLen) + 1;
+		columns.sort(function(a, b) {
+			if (a.fixed === b.fixed) {
+				return a.position === b.position ? 0 : (a.position < b.position ? -1 : 1);
+			}
+
+			return a.fixed ? -1 : 1;
 		});
 	};
 
@@ -69,20 +95,15 @@ function ColumnsViewModel(columns) {
 		return findModelByID(self.columns(), colID);
 	};
 
-	self.initDragAndDrop = function(reinit) {
-		$('.h-columnist').sortable({
-			handle: '.h-handle',
-			items: '.h-column.h-flexible'
-		});
-
-		if (!reinit) {
-			$('.h-columnist').on('sortupdate', function(event, stuff) {
-				var row    = stuff.item;
-				var newPos = row.index('.h-flexible') + 1;
+	self.initDragAndDrop = function() {
+		nativesortable($('.h-columnist')[0], {
+			change: function(table, tbody) {
+				var row    = $(tbody);
+				var newPos = row.index() + 1;
 				var colID  = row.data('colid');
 
 				self.move(colID, newPos);
-			});
-		}
+			}
+		});
 	};
 }

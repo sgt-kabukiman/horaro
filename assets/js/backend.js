@@ -156,15 +156,19 @@ jQuery(function($) {
 			ko.bindingProvider.instance = new ko.secureBindingsProvider(options);
 
 			ko.applyBindings(viewModel);
-			viewModel.initDragAndDrop(false);
+			viewModel.initDragAndDrop();
 			$('#h-scheduler-loading').hide();
 			$('#h-scheduler-container').show();
-		}
 
-		// init spatial navigation (i.e. allow going up/down/left/right with array keys)
-		var root = $('.h-scheduler, .h-columnist'); // only one will ever be found
-		if (root.length > 0) {
-			new SpatialNavigation(root);
+			// init spatial navigation (i.e. allow going up/down/left/right with array keys)
+			new SpatialNavigation(dataNode);
+
+			if (ui === 'scheduler') {
+				// sync the table column widths the hard way
+				setInterval(function() {
+					mirrorColumnWidths(dataNode, $('tr:first > *', dataNode.prev()));
+				}, 500);
+			}
 		}
 	}
 });

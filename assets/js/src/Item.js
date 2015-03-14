@@ -23,7 +23,7 @@ function Item(id, length, columns, pos) {
 
 	// setup properties for managing app state
 
-	self.position  = pos;
+	self.position  = parseInt(pos, 10);
 	self.suspended = false;
 	self.nextFocus = false;
 	self.expanded  = ko.observable(false);
@@ -178,6 +178,12 @@ function Item(id, length, columns, pos) {
 			data: JSON.stringify(data),
 			success: function() {
 				viewModel.items.remove(self);
+
+				// If this item was moved around, knockout has lost track of the DOM node and will
+				// not remove it. We have to take care of that ourselves.
+				$('.h-scheduler tbody[data-itemid="' + itemID + '"]').remove();
+
+				viewModel.syncOrderWithDom();
 			},
 			complete: function() {
 				self.busy(false);
@@ -205,8 +211,6 @@ function Item(id, length, columns, pos) {
 	};
 
 	self.doDelete = function(item, event) {
-		self.deleteItem();
-
 		var row  = $(event.target).closest('tbody');
 		var next = row.next('tbody');
 
@@ -222,6 +226,7 @@ function Item(id, length, columns, pos) {
 			next = next.find('button:visible:last');
 		}
 
+		self.deleteItem();
 		next.focus();
 	};
 

@@ -1,11 +1,11 @@
 {# Do not use the ternary operator because the secure bindings for Knockout do not support them. #}
-<tbody data-bind="attr: {'data-colid': id, 'class': 'h-column ' + ($index() % 2 === 1 && 'h-odd' || 'h-even') + (fixed && ' h-fixed' || ' h-flexible')}">
+<tbody data-bind="attr: {'data-colid': id, 'class': 'h-column ' + ($index() % 2 === 1 && 'h-odd' || 'h-even')}">
 	<tr class="h-primary">
 		<td data-bind="attr: { class: 'h-handle ' + rowClass() }, text: (fixed && '&nbsp;' || '::')"></td>
 		<td data-bind="attr: { class: 'h-name '   + rowClass() }"><a href="#" data-bind="editable: name, editableOptions: { hidden: onEditableHidden }"></a></td>
 		<td data-bind="attr: { class: 'text-right h-controls ' + rowClass() }">
 			<!-- ko if: !deleting() -->
-			<button class="" data-bind="click: confirmDelete, activate: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + ((fixed || id() === -1 || $parent.columns().length <= 1) && ' disabled' || '') }"><i class="fa fa-trash-o"></i></button>
+			<button class="" data-bind="click: confirmDelete, activate: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + (((fixed || id() === -1) || $parent.isMinimal()) && ' disabled' || '') }"><i class="fa fa-trash-o"></i></button>
 			<!-- /ko -->
 
 			<!-- ko if: deleting() -->

@@ -5,11 +5,11 @@ function Column(id, name, pos, fixed) {
 
 	self.id    = ko.observable(id);
 	self.name  = ko.observable(name);
-	self.fixed = fixed;
+	self.fixed = !!fixed;
 
 	// setup properties for managing app state
 
-	self.position  = pos;
+	self.position  = parseInt(pos, 10);
 	self.suspended = false;
 	self.nextFocus = false;
 	self.deleting  = ko.observable(false);
@@ -71,10 +71,6 @@ function Column(id, name, pos, fixed) {
 				self.name(result.data.name);
 				self.errors(false);
 
-				if (isNew) {
-					viewModel.initDragAndDrop(true);
-				}
-
 				self.suspended = false;
 
 				if (self.nextFocus) {
@@ -111,6 +107,12 @@ function Column(id, name, pos, fixed) {
 			data: JSON.stringify(data),
 			success: function() {
 				viewModel.columns.remove(self);
+
+				// If this column was moved around, knockout has lost track of the DOM node and will
+				// not remove it. We have to take care of that ourselves.
+				$('.h-columnist tbody[data-colid="' + colID + '"]').remove();
+
+				viewModel.syncOrderWithDom();
 			},
 			complete: function() {
 				self.busy(false);

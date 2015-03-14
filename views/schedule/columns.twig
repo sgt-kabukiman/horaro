@@ -24,8 +24,8 @@
 </div>
 
 <div class="row">
-	<div class="col-lg-5 col-md-6 col-sm-6">
-		<table class="table h-columnist" data-id="{{ schedule.id|obscurify('schedule') }}">
+	<div class="col-lg-5 col-md-6 col-sm-6" id="h-columnist-container">
+		<table class="table">
 			<thead>
 				<tr>
 					<th class="h-handle">&nbsp;</th>
@@ -34,7 +34,13 @@
 				</tr>
 			</thead>
 
-			<!-- ko foreach: columns -->
+			<!-- ko foreach: fixedColumns -->
+			{% include 'schedule/column.twig' with {'schedule': schedule, 'columns': schedule.columns} %}
+			<!-- /ko -->
+		</table>
+
+		<table class="table h-columnist" data-id="{{ schedule.id|obscurify('schedule') }}">
+			<!-- ko foreach: flexibleColumns -->
 			{% include 'schedule/column.twig' with {'schedule': schedule, 'columns': schedule.columns} %}
 			<!-- /ko -->
 		</table>
