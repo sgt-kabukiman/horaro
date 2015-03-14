@@ -10,9 +10,11 @@
 
 namespace horaro\WebApp\Controller;
 
+use horaro\Library\Entity\Schedule;
 use horaro\Library\Entity\ScheduleItem;
 use horaro\WebApp\Exception as Ex;
 use horaro\WebApp\Validator\ScheduleItemValidator;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
 class ScheduleItemController extends BaseController {
@@ -40,28 +42,34 @@ class ScheduleItemController extends BaseController {
 			return $this->respondWithArray(['errors' => $response], 400);
 		}
 
-		// find max position
+		$em   = $this->getEntityManager();
+		$item = $em->transactional(function($em) use ($schedule, $result) {
+			$this->lockSchedule($schedule);
 
-		$repo = $this->getRepository('ScheduleItem');
-		$last = $repo->findOneBySchedule($schedule, ['position' => 'DESC']);
-		$max  = $last ? $last->getPosition() : 0;
+			// find max position
 
-		// prepare new item
+			$repo = $this->getRepository('ScheduleItem');
+			$last = $repo->findOneBySchedule($schedule, ['position' => 'DESC']);
+			$max  = $last ? $last->getPosition() : 0;
 
-		$item = new ScheduleItem();
-		$item->setSchedule($schedule);
-		$item->setLengthInSeconds($result['length']['filtered']);
-		$item->setPosition($max + 1);
-		$item->setExtra($result['columns']['filtered']);
+			// prepare new item
 
-		$schedule->touch();
+			$item = new ScheduleItem();
+			$item->setSchedule($schedule);
+			$item->setLengthInSeconds($result['length']['filtered']);
+			$item->setPosition($max + 1);
+			$item->setExtra($result['columns']['filtered']);
 
-		// store it
+			$schedule->touch();
 
-		$em = $this->getEntityManager();
-		$em->persist($schedule);
-		$em->persist($item);
-		$em->flush();
+			// store it
+
+			$em->persist($schedule);
+			$em->persist($item);
+			$em->flush();
+
+			return $item;
+		});
 
 		// respond
 
@@ -120,6 +128,11 @@ class ScheduleItemController extends BaseController {
 
 		$em = $this->getEntityManager();
 		$em->transactional(function($em) use ($item, $schedule) {
+			$this->lockSchedule($schedule);
+
+			// re-fetch the item to get its actual current position
+			$item = $this->getRepository('ScheduleItem')->findOneById($item->getId());
+
 			$qb    = $em->createQueryBuilder();
 			$query = $qb
 				->update('horaro\Library\Entity\ScheduleItem', 'i')
@@ -150,52 +163,63 @@ class ScheduleItemController extends BaseController {
 			throw new Ex\BadRequestException('No item ID given.');
 		}
 
-		$itemID   = $payload['item'];
-		$resolver = $this->app['resource-resolver'];
-		$item     = $resolver->resolveScheduleItemID($itemID, true);
+		$em   = $this->getEntityManager();
+		$item = $em->transactional(function($em) use ($schedule, $payload) {
+			// lock the schedule items to make sure we don't get multiple concurrent move operations
 
-		if ($schedule->getId() !== $item->getSchedule()->getId()) {
-			throw new Ex\NotFoundException('Schedule item '.$itemID.' could not be found.');
-		}
+			$this->lockSchedule($schedule);
 
-		$curPos = $item->getPosition();
+			// now that we have the lock until our connection ends, we can select the item and find its
+			// current position
 
-		// get the target position
+			$itemID   = $payload['item'];
+			$resolver = $this->app['resource-resolver'];
+			$item     = $resolver->resolveScheduleItemID($itemID, true);
 
-		if (!isset($payload['position']) || !is_int($payload['position'])) {
-			throw new Ex\BadRequestException('No valid target position given.');
-		}
+			if ($schedule->getId() !== $item->getSchedule()->getId()) {
+				throw new Ex\NotFoundException('Schedule item '.$itemID.' could not be found.');
+			}
 
-		$target = (int) $payload['position'];
+			$curPos = $item->getPosition();
 
-		// validate the target position
+			if ($curPos < 1) {
+				throw new Ex\BadRequestException('This item is already at position 0. This sould never happen.');
+			}
 
-		if ($target < 1) {
-			throw new Ex\BadRequestException('Positions are 1-based and therefore cannot be < 1.');
-		}
+			// get the target position
 
-		if ($target === $curPos) {
-			throw new Ex\ConflictException('This would be a NOP.');
-		}
+			if (!isset($payload['position']) || !is_int($payload['position'])) {
+				throw new Ex\BadRequestException('No valid target position given.');
+			}
 
-		$repo = $this->getRepository('ScheduleItem');
-		$last = $repo->findOneBySchedule($schedule, ['position' => 'DESC']);
-		$max  = $last->getPosition();
+			$target = (int) $payload['position'];
 
-		if ($target > $max) {
-			throw new Ex\BadRequestException('Target position ('.$target.') is greater than the last position ('.$max.').');
-		}
+			// validate the target position
 
-		// prepare chunk move
+			if ($target < 1) {
+				throw new Ex\BadRequestException('Positions are 1-based and therefore cannot be < 1.');
+			}
 
-		$up          = $target < $curPos;
-		$relation    = $up ? '+' : '-';
-		list($a, $b) = $up ? array($target, $curPos) : array($curPos, $target);
+			if ($target === $curPos) {
+				throw new Ex\ConflictException('This would be a NOP.');
+			}
 
-		// move items between old and new position
+			$repo = $this->getRepository('ScheduleItem');
+			$last = $repo->findOneBySchedule($schedule, ['position' => 'DESC']);
+			$max  = $last->getPosition();
 
-		$em = $this->getEntityManager();
-		$em->transactional(function($em) use ($relation, $item, $schedule, $a, $b, $target) {
+			if ($target > $max) {
+				throw new Ex\BadRequestException('Target position ('.$target.') is greater than the last position ('.$max.').');
+			}
+
+			// prepare chunk move
+
+			$up          = $target < $curPos;
+			$relation    = $up ? '+' : '-';
+			list($a, $b) = $up ? array($target, $curPos) : array($curPos, $target);
+
+			// move items between old and new position
+
 			$qb    = $em->createQueryBuilder();
 			$query = $qb
 				->update('horaro\Library\Entity\ScheduleItem', 'i')
@@ -212,6 +236,8 @@ class ScheduleItemController extends BaseController {
 			$item->setPosition($target);
 
 			$em->flush();
+
+			return $item;
 		});
 
 		// respond
@@ -239,5 +265,15 @@ class ScheduleItemController extends BaseController {
 				'columns' => $extraData
 			]
 		], $status);
+	}
+
+	protected function lockSchedule(Schedule $schedule) {
+		$em  = $this->getEntityManager();
+		$rsm = new ResultSetMappingBuilder($em);
+		$rsm->addRootEntityFromClassMetadata('horaro\Library\Entity\Schedule', 's');
+
+		$query = $em->createNativeQuery('SELECT id FROM schedules WHERE id = :id FOR UPDATE', $rsm);
+		$query->setParameter('id', $schedule->getId());
+		$query->getOneOrNullResult(); // this one blocks until the lock is available
 	}
 }
