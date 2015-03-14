@@ -43,7 +43,7 @@ function ColumnsViewModel(columns) {
 
 	self.add = function() {
 		self.columns.push(new Column(-1, '', self.numOfFlexibleColumns() + 1, false));
-		$('.h-columnist tbody:last a.editable:visible:first').editable('show');
+		$('.h-columnist tbody:last').attr('draggable', 'true').find('a.editable:visible:first').editable('show');
 	};
 
 	self.move = function(columnID, newPos) {

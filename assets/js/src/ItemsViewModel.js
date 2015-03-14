@@ -53,7 +53,7 @@ function ItemsViewModel(items) {
 		});
 
 		self.items.push(new Item(-1, 30*60, data, self.items().length + 1));
-		$('.h-scheduler tbody:last a.editable:visible:first').editable('show');
+		$('.h-scheduler tbody:last').attr('draggable', 'true').find('a.editable:visible:first').editable('show');
 	};
 
 	self.move = function(itemID, newPos) {
