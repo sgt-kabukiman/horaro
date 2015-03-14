@@ -11,7 +11,9 @@
 namespace horaro\Library\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use horaro\Library\Entity\Event;
+use horaro\Library\Entity\Schedule;
 use horaro\Library\Entity\User;
 
 /**
@@ -78,5 +80,14 @@ class ScheduleRepository extends EntityRepository {
 		$query->setMaxResults($max);
 
 		return $query->getResult();
+	}
+
+	public function transientLock(Schedule $schedule) {
+		$rsm = new ResultSetMappingBuilder($this->_em);
+		$rsm->addRootEntityFromClassMetadata('horaro\Library\Entity\Schedule', 's');
+
+		$query = $this->_em->createNativeQuery('SELECT id FROM schedules WHERE id = :id FOR UPDATE', $rsm);
+		$query->setParameter('id', $schedule->getId());
+		$query->getOneOrNullResult(); // this one blocks until the lock is available
 	}
 }

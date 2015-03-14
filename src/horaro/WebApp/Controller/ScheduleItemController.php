@@ -14,7 +14,6 @@ use horaro\Library\Entity\Schedule;
 use horaro\Library\Entity\ScheduleItem;
 use horaro\WebApp\Exception as Ex;
 use horaro\WebApp\Validator\ScheduleItemValidator;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
 class ScheduleItemController extends BaseController {
@@ -165,12 +164,7 @@ class ScheduleItemController extends BaseController {
 
 		$em   = $this->getEntityManager();
 		$item = $em->transactional(function($em) use ($schedule, $payload) {
-			// lock the schedule items to make sure we don't get multiple concurrent move operations
-
 			$this->lockSchedule($schedule);
-
-			// now that we have the lock until our connection ends, we can select the item and find its
-			// current position
 
 			$itemID   = $payload['item'];
 			$resolver = $this->app['resource-resolver'];
@@ -268,12 +262,6 @@ class ScheduleItemController extends BaseController {
 	}
 
 	protected function lockSchedule(Schedule $schedule) {
-		$em  = $this->getEntityManager();
-		$rsm = new ResultSetMappingBuilder($em);
-		$rsm->addRootEntityFromClassMetadata('horaro\Library\Entity\Schedule', 's');
-
-		$query = $em->createNativeQuery('SELECT id FROM schedules WHERE id = :id FOR UPDATE', $rsm);
-		$query->setParameter('id', $schedule->getId());
-		$query->getOneOrNullResult(); // this one blocks until the lock is available
+		$this->getRepository('Schedule')->transientLock($schedule);
 	}
 }
