@@ -56,26 +56,32 @@ class ScheduleColumnController extends BaseController {
 			return $this->respondWithArray(['errors' => $response], 400);
 		}
 
-		// find max position
+		$em  = $this->getEntityManager();
+		$col = $em->transactional(function($em) use ($schedule, $result) {
+			$this->lockSchedule($schedule);
 
-		$repo = $this->getRepository('ScheduleColumn');
-		$last = $repo->findOneBySchedule($schedule, ['position' => 'DESC']);
-		$max  = $last ? $last->getPosition() : 0;
+			// find max position
 
-		// prepare new column
+			$repo = $this->getRepository('ScheduleColumn');
+			$last = $repo->findOneBySchedule($schedule, ['position' => 'DESC']);
+			$max  = $last ? $last->getPosition() : 0;
 
-		$col = new ScheduleColumn();
-		$col->setSchedule($schedule);
-		$col->setPosition($max + 1);
-		$col->setName($result['name']['filtered']);
+			// prepare new column
 
-		$schedule->touch();
+			$col = new ScheduleColumn();
+			$col->setSchedule($schedule);
+			$col->setPosition($max + 1);
+			$col->setName($result['name']['filtered']);
 
-		// store it
+			$schedule->touch();
 
-		$em = $this->getEntityManager();
-		$em->persist($col);
-		$em->flush();
+			// store it
+
+			$em->persist($col);
+			$em->flush();
+
+			return $col;
+		});
 
 		// respond
 
@@ -190,6 +196,11 @@ class ScheduleColumnController extends BaseController {
 
 		$em = $this->getEntityManager();
 		$em->transactional(function($em) use ($column, $schedule) {
+			$this->lockSchedule($schedule);
+
+			// re-fetch the column to get its actual current position
+			$column = $this->getRepository('ScheduleColumn')->findOneById($column->getId());
+
 			$qb    = $em->createQueryBuilder();
 			$query = $qb
 				->update('horaro\Library\Entity\ScheduleColumn', 'c')
@@ -222,52 +233,58 @@ class ScheduleColumnController extends BaseController {
 			throw new Ex\BadRequestException('No column ID given.');
 		}
 
-		$colID    = $payload['column'];
-		$resolver = $this->app['resource-resolver'];
-		$col      = $resolver->resolveScheduleColumnID($colID, true);
+		$em  = $this->getEntityManager();
+		$col = $em->transactional(function($em) use ($schedule, $payload) {
+			$this->lockSchedule($schedule);
 
-		if ($schedule->getId() !== $col->getSchedule()->getId()) {
-			throw new Ex\NotFoundException('Schedule column '.$colID.' could not be found.');
-		}
+			$colID    = $payload['column'];
+			$resolver = $this->app['resource-resolver'];
+			$col      = $resolver->resolveScheduleColumnID($colID, true);
 
-		$curPos = $col->getPosition();
+			if ($schedule->getId() !== $col->getSchedule()->getId()) {
+				throw new Ex\NotFoundException('Schedule column '.$colID.' could not be found.');
+			}
 
-		// get the target position
+			$curPos = $col->getPosition();
 
-		if (!isset($payload['position']) || !is_int($payload['position'])) {
-			throw new Ex\BadRequestException('No valid target position given.');
-		}
+			if ($curPos < 1) {
+				throw new Ex\BadRequestException('This column is already at position 0. This sould never happen.');
+			}
 
-		$target = (int) $payload['position'];
+			// get the target position
 
-		// validate the target position
+			if (!isset($payload['position']) || !is_int($payload['position'])) {
+				throw new Ex\BadRequestException('No valid target position given.');
+			}
 
-		if ($target < 1) {
-			throw new Ex\BadRequestException('Positions are 1-based and therefore cannot be < 1.');
-		}
+			$target = (int) $payload['position'];
 
-		if ($target === $curPos) {
-			throw new Ex\ConflictException('This would be a NOP.');
-		}
+			// validate the target position
 
-		$repo = $this->getRepository('ScheduleColumn');
-		$last = $repo->findOneBySchedule($schedule, ['position' => 'DESC']);
-		$max  = $last->getPosition();
+			if ($target < 1) {
+				throw new Ex\BadRequestException('Positions are 1-based and therefore cannot be < 1.');
+			}
 
-		if ($target > $max) {
-			throw new Ex\BadRequestException('Target position ('.$target.') is greater than the last position ('.$max.').');
-		}
+			if ($target === $curPos) {
+				throw new Ex\ConflictException('This would be a NOP.');
+			}
 
-		// prepare chunk move
+			$repo = $this->getRepository('ScheduleColumn');
+			$last = $repo->findOneBySchedule($schedule, ['position' => 'DESC']);
+			$max  = $last->getPosition();
 
-		$up          = $target < $curPos;
-		$relation    = $up ? '+' : '-';
-		list($a, $b) = $up ? array($target, $curPos) : array($curPos, $target);
+			if ($target > $max) {
+				throw new Ex\BadRequestException('Target position ('.$target.') is greater than the last position ('.$max.').');
+			}
 
-		// move columns between old and new position
+			// prepare chunk move
 
-		$em = $this->getEntityManager();
-		$em->transactional(function($em) use ($relation, $col, $schedule, $a, $b, $target) {
+			$up          = $target < $curPos;
+			$relation    = $up ? '+' : '-';
+			list($a, $b) = $up ? array($target, $curPos) : array($curPos, $target);
+
+			// move columns between old and new position
+
 			$qb    = $em->createQueryBuilder();
 			$query = $qb
 				->update('horaro\Library\Entity\ScheduleColumn', 'c')
@@ -279,9 +296,11 @@ class ScheduleColumnController extends BaseController {
 				->getQuery();
 
 			$query->getResult();
-
 			$col->setPosition($target);
+
 			$em->flush();
+
+			return $col;
 		});
 
 		// respond
@@ -292,5 +311,9 @@ class ScheduleColumnController extends BaseController {
 				'pos' => $col->getPosition()
 			]
 		], 200);
+	}
+
+	protected function lockSchedule(Schedule $schedule) {
+		$this->getRepository('Schedule')->transientLock($schedule);
 	}
 }
