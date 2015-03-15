@@ -3,17 +3,25 @@ function ColumnsViewModel(columns) {
 
 	self.columns = ko.observableArray(columns);
 
+	// helper
+
+	function findColumn(colID) {
+		return findModelByID(self.columns(), colID);
+	}
+
+	// computed properties
+
 	self.fixedColumns = ko.pureComputed(function() {
 		return ko.utils.arrayFilter(self.columns(), function(col) {
 			return col.fixed === true;
 		});
-	});
+	}, self);
 
 	self.flexibleColumns = ko.pureComputed(function() {
 		return ko.utils.arrayFilter(self.columns(), function(col) {
 			return col.fixed === false;
 		});
-	});
+	}, self);
 
 	self.hasNewColumn = ko.pureComputed(function() {
 		return hasNewModel(self.columns());
@@ -21,15 +29,15 @@ function ColumnsViewModel(columns) {
 
 	self.numOfFlexibleColumns = ko.pureComputed(function() {
 		return self.flexibleColumns().length;
-	});
+	}, self);
 
 	self.numOfFixedItems = ko.pureComputed(function() {
 		return self.fixedColumns().length;
-	});
+	}, self);
 
 	self.isFull = ko.pureComputed(function() {
 		return self.numOfFlexibleColumns() >= 10;
-	});
+	}, self);
 
 	self.isMinimal = ko.pureComputed(function() {
 		for (var acc = 0, i = 0, cols = self.columns(), len = cols.length; i < len; ++i) {
@@ -41,14 +49,39 @@ function ColumnsViewModel(columns) {
 		return acc <= 1;
 	});
 
+	// subscribers
+
+	self.columns.subscribe(function(columns) {
+		var pos = 1;
+
+		columns.forEach(function(col) {
+			if (col.fixed === false) {
+				col.position = pos;
+				pos++;
+			}
+		});
+	});
+
+	// behaviours
+
 	self.add = function() {
 		self.columns.push(new Column(-1, '', self.numOfFlexibleColumns() + 1, false));
-		$('.h-columnist tbody:last').attr('draggable', 'true').find('a.editable:visible:first').editable('show');
+		$('.h-columnist tbody:last a.editable:visible:first').editable('show');
 	};
 
 	self.move = function(columnID, newPos) {
-		var col  = self.findColumn(columnID);
+		var col  = findColumn(columnID);
 		var data = { column: columnID, position: newPos };
+
+		// Even if we don't actually move the column, we need to re-generate a fresh tbody element
+		// because the old one was detached from the DOM during the dragging.
+
+		var insertAt = newPos + self.numOfFixedItems() - 1; // -1 because splice() uses the internal, 0-based array
+
+		self.columns.remove(col);
+		self.columns.splice(insertAt, 0, col);
+
+		// Now we can stop.
 
 		if (col.position == newPos) {
 			return;
@@ -68,31 +101,6 @@ function ColumnsViewModel(columns) {
 				col.busy(false);
 			}
 		});
-
-		self.syncOrderWithDom();
-	};
-
-	self.syncOrderWithDom = function() {
-		// go by HTML node order to avoid problems with "concurrent" sorting operations
-		var columnist = $('.h-columnist'), columns = self.columns;
-
-		columns().forEach(function(col) {
-			if (col.fixed === false) {
-				col.position = columnist.find('tbody[data-colid="' + col.id() + '"]').index() + 1;
-			}
-		});
-
-		columns.sort(function(a, b) {
-			if (a.fixed === b.fixed) {
-				return a.position === b.position ? 0 : (a.position < b.position ? -1 : 1);
-			}
-
-			return a.fixed ? -1 : 1;
-		});
-	};
-
-	self.findColumn = function(colID) {
-		return findModelByID(self.columns(), colID);
 	};
 
 	self.initDragAndDrop = function() {
@@ -102,6 +110,11 @@ function ColumnsViewModel(columns) {
 				var newPos = row.index() + 1;
 				var colID  = row.data('colid');
 
+				// This is just the detached row that KO doesn't know anything about anymore.
+				// The move() will take care of re-adding the moved row at the correct spot and
+				// thereby trigger a fresh tbody element by KO.
+
+				row.remove();
 				self.move(colID, newPos);
 			}
 		});

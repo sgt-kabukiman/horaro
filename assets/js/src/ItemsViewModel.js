@@ -3,6 +3,14 @@ function ItemsViewModel(items) {
 
 	self.items = ko.observableArray(items);
 
+	// helper
+
+	function findItem(itemID) {
+		return findModelByID(self.items(), itemID);
+	}
+
+	// computed properties
+
 	self.hasNewItem = ko.pureComputed(function() {
 		return hasNewModel(self.items());
 	}, self);
@@ -10,6 +18,19 @@ function ItemsViewModel(items) {
 	self.isFull = ko.pureComputed(function() {
 		return self.items().length >= maxItems;
 	});
+
+	// subscribers
+
+	self.items.subscribe(function(items) {
+		var pos = 1;
+
+		items.forEach(function(item) {
+			item.position = pos;
+			pos++;
+		});
+	});
+
+	// behaviours
 
 	self.calculateSchedule = function(startIdx) {
 		var start, i, len, items, item, scheduled, prev, date, dayOfYear;
@@ -53,12 +74,22 @@ function ItemsViewModel(items) {
 		});
 
 		self.items.push(new Item(-1, 30*60, data, self.items().length + 1));
-		$('.h-scheduler tbody:last').attr('draggable', 'true').find('a.editable:visible:first').editable('show');
+		$('.h-scheduler tbody:last a.editable:visible:first').editable('show');
 	};
 
 	self.move = function(itemID, newPos) {
-		var item = self.findItem(itemID);
+		var item = findItem(itemID);
 		var data = { item: itemID, position: newPos };
+
+		// Even if we don't actually move the item, we need to re-generate a fresh tbody element
+		// because the old one was detached from the DOM during the dragging.
+
+		var insertAt = newPos - 1; // -1 because splice() uses the internal, 0-based array
+
+		self.items.remove(item);
+		self.items.splice(insertAt, 0, item);
+
+		// Now we can stop.
 
 		if (item.position == newPos) {
 			return;
@@ -78,26 +109,6 @@ function ItemsViewModel(items) {
 				item.busy(false);
 			}
 		});
-
-		self.syncOrderWithDom();
-	};
-
-	self.syncOrderWithDom = function() {
-		// go by HTML node order to avoid problems with "concurrent" sorting operations
-		var scheduler = $('.h-scheduler'), items = self.items;
-
-		items().forEach(function(item) {
-			item.position = scheduler.find('tbody[data-itemid="' + item.id() + '"]').index() + 1;
-		});
-
-		// this kicks off the computed property afterwards to re-calculate the schedule
-		items.sort(function(a, b) {
-			return a.position === b.position ? 0 : (a.position < b.position ? -1 : 1);
-		});
-	};
-
-	self.findItem = function(itemID) {
-		return findModelByID(self.items(), itemID);
 	};
 
 	self.initDragAndDrop = function() {
@@ -107,6 +118,11 @@ function ItemsViewModel(items) {
 				var newPos = row.index() + 1;
 				var itemID = row.data('itemid');
 
+				// This is just the detached row that KO doesn't know anything about anymore.
+				// The move() will take care of re-adding the moved row at the correct spot and
+				// thereby trigger a fresh tbody element by KO.
+
+				row.remove();
 				self.move(itemID, newPos);
 			}
 		});

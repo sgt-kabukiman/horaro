@@ -1,5 +1,5 @@
 {# Do not use the ternary operator because the secure bindings for Knockout do not support them. #}
-<tbody data-bind="attr: {'data-itemid': id, 'class': 'h-item ' + ($index() % 2 ===1 && 'h-odd' || 'h-even')}">
+<tbody data-bind="attr: {'data-itemid': id, 'class': bodyClass(), 'draggable': 'true' }">
 	<!-- ko if: dateSwitch -->
 	<tr class="h-new-day">
 		<td colspan="{{ numCols + 4 }}" data-bind="text: dateSwitch"></td>

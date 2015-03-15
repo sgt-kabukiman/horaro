@@ -41,7 +41,7 @@ function Item(id, length, columns, pos) {
 		write: function(value) {
 			self.length(parseLength(value));
 		}
-	});
+	}, self);
 
 	self.formattedSchedule = ko.pureComputed(function() {
 		return moment.unix(self.scheduled() / 1000).zone(scheduleTZ).format('LT');
@@ -62,6 +62,10 @@ function Item(id, length, columns, pos) {
 
 		return '';
 	}, self);
+
+	self.bodyClass = function() {
+		return 'h-item ' + (this.$context.$index() % 2 === 1 ? 'h-odd' : 'h-even');
+	};
 
 	// subscribers
 
@@ -138,10 +142,6 @@ function Item(id, length, columns, pos) {
 					self[key](value);
 				});
 
-				if (isNew) {
-					viewModel.initDragAndDrop(true);
-				}
-
 				self.suspended = false;
 
 				if (self.nextFocus) {
@@ -178,12 +178,6 @@ function Item(id, length, columns, pos) {
 			data: JSON.stringify(data),
 			success: function() {
 				viewModel.items.remove(self);
-
-				// If this item was moved around, knockout has lost track of the DOM node and will
-				// not remove it. We have to take care of that ourselves.
-				$('.h-scheduler tbody[data-itemid="' + itemID + '"]').remove();
-
-				viewModel.syncOrderWithDom();
 			},
 			complete: function() {
 				self.busy(false);

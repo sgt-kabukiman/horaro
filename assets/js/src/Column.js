@@ -34,6 +34,18 @@ function Column(id, name, pos, fixed) {
 		return '';
 	}, self);
 
+	self.bodyClass = function() {
+		return 'h-column ' + (this.$context.$index() % 2 === 1 ? 'h-odd' : 'h-even');
+	};
+
+	self.deleteBtnClass = function() {
+		return (self.fixed || self.id() === -1 || viewModel.isMinimal()) ? ' disabled' : '';
+	};
+
+	self.handleText = function() {
+		return self.fixed ? '' : '::';
+	};
+
 	// subscribers
 
 	self.name.subscribe(function(newValue) {
@@ -107,12 +119,6 @@ function Column(id, name, pos, fixed) {
 			data: JSON.stringify(data),
 			success: function() {
 				viewModel.columns.remove(self);
-
-				// If this column was moved around, knockout has lost track of the DOM node and will
-				// not remove it. We have to take care of that ourselves.
-				$('.h-columnist tbody[data-colid="' + colID + '"]').remove();
-
-				viewModel.syncOrderWithDom();
 			},
 			complete: function() {
 				self.busy(false);
