@@ -24,10 +24,9 @@ Features
 Requirements
 ------------
 
-* PHP 5.4
+* PHP 5.4+ or HHVM 3.6+
 * MySQL 5 or MariaDB 5/10, with InnoDB support
-* a webserver (Apache 2 is the only supported one, but getting it to run on
-  nginx should be easy to accomplis)
+* a webserver (Apache 2 and nginx are supported, others should work as well)
 * mod_rewrite if you use Apache
 
 Download
