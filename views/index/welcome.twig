@@ -45,6 +45,19 @@
 	</div>
 
 	<div class="col-lg-7 col-md-7">
+		{% if live|length > 0 %}
+		<h3>LIVE!</h3>
+
+		<ul class="h-eventlist">
+			{% for row in live %}
+			<li class="h-jail">
+				<a href="/{{ row.event.slug }}" class="item"><i class="fa fa-gamepad"></i> {{ row.event.name|shorten(60) }}</a>
+				({% for schedule in row.schedules %}<i class="fa fa-calendar"></i> <a href="/{{ row.event.slug }}/{{ schedule.slug }}">{{ schedule.name|shorten(45) }}</a>{% if not loop.last %}, {% endif %}{% endfor %})
+			</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+
 		<h3>Upcoming Events (<a href="/-/calendar/{{ date()|date('Y/m') }}">Calendar</a>)</h3>
 
 		{% if upcoming|length > 0 %}

@@ -18,12 +18,26 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends BaseController {
 	public function welcomeAction(Request $request) {
+		// find schedules that are currently happening
+
+		$scheduleRepo = $this->getRepository('Schedule');
+		$schedules    = $scheduleRepo->findCurrentlyRunning();
+		$live         = [];
+
+		// group by event
+		foreach ($schedules as $schedule) {
+			$event   = $schedule->getEvent();
+			$eventID = $event->getID();
+
+			$live[$eventID]['event']       = $event;
+			$live[$eventID]['schedules'][] = $schedule;
+		}
+
 		// find upcoming event schedules (blatenly ignoring that the starting times
 		// in the database are not in UTC).
 
-		$scheduleRepo = $this->getRepository('Schedule');
-		$schedules    = $scheduleRepo->findUpcoming(3132, 10);
-		$upcoming     = [];
+		$schedules = $scheduleRepo->findUpcoming(365);
+		$upcoming  = [];
 
 		// group by event
 		foreach ($schedules as $schedule) {
@@ -39,11 +53,11 @@ class IndexController extends BaseController {
 		$eventRepo = $this->getRepository('Event');
 		$featured  = $eventRepo->findById($ids);
 
-		// remove featured events that are already included in the upcoming list
+		// remove featured events that are already included in the live/upcoming lists
 		foreach ($featured as $idx => $event) {
 			$eventID = $event->getID();
 
-			if (isset($upcoming[$eventID]) || !$event->isPublic()) {
+			if (isset($live[$eventID]) || isset($upcoming[$eventID]) || !$event->isPublic()) {
 				unset($featured[$idx]);
 			}
 		}
@@ -58,6 +72,7 @@ class IndexController extends BaseController {
 
 		$html = $this->render('index/welcome.twig', [
 			'noRegister' => $this->exceedsMaxUsers(),
+			'live'       => array_slice($live, 0, 5),
 			'upcoming'   => array_slice($upcoming, 0, 5),
 			'featured'   => array_slice($featured, 0, 5),
 			'recent'     => $recent

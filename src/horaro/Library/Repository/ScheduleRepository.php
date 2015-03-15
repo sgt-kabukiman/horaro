@@ -34,20 +34,35 @@ class ScheduleRepository extends EntityRepository {
 		return (int) $query->getSingleScalarResult();
 	}
 
-	public function findUpcoming($days) {
-		$end   = gmdate('Y-m-d H:i:s', time() + $days*24*3600);
-		$dql   = 'SELECT s, e FROM horaro\Library\Entity\Schedule s JOIN s.event e WHERE e.secret IS NULL AND s.secret IS NULL AND s.start > :begin AND s.start <= :end ORDER BY s.start ASC';
-		$query = $this->_em->createQuery($dql);
+	public function findCurrentlyRunning() {
+		$day       = 24 * 3600;
+		$now       = time();
+		$schedules = $this->findPublicInRange($now - 21*$day, $now + 1*$day);
+		$result    = [];
 
+		foreach ($schedules as $schedule) {
+			$start = $schedule->getLocalStart()->format('U');
+
+			if ($start < $now) {
+				$end = $schedule->getLocalEnd()->format('U'); // defer calculating this until we checked the start
+
+				if ($end > $now) {
+					$result[] = $schedule;
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	public function findUpcoming($days) {
 		// search begins at "now minus 1 day" to include events with different timezones as well;
 		// this requires filtering the schedules later on by their actual start date/time.
 
-		$query->setParameter('begin', gmdate('Y-m-d H:i:s', time() - 24*3600));
-		$query->setParameter('end', $end);
-
-		$schedules = $query->getResult();
-		$result    = [];
+		$day       = 24 * 3600;
 		$now       = time();
+		$schedules = $this->findPublicInRange($now - 1*$day, $now + $days*$day);
+		$result    = [];
 
 		foreach ($schedules as $schedule) {
 			$start = $schedule->getLocalStart()->format('U');
@@ -61,15 +76,7 @@ class ScheduleRepository extends EntityRepository {
 	}
 
 	public function findPublic(\DateTime $startFrom, \DateTime $startTo) {
-		$from  = $startFrom->format('Y-m-d H:i:s');
-		$to    = $startTo->format('Y-m-d H:i:s');
-		$dql   = 'SELECT s, e FROM horaro\Library\Entity\Schedule s JOIN s.event e WHERE e.secret IS NULL AND s.secret IS NULL AND s.start BETWEEN :a AND :b ORDER BY s.start ASC';
-		$query = $this->_em->createQuery($dql);
-
-		$query->setParameter('a', $from);
-		$query->setParameter('b', $to);
-
-		return $query->getResult();
+		return $this->findPublicInRange($startFrom->format('U'), $startTo->format('U'));
 	}
 
 	public function findRecentlyUpdated(User $user, $max) {
@@ -89,5 +96,15 @@ class ScheduleRepository extends EntityRepository {
 		$query = $this->_em->createNativeQuery('SELECT id FROM schedules WHERE id = :id FOR UPDATE', $rsm);
 		$query->setParameter('id', $schedule->getId());
 		$query->getOneOrNullResult(); // this one blocks until the lock is available
+	}
+
+	protected function findPublicInRange($from, $to) {
+		$dql   = 'SELECT s, e FROM horaro\Library\Entity\Schedule s JOIN s.event e WHERE e.secret IS NULL AND s.secret IS NULL AND s.start BETWEEN :from AND :to ORDER BY s.start ASC';
+		$query = $this->_em->createQuery($dql);
+
+		$query->setParameter('from', gmdate('Y-m-d H:i:s', $from));
+		$query->setParameter('to',   gmdate('Y-m-d H:i:s', $to));
+
+		return $query->getResult();
 	}
 }
