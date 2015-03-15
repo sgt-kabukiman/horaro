@@ -1,6 +1,6 @@
 {
     "name": "kabukiman-horaro",
-    "version": "0.0.1",
+    "version": "0.3.0",
     "devDependencies": {
         "grunt": "0.4.*",
         "grunt-contrib-clean": "0.4.*",

@@ -1,6 +1,6 @@
 {
     "name": "Horaro",
-    "version": "0.0.1",
+    "version": "0.3.0",
     "dependencies": {
         "pickadate": "3.5.*",
         "bootswatch": "3.2.*",
