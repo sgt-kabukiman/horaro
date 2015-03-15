@@ -38,6 +38,7 @@ session:
   db_data_col:     data
   db_lifetime_col: lifetime
   db_time_col:     mtime
+  lock_mode:       1 # advisory (transactional would break Horaro's own transactions)
 
 # Cache times.
 # These determine how long (in minutes) responses of certain kinds (schedules,
