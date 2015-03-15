@@ -81,8 +81,9 @@ function ItemsViewModel(items) {
 	};
 
 	self.move = function(itemID, newPos) {
-		var item = findItem(itemID);
-		var data = { item: itemID, position: newPos };
+		var item   = findItem(itemID);
+		var data   = { item: itemID, position: newPos };
+		var oldPos = item.position;
 
 		// Even if we don't actually move the item, we need to re-generate a fresh tbody element
 		// because the old one was detached from the DOM during the dragging.
@@ -94,7 +95,7 @@ function ItemsViewModel(items) {
 
 		// Now we can stop.
 
-		if (item.position == newPos) {
+		if (oldPos == newPos) {
 			return;
 		}
 

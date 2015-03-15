@@ -74,8 +74,9 @@ function ColumnsViewModel(columns) {
 	};
 
 	self.move = function(columnID, newPos) {
-		var col  = findColumn(columnID);
-		var data = { column: columnID, position: newPos };
+		var col    = findColumn(columnID);
+		var data   = { column: columnID, position: newPos };
+		var oldPos = col.position;
 
 		// Even if we don't actually move the column, we need to re-generate a fresh tbody element
 		// because the old one was detached from the DOM during the dragging.
@@ -87,7 +88,7 @@ function ColumnsViewModel(columns) {
 
 		// Now we can stop.
 
-		if (col.position == newPos) {
+		if (oldPos == newPos) {
 			return;
 		}
 
