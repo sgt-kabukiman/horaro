@@ -107,12 +107,25 @@ jQuery(function($) {
 			return;
 		}
 
-		var next = current.next('tbody');
+		var next        = current.next('tbody');
+		var currentNode = $('.h-current');
+		var nextNode    = $('.h-next');
 
 		$('.h-ticker').show();
-		$('.h-current .panel-body').text(getItemTitle(current));
-		$('.h-next .panel-body').text(getItemTitle(next));
-		$('.h-next time').attr('datetime', getItemScheduled(next));
+		$('.panel-body', currentNode).text(getItemTitle(current));
+
+		if (next.length > 0) {
+			$('.panel-body', nextNode).text(getItemTitle(next));
+			$('time', nextNode).attr('datetime', getItemScheduled(next));
+		}
+		else {
+			nextNode.parent().remove();
+			currentNode.parent()
+				.removeClass('col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-sm-5')
+				.addClass('col-lg-offset-4 col-md-offset-4 col-sm-offset-3 col-sm-6')
+			;
+		}
+
 		current.find('.h-primary').addClass('success');
 	}
 
