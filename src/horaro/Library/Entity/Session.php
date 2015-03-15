@@ -29,6 +29,11 @@ class Session {
 	/**
 	 * @var integer
 	 */
+	private $lifetime;
+
+	/**
+	 * @var integer
+	 */
 	private $mtime;
 
 	/**
@@ -71,6 +76,27 @@ class Session {
 	 */
 	public function getData() {
 		return $this->data;
+	}
+
+	/**
+	 * Set lifetime
+	 *
+	 * @param integer $lifetime
+	 * @return Session
+	 */
+	public function setLifetime($lifetime) {
+		$this->lifetime = $lifetime;
+
+		return $this;
+	}
+
+	/**
+	 * Get lifetime
+	 *
+	 * @return integer
+	 */
+	public function getLifetime() {
+		return $this->lifetime;
 	}
 
 	/**

@@ -33,10 +33,11 @@ doctrine_proxies: tmp/doctrine-proxies/
 # If you change something in here, you have to adjust the schema.orm.yml and your
 # database as well. Generally, there is no reason to touch this.
 session:
-  db_table:    sessions
-  db_id_col:   id
-  db_data_col: data
-  db_time_col: mtime
+  db_table:        sessions
+  db_id_col:       id
+  db_data_col:     data
+  db_lifetime_col: lifetime
+  db_time_col:     mtime
 
 # Cache times.
 # These determine how long (in minutes) responses of certain kinds (schedules,

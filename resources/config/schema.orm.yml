@@ -335,12 +335,15 @@ horaro\Library\Entity\Session:
 
   id:
     id:
-      type: string
-      length: 255
+      type: binary
+      length: 128
 
   fields:
     data:
-      type: text
+      type: blob
+      length: 65535
+    lifetime:
+      type: integer
     mtime:
       type: integer
       options: { unsigned: true }
