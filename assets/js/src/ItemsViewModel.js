@@ -67,13 +67,16 @@ function ItemsViewModel(items) {
 	};
 
 	self.add = function() {
-		var data = {};
+		var data = {}, item;
 
 		scheduleColumns.forEach(function(id) {
 			data[id] = '';
 		});
 
-		self.items.push(new Item(-1, 30*60, data, self.items().length + 1));
+		item = new Item(-1, 30*60, data, self.items().length + 1);
+		item.sync();
+
+		self.items.push(item);
 		$('.h-scheduler tbody:last a.editable:visible:first').editable('show');
 	};
 

@@ -65,7 +65,11 @@ function ColumnsViewModel(columns) {
 	// behaviours
 
 	self.add = function() {
-		self.columns.push(new Column(-1, '', self.numOfFlexibleColumns() + 1, false));
+		var name = 'New Column', col = new Column(-1, '', self.numOfFlexibleColumns() + 1, false);
+
+		self.columns.push(col);
+		col.name(name); // trigger storing the column immediately
+
 		$('.h-columnist tbody:last a.editable:visible:first').editable('show');
 	};
 
