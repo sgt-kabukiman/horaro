@@ -71,6 +71,11 @@ class Schedule {
 	private $secret;
 
 	/**
+	 * @var string
+	 */
+	private $description;
+
+	/**
 	 * @var integer
 	 */
 	private $max_items;
@@ -451,6 +456,27 @@ class Schedule {
 	 */
 	public function getSecret() {
 		return $this->secret;
+	}
+
+	/**
+	 * Set description
+	 *
+	 * @param string $description
+	 * @return Schedule
+	 */
+	public function setDescription($description) {
+		$this->description = trim($description) ?: null;
+
+		return $this;
+	}
+
+	/**
+	 * Get description
+	 *
+	 * @return string
+	 */
+	public function getDescription() {
+		return $this->description;
 	}
 
 	/**

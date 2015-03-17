@@ -165,6 +165,9 @@ horaro\Library\Entity\Event:
       type: string
       length: 20
       nullable: true
+    description:
+      type: text
+      nullable: true
     max_schedules:
       type: integer
       options: { unsigned: true }
@@ -234,6 +237,9 @@ horaro\Library\Entity\Schedule:
     secret:
       type: string
       length: 20
+      nullable: true
+    description:
+      type: text
       nullable: true
     max_items:
       type: integer
