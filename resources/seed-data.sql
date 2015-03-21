@@ -7,7 +7,7 @@ INSERT INTO `users` (`id`, `login`, `password`, `display_name`, `gravatar_hash`,
 INSERT INTO `config` (`key`, `value`) VALUES
 	('bcrypt_cost',         '11'),
 	('cookie_lifetime',     '86400'),
-	('csrf_token_name',     '_csrf_token'),
+	('csrf_token_name',     '"_csrf_token"'),
 	('default_language',    '"en_us"'),
 	('default_event_theme', '"yeti"'),
 	('featured_events',     '[]'),
@@ -15,4 +15,4 @@ INSERT INTO `config` (`key`, `value`) VALUES
 	('max_schedule_items',  '200'),
 	('max_schedules',       '10'),
 	('max_users',           '50'),
-	('sentry_dsn',          '');
+	('sentry_dsn',          '""');
