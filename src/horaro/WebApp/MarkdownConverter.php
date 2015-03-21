@@ -44,6 +44,6 @@ class MarkdownConverter {
 		$html = $this->md->transform($html);
 		$html = str_replace('<img', '<img class="img-responsive"', $html);
 
-		return $html;
+		return trim($html);
 	}
 }
