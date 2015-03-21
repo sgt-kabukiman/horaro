@@ -171,4 +171,30 @@ jQuery(function($) {
 			}
 		}
 	}
+
+	var mdParser = new Remarkable('commonmark');
+	mdParser.set({ html: false, xhtmlOut: false });
+
+	$('.remarkable').each(function(i, textarea) {
+		var timeout = null;
+
+		textarea = $(textarea);
+
+		function update(text) {
+			$('.remarkable-preview').html(mdParser.render(text)).find('img').addClass('img-responsive');
+		}
+
+		textarea.on('keyup paste cut mouseup', function() {
+			if (timeout) {
+				clearTimeout(timeout);
+				timeout = null;
+			}
+
+			timeout = setTimeout(function() {
+				update(textarea.val());
+			}, 300);
+		});
+
+		update(textarea.val());
+	});
 });

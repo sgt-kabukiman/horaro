@@ -12,8 +12,9 @@ namespace horaro\WebApp;
 
 use horaro\Library\BaseApplication;
 use horaro\Library\ObscurityCodec;
-use Symfony\Component\Translation\Loader\YamlFileLoader;
+use Michelf\Markdown;
 use Silex\Provider\TwigServiceProvider;
+use Symfony\Component\Translation\Loader\YamlFileLoader;
 
 class Application extends BaseApplication {
 	public function __construct(array $values = []) {
@@ -58,6 +59,10 @@ class Application extends BaseApplication {
 
 		$this['resource-resolver'] = $this->share(function() {
 			return new ResourceResolver($this['entitymanager'], $this['obscurity-codec']);
+		});
+
+		$this['markdown-converter'] = $this->share(function() {
+			return new MarkdownConverter(new Markdown());
 		});
 
 		$this->register(new TwigServiceProvider(), array(
@@ -239,6 +244,7 @@ class Application extends BaseApplication {
 		$this->route('GET',    '/-/events/{event_e}',                                   'event:detail',                'user');
 		$this->route('GET',    '/-/events/{event_e}/edit',                              'event:edit',                  'user');
 		$this->route('PUT',    '/-/events/{event_e}',                                   'event:update',                'user');
+		$this->route('PUT',    '/-/events/{event_e}/description',                       'event:updateDescription',     'user');
 		$this->route('GET',    '/-/events/{event_e}/delete',                            'event:confirmation',          'user');
 		$this->route('DELETE', '/-/events/{event_e}',                                   'event:delete',                'user');
 
@@ -247,6 +253,7 @@ class Application extends BaseApplication {
 		$this->route('GET',    '/-/schedules/{schedule_e}',                             'schedule:detail',             'user');
 		$this->route('GET',    '/-/schedules/{schedule_e}/edit',                        'schedule:edit',               'user');
 		$this->route('PUT',    '/-/schedules/{schedule_e}',                             'schedule:update',             'user');
+		$this->route('PUT',    '/-/schedules/{schedule_e}/description',                 'schedule:updateDescription',  'user');
 		$this->route('GET',    '/-/schedules/{schedule_e}/delete',                      'schedule:confirmation',       'user');
 		$this->route('DELETE', '/-/schedules/{schedule_e}',                             'schedule:delete',             'user');
 		$this->route('GET',    '/-/schedules/{schedule_e}/export',                      'schedule:export',             'user');

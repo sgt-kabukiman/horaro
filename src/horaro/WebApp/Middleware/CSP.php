@@ -33,6 +33,7 @@ class CSP {
 			->addScriptSource($proto.'://ajax.googleapis.com/')
 			->addScriptSource($proto.'://maxcdn.bootstrapcdn.com/')
 			->addScriptSource($proto.'://cdnjs.cloudflare.com/')
+			->addScriptSource($proto.'://cdn.jsdelivr.net/')
 
 			->addStyleSource('self')
 			->addStyleSource($proto.'://fonts.googleapis.com/')

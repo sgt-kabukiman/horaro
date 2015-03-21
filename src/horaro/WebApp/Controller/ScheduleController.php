@@ -179,6 +179,31 @@ class ScheduleController extends BaseController {
 		return $this->redirect('/-/schedules/'.$this->encodeID($schedule->getId(), 'schedule'));
 	}
 
+	public function updateDescriptionAction(Request $request) {
+		$schedule  = $this->getRequestedSchedule($request);
+		$validator = $this->getValidator();
+		$result    = $validator->validateDescription($request->request->get('description'));
+
+		if ($result['_errors']) {
+			return $this->renderForm($schedule->getEvent(), $schedule, $result);
+		}
+
+		// update
+
+		$schedule
+			->setDescription($result['description']['filtered'])
+			->touch()
+		;
+
+		$this->getEntityManager()->flush();
+
+		// done
+
+		$this->addSuccessMsg('Your schedule description has been updated.');
+
+		return $this->redirect('/-/schedules/'.$this->encodeID($schedule->getId(), 'schedule'));
+	}
+
 	public function confirmationAction(Request $request) {
 		$schedule = $this->getRequestedSchedule($request);
 

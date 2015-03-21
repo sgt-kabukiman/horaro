@@ -170,6 +170,56 @@
 	</div>
 </div>
 
+{% if schedule %}
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h3>Schedule Description</h3>
+		<p>The description will be shown on the schedule page, above the actual schedule table. You
+			can use this to give some more information, link donation pages etc. Be reasonable when
+			embedding images: mobile users do not want to download a 5 MB .gif over 3G (actually,
+			pretty much nobody wants .gifs that large).</p>
+
+		<div class="well">
+			<form method="post" action="/-/schedules/{{ schedule.id|obscurify('schedule') }}/description">
+				<div><input type="hidden" id="_method" name="_method" value="PUT" /></div>
+				<fieldset>
+					{{ macros.csrf_token() }}
+
+					<div class="form-group{{ utils.formClass(result, 'description') }}">
+						<textarea class="form-control remarkable" name="description" rows="10">{{ utils.formValue(result, 'description', schedule.description) }}</textarea>
+						{{ macros.form_errors(result, 'description') }}
+						<span class="help-block">
+							The description uses
+							<a href="http://packetlife.net/media/library/16/Markdown.pdf" target="_blank">Markdown</a><sup>(PDF)</sup>
+							for formatting:
+							<strong>**bold**</strong>,
+							<em>*italic*</em>,
+							[link target](https://example.com/),
+							![image description](https://example.com/image.png)
+						</span>
+						<span class="help-block">
+							Preview of your description:
+						</span>
+					</div>
+
+					<div class="form-group">
+						<div class="panel panel-default remarkable-preview-panel">
+							<div class="panel-body remarkable-preview" id="description-preview"></div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-lg-12 text-center">
+							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"> </i> Update Description</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</div>
+{% endif %}
+
 <div class="row">
 	<div class="col-lg-12 col-md-12">
 		<h3>Themes</h3>

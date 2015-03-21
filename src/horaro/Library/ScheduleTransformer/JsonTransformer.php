@@ -64,28 +64,29 @@ class JsonTransformer extends BaseTransformer {
 				'hint'     => 'Use ?callback=yourcallback to use this document via JSONP.'
 			],
 			'schedule' => [
-				'id'       => $this->encodeID($schedule->getId(), 'schedule'),
-				'name'     => $schedule->getName(),
-				'slug'     => $schedule->getSlug(),
-				'timezone' => $schedule->getTimezone(),
-				'start'    => $start->format(self::DATE_FORMAT_TZ),
-				'start_t'  => (int) $start->format('U'),
-				'website'  => $schedule->getWebsite() ?: $schedule->getWebsite(),
-				'twitter'  => $schedule->getTwitter() ?: $schedule->getTwitter(),
-				'twitch'   => $schedule->getTwitch() ?: $schedule->getTwitch(),
-				'theme'    => $schedule->getTheme(),
-				'secret'   => $schedule->getSecret(),
-				'updated'  => $schedule->getUpdatedAt()->format(self::DATE_FORMAT_UTC), // updated is stored as UTC, so it's okay to disregard the sys timezone here and force UTC
-				'url'      => sprintf('/%s/%s', $event->getSlug(), $schedule->getSlug()),
-				'event'    => [
+				'id'          => $this->encodeID($schedule->getId(), 'schedule'),
+				'name'        => $schedule->getName(),
+				'slug'        => $schedule->getSlug(),
+				'timezone'    => $schedule->getTimezone(),
+				'start'       => $start->format(self::DATE_FORMAT_TZ),
+				'start_t'     => (int) $start->format('U'),
+				'website'     => $schedule->getWebsite() ?: $event->getWebsite(),
+				'twitter'     => $schedule->getTwitter() ?: $event->getTwitter(),
+				'twitch'      => $schedule->getTwitch() ?: $event->getTwitch(),
+				'description' => $schedule->getDescription(),
+				'theme'       => $schedule->getTheme(),
+				'secret'      => $schedule->getSecret(),
+				'updated'     => $schedule->getUpdatedAt()->format(self::DATE_FORMAT_UTC), // updated is stored as UTC, so it's okay to disregard the sys timezone here and force UTC
+				'url'         => sprintf('/%s/%s', $event->getSlug(), $schedule->getSlug()),
+				'event'       => [
 					'id'     => $this->encodeID($event->getId(), 'event'),
 					'name'   => $event->getName(),
 					'slug'   => $event->getSlug(),
 					'theme'  => $event->getTheme(),
 					'secret' => $event->getSecret()
 				],
-				'columns'  => $columns,
-				'items'    => $items
+				'columns'     => $columns,
+				'items'       => $items
 			]
 		];
 

@@ -37,6 +37,19 @@ class EventValidator extends BaseValidator {
 		return $this->result;
 	}
 
+	public function validateDescription($description) {
+		$this->result = ['_errors' => false];
+
+		$description = trim($description);
+		$this->setFilteredValue('description', $description);
+
+		if (mb_strlen($description) > 16*1024) {
+			$this->addError('description', 'The description cannot be longer than 16k characters.');
+		}
+
+		return $this->result;
+	}
+
 	public function validateName($name, Event $ref = null) {
 		$name = trim($name);
 

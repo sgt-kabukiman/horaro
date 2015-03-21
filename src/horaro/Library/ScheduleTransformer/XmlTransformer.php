@@ -51,6 +51,8 @@ class XmlTransformer extends BaseTransformer {
 					$xml->text($start->format(self::DATE_FORMAT_TZ));
 				$xml->endElement();
 
+				$xml->writeElement('description', $schedule->getDescription());
+
 				if (!$public) {
 					$xml->writeElement('theme', $schedule->getTheme());
 					$xml->writeElement('secret', $schedule->getSecret());

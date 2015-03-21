@@ -126,6 +126,27 @@ class EventController extends BaseController {
 		return $this->redirect('/-/events/'.$this->encodeID($event->getId(), 'event'));
 	}
 
+	public function updateDescriptionAction(Request $request) {
+		$event     = $this->getRequestedEvent($request);
+		$validator = $this->app['validator.event'];
+		$result    = $validator->validateDescription($request->request->get('description'));
+
+		if ($result['_errors']) {
+			return $this->renderForm($event, $result);
+		}
+
+		// update
+
+		$event->setDescription($result['description']['filtered']);
+		$this->getEntityManager()->flush();
+
+		// done
+
+		$this->addSuccessMsg('Your event description has been updated.');
+
+		return $this->redirect('/-/events/'.$this->encodeID($event->getId(), 'event'));
+	}
+
 	public function confirmationAction(Request $request) {
 		$event = $this->getRequestedEvent($request);
 

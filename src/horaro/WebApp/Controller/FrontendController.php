@@ -13,6 +13,7 @@ namespace horaro\WebApp\Controller;
 use horaro\Library\Entity\Event;
 use horaro\Library\Entity\Schedule;
 use horaro\WebApp\Exception as Ex;
+use Michelf\Markdown;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,12 +27,19 @@ class FrontendController extends BaseController {
 		$result = $this->handleScheduleAccess($event, $schedule, $key);
 		if ($result instanceof Response) return $result;
 
+		$description = $schedule->getDescription();
+
+		if ($description) {
+			$description = $this->app['markdown-converter']->convert($description);
+		}
+
 		$content = $this->render('frontend/schedule/schedule.twig', [
-			'event'     => $event,
-			'schedule'  => $schedule,
-			'key'       => $key,
-			'schedules' => $this->getAllowedSchedules($event, $key),
-			'isPrivate' => $this->isPrivatePage($event)
+			'event'       => $event,
+			'schedule'    => $schedule,
+			'key'         => $key,
+			'schedules'   => $this->getAllowedSchedules($event, $key),
+			'isPrivate'   => $this->isPrivatePage($event),
+			'description' => $description
 		]);
 
 		$response = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
@@ -116,12 +124,19 @@ class FrontendController extends BaseController {
 			throw new Ex\ForbiddenException('This event is private.');
 		}
 
+		$description = $event->getDescription();
+
+		if ($description) {
+			$description = $this->app['markdown-converter']->convert($description);
+		}
+
 		$isPrivate = $this->isPrivatePage($event);
 		$content   = $this->render('frontend/event/event.twig', [
-			'event'     => $event,
-			'key'       => $key,
-			'schedules' => $this->getAllowedSchedules($event, $key),
-			'isPrivate' => $isPrivate
+			'event'       => $event,
+			'key'         => $key,
+			'schedules'   => $this->getAllowedSchedules($event, $key),
+			'description' => $description,
+			'isPrivate'   => $isPrivate
 		]);
 
 		$response  = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
