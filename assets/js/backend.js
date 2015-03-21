@@ -181,7 +181,15 @@ jQuery(function($) {
 		textarea = $(textarea);
 
 		function update(text) {
-			$('.remarkable-preview').html(mdParser.render(text)).find('img').addClass('img-responsive');
+			var container = $('.remarkable-preview');
+
+			container
+				.html(mdParser.render(text))
+				.find('img')
+					.addClass('img-responsive')
+					.attr('src', container.data('placeholder'))
+					.attr('title', '(placeholder image by Casey Muir-Taylor, CC-BY)')
+			;
 		}
 
 		textarea.on('keyup paste cut mouseup', function() {

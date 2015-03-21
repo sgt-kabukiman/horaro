@@ -30,7 +30,7 @@ class FrontendController extends BaseController {
 		$description = $schedule->getDescription();
 
 		if ($description) {
-			$description = $this->app['markdown-converter']->convert($description);
+			$description = $this->convertMarkdown($description);
 		}
 
 		$content = $this->render('frontend/schedule/schedule.twig', [
@@ -127,7 +127,7 @@ class FrontendController extends BaseController {
 		$description = $event->getDescription();
 
 		if ($description) {
-			$description = $this->app['markdown-converter']->convert($description);
+			$description = $this->convertMarkdown($description);
 		}
 
 		$isPrivate = $this->isPrivatePage($event);
@@ -307,5 +307,47 @@ class FrontendController extends BaseController {
 		else {
 			return parent::setCachingHeader($response, 'schedule', $schedule->getUpdatedAt());
 		}
+	}
+
+	protected function convertMarkdown($text) {
+		$html = $this->app['markdown-converter']->convert($text);
+
+		// check if there are any embedded images; if so, we need to widen the CSP to allow those
+		// image sources.
+
+		$csp     = $this->app['csp'];
+		$limit   = 10; // max number of allowed origins
+		$origins = [];
+
+		preg_match_all('/src="(.*?)"/si', $html, $matches);
+
+		foreach ($matches[1] as $source) {
+			$scheme = parse_url($source, PHP_URL_SCHEME);
+			$host   = parse_url($source, PHP_URL_HOST);
+			$port   = parse_url($source, PHP_URL_PORT);
+
+			// prevent exceedingly long headers from blowing up the HTTP header
+			if ($scheme && strlen($host) <= 64) {
+				$origin = sprintf('%s://%s', $scheme, $host);
+
+				if ($port !== null) {
+					$origin .= ':'.$port;
+				}
+
+				if (in_array($origin, $origins)) {
+					continue;
+				}
+
+				$csp->addImageSource($origin);
+				$origins[] = $origin;
+				$limit--;
+			}
+
+			if ($limit === 0) {
+				break;
+			}
+		}
+
+		return $html;
 	}
 }

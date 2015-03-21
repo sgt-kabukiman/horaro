@@ -165,13 +165,14 @@
 							![image description](https://example.com/image.png)
 						</span>
 						<span class="help-block">
-							Preview of your description:
+							Preview of your description (<strong>Note:</strong> for security reasons, external images will not show up in this preview, but they will on
+							the public event page):
 						</span>
 					</div>
 
 					<div class="form-group">
 						<div class="panel panel-default remarkable-preview-panel">
-							<div class="panel-body remarkable-preview" id="description-preview"></div>
+							<div class="panel-body remarkable-preview" id="description-preview" data-placeholder="{{ macros.asset('images/placeholder.jpg') }}"></div>
 						</div>
 					</div>
 
