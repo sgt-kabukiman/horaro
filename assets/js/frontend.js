@@ -85,11 +85,6 @@ jQuery(function($) {
 	}
 
 	function getItemTitle(item) {
-		// very, very evil hack to make the SRX 2015 schedule look nicer (they have an empty first column)
-		if (document.location.pathname === '/srx/2015') {
-			return item.find('.h-1').text();
-		}
-
 		return item.find('.h-0').text();
 	}
 
