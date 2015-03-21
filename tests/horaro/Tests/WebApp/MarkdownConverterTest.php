@@ -46,15 +46,13 @@ class MarkdownConverterTest extends \PHPUnit_Framework_TestCase {
 			// invalid URIs
 			['a [link](javascript:alert("xss"))', '<p>a <a href="#">link</a></p>'],
 			['a [link](%6a%61%76%61%73%63%72%69%70%74:alert("xss"))', '<p>a <a href="#">link</a></p>'],
-			['a [link](http://foo.com/"onclick)', '<p>a <a href="http://foo.com/&quot;onclick">link</a></p>'],
+			['a [link](http://foo.com/"onclick)', '<p>a <a href="http://foo.com/%22onclick">link</a></p>'],
 
 			// regular HTML encoding
 			['a "test" string&stuff', '<p>a &quot;test&quot; string&amp;stuff</p>'],
 			['some <<tags with="attributes">>', '<p>some &lt;&lt;tags with=&quot;attributes&quot;&gt;&gt;</p>'],
 			['\'\';!--"<XSS>=&{()}', '<p>&#039;&#039;;!--&quot;&lt;XSS&gt;=&amp;{()}</p>'],
-
-			// the ">" is not encoded because the Markdown library handles that round and it does not use ENT_QUOTES
-			['[test](http://foo.com/\'\';!--"<XSS>=&{})', '<p><a href="http://foo.com/\'\';!--&quot;&lt;XSS>=&amp;{}">test</a></p>'],
+			['[test](http://foo.com/\'\';!--"<XSS>=&{})', '<p><a href="http://foo.com/%27%27;%21--%22%3CXSS%3E=&amp;%7B%7D">test</a></p>'],
 		];
 	}
 }

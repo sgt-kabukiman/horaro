@@ -33,7 +33,12 @@ class MarkdownConverter {
 				return '#';
 			}
 
-			return $url;
+			// even though things should be safe by relying on Michelf's
+			// htmlspecialchars() call on the URL, we can improve compatibility
+			// a bit by url-encoding all definitely not regular URL characters
+			// (like "<" and ">", but not "/" or ".").
+
+			return $this->urlencode($url);
 		};
 
 		$this->md = $md;
@@ -45,5 +50,16 @@ class MarkdownConverter {
 		$html = str_replace('<img', '<img class="img-responsive"', $html);
 
 		return trim($html);
+	}
+
+	protected function urlencode($url) {
+		$url     = urlencode($url);
+		$allowed = [':', '/', '.', '&', '?', '=', '%', '#', ';'];
+
+		foreach ($allowed as $char) {
+			$url = str_replace(urlencode($char), $char, $url);
+		}
+
+		return $url;
 	}
 }
