@@ -26,7 +26,6 @@ class CsvTransformer extends BaseTransformer {
 	public function transform(Schedule $schedule, $public = false) {
 		$rows      = [];
 		$cols      = $schedule->getColumns();
-		$scheduled = $schedule->getLocalStart();
 		$toCSV     = function($val) {
 			return '"'.addcslashes($val, '"').'"';
 		};
@@ -39,10 +38,10 @@ class CsvTransformer extends BaseTransformer {
 
 		$rows[] = implode(';', $header);
 
-		foreach ($schedule->getItems() as $item) {
+		foreach ($schedule->getScheduledItems() as $item) {
 			$extra = $item->getExtra();
 			$row   = [
-				'scheduled' => $toCSV($scheduled->format(self::DATE_FORMAT)),
+				'scheduled' => $toCSV($item->getScheduled()->format(self::DATE_FORMAT)),
 				'length'    => $toCSV($item->getLength()->format('H:i:s'))
 			];
 
@@ -52,7 +51,6 @@ class CsvTransformer extends BaseTransformer {
 			}
 
 			$rows[] = implode(';', $row);
-			$scheduled->add($item->getDateInterval());
 		}
 
 		return implode("\n", $rows);

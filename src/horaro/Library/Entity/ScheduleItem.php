@@ -42,6 +42,14 @@ class ScheduleItem {
 	private $schedule;
 
 	/**
+	 * calculated scheduled date; this is not synchronized with the database,
+	 * but meant to be set by the ScheduleItemIterator.
+	 *
+	 * @var \DateTime
+	 */
+	private $scheduled;
+
+	/**
 	 * Get id
 	 *
 	 * @return integer
@@ -185,5 +193,53 @@ class ScheduleItem {
 		}
 
 		return $len;
+	}
+
+	/**
+	 * Set scheduled
+	 *
+	 * @param \DateTime $scheduled
+	 * @return Schedule
+	 */
+	public function setScheduled(\DateTime $scheduled) {
+		$this->scheduled = $scheduled;
+
+		return $this;
+	}
+
+	/**
+	 * Get scheduled
+	 *
+	 * @return \DateTime
+	 */
+	public function getScheduled(\DateTimeZone $timezone = null) {
+		if (!$timezone) {
+			return $this->scheduled;
+		}
+
+		$scheduled = clone $this->scheduled;
+		$scheduled->setTimezone($timezone);
+
+		return $scheduled;
+	}
+
+	/**
+	 * Get scheduled
+	 *
+	 * @return \DateTime
+	 */
+	public function getScheduledEnd(\DateTimeZone $timezone = null) {
+		if ($this->scheduled === null) {
+			throw new \LogicException('Can only determine the scheduled end if the schedule start has been set.');
+		}
+
+		$scheduled = clone $this->scheduled;
+		$scheduled->add($this->getDateInterval());
+
+		if ($timezone) {
+			$scheduled->setTimezone($timezone);
+		}
+
+		return $scheduled;
 	}
 }

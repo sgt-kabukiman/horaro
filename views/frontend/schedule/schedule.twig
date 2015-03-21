@@ -1,12 +1,11 @@
 {% extends "frontend/layout.twig" %}
 
-{% set theme     = schedule.theme           %}
-{% set start     = schedule.localStart      %}
-{% set scheduled = schedule.localStart      %}
-{% set columns   = schedule.columns         %}
-{% set numCols   = columns|length           %}
-{% set fluid     = numCols > 4              %}
-{% set appendix  = key ? '?key=' ~ key : '' %}
+{% set theme    = schedule.theme           %}
+{% set start    = schedule.localStart      %}
+{% set columns  = schedule.columns         %}
+{% set numCols  = columns|length           %}
+{% set fluid    = numCols > 4              %}
+{% set appendix = key ? '?key=' ~ key : '' %}
 
 {% block fulltitle %}{{ schedule.name }} &ndash; {{ event.name }}{% endblock %}
 {% block body_attr %} class="theme-{{ theme }}"{% endblock %}
@@ -146,11 +145,14 @@
 			{% endspaceless %}</tr>
 		</thead>
 
-		{% for idx,item in schedule.items %}
+		{% set old = null %}
+		{% set end = null %}
+
+		{% for idx,item in schedule.scheduledItems %}
 		<tbody class="{{ idx % 2 ? 'h-odd' : 'h-even' }} h-i-l{{ item.getWidth(columns) }}">
 			<tr class="h-primary">
 				{% set extra = item.extra %}
-				<td class="h-s"><time datetime="{{ scheduled.format('Y-m-d\\TH:i:sP') }}">{{ scheduled.format('H:i:s') }}</time></td>
+				<td class="h-s"><time datetime="{{ item.scheduled.format('Y-m-d\\TH:i:sP') }}">{{ item.scheduled.format('H:i:s') }}</time></td>
 				<td class="h-0">{{ extra[columns[0].id]|default('') }}</td>
 				<td class="h-l"><time datetime="{{ item.isoDuration }}">{{ item.length.format('H:i:s') }}</time></td>
 				{% for idx,column in columns.slice(1) %}
@@ -158,21 +160,21 @@
 				{% endfor %}
 			</tr>
 
-			{% set old       = scheduled.format('d') %}
-			{% set scheduled = scheduled.add(item.dateInterval) %}
-
-			{% if idx > 0 and old != scheduled.format('d') %}
+			{% if idx > 0 and old != item.scheduled.format('d') %}
 			<tr class="h-new-day info">
-				<td colspan="{{ numCols + 2 }}">{{ scheduled.format('l, F d, Y') }}</td>
+				<td colspan="{{ numCols + 2 }}">{{ item.scheduled.format('l, F d, Y') }}</td>
 			</tr>
 			{% endif %}
+
+			{% set old = item.scheduled.format('d') %}
+			{% set end = item.scheduled %}
 		</tbody>
 		{% endfor %}
 	</table>
 
 	<div class="row">
 		<div class="col-lg-12 text-center">
-			<h4>Ends at <strong itemprop="endDate"><time datetime="{{ scheduled.format('Y-m-d\\TH:i:sP') }}" class="h-fancy-time" id="h-schedule-end">{{ scheduled.format('H:i:s') }}</time></strong></h4>
+			<h4>Ends at <strong itemprop="endDate"><time datetime="{{ end.format('Y-m-d\\TH:i:sP') }}" class="h-fancy-time" id="h-schedule-end">{{ end.format('H:i:s') }}</time></strong></h4>
 		</div>
 	</div>
 </div>

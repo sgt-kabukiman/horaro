@@ -36,7 +36,8 @@ class ICalTransformer extends BaseTransformer {
 	}
 
 	public function transform(Schedule $schedule, $public = false) {
-		$now         = new \DateTime('now', new \DateTimeZone('UTC'));
+		$utc         = new \DateTimeZone('UTC');
+		$now         = new \DateTime('now', $utc);
 		$tz          = $schedule->getTimezone();
 		$scheduled   = $schedule->getUTCStart();
 		$columns     = $schedule->getColumns();
@@ -60,7 +61,7 @@ class ICalTransformer extends BaseTransformer {
 			'X-PUBLISHED-TTL:PT15M'
 		];
 
-		foreach ($schedule->getItems() as $item) {
+		foreach ($schedule->getScheduledItems() as $item) {
 			$extra       = $item->getExtra();
 			$summary     = isset($extra[$summaryCol]) ? $extra[$summaryCol] : '(unnamed)';
 			$description = [];
@@ -73,11 +74,8 @@ class ICalTransformer extends BaseTransformer {
 			}
 
 			$lines[] = 'BEGIN:VEVENT';
-			$lines[] = 'DTSTART:'.$scheduled->format(self::DATE_FORMAT);
-
-			$scheduled->add($item->getDateInterval());
-
-			$lines[] = 'DTEND:'.$scheduled->format(self::DATE_FORMAT);
+			$lines[] = 'DTSTART:'.$item->getScheduled($utc)->format(self::DATE_FORMAT);
+			$lines[] = 'DTEND:'.$item->getScheduledEnd($utc)->format(self::DATE_FORMAT);
 			$lines[] = 'DTSTAMP:'.$now->format(self::DATE_FORMAT);
 			$lines[] = 'UID:'.$this->generateUID($item);
 			$lines[] = $this->getString($summary, 'SUMMARY');

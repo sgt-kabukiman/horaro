@@ -139,7 +139,7 @@ class FrontendController extends BaseController {
 			'isPrivate'   => $isPrivate
 		]);
 
-		$response  = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
+		$response = new Response($content, 200, ['content-type' => 'text/html; charset=UTF-8']);
 
 		if (!$isPrivate) {
 			$response = $this->setCachingHeader($response, 'event');

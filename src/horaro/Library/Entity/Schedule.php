@@ -10,8 +10,9 @@
 
 namespace horaro\Library\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use horaro\Library\ScheduleItemIterator;
 
 /**
  * Schedule
@@ -564,6 +565,13 @@ class Schedule {
 	 */
 	public function getItems() {
 		return $this->items;
+	}
+
+	/**
+	 * @return \horaro\Library\ScheduleItemIterator
+	 */
+	public function getScheduledItems() {
+		return new ScheduleItemIterator($this);
 	}
 
 	/**

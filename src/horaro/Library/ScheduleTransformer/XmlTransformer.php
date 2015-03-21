@@ -25,10 +25,9 @@ class XmlTransformer extends BaseTransformer {
 	}
 
 	public function transform(Schedule $schedule, $public = false) {
-		$event     = $schedule->getEvent();
-		$start     = $schedule->getLocalStart();
-		$cols      = $schedule->getColumns();
-		$scheduled = clone $start;
+		$event = $schedule->getEvent();
+		$start = $schedule->getLocalStart();
+		$cols  = $schedule->getColumns();
 
 		$xml = new \XMLWriter();
 		$xml->openMemory();
@@ -84,7 +83,7 @@ class XmlTransformer extends BaseTransformer {
 				$xml->endElement();
 
 				$xml->startElement('items');
-					foreach ($schedule->getItems() as $item) {
+					foreach ($schedule->getScheduledItems() as $item) {
 						$extra = $item->getExtra();
 
 						$xml->startElement('item');
@@ -93,8 +92,8 @@ class XmlTransformer extends BaseTransformer {
 								$xml->text($item->getISODuration());
 							$xml->endElement();
 							$xml->startElement('scheduled');
-								$xml->writeAttribute('timestamp', $scheduled->format('U'));
-								$xml->text($scheduled->format(self::DATE_FORMAT_TZ));
+								$xml->writeAttribute('timestamp', $item->getScheduled()->format('U'));
+								$xml->text($item->getScheduled()->format(self::DATE_FORMAT_TZ));
 							$xml->endElement();
 							$xml->startElement('data');
 								foreach ($cols as $col) {
@@ -104,8 +103,6 @@ class XmlTransformer extends BaseTransformer {
 								}
 							$xml->endElement();
 						$xml->endElement();
-
-						$scheduled->add($item->getDateInterval());
 					}
 				$xml->endElement();
 
