@@ -10,7 +10,8 @@
 
 namespace horaro\WebApp;
 
-use horaro\Entity\User;
+use horaro\Library\Entity\User;
+use horaro\Library\ReadableTime;
 
 class TwigUtils {
 	protected $versions = [];
@@ -134,5 +135,13 @@ class TwigUtils {
 			'<span class="label h-role h-role-%s label-%s">%s %s</span>',
 			$key, $this->roleClass($role), $this->roleIcon($role), $this->roleName($role)
 		);
+	}
+
+	public function readableTime(\DateTime $time = null) {
+		if (!$time) return '';
+
+		$parser = new ReadableTime();
+
+		return $parser->stringify($time);
 	}
 }
