@@ -544,7 +544,7 @@ class Schedule {
 			return 'PT0S';
 		}
 
-		return preg_replace('/([THMS])0+[HMS]/', '$1', $setup->format('\P\TG\Hi\Ms\S'));
+		return preg_replace('/(?<=[THMS])0+[HMS]/', '$1', $setup->format('\P\TG\Hi\Ms\S'));
 	}
 
 	/**

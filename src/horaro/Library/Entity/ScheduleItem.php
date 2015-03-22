@@ -130,7 +130,7 @@ class ScheduleItem {
 	 * @return string
 	 */
 	public function getISODuration() {
-		return preg_replace('/([THMS])0+[HMS]/', '$1', $this->length->format('\P\TG\Hi\Ms\S'));
+		return preg_replace('/(?<=[THMS])0+[HMS]/', '$1', $this->length->format('\P\TG\Hi\Ms\S'));
 	}
 
 	/**
