@@ -12,6 +12,7 @@ namespace horaro\WebApp\Validator;
 
 use horaro\Library\Entity\Event;
 use horaro\Library\Entity\Schedule;
+use horaro\Library\ReadableTime;
 
 class ScheduleValidator extends BaseValidator {
 	protected $repo;
@@ -25,15 +26,16 @@ class ScheduleValidator extends BaseValidator {
 	public function validate(array $schedule, Event $event, Schedule $ref = null) {
 		$this->result = ['_errors' => false];
 
-		$this->setFilteredValue('name',     $this->validateName($schedule['name'], $event, $ref));
-		$this->setFilteredValue('slug',     $this->validateSlug($schedule['slug'], $event, $ref));
-		$this->setFilteredValue('timezone', $this->validateTimezone($schedule['timezone'], $event, $ref));
-		$this->setFilteredValue('start',    $this->validateStart($schedule['start_date'], $schedule['start_time'], $event, $ref));
-		$this->setFilteredValue('website',  $this->validateWebsite($schedule['website'], $event, $ref));
-		$this->setFilteredValue('twitter',  $this->validateTwitterAccount($schedule['twitter'], $event, $ref));
-		$this->setFilteredValue('twitch',   $this->validateTwitchAccount($schedule['twitch'], $event, $ref));
-		$this->setFilteredValue('theme',    $this->validateTheme($schedule['theme'], $event, $ref));
-		$this->setFilteredValue('secret',   $this->validateSecret($schedule['secret']));
+		$this->setFilteredValue('name',       $this->validateName($schedule['name'], $event, $ref));
+		$this->setFilteredValue('slug',       $this->validateSlug($schedule['slug'], $event, $ref));
+		$this->setFilteredValue('timezone',   $this->validateTimezone($schedule['timezone'], $event, $ref));
+		$this->setFilteredValue('start',      $this->validateStart($schedule['start_date'], $schedule['start_time'], $event, $ref));
+		$this->setFilteredValue('website',    $this->validateWebsite($schedule['website'], $event, $ref));
+		$this->setFilteredValue('twitter',    $this->validateTwitterAccount($schedule['twitter'], $event, $ref));
+		$this->setFilteredValue('twitch',     $this->validateTwitchAccount($schedule['twitch'], $event, $ref));
+		$this->setFilteredValue('theme',      $this->validateTheme($schedule['theme'], $event, $ref));
+		$this->setFilteredValue('secret',     $this->validateSecret($schedule['secret']));
+		$this->setFilteredValue('setup_time', $this->validateSetupTime($schedule['setup_time'], $event, $ref));
 
 		return $this->result;
 	}
@@ -204,5 +206,18 @@ class ScheduleValidator extends BaseValidator {
 		}
 
 		return $secret === '' ? null : $secret;
+	}
+
+	public function validateSetupTime($time, Event $event, Schedule $ref = null, $throwUp = false) {
+		$parser = new ReadableTime();
+		$time   = trim($time);
+
+		try {
+			return $parser->parse($time);
+		}
+		catch (\InvalidArgumentException $e) {
+			$this->addError('setup_time', 'Could not understand this time format.', $throwUp);
+			return $time;
+		}
 	}
 }

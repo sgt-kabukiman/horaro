@@ -77,6 +77,11 @@ class Schedule {
 	private $description;
 
 	/**
+	 * @var string
+	 */
+	private $setup_time;
+
+	/**
 	 * @var integer
 	 */
 	private $max_items;
@@ -478,6 +483,68 @@ class Schedule {
 	 */
 	public function getDescription() {
 		return $this->description;
+	}
+
+	/**
+	 * Set setup time
+	 *
+	 * @param \DateTime $setup_time
+	 * @return Schedule
+	 */
+	public function setSetupTime(\DateTime $setup_time = null) {
+		$this->setup_time = $setup_time;
+
+		return $this;
+	}
+
+	/**
+	 * Get setup time
+	 *
+	 * @return \DateTime
+	 */
+	public function getSetupTime() {
+		return $this->setup_time;
+	}
+
+	/**
+	 * Get setup time in seconds
+	 *
+	 * @return int
+	 */
+	public function getSetupTimeInSeconds() {
+		$setup = $this->getSetupTime();
+
+		if (!$setup) {
+			return 0;
+		}
+
+		$parts = explode(':', $setup->format('H:i:s'));
+
+		return $parts[0] * 3600 + $parts[1] * 60 + $parts[2];
+	}
+
+	/**
+	 * Get setup time as DateInterval
+	 *
+	 * @return \DateInterval
+	 */
+	public function getSetupTimeDateInterval() {
+		return new \DateInterval($this->getSetupTimeISODuration());
+	}
+
+	/**
+	 * Get setup time as ISO duration
+	 *
+	 * @return string
+	 */
+	public function getSetupTimeISODuration() {
+		$setup = $this->getSetupTime();
+
+		if (!$setup) {
+			return 'PT0S';
+		}
+
+		return preg_replace('/([THMS])0+[HMS]/', '$1', $setup->format('\P\TG\Hi\Ms\S'));
 	}
 
 	/**

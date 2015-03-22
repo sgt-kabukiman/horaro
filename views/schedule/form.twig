@@ -122,6 +122,18 @@
 						</div>
 					</div>
 
+					<div class="form-group{{ utils.formClass(result, 'setup_time') }}">
+						<label class="col-lg-3 control-label" for="setup_time">Setup Time:</label>
+						<div class="col-lg-9">
+							<input type="text" class="form-control" id="setup_time" name="setup_time" maxlength="30" value="{{ utils.formValue(result, 'setup_time', schedule ? utils.readableTime(schedule.setupTime) : '') }}">
+							{{ macros.form_errors(result, 'setup_time') }}
+							<span class="help-block">
+								This time will be added automatically in between all items in the schedule.
+								Enter something like &quot;5min&quot; for 5 minutes or &quot;5m 30s&quot; for 5 minutes and 30 seconds.
+							</span>
+						</div>
+					</div>
+
 					<div class="form-group{{ utils.formClass(result, 'theme') }}">
 						<label class="col-lg-3 control-label" for="theme">Theme:</label>
 						<div class="col-lg-9">

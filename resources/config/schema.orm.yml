@@ -241,6 +241,9 @@ horaro\Library\Entity\Schedule:
     description:
       type: text
       nullable: true
+    setup_time:
+      type: time
+      nullable: true
     max_items:
       type: integer
       options: { unsigned: true }
