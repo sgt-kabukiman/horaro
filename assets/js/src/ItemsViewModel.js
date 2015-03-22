@@ -56,7 +56,7 @@ function ItemsViewModel(items) {
 
 			date       = moment.unix(scheduled / 1000).zone(scheduleTZ);
 			dayOfYear  = date.dayOfYear();
-			scheduled += (item.length() * 1000);
+			scheduled += ((item.length() + scheduleSetupTime) * 1000);
 
 			if (prev !== null && prev !== dayOfYear) {
 				item.dateSwitch(date.format('dddd, ll'));

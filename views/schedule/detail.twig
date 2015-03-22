@@ -47,7 +47,12 @@
 
 <div class="row">
 	<div class="col-lg-12">
-		<p class="text-center text-muted"><small>Click on an item to edit its details. Click and drag the handle on the left side to move items up or down.</small></p>
+		<p class="text-center text-muted"><small>
+			Click on an item to edit its details. Click and drag the handle on the left side to move items up or down.
+			{% if schedule.setupTime %}
+			<br>Note: The <strong>{{ utils.readableTime(schedule.setupTime) }} setup time</strong> in between all rows is added automatically.
+			{% endif %}
+		</small></p>
 	</div>
 </div>
 
@@ -80,6 +85,7 @@
 		class="table h-scheduler h-l{{ numCols }}"
 		data-id="{{ schedule.id|obscurify('schedule') }}"
 		data-start="{{ start.format('Y-m-d\\TH:i:sP') }}"
+		data-setuptime="{{ schedule.setupTimeInSeconds }}"
 		data-tz="{{ start.format('P') }}"
 		data-columns="{{ columns|join(',') }}"
 		data-maxitems="{{ maxItems }}"

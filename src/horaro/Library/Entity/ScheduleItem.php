@@ -202,7 +202,7 @@ class ScheduleItem {
 	 * @return Schedule
 	 */
 	public function setScheduled(\DateTime $scheduled) {
-		$this->scheduled = $scheduled;
+		$this->scheduled = clone $scheduled;
 
 		return $this;
 	}
@@ -213,12 +213,11 @@ class ScheduleItem {
 	 * @return \DateTime
 	 */
 	public function getScheduled(\DateTimeZone $timezone = null) {
-		if (!$timezone) {
-			return $this->scheduled;
-		}
-
 		$scheduled = clone $this->scheduled;
-		$scheduled->setTimezone($timezone);
+
+		if ($timezone) {
+			$scheduled->setTimezone($timezone);
+		}
 
 		return $scheduled;
 	}

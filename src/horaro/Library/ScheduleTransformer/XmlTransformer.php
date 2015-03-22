@@ -57,6 +57,11 @@ class XmlTransformer extends BaseTransformer {
 					$xml->writeElement('secret', $schedule->getSecret());
 				}
 
+				$xml->startElement('setup');
+					$xml->writeAttribute('timestamp', $schedule->getSetupTimeInSeconds());
+					$xml->text($schedule->getSetupTimeISODuration());
+				$xml->endElement();
+
 				$xml->writeElement('website', $schedule->getWebsite() ?: $event->getWebsite());
 				$xml->writeElement('twitter', $schedule->getTwitter() ?: $event->getTwitter());
 				$xml->writeElement('twitch', $schedule->getTwitch() ?: $event->getTwitch());

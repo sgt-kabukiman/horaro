@@ -72,6 +72,8 @@ class JsonTransformer extends BaseTransformer {
 				'twitter'     => $schedule->getTwitter() ?: $event->getTwitter(),
 				'twitch'      => $schedule->getTwitch() ?: $event->getTwitch(),
 				'description' => $schedule->getDescription(),
+				'setup'       => $schedule->getSetupTimeISODuration(),
+				'setup_t'     => $schedule->getSetupTimeInSeconds(),
 				'theme'       => $schedule->getTheme(),
 				'secret'      => $schedule->getSecret(),
 				'updated'     => $schedule->getUpdatedAt()->format(self::DATE_FORMAT_UTC), // updated is stored as UTC, so it's okay to disregard the sys timezone here and force UTC

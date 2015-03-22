@@ -22,6 +22,7 @@ class ScheduleItemIterator implements \Iterator {
 	public function __construct(Schedule $schedule) {
 		$this->schedule = $schedule;
 		$this->items    = $schedule->getItems();
+		$this->setup    = $schedule->getSetupTimeDateInterval();
 
 		$this->rewind();
 	}
@@ -43,7 +44,10 @@ class ScheduleItemIterator implements \Iterator {
 
 	public function next() {
 		$this->position++;
+
 		$this->time->add($this->current->getDateInterval());
+		$this->time->add($this->setup);
+
 		$this->updateCurrentItem();
 	}
 

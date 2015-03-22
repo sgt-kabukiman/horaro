@@ -167,14 +167,15 @@
 			{% endif %}
 
 			{% set old = item.scheduled.format('d') %}
-			{% set end = item.scheduled %}
+			{% set end = item %}
 		</tbody>
 		{% endfor %}
 	</table>
 
 	<div class="row">
 		<div class="col-lg-12 text-center">
-			<h4>Ends at <strong itemprop="endDate"><time datetime="{{ end.format('Y-m-d\\TH:i:sP') }}" class="h-fancy-time" id="h-schedule-end">{{ end.format('H:i:s') }}</time></strong></h4>
+			{% set endDate = end.scheduledEnd %}
+			<h4>Ends at <strong itemprop="endDate"><time datetime="{{ endDate.format('Y-m-d\\TH:i:sP') }}" class="h-fancy-time" id="h-schedule-end">{{ endDate.format('H:i:s') }}</time></strong></h4>
 		</div>
 	</div>
 </div>

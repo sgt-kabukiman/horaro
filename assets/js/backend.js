@@ -3,7 +3,7 @@
 jQuery(function($) {
 	'use strict';
 
-	var scheduleColumns, scheduleID, scheduleStart, scheduleTZ, viewModel, items, columns, maxItems;
+	var scheduleColumns, scheduleID, scheduleStart, scheduleTZ, scheduleSetupTime, viewModel, items, columns, maxItems;
 
 	// init CSRF token information
 
@@ -115,12 +115,13 @@ jQuery(function($) {
 			var dataNode = $('.h-scheduler');
 			var itemData = JSON.parse($('#h-item-data').text());
 
-			scheduleID      = dataNode.data('id');
-			scheduleColumns = (''+dataNode.data('columns')).split(',');
-			scheduleStart   = new Date(dataNode.data('start'));
-			scheduleTZ      = dataNode.data('tz');
-			maxItems        = parseInt(dataNode.data('maxitems'), 10);
-			items           = [];
+			scheduleID        = dataNode.data('id');
+			scheduleColumns   = (''+dataNode.data('columns')).split(',');
+			scheduleStart     = new Date(dataNode.data('start'));
+			scheduleSetupTime = parseInt(dataNode.data('setuptime'), 10);
+			scheduleTZ        = dataNode.data('tz');
+			maxItems          = parseInt(dataNode.data('maxitems'), 10);
+			items             = [];
 
 			if (itemData) {
 				itemData.forEach(function(item, idx) {
