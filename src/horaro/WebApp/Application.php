@@ -12,7 +12,6 @@ namespace horaro\WebApp;
 
 use horaro\Library\BaseApplication;
 use horaro\Library\ObscurityCodec;
-use Michelf\Markdown;
 use Silex\Provider\TwigServiceProvider;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 
@@ -62,7 +61,7 @@ class Application extends BaseApplication {
 		});
 
 		$this['markdown-converter'] = $this->share(function() {
-			return new MarkdownConverter(new Markdown());
+			return new Markdown\Converter(new Markdown\MarkdownOnHtml());
 		});
 
 		$this->register(new TwigServiceProvider(), array(

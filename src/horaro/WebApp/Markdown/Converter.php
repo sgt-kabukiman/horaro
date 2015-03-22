@@ -8,14 +8,12 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-namespace horaro\WebApp;
+namespace horaro\WebApp\Markdown;
 
-use Michelf\Markdown;
-
-class MarkdownConverter {
+class Converter {
 	protected $md;
 
-	public function __construct(Markdown $md) {
+	public function __construct(\Michelf\Markdown $md) {
 		$md->empty_element_suffix = '>';
 		$md->no_markup            = false;
 		$md->no_entities          = false;
