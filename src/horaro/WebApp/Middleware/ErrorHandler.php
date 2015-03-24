@@ -46,7 +46,13 @@ class ErrorHandler {
 		$this->version = $version;
 	}
 
-	public function __invoke(Request $request, Application $app) {
+	/**
+	 * Sets up the error handlers
+	 *
+	 * This cannot be done by invoking this middleware as part of the before() callbacks,
+	 * because those are not executed when no route is being matched.
+	 */
+	public function setup(Application $app) {
 		$app->error([$this, 'handleNotLoggedIn']);
 		$app->error([$this, 'handleAccessDenied']);
 		$app->error([$this, 'handleReverseAuthErrors']);

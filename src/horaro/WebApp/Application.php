@@ -26,6 +26,9 @@ class Application extends BaseApplication {
 		// already known.
 		$this['runtime-config']->init();
 
+		// setup error handling
+		$this['middleware.errorhandler']->setup($this);
+
 		$this->setupRouting();
 	}
 
@@ -209,7 +212,6 @@ class Application extends BaseApplication {
 	}
 
 	public function setupRouting() {
-		$this->before($this['middleware.errorhandler']);
 		$this->before($this['middleware.csrf']);
 		$this->before($this['middleware.firewall']);
 		$this->before($this['middleware.resolver']);
