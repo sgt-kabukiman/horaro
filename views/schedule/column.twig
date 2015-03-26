@@ -5,7 +5,11 @@
 		<td data-bind="attr: { class: 'h-name '   + rowClass() }"><a href="#" data-bind="editable: name, editableOptions: { hidden: onEditableHidden }"></a></td>
 		<td data-bind="attr: { class: 'text-right h-controls ' + rowClass() }">
 			<!-- ko if: !deleting() -->
-			<button class="" data-bind="click: confirmDelete, activate: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + deleteBtnClass() }"><i class="fa fa-trash-o"></i></button>
+			<!-- ko if: !fixed -->
+			<button data-bind="click: moveUp, activate: moveUp, attr: { class: 'btn move-up btn-xs' + (first() && ' disabled' || ' btn-default') }"><i class="fa fa-arrow-up"></i></button>
+			<button data-bind="click: moveDown, activate: moveDown, attr: { class: 'btn move-down btn-xs' + (last() && ' disabled' || ' btn-default') }"><i class="fa fa-arrow-down"></i></button>
+			<!-- /ko -->
+			<button data-bind="click: confirmDelete, activate: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + deleteBtnClass() }"><i class="fa fa-trash-o"></i></button>
 			<!-- /ko -->
 
 			<!-- ko if: deleting() -->

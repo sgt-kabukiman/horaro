@@ -9,7 +9,7 @@ function Column(id, name, pos, fixed) {
 
 	// setup properties for managing app state
 
-	self.position  = parseInt(pos, 10);
+	self.position  = ko.observable(parseInt(pos, 10));
 	self.suspended = false;
 	self.nextFocus = false;
 	self.deleting  = ko.observable(false);
@@ -44,6 +44,14 @@ function Column(id, name, pos, fixed) {
 
 	self.handleText = function() {
 		return self.fixed ? '' : '::';
+	};
+
+	self.first = ko.pureComputed(function() {
+		return self.position() <= 1;
+	}, self);
+
+	self.last = function() {
+		return self.position() >= viewModel.numOfFlexibleColumns();
 	};
 
 	// subscribers
@@ -127,6 +135,32 @@ function Column(id, name, pos, fixed) {
 	};
 
 	// behaviours
+
+	function move(event, direction) {
+		var columnist = $(event.target).closest('table');
+		var newPos    = self.position() + (direction === 'up' ? -1 : 1);
+
+		viewModel.move(self.id(), newPos);
+
+		// find the new DOM node for the just pressed button and focus it, if possible
+		// (i.e. we're not first or last)
+		var row = columnist.find('tbody[data-colid="' + self.id() + '"]');
+		var btn = row.find('button.move-' + direction);
+
+		if (btn.is('.disabled')) {
+			btn = row.find('button.move-' + (direction === 'up' ? 'down' : 'up'));
+		}
+
+		btn.focus();
+	}
+
+	self.moveUp = function(col, event) {
+		move(event, 'up');
+	};
+
+	self.moveDown = function(col, event) {
+		move(event, 'down');
+	};
 
 	self.confirmDelete = function(item, event) {
 		var parent = $(event.target).parent();

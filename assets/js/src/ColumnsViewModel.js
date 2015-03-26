@@ -31,7 +31,7 @@ function ColumnsViewModel(columns) {
 		return self.flexibleColumns().length;
 	}, self);
 
-	self.numOfFixedItems = ko.pureComputed(function() {
+	self.numOfFixedColumns = ko.pureComputed(function() {
 		return self.fixedColumns().length;
 	}, self);
 
@@ -56,7 +56,7 @@ function ColumnsViewModel(columns) {
 
 		columns.forEach(function(col) {
 			if (col.fixed === false) {
-				col.position = pos;
+				col.position(pos);
 				pos++;
 			}
 		});
@@ -76,12 +76,17 @@ function ColumnsViewModel(columns) {
 	self.move = function(columnID, newPos) {
 		var col    = findColumn(columnID);
 		var data   = { column: columnID, position: newPos };
-		var oldPos = col.position;
+		var oldPos = col.position();
+
+		// illegal move
+		if (newPos < 1 || newPos > self.numOfFlexibleColumns()) {
+			return;
+		}
 
 		// Even if we don't actually move the column, we need to re-generate a fresh tbody element
 		// because the old one was detached from the DOM during the dragging.
 
-		var insertAt = newPos + self.numOfFixedItems() - 1; // -1 because splice() uses the internal, 0-based array
+		var insertAt = newPos + self.numOfFixedColumns() - 1; // -1 because splice() uses the internal, 0-based array
 
 		self.columns.remove(col);
 		self.columns.splice(insertAt, 0, col);

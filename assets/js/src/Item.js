@@ -23,7 +23,7 @@ function Item(id, length, columns, pos) {
 
 	// setup properties for managing app state
 
-	self.position  = parseInt(pos, 10);
+	self.position  = ko.observable(parseInt(pos, 10));
 	self.suspended = false;
 	self.nextFocus = false;
 	self.expanded  = ko.observable(false);
@@ -65,6 +65,14 @@ function Item(id, length, columns, pos) {
 
 	self.bodyClass = function() {
 		return 'h-item ' + (this.$context.$index() % 2 === 1 ? 'h-odd' : 'h-even');
+	};
+
+	self.first = ko.pureComputed(function() {
+		return self.position() <= 1;
+	}, self);
+
+	self.last = function() {
+		return self.position() >= viewModel.items().length;
 	};
 
 	// subscribers
@@ -190,6 +198,32 @@ function Item(id, length, columns, pos) {
 	self.toggle = function(item, event) {
 		self.expanded(!self.expanded());
 		$(event.target).parent().find('button:visible').focus();
+	};
+
+	function move(event, direction) {
+		var scheduler = $(event.target).closest('table');
+		var newPos    = self.position() + (direction === 'up' ? -1 : 1);
+
+		viewModel.move(self.id(), newPos);
+
+		// find the new DOM node for the just pressed button and focus it, if possible
+		// (i.e. we're not first or last)
+		var row = scheduler.find('tbody[data-itemid="' + self.id() + '"]');
+		var btn = row.find('button.move-' + direction);
+
+		if (btn.is('.disabled')) {
+			btn = row.find('button.move-' + (direction === 'up' ? 'down' : 'up'));
+		}
+
+		btn.focus();
+	}
+
+	self.moveUp = function(item, event) {
+		move(event, 'up');
+	};
+
+	self.moveDown = function(item, event) {
+		move(event, 'down');
 	};
 
 	self.confirmDelete = function(item, event) {

@@ -29,6 +29,8 @@
 				<button class="btn btn-link btn-xs" data-bind="click: toggle, activate: toggle, visible: !expanded()"><i class="fa fa-angle-double-down"></i> more</button>
 				<button class="btn btn-link btn-xs" data-bind="click: toggle, activate: toggle, visible: expanded"><i class="fa fa-angle-double-up"></i> less</button>
 			</span>
+			<button data-bind="click: moveUp, activate: moveUp, attr: { class: 'btn move-up btn-xs' + (first() && ' disabled' || ' btn-default') }"><i class="fa fa-arrow-up"></i></button>
+			<button data-bind="click: moveDown, activate: moveDown, attr: { class: 'btn move-down btn-xs' + (last() && ' disabled' || ' btn-default') }"><i class="fa fa-arrow-down"></i></button>
 			<button data-bind="click: confirmDelete, activate: confirmDelete, attr: { class: 'btn btn-danger btn-xs' + (id() === -1 && ' disabled' || '') }"><i class="fa fa-trash-o"></i></button>
 			<!-- /ko -->
 
