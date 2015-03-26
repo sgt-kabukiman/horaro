@@ -68,7 +68,10 @@ class CsvImporter extends BaseImporter {
 		$pos     = 1;
 		$columns = [];
 
-		foreach ($headers as $col) {
+		foreach ($headers as $pos => $col) {
+			// do not interpret length columns as data columns, unless we want to keep them
+			if (isset($lengthColumns[$pos]) && !$keepLengthColumns) continue;
+
 			if ($pos <= 10) {
 				$column = new ScheduleColumn();
 				$column->setName(mb_substr($col, 0, 128))->setPosition($pos);
