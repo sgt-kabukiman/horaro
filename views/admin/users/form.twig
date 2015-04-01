@@ -22,8 +22,13 @@
 					<div class="form-group{{ utils.formClass(result, 'login') }}">
 						<label class="col-lg-4 control-label" for="login">Username:</label>
 						<div class="col-lg-8">
+							{% if user.isOAuthAccount %}
+							<p class="form-control-static">{{ user.login }}</p>
+							<span class="help-block">This is an OAuth-based account. Changing the internal username is not allowed.</span>
+							{% else %}
 							<input type="text" class="form-control" id="login" name="login" autofocus required value="{{ utils.formValue(result, 'login', user.login) }}">
 							{{ macros.form_errors(result, 'login') }}
+							{% endif %}
 						</div>
 					</div>
 

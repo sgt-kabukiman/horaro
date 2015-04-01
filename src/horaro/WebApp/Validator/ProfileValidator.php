@@ -81,6 +81,15 @@ class ProfileValidator extends BaseValidator {
 	}
 
 	public function validateCurrentPassword($given, User $user) {
+		// if this account has no password, it is an OAuth-only account. To prevent
+		// someone setting a password without us verifying the session again (which
+		// we do by using the 'current' password normally), we must deny password
+		// creations.
+		if ($user->getPassword() === null) {
+			$this->addError('current', 'It is not allowed to create a password for an OAuth-only account.');
+			return null;
+		}
+
 		if (!is_string($given)) {
 			$this->addError('current', 'Malformed current password.');
 			return null;

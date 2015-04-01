@@ -56,3 +56,11 @@ cookie_lifetime: 86400
 # This controls the `secure` flag on cookies. Set this to true when you operate
 # Horaro only via SSL/TLS.
 cookie_secure: false
+
+# OAuth configuration
+# Set this if you want to allow people to log in via Twitch. If you want that,
+# you will know what these settings mean.
+oauth: []
+#  twitch:
+#    clientId:     ...
+#    clientSecret: ...

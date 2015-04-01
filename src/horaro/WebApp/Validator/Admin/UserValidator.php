@@ -48,6 +48,11 @@ class UserValidator extends BaseValidator {
 	public function validateLogin($login, User $user) {
 		$login = trim($login);
 
+		// ignore any changes to auto-created OAuth identities
+		if ($user->isOAuthAccount()) {
+			return $user->getLogin();
+		}
+
 		if (!preg_match('/^[a-zA-Z0-9_-]+$/u', $login)) {
 			$this->addError('login', 'The username must use only letters, numbers, underscores or dashes.');
 		}

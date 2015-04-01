@@ -36,11 +36,13 @@
 		</div>
 
 		{% if result and result.form.errors and result.form.messages %}
-		<div class="alert alert-dismissable alert-danger">
+		<div class="alert alert-danger">
 			{% for message in result.form.messages %}
 				{{ message }}<br>
 			{% endfor %}
 		</div>
+		{% elseif error_message is defined %}
+		<div class="alert alert-danger">{{ error_message }}</div>
 		{% endif %}
 	</div>
 </div>

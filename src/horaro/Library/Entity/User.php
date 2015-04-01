@@ -53,6 +53,11 @@ class User {
 	private $role;
 
 	/**
+	 * @var string
+	 */
+	private $twitch_oauth;
+
+	/**
 	 * @var \DateTime
 	 */
 	private $created_at;
@@ -113,6 +118,10 @@ class User {
 	 */
 	public function getLogin() {
 		return $this->login;
+	}
+
+	public function isOAuthAccount() {
+		return preg_match('/^oauth:/', $this->getLogin());
 	}
 
 	/**
@@ -224,6 +233,29 @@ class User {
 	 */
 	public function getRole() {
 		return $this->role;
+	}
+
+	/**
+	 * Set twitch_oauth
+	 *
+	 * @param string $twitchUserID
+	 * @return User
+	 */
+	public function setTwitchOAuth($twitchUserID) {
+		$twitchUserID = trim($twitchUserID);
+
+		$this->twitch_oauth = strlen($twitchUserID) === 0 ? null : $twitchUserID;
+
+		return $this;
+	}
+
+	/**
+	 * Get twitch_oauth
+	 *
+	 * @return string
+	 */
+	public function getTwitchOAuth() {
+		return $this->twitch_oauth;
 	}
 
 	/**

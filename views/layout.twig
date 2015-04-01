@@ -71,11 +71,13 @@
 	{% block scripts %}{% endblock %}
 
 	{% block flashes %}
-	{% set flashes = app.session.flashbag.all %}
-	{% if flashes|length > 0 %}
-	<script type="application/json" id="h-flashes">
-	{{ flashes|json_encode|raw }}
-	</script>
+	{% if app.user %}
+		{% set flashes = app.session.flashbag.all %}
+		{% if flashes|length > 0 %}
+		<script type="application/json" id="h-flashes">
+		{{ flashes|json_encode|raw }}
+		</script>
+		{% endif %}
 	{% endif %}
 	{% endblock %}
 </body>

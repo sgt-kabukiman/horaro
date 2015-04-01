@@ -28,6 +28,7 @@ horaro\Library\Entity\User:
     password:
       type: string
       length: 255
+      nullable: true # for OAuth-created accounts
     display_name:
       type: string
       length: 255
@@ -43,6 +44,10 @@ horaro\Library\Entity\User:
     role:
       type: string
       length: 100
+    twitch_oauth:
+      type: string
+      length: 255
+      nullable: true
     created_at:
       type: datetime
     max_events:
@@ -52,6 +57,8 @@ horaro\Library\Entity\User:
   uniqueConstraints:
     unique_login:
       columns: [ login ]
+    unique_twitch:
+      columns: [ twitch_oauth ]
 
   oneToMany:
     teams:

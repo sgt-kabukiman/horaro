@@ -1,5 +1,24 @@
 {% extends "frontend.twig" %}
 
+{# Make sure we have the backend assets when a user is logged in, or else the #}
+{# growl message after account creation would not show up. Or we'd have to    #}
+{# duplicate code and blow up the frontend.js :/                              #}
+{% block scripts %}
+{% if app.user %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.2.0/knockout-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
+<script src="//cdn.jsdelivr.net/remarkable/1.6.0/remarkable.min.js"></script>
+<script src="{{ macros.asset('js/vendor-backend.min.js') }}"></script>
+<script src="{{ macros.asset('js/i18n/' ~ app.language ~ '.min.js') }}"></script>
+<script src="{{ macros.asset('js/app-backend.min.js') }}"></script>
+{% else %}
+{{ parent() }}
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="row">
 	<div class="col-lg-5 col-md-5">

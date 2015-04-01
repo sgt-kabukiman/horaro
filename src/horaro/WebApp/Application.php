@@ -117,6 +117,7 @@ class Application extends BaseApplication {
 		});
 
 		$this['controller.index']                  = $this->share(function() { return new Controller\IndexController($this);                  });
+		$this['controller.oauth']                  = $this->share(function() { return new Controller\OAuthController($this);                  });
 		$this['controller.frontend']               = $this->share(function() { return new Controller\FrontendController($this);               });
 		$this['controller.home']                   = $this->share(function() { return new Controller\HomeController($this);                   });
 		$this['controller.event']                  = $this->share(function() { return new Controller\EventController($this);                  });
@@ -232,6 +233,9 @@ class Application extends BaseApplication {
 		$this->route('GET',   '/-/register',                'index:registerForm', 'ghost');
 		$this->route('POST',  '/-/register',                'index:register',     'ghost', true);
 		$this->route('POST',  '/-/logout',                  'index:logout',       'user');
+
+		$this->route('GET',   '/-/oauth/start',             'oauth:start');
+		$this->route('GET',   '/-/oauth/callback',          'oauth:callback');
 
 		$this->route('GET',   '/-/sitemap',                 'sitemap:generate');
 

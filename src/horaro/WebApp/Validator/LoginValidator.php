@@ -54,7 +54,10 @@ class LoginValidator extends BaseValidator {
 			return $password;
 		}
 
-		if (!password_verify($password, $this->result['_user']->getPassword())) {
+		$hash = $this->result['_user']->getPassword();
+
+		// always deny password checks for OAuth-only accounts
+		if ($hash === null || !password_verify($password, $hash)) {
 			$this->addError('form', 'Invalid login credentials.');
 		}
 
