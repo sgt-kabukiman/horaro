@@ -157,7 +157,7 @@ class Application extends BaseApplication {
 		$this['validator.profile'] = $this->share(function() {
 			$config = $this['config'];
 
-			return new Validator\ProfileValidator(array_keys($config['languages']), $config['default_languages']);
+			return new Validator\ProfileValidator(array_keys($config['languages']), $config['default_language']);
 		});
 
 		$this['validator.schedule'] = $this->share(function() {
