@@ -121,6 +121,41 @@
 			</form>
 		</div>
 	</div>
+
+	{% if app.config.oauth is not empty %}
+	<div class="col-lg-6 col-md-6 col-sm-5 h-formhelp">
+		<legend>Log-in via Twitch</legend>
+		{% if user.twitchOAuth is null %}
+		<p>
+			Instead of using a password here, you can instead choose to log-in with your Twitch
+			account. This happens via OAuth2, so you <strong>never enter your Twitch username
+			and password here.</strong>
+		</p>
+		<p>
+			To connect, just click the button below and authenticate Horaro to access your
+			profile. You will then be redirected back here.
+		</p>
+
+		<p class="text-center">
+			{{ macros.twitch_oauth_starter() }}
+		</p>
+
+		<p><small class="text-muted">
+			Horaro only requests your <em>public</em> user information</abbr> (username, bio and
+			display name). Specifically, your e-mail address is not revealed to Horaro.
+		</small></p>
+		{% else %}
+		<div class="alert alert-success">
+			<i class="fa fa-check"></i> Your account is linked to Twitch, so you're all set-up to log-in via Twitch. Great!
+		</div>
+
+		<p>
+			You can <a href="/-/profile/oauth">manage your Twitch log-in</a> to un-link your account or
+			remove your Horaro password alltogether.
+		</p>
+		{% endif %}
+	</div>
+	{% endif %}
 </div>
 {% endif %}
 {% endblock %}

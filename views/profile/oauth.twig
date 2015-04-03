@@ -1,0 +1,81 @@
+{% extends "backend.twig" %}
+{% import "macros.twig" as macros %}
+
+{% block title %}Your Profile{% endblock %}
+
+{% block content %}
+<ul class="breadcrumb">
+	<li><a href="/-/home">Home</a></li>
+	<li><a href="/-/profile">Update Profile</a></li>
+	<li>Manage Log-ins…</li>
+</ul>
+
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h2>Manage Your Log-ins</h2>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 h-formhelp">
+		<legend>Log-in via Twitch</legend>
+
+		<div class="alert alert-success">
+			<i class="fa fa-check"></i> Your account is linked to Twitch, so you're all set-up to log-in via Twitch. Great!
+		</div>
+
+		<p>
+			If you no longer wish to allow the linked Twitch account to log into your Horaro account,
+			you can remove the link. From that point on, you can only log-in with your regular password.
+			You can however re-connect with Twitch at any time.
+		</p>
+
+		<form method="post" action="/-/profile/oauth" class="form-horizontal h-confirmation">
+			{{ macros.csrf_token() }}
+			<div class="text-center">
+				<input type="hidden" id="_method" name="_method" value="DELETE" />
+				<button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-unlink"> </i> Un-link Twitch Account</button>
+			</div>
+		</form>
+	</div>
+
+	<div class="col-lg-6 col-md-6 col-sm-6 h-formhelp">
+		<legend>Log-in by Password</legend>
+
+		<p>
+			At the moment, you can log-in either using Twitch or by using your password. To make your
+			account more secure, you can remove your password alltogether.
+		</p>
+
+		<div class="alert alert-warning">
+			Please note that <strong>there is no turning back</strong> after you removed the password.
+			From that point on, you will only ever be able to log-in via Twitch.
+		</div>
+
+		<div class="well">
+			<form method="post" action="/-/profile/password" class="form-horizontal h-confirmation">
+				<div><input type="hidden" id="_method" name="_method" value="DELETE" /></div>
+				{{ macros.csrf_token() }}
+
+				<fieldset>
+					<div class="form-group{{ utils.formClass(result, 'current') }}">
+						<div class="col-lg-8 col-md-7 col-sm-12 col-xs-12">
+							<input type="password" class="form-control" name="current" required placeholder="your current password">
+							{{ macros.form_errors(result, 'current') }}
+						</div>
+						<div class="col-lg-4 col-md-5 hidden-sm hidden-xs">
+							<button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-eraser"> </i> Remove Password</button>
+						</div>
+					</div>
+
+					<div class="hide visible-xs-block visible-sm-block form-group">
+						<div class="text-center">
+							<button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-eraser"> </i> Remove Password</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

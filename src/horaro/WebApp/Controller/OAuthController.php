@@ -28,7 +28,18 @@ class OAuthController extends BaseController {
 		$authUrl = $provider->getAuthorizationUrl();
 		$session = $request->getSession();
 
-		$session->start();
+		$user = $this->getCurrentUser();
+
+		if ($user) {
+			// do not allow to re-link
+			if ($user->getTwitchOAuth() !== null) {
+				return $this->redirect('/-/profile');
+			}
+		}
+		else {
+			$session->start();
+		}
+
 		$session->set('oauth2provider', $providerName);
 		$session->set('oauth2state', $provider->state);
 
@@ -65,7 +76,7 @@ class OAuthController extends BaseController {
 				return $this->redirect('/-/profile');
 			}
 
-			$html = $this->render('index/login.twig', ['error_message' => $message]);
+			$html = $this->render('index/login.twig', ['error_message' => $message, 'result' => null]);
 
 			return $this->setCachingHeader(new Response($html), 'other');
 		}
@@ -101,7 +112,7 @@ class OAuthController extends BaseController {
 
 			// we're done for logged-in users
 			if ($currentUser) {
-				$this->addSuccessMsg('You have successfully linked your accounts together.');
+				$this->addSuccessMsg('You have successfully linked your accounts.');
 				return $this->redirect('/-/profile');
 			}
 		}
@@ -112,7 +123,7 @@ class OAuthController extends BaseController {
 			}
 
 			if ($existing->getRole() === 'ROLE_GHOST') {
-				$html = $this->render('index/login.twig', ['error_message' => 'Your account has ben disabled.']);
+				$html = $this->render('index/login.twig', ['error_message' => 'Your account has ben disabled.', 'result' => null]);
 				return $this->setCachingHeader(new Response($html), 'other');
 			}
 

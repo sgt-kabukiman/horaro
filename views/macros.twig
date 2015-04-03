@@ -8,6 +8,13 @@
 {% endif %}
 {% endmacro %}
 
+{% macro twitch_oauth_starter() %}
+	{% import _self as m %}
+	<a href="/-/oauth/start?provider=twitch">
+		<img src="{{ m.asset('images/twitch-connect.png') }}" alt="Connect with Twitch">
+	</a>
+{% endmacro %}
+
 {% macro csrf_token() %}
 <div><input type="hidden" name="{{ app.csrf.paramName }}" value="{{ app.csrf.token(app.session) }}" /></div>
 {% endmacro %}

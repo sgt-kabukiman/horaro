@@ -281,6 +281,9 @@ class Application extends BaseApplication {
 		$this->route('GET',    '/-/profile',                                            'profile:edit',                'user');
 		$this->route('PUT',    '/-/profile',                                            'profile:update',              'user');
 		$this->route('PUT',    '/-/profile/password',                                   'profile:updatePassword',      'user');
+		$this->route('DELETE', '/-/profile/password',                                   'profile:removePassword',      'user');
+		$this->route('GET',    '/-/profile/oauth',                                      'profile:oauth',               'user');
+		$this->route('DELETE', '/-/profile/oauth',                                      'profile:unconnect',           'user');
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// admin backend

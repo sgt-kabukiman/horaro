@@ -36,6 +36,12 @@ jQuery(function($) {
 
 	$('select.h-fancy').select2();
 
+	// insert safety-guard for some forms
+
+	$('form.h-confirmation').on('submit', function() {
+		return confirm($(this).data('confirmation') || 'Are you sure?');
+	});
+
 	// render localized times
 
 	$('time.h-fancy').each(function() {

@@ -258,6 +258,12 @@ class User {
 		return $this->twitch_oauth;
 	}
 
+	public function getTwitchUsername() {
+		preg_match('/^oauth:twitch:(.+)$/', $this->twitch_oauth, $match);
+
+		return $match ? $match[1] : null;
+	}
+
 	/**
 	 * Set created_at
 	 *

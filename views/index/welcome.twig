@@ -1,4 +1,5 @@
 {% extends "frontend.twig" %}
+{% import "macros.twig" as macros %}
 
 {# Make sure we have the backend assets when a user is logged in, or else the #}
 {# growl message after account creation would not show up. Or we'd have to    #}
@@ -51,14 +52,23 @@
 			It's free (as in free beer) and available both as a hosted service and as an
 			<a href="https://github.com/sgt-kabukiman/horaro" target="_blank">open-source application</a>.</p>
 			{% endif %}
-			<p>
-				{% if noRegister %}
-				<small><em>User registration is not available in this installation.</em></small>
+			{% if noRegister %}
+			<p><small><em>User registration is not available in this installation.</em></small></p>
+			{% else %}
+				{% if app.config.oauth is empty %}
+				<p><a href="/-/register" class="btn btn-primary btn-md" role="button"><i class="fa fa-user"></i> Create an Account</a>
+				<small>or log-in with your existing account.</small></p>
 				{% else %}
-				<a href="/-/register" class="btn btn-primary btn-md" role="button"><i class="fa fa-user"></i> Create an Account</a>
-				<small>or log-in with your existing account.</small>
+				<p class="h-small">
+					{{ macros.twitch_oauth_starter() }} to create your own schedules. Your
+					e-mail address and password are never revealed to Horaro.
+				</p>
+				<p>
+					<small>&hellip;or instead <a href="/-/register">create a classic account</a> without
+					Twitch, if you like.</small>
+				</p>
 				{% endif %}
-			</p>
+			{% endif %}
 		</div>
 		{% endif %}
 	</div>

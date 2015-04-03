@@ -7,7 +7,6 @@
 <div class="row">
 	<div class="col-lg-12 col-md-12">
 		<h2>Create an Account</h2>
-		<p>Complete the form below to create a new account. It's free and you don't have to provide any personal information <span class="text-muted">(that you would fake anyway)</span>.</p>
 	</div>
 </div>
 
@@ -74,6 +73,18 @@
 			You do <strong>not</strong> need an account to view public schedules or be on a schedule (as
 			a participant in an event). Only create an account if you plan on <em>creating</em> schedules.
 		</div>
+
+		{% if app.config.oauth is not empty %}
+		<p class="text-center">
+			The best way to use Horaro is to {{ macros.twitch_oauth_starter() }}<br>
+			<small class="text-muted">Horaro only gets access to your Twitch username, bio and display name.</small>
+		</p>
+
+		<p>
+			If you don't wish to use Twitch or don't have an account with them, you can create a classic account.
+			Both Twitch-based and classic accounts have the same features on Horaro.
+		</p>
+		{% endif %}
 
 		<p>Please note that because we don't ask for your e-mail address, we cannot offer a
 		password reset functionality. If you lose your password, you either have to create a new

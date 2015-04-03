@@ -65,22 +65,73 @@ class ProfileController extends BaseController {
 		// update profile
 
 		$user->setPassword($this->app['encoder']->encode($result['password']['filtered']));
-
 		$this->getEntityManager()->flush();
+		$this->createFreshSession($user, 'Your password has been changed.');
 
-		// create a fresh session
+		return $this->redirect('/-/profile');
+	}
 
-		$session = $this->app['session'];
+	public function oauthAction(Request $request) {
+		$user = $this->getCurrentUser();
 
-		$session->migrate();
-		$session->set('horaro.user', $user->getId());
-		$session->set('horaro.pwdhash', sha1($user->getPassword()));
+		if ($user->getTwitchOAuth() === null || $user->getPassword() === null) {
+			return $this->redirect('/-/profile');
+		}
 
-		$this->app['csrf']->initSession($session);
+		return $this->renderOAuthForm($user, null);
+	}
 
-		// done
+	public function unconnectAction(Request $request) {
+		$user = $this->getCurrentUser();
 
-		$this->addSuccessMsg('Your password has been changed.');
+		if ($user->getTwitchOAuth() === null) {
+			$this->addErrorMsg('Your account is not linked with any Twitch account.');
+			return $this->redirect('/-/profile/oauth');
+		}
+
+		if ($user->getPassword() === null) {
+			$this->addErrorMsg('You cannot remove the only access to your account.');
+			return $this->redirect('/-/profile/oauth');
+		}
+
+		// update profile
+
+		$user->setTwitchOAuth(null);
+		$this->getEntityManager()->flush();
+		$this->createFreshSession($user, 'Your account is no longer connected to any Twitch account.');
+
+		return $this->redirect('/-/profile');
+	}
+
+	public function removePasswordAction(Request $request) {
+		$user = $this->getCurrentUser();
+
+		if ($user->getPassword() === null) {
+			$this->addErrorMsg('You already have no password.');
+			return $this->redirect('/-/profile');
+		}
+
+		if ($user->getTwitchOAuth() === null) {
+			$this->addErrorMsg('You can only remove your password if your account is linked to Twitch.');
+			return $this->redirect('/-/profile');
+		}
+
+		$validator = $this->app['validator.profile'];
+		$result    = $validator->validatePasswordChange([
+			'current'   => $request->request->get('current'),
+			'password'  => 'some valid dummy password',
+			'password2' => 'some valid dummy password'
+		], $user);
+
+		if ($result['_errors']) {
+			return $this->renderOAuthForm($user, $result);
+		}
+
+		// update profile
+
+		$user->setPassword(null);
+		$this->getEntityManager()->flush();
+		$this->createFreshSession($user, 'Your password has been removed. Login via Twitch from now on.');
 
 		return $this->redirect('/-/profile');
 	}
@@ -91,5 +142,26 @@ class ProfileController extends BaseController {
 			'user'      => $user,
 			'languages' => $this->getLanguages()
 		]);
+	}
+
+	protected function renderOAuthForm(User $user, array $result = null) {
+		return $this->render('profile/oauth.twig', [
+			'result' => $result,
+			'user'   => $user
+		]);
+	}
+
+	protected function createFreshSession(User $user, $successMsg) {
+		$session = $this->app['session'];
+
+		$session->migrate();
+		$session->set('horaro.user', $user->getId());
+		$session->set('horaro.pwdhash', sha1($user->getPassword()));
+
+		$this->app['csrf']->initSession($session);
+
+		// done
+
+		$this->addSuccessMsg($successMsg);
 	}
 }

@@ -3,47 +3,63 @@
 {% block navigation %}{% endblock %}
 {% block title %}Log-in{% endblock %}
 
+{% block login_form %}
+<div class="well">
+	<form method="post" action="/-/login" class="form-horizontal">
+		<fieldset>
+			<div class="form-group{{ utils.formClass(result, 'login') }}">
+				<label class="col-lg-3 control-label" for="login">Username:</label>
+				<div class="col-lg-9">
+					<input type="text" class="form-control" id="login" name="login" autofocus required value="{{ utils.formValue(result, 'login', '') }}">
+					{{ macros.form_errors(result, 'login') }}
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-lg-3 control-label" for="password">Password:</label>
+				<div class="col-lg-9">
+					<input type="password" class="form-control" id="password" name="password" required>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-lg-12 text-center">
+					<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-sign-in"></i> Log-in</button>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+
+{% if result and result.form.errors and result.form.messages %}
+<div class="alert alert-danger">
+	{% for message in result.form.messages %}
+		{{ message }}<br>
+	{% endfor %}
+</div>
+{% elseif error_message is defined %}
+<div class="alert alert-danger">{{ error_message }}</div>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="row">
+	{% if app.config.oauth is empty %}
 	<div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2">
-		<div class="well">
-			<form method="post" action="/-/login" class="form-horizontal">
-				<fieldset>
-					<legend>Log-in Required</legend>
-
-					<div class="form-group{{ utils.formClass(result, 'login') }}">
-						<label class="col-lg-3 control-label" for="login">Username:</label>
-						<div class="col-lg-9">
-							<input type="text" class="form-control" id="login" name="login" autofocus required value="{{ utils.formValue(result, 'login', '') }}">
-							{{ macros.form_errors(result, 'login') }}
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label class="col-lg-3 control-label" for="password">Password:</label>
-						<div class="col-lg-9">
-							<input type="password" class="form-control" id="password" name="password" required>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<div class="col-lg-12 text-center">
-							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-sign-in"></i> Log-in</button>
-						</div>
-					</div>
-				</fieldset>
-			</form>
-		</div>
-
-		{% if result and result.form.errors and result.form.messages %}
-		<div class="alert alert-danger">
-			{% for message in result.form.messages %}
-				{{ message }}<br>
-			{% endfor %}
-		</div>
-		{% elseif error_message is defined %}
-		<div class="alert alert-danger">{{ error_message }}</div>
-		{% endif %}
+		<h2>Log-in</h2>
+		{{ block('login_form') }}
 	</div>
+	{% else %}
+	<div class="col-lg-5 col-lg-offset-1 col-md-6 col-sm-6 col-xs-12">
+		<h3>Log-in via Twitch</h3>
+		<p>Click the button below to log-in with your Twitch account.</p>
+		<p class="text-center">{{ macros.twitch_oauth_starter() }}</p>
+	</div>
+
+	<div class="col-lg-5 col-md-6 col-sm-6 col-xs-12">
+		<h3>Classic Account</h3>
+		{{ block('login_form') }}
+	</div>
+	{% endif %}
 </div>
 {% endblock %}
