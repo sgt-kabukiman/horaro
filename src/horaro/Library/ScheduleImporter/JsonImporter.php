@@ -79,9 +79,15 @@ class JsonImporter extends BaseImporter {
 					$seconds = (int) $tmp->format('U');
 				}
 				catch (\Exception $e) {
-					$this->log('error', 'Malformed length for row #'.($idx+1).' found. Cannot import row.');
-					if ($ignoreErrors) continue;
-					return $this->returnLog();
+					// fallback to the length in seconds if available
+					if (isset($it->length_t)) {
+						$seconds = $it->length_t;
+					}
+					else {
+						$this->log('error', 'Malformed length for row #'.($idx+1).' found. Cannot import row.');
+						if ($ignoreErrors) continue;
+						return $this->returnLog();
+					}
 				}
 			}
 			elseif (isset($it->length_t)) {
