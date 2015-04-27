@@ -114,7 +114,7 @@ class FrontendController extends BaseController {
 	}
 
 	public function eventAction(Request $request) {
-		$event = $this->resolveEvent($request);
+		list($event, $requestedSlug) = $this->resolveEvent($request);
 		if ($event instanceof Response) return $event;
 
 		$key = $request->query->get('key');
@@ -122,6 +122,10 @@ class FrontendController extends BaseController {
 		// the event page is accessible if you have the event key or a key for one of the schedules
 		if (!$this->hasGoodEventKey($event, $key) && !$this->hasGoodSchedulesKey($event, $key)) {
 			throw new Ex\ForbiddenException('This event is private.');
+		}
+
+		if ($event->getSlug() !== $requestedSlug) {
+			return $this->redirect($event->getLink(), 301);
 		}
 
 		$description = $event->getDescription();
@@ -153,8 +157,12 @@ class FrontendController extends BaseController {
 
 		// quickly fail if this is just a broken link somewhere in the backend or a missing asset
 		if (in_array($eventSlug, ['-', 'assets'], true)) {
-			return new Response('Not Found.', 404, ['content-type' => 'text/plain']);
+			return [new Response('Not Found.', 404, ['content-type' => 'text/plain']), $eventSlug];
 		}
+
+		// strip bad trailing characters from badly deteced links on other sites
+		$origSlug  = $eventSlug;
+		$eventSlug = preg_replace('/[^a-z0-9]+$/i', '', $eventSlug);
 
 		// resolve event
 		$eventRepo = $this->getRepository('Event');
@@ -164,12 +172,12 @@ class FrontendController extends BaseController {
 			throw new Ex\NotFoundException('There is no event named "'.$eventSlug.'".');
 		}
 
-		return $event;
+		return [$event, $origSlug];
 	}
 
 	protected function resolveSchedule(Request $request) {
 		// resolve event
-		$event = $this->resolveEvent($request);
+		list($event, $requestedEventSlug) = $this->resolveEvent($request);
 		if ($event instanceof Response) return [$event, null];
 
 		// check right now whether this even is private and we have passable credentials; otherwise,
@@ -186,6 +194,11 @@ class FrontendController extends BaseController {
 
 		// resolve schedule
 		$scheduleSlug = mb_strtolower($request->attributes->get('scheduleslug'));
+
+		// strip bad trailing characters from badly deteced links on other sites
+		$origSlug     = $scheduleSlug;
+		$scheduleSlug = preg_replace('/[^a-z0-9]+$/i', '', $scheduleSlug);
+
 		$scheduleRepo = $this->getRepository('Schedule');
 		$schedule     = $scheduleRepo->findOneBy(['event' => $event, 'slug' => $scheduleSlug]);
 
@@ -193,6 +206,11 @@ class FrontendController extends BaseController {
 			$key = $request->query->get('key');
 
 			return [new Response($this->renderScheduleNotFound($event, $key), 404), $event];
+		}
+
+		// redirect to the correct version to avoid duplicate content
+		if ($origSlug !== $scheduleSlug || $event->getSlug() !== $requestedEventSlug) {
+			return [$this->redirect($schedule->getLink(), 301), $event];
 		}
 
 		return [$schedule, $event];
