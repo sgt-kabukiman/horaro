@@ -197,7 +197,7 @@ class FrontendController extends BaseController {
 
 		// strip bad trailing characters from badly deteced links on other sites
 		$origSlug     = $scheduleSlug;
-		$scheduleSlug = preg_replace('/[^a-z0-9]+$/i', '', $scheduleSlug);
+		$scheduleSlug = preg_replace('/^(.*?)[^a-z0-9-].*/i', '$1', $scheduleSlug);
 
 		$scheduleRepo = $this->getRepository('Schedule');
 		$schedule     = $scheduleRepo->findOneBy(['event' => $event, 'slug' => $scheduleSlug]);

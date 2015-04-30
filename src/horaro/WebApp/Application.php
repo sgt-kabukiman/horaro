@@ -325,11 +325,14 @@ class Application extends BaseApplication {
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// generic event/schedule routes
 
+		// We widen the rules for the slugs to allow for any junk to be appended to the URL.
+		// The controller will filter accordingly.
+
 		$this->route('GET', '/{eventslug}',                          'frontend:event');
 		$this->route('GET', '/{eventslug}/',                         'frontend:event');
 		$this->route('GET', '/{eventslug}/{scheduleslug}.{format}',  'frontend:scheduleExport')->assert('format', '(jsonp?|xml|csv|ical)');
-		$this->route('GET', '/{eventslug}/{scheduleslug}',           'frontend:schedule');
-		$this->route('GET', '/{eventslug}/{scheduleslug}/',          'frontend:schedule');
+		$this->route('GET', '/{eventslug}/{scheduleslug}',           'frontend:schedule')->assert('scheduleslug', '.+');
+		$this->route('GET', '/{eventslug}/{scheduleslug}/',          'frontend:schedule')->assert('scheduleslug', '.+');
 		$this->route('GET', '/{eventslug}/{scheduleslug}/ical-feed', 'frontend:icalFaq');
 	}
 
