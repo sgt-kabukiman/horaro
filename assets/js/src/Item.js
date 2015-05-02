@@ -304,5 +304,8 @@ function Item(id, length, columns, pos) {
 
 			$(this).html(m.html());
 		}
+		else {
+			$(this).html('');
+		}
 	};
 }
