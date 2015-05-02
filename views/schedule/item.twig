@@ -42,10 +42,8 @@
 
 	<!-- ko if: expanded -->
 	<tr class="h-secondary">
-		<td colspan="{{ numCols + 4 }}">
+		<td colspan="{{ numCols + 3 }}">
 			<dl class="dl-horizontal">
-				<dt class="h-e-l">{{ schedule.text('col-estimate')|default('Estimate') }}:</dt>
-				<dd class="h-e-l">&nbsp;</dd>
 				{% for idx,column in columns.slice(1) %}
 				<dt class="h-e-{{ idx }}">{{ column.name }}:</dt>
 				<dd class="h-e-{{ idx }}"><a href="#" data-bind="editable: col_{{ column.id|obscurify('schedule.column') }}, editableOptions: { hidden: onEditableHidden, display: getDisplayText }"></a></dd>
