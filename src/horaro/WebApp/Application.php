@@ -331,9 +331,8 @@ class Application extends BaseApplication {
 		$this->route('GET', '/{eventslug}',                          'frontend:event');
 		$this->route('GET', '/{eventslug}/',                         'frontend:event');
 		$this->route('GET', '/{eventslug}/{scheduleslug}.{format}',  'frontend:scheduleExport')->assert('format', '(jsonp?|xml|csv|ical)');
-		$this->route('GET', '/{eventslug}/{scheduleslug}',           'frontend:schedule')->assert('scheduleslug', '.+');
-		$this->route('GET', '/{eventslug}/{scheduleslug}/',          'frontend:schedule')->assert('scheduleslug', '.+');
 		$this->route('GET', '/{eventslug}/{scheduleslug}/ical-feed', 'frontend:icalFaq');
+		$this->route('GET', '/{eventslug}/{scheduleslug}',           'frontend:schedule')->assert('scheduleslug', '.+');
 	}
 
 	protected function route($method, $pattern, $endpoint, $requiredRole = null, $noCsrf = false) {
