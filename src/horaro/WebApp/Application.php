@@ -67,6 +67,14 @@ class Application extends BaseApplication {
 			return new Markdown\Converter(new Markdown\MarkdownOnHtml());
 		});
 
+		// overwrite transformer to inject the Markdown converter
+		$this['schedule-transformer-ical'] = $this->share(function() {
+			$secret = $this['config']['secret'];
+			$host   = $this['request']->getHost();
+
+			return new \horaro\Library\ScheduleTransformer\ICalTransformer($secret, $host, $this['obscurity-codec'], $this['markdown-converter']);
+		});
+
 		$this->register(new TwigServiceProvider(), array(
 			'twig.path' => HORARO_ROOT.'/views',
 			'twig.options' => [

@@ -1,7 +1,6 @@
 {# Do not use the ternary operator because the secure bindings for Knockout do not support them. #}
 <tbody data-bind="attr: {'data-colid': id, 'class': bodyClass(), 'draggable': 'true' }">
 	<tr class="h-primary">
-		<td data-bind="attr: { class: 'h-handle ' + rowClass() }, text: handleText()"></td>
 		<td data-bind="attr: { class: 'h-name '   + rowClass() }"><a href="#" data-bind="editable: name, editableOptions: { hidden: onEditableHidden }"></a></td>
 		<td data-bind="attr: { class: 'text-right h-controls ' + rowClass() }">
 			<!-- ko if: !deleting() -->

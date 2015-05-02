@@ -21,6 +21,11 @@ dl.h-indented dd {
 	}
 }
 
+span.h-link {
+	cursor: help;
+	color: #008cba;
+}
+
 footer {
 	padding: 10px 0 15px 0;
 	margin-top: 20px;
@@ -439,7 +444,17 @@ a.editable-click {
 }
 
 .editableform .editable-input input {
-	width: 350px;
+	@media (min-width:  350px) { width:  250px; }
+	@media (min-width:  600px) { width:  450px; }
+	@media (min-width:  800px) { width:  650px; }
+	@media (min-width: 1000px) { width:  850px; }
+	@media (min-width: 1200px) { width: 1050px; }
+	@media (min-width: 1400px) { width: 1250px; }
+
+	body[data-ui="columnist"] & {
+		width: 300px;
+	}
+
 	height: 30px;
 	padding: 5px;
 }

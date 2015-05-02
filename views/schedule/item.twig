@@ -7,7 +7,6 @@
 	<!-- /ko -->
 
 	<tr class="h-primary">
-		<td data-bind="attr: { class: 'h-m ' + rowClass() }">::</td>
 		<td data-bind="attr: { class: 'h-s ' + rowClass() }"><span data-bind="text: formattedSchedule"></span></td>
 		<td data-bind="attr: { class: 'h-l ' + rowClass() }">
 			<!-- ko if: errors -->
@@ -20,7 +19,7 @@
 		</td>
 
 		{% for idx,column in columns %}
-		<td data-bind="attr: { class: 'h-{{ idx }} ' + rowClass() }"><a href="#" data-bind="editable: col_{{ column.id|obscurify('schedule.column') }}, editableOptions: { hidden: onEditableHidden }"></a></td>
+		<td data-bind="attr: { class: 'h-{{ idx }} ' + rowClass() }"><a href="#" data-bind="editable: col_{{ column.id|obscurify('schedule.column') }}, editableOptions: { hidden: onEditableHidden, display: getDisplayText }"></a></td>
 		{% endfor %}
 
 		<td data-bind="attr: { class: 'h-co text-right ' + rowClass() }">
@@ -49,7 +48,7 @@
 				<dd class="h-e-l">&nbsp;</dd>
 				{% for idx,column in columns.slice(1) %}
 				<dt class="h-e-{{ idx }}">{{ column.name }}:</dt>
-				<dd class="h-e-{{ idx }}"><a href="#" data-bind="editable: col_{{ column.id|obscurify('schedule.column') }}, editableOptions: { hidden: onEditableHidden }"></a></dd>
+				<dd class="h-e-{{ idx }}"><a href="#" data-bind="editable: col_{{ column.id|obscurify('schedule.column') }}, editableOptions: { hidden: onEditableHidden, display: getDisplayText }"></a></dd>
 				{% endfor %}
 			</dl>
 		</td>

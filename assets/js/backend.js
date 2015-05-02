@@ -88,6 +88,27 @@ jQuery(function($) {
 			'<i class="fa fa-ban"></i>'+
 		'</button>';
 
+	// markdown helper for inline content
+
+	function inlineMarkdown(markup) {
+		var parser = new Remarkable('commonmark');
+		parser.set({ html: false, xhtmlOut: false });
+
+		// we don't want this stuff in our inline content
+		parser.block.ruler.disable(['code', 'fences', 'blockquote', 'hr', 'list', 'footnote', 'heading', 'lheading', 'htmlblock', 'table', 'deflist']);
+		parser.inline.ruler.disable(['newline', 'htmltag']);
+
+		var rendered = parser.render(markup);
+
+		// strip paragraphs
+		rendered = rendered.replace(/<\/?p>/g, '');
+
+		// strip images (can't be disabled easily in Remarkable, just like paragraphs)
+		rendered = rendered.replace(/<img.+?>/g, '');
+
+		return rendered;
+	}
+
 	// setup Knockout bindings
 
 	ko.bindingHandlers.activate = {

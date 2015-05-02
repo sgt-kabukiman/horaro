@@ -13,18 +13,21 @@ namespace horaro\Library\ScheduleTransformer;
 use horaro\Library\Entity\Schedule;
 use horaro\Library\Entity\ScheduleItem;
 use horaro\Library\ObscurityCodec;
+use horaro\WebApp\Markdown\Converter;
 
 class ICalTransformer extends BaseTransformer {
 	const DATE_FORMAT = 'Ymd\THis\Z';
 
 	protected $secret;
 	protected $host;
+	protected $md;
 
-	public function __construct($secret, $hostname, ObscurityCodec $codec) {
+	public function __construct($secret, $hostname, ObscurityCodec $codec, Converter $markdown = null) {
 		parent::__construct($codec);
 
 		$this->secret = $secret;
 		$this->host   = $hostname;
+		$this->md     = $markdown;
 	}
 
 	public function getContentType() {
@@ -66,10 +69,22 @@ class ICalTransformer extends BaseTransformer {
 			$summary     = isset($extra[$summaryCol]) ? $extra[$summaryCol] : '(unnamed)';
 			$description = [];
 
+			if ($this->md) {
+				$summary = $this->md->convertInline($summary);
+				$summary = htmlspecialchars_decode(strip_tags($summary), ENT_QUOTES);
+			}
+
 			foreach ($extendedCols as $extCol) {
 				if (isset($extra[$extCol])) {
 					$colName       = $columnNames[$extCol];
-					$description[] = sprintf('%s: %s', $colName, $extra[$extCol]);
+					$colContent    = $extra[$extCol];
+
+					if ($this->md) {
+						$colContent = $this->md->convertInline($colContent);
+						$colContent = htmlspecialchars_decode(strip_tags($colContent), ENT_QUOTES);
+					}
+
+					$description[] = sprintf('%s: %s', $colName, $colContent);
 				}
 			}
 

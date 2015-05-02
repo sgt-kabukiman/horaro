@@ -284,4 +284,25 @@ function Item(id, length, columns, pos) {
 			me.focus();
 		}
 	};
+
+	self.getDisplayText = function(value) {
+		if (typeof value === 'string' && value.length > 0) {
+			var markup = inlineMarkdown(value);
+
+			// Turn links into glorified spans, as they won't work anyway because we have click listeners
+			// set up for X-Editable.
+			var m      = $('<div>' + markup + '</div>');
+			var suffix = ' <sup><i class="fa fa-external-link"></i></sup>';
+
+			m.find('a').each(function() {
+				var link   = $(this);
+				var target = link.attr('href');
+				var text   = link.text();
+
+				link.replaceWith($('<span>').attr('title', 'link to ' + target).addClass('h-link').text(text).append(suffix));
+			});
+
+			$(this).html(m.html());
+		}
+	};
 }

@@ -144,4 +144,8 @@ class TwigUtils {
 
 		return $parser->stringify($time);
 	}
+
+	public function markdown($text) {
+		return $this->app['markdown-converter']->convertInline($text);
+	}
 }

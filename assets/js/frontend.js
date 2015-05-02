@@ -233,13 +233,13 @@ jQuery(function($) {
 				len = 0;
 
 				for (i = 0; i < columns; ++i) {
-					text = row.find('.h-' + i).text();
+					text = row.find('.h-' + i).html();
 
 					if (text.trim().length === 0) {
 						tpl.find('.h-e-' + i).remove();
 					}
 					else {
-						tpl.find('dd.h-e-' + i).text(text);
+						tpl.find('dd.h-e-' + i).html(text);
 						len++;
 					}
 				}

@@ -50,6 +50,19 @@ class Converter {
 		return trim($html);
 	}
 
+	public function convertInline($markdown) {
+		$html = $this->convert($markdown);
+
+		// strip unwanted stuff
+		$html = preg_replace('#<img.*?>#', '', $html);
+		$html = preg_replace('#</?p>#', '', $html);
+
+		// make links open in a new tab
+		$html = preg_replace('#<a#', '<a target="_blank"', $html);
+
+		return trim($html);
+	}
+
 	protected function urlencode($url) {
 		$url     = urlencode($url);
 		$allowed = [':', '/', '.', '&', '?', '=', '%', '#', ';'];

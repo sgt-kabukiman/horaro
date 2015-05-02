@@ -153,10 +153,10 @@
 			<tr class="h-primary">
 				{% set extra = item.extra %}
 				<td class="h-s"><time datetime="{{ item.scheduled.format('Y-m-d\\TH:i:sP') }}">{{ item.scheduled.format('H:i:s') }}</time></td>
-				<td class="h-0">{{ extra[columns[0].id]|default('') }}</td>
+				<td class="h-0">{{ utils.markdown(extra[columns[0].id]|default(''))|raw }}</td>
 				<td class="h-l"><time datetime="{{ item.isoDuration }}">{{ item.length.format('H:i:s') }}</time></td>
 				{% for idx,column in columns.slice(1) %}
-				<td class="h-{{ idx }}">{{ extra[column.id]|default('') }}</td>
+				<td class="h-{{ idx }}">{{ utils.markdown(extra[column.id]|default(''))|raw }}</td>
 				{% endfor %}
 			</tr>
 
