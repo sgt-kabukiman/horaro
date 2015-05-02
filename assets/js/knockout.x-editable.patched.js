@@ -119,6 +119,11 @@
 				window.setTimeout(function() {
 					input.focus()[0].setSelectionRange(0, input.val().length);
 				}, 0);
+
+				// Having an X-Editable inside a <tbody> makes it so that the text cannot
+				// be selected via mouse. That's why we need to move the popover out of the
+				// table and put it in the body.
+				$('.popover').appendTo('body');
 			});
 
 			//setup observable to fire only when editable changes, not when options change
