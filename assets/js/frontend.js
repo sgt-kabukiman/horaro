@@ -186,13 +186,19 @@ jQuery(function($) {
 	// remove previous day breaks (computed by the server, based on the schedule timezone)
 	$('.h-new-day').remove();
 
-	$('.h-s time').each(function() {
-		var d = new Date($(this).attr('datetime')), element = $(this);
+	var scheduledFormat = null;
 
-		element.text(d.toLocaleTimeString());
+	$('.h-s time').each(function() {
+		var d = new Date($(this).attr('datetime')), m = moment(d), element = $(this);
+
+		if (scheduledFormat === null) {
+			scheduledFormat = element.closest('.h-schedule').data('precision') === 'seconds' ? 'LTS' : 'LT';
+		}
+
+		element.text(m.format(scheduledFormat));
 
 		if (prev !== null && d.getDate() !== prev) {
-			element.closest('tr').before('<tr class="h-new-day info"><td colspan="99">' + moment(d).format('dddd, LL') + '</td></tr>');
+			element.closest('tr').before('<tr class="h-new-day info"><td colspan="99">' + m.format('dddd, LL') + '</td></tr>');
 		}
 
 		prev = d.getDate();

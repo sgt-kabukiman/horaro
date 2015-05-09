@@ -1,11 +1,13 @@
 {% extends "frontend/layout.twig" %}
 
-{% set theme    = schedule.theme           %}
-{% set start    = schedule.localStart      %}
-{% set columns  = schedule.columns         %}
-{% set numCols  = columns|length           %}
-{% set fluid    = numCols > 4              %}
-{% set appendix = key ? '?key=' ~ key : '' %}
+{% set theme     = schedule.theme                                %}
+{% set start     = schedule.localStart                           %}
+{% set columns   = schedule.columns                              %}
+{% set numCols   = columns|length                                %}
+{% set fluid     = numCols > 4                                   %}
+{% set appendix  = key ? '?key=' ~ key : ''                      %}
+{% set precision = schedule.needsSeconds ? 'seconds' : 'minutes' %}
+{% set dtformat  = precision == 'seconds' ? 'H:i:s' : 'H:i'      %}
 
 {% block fulltitle %}{{ schedule.name }} &ndash; {{ event.name }}{% endblock %}
 {% block body_attr %} class="theme-{{ theme }}"{% endblock %}
@@ -133,7 +135,7 @@
 		<button class="btn-link btn-xs btn-default h-co" id="h-toggle-usability"><i class="fa fa-table"></i> Toggle full view</button>
 	</div>
 
-	<table class="table h-schedule h-l{{ schedule.getMaxItemWidth(columns) }}" data-columns="{{ numCols }}">
+	<table class="table h-schedule h-l{{ schedule.getMaxItemWidth(columns) }}" data-columns="{{ numCols }}" data-precision="{{ precision }}">
 		<thead>
 			<tr>{% spaceless %}
 				<th class="h-s">{{ schedule.text('col-scheduled')|default('Scheduled') }}</th>
@@ -152,7 +154,7 @@
 		<tbody class="{{ idx % 2 ? 'h-odd' : 'h-even' }} h-i-l{{ item.getWidth(columns) }}">
 			<tr class="h-primary">
 				{% set extra = item.extra %}
-				<td class="h-s"><time datetime="{{ item.scheduled.format('Y-m-d\\TH:i:sP') }}">{{ item.scheduled.format('H:i:s') }}</time></td>
+				<td class="h-s"><time datetime="{{ item.scheduled.format('Y-m-d\\TH:i:sP') }}">{{ item.scheduled.format(dtformat) }}</time></td>
 				<td class="h-0">{{ utils.markdown(extra[columns[0].id]|default(''))|raw }}</td>
 				<td class="h-l"><time datetime="{{ item.isoDuration }}">{{ item.length.format('H:i:s') }}</time></td>
 				{% for idx,column in columns.slice(1) %}

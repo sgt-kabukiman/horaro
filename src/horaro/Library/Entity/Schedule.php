@@ -701,4 +701,16 @@ class Schedule {
 
 		return $max;
 	}
+
+	public function needsSeconds() {
+		$iterator = new ScheduleItemIterator($this);
+
+		foreach ($iterator as $item) {
+			if ($item->getScheduled()->format('s') !== '00') {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
