@@ -205,7 +205,10 @@ class ScheduleColumnController extends BaseController {
 			$query = $qb
 				->update('horaro\Library\Entity\ScheduleColumn', 'c')
 				->set('c.position', 'c.position - 1')
-				->where('c.position > '.$column->getPosition())
+				->where($qb->expr()->andX(
+					$qb->expr()->eq('c.schedule', $schedule->getId()),
+					$qb->expr()->gt('c.position', $column->getPosition())
+				))
 				->getQuery();
 
 			$query->getResult();
