@@ -544,7 +544,13 @@ class Schedule {
 			return 'PT0S';
 		}
 
-		return preg_replace('/(?<=[THMS])0+[HMS]/', '$1', $setup->format('\P\TG\Hi\Ms\S'));
+		$iso = preg_replace('/(?<=[THMS])0+[HMS]/', '$1', $setup->format('\P\TG\Hi\Ms\S'));
+
+		if ($iso === 'PT') {
+			return 'PT0S';
+		}
+
+		return $iso;
 	}
 
 	/**
