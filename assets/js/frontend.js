@@ -85,6 +85,11 @@ jQuery(function($) {
 	}
 
 	function getItemTitle(item) {
+		// very, very evil hack to make the Mega Man Battle Network Marathon V4 schedule look nicer (they have an empty first column)
+		if (document.location.pathname === '/mmbnm/v4') {
+			return item.find('.h-1').text();
+		}
+
 		return item.find('.h-0').text();
 	}
 
