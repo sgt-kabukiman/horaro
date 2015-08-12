@@ -36,7 +36,7 @@
 {% block navigation %}
 <ul class="nav navbar-nav">
 	{% if schedules|length == 1 %}
-	<li><a href="/{{ event.slug }}/{{ schedules[0].slug ~ appendix }}" class="h-jail"><i class="fa fa-calendar"></i> {{ schedules[0].name }}</a></li>
+	<li><a href="/{{ event.slug }}/{{ schedules[0].slug ~ appendix }}" class="h-jail"><i class="fa fa-calendar"></i> {{ schedules[0].name == event.name ? 'Schedule' : schedules[0].name }}</a></li>
 	{% elseif schedules|length != 0 %}
 	<li class="dropdown">
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-calendar"></i> Schedules <span class="caret"></span></a>
