@@ -184,6 +184,12 @@ class IndexController extends BaseController {
 		return $this->setCachingHeader(new Response($html), 'other');
 	}
 
+	public function contactAction(Request $request) {
+		$html = $this->render('index/contact.twig');
+
+		return $this->setCachingHeader(new Response($html), 'other');
+	}
+
 	public function calendarAction(Request $request) {
 		$year  = (int) $request->attributes->get('year');
 		$month = (int) $request->attributes->get('month');

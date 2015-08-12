@@ -1,0 +1,49 @@
+{% extends "frontend.twig" %}
+
+{% block title %}Contact{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h2>Contact</h2>
+		<p>If you have problems, feature requests or general feedback, you can reach me in various ways:</p>
+
+		<div class="alert alert-dismissible alert-warning">
+			<p>
+				If you found an error in a schedule, please contact the respective event owner instead. I won't just change
+				other people's schedules. Note that the <a href="/agdq">AGDQ</a>, <a href="/agdq">SGDQ</a> and
+				<a href="/esa">ESA</a> schedules are exempt from this, because I maintain these mirrors myself for historical
+				purposes. If there is something wrong with those, please tell me.
+			</p>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+		<div class="list-group">
+			<div class="list-group-item">
+				<h4 class="list-group-item-heading"><i class="fa fa-github"></i> <a href="https://github.com/sgt-kabukiman/horaro" target="_blank">GitHub</a></h4>
+				<p class="list-group-item-text">… is the ideal place to report bugs and do other code related things.</p>
+			</div>
+			<div class="list-group-item">
+				<h4 class="list-group-item-heading"><i class="fa fa-comment"></i> <a href="http://www.speedrunslive.com/channel/" target="_blank">SpeedRunsLive IRC</a></h4>
+				<p class="list-group-item-text">I idle there all day (in <tt>#speedrun.com</tt>), just ping me (<tt>SgtKabukiman</tt>).</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+		<div class="list-group">
+			<div class="list-group-item">
+				<h4 class="list-group-item-heading"><i class="fa fa-envelope"></i> <a href="mailto:sgt@kabukiman.org">sgt@kabukiman.org</a></h4>
+				<p class="list-group-item-text">… is a good way to discuss things in private.</p>
+			</div>
+			<div class="list-group-item">
+				<h4 class="list-group-item-heading"><i class="fa fa-twitch"></i> <a href="http://www.twitch.tv/message/compose?to=sgt_kabukiman" target="_blank">Twitch</a></h4>
+				<p class="list-group-item-text">If everything else fails, write me a Twitch message.</p>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

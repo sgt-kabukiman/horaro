@@ -234,6 +234,7 @@ class Application extends BaseApplication {
 		// general routes
 
 		$this->route('GET',   '/',                          'index:welcome');
+		$this->route('GET',   '/-/contact',                 'index:contact');
 		$this->route('GET',   '/-/licenses',                'index:licenses');
 		$this->route('GET',   '/-/calendar/{year}/{month}', 'index:calendar');
 		$this->route('GET',   '/-/login',                   'index:loginForm',    'ghost');
