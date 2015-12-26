@@ -48,7 +48,7 @@ class CsvImporter extends BaseImporter {
 		$keepLengthColumns = false;
 
 		foreach ($headers as $pos => $col) {
-			if (preg_match('/^(length|estimated?|minutes|duration|.*?\bsetup\b.*?)$/i', $col)) {
+			if (preg_match('/^(length|estimated?|minutes|duration|run time|.*?\bsetup\b.*?)$/i', $col)) {
 				$lengthColumns[$pos] = $col;
 			}
 		}
