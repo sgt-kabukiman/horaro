@@ -100,26 +100,7 @@
 		</div>
 	</div>
 
-	<div class="h-ticker row">
-		<div class="col-lg-4 col-lg-offset-2 col-md-4 col-md-offset-2 col-sm-5 col-sm-offset-1">
-			<div class="panel panel-success h-current">
-				<div class="panel-heading">
-					<h3 class="panel-title pull-right"><a href="#" class="h-jumper">jump to <i class="fa fa-angle-double-down"></i></a></h3>
-					<h3 class="panel-title">Currently showing:</h3>
-				</div>
-				<div class="panel-body">&nbsp;</div>
-			</div>
-		</div>
-
-		<div class="col-lg-4 col-md-4 col-sm-5">
-			<div class="panel panel-default h-next">
-				<div class="panel-heading">
-					<h3 class="panel-title">Next up <time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}" class="h-relative"></time>:</h3>
-				</div>
-				<div class="panel-body">&nbsp;</div>
-			</div>
-		</div>
-	</div>
+	<div class="h-ticker row"></div>
 
 	<div class="row">
 		<div class="col-lg-12">
@@ -177,6 +158,27 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/html" id="ticker">
+<div class="col-lg-4 col-lg-offset-2 col-md-4 col-md-offset-2 col-sm-5 col-sm-offset-1">
+	<div class="panel panel-success h-current">
+		<div class="panel-heading">
+			<h3 class="panel-title pull-right"><a href="#" class="h-jumper">jump to <i class="fa fa-angle-double-down"></i></a></h3>
+			<h3 class="panel-title">Currently showing:</h3>
+		</div>
+		<div class="panel-body">&nbsp;</div>
+	</div>
+</div>
+
+<div class="col-lg-4 col-md-4 col-sm-5">
+	<div class="panel panel-default h-next">
+		<div class="panel-heading">
+			<h3 class="panel-title">Next up <time datetime="{{ start.format('Y-m-d\\TH:i:sP') }}" class="h-relative"></time>:</h3>
+		</div>
+		<div class="panel-body">&nbsp;</div>
+	</div>
+</div>
+</script>
 
 {% if numCols > 1 %}
 <script type="text/html" id="toggler">

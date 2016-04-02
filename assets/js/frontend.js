@@ -268,6 +268,9 @@ jQuery(function($) {
 		});
 	}
 
+	// show ticker
+	$('.h-ticker').append($('#ticker').html());
+
 	// update ticker
 	window.setInterval(updateTicker, 5000);
 	updateTicker();
