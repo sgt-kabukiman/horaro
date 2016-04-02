@@ -257,22 +257,6 @@ jQuery(function($) {
 			btn.parent().toggleClass('expanded');
 		});
 
-		// update ticker
-		window.setInterval(updateTicker, 5000);
-		updateTicker();
-
-		$('.h-jumper').on('click', function() {
-			var item = findCurrentItem();
-
-			if (!item) {
-				return false;
-			}
-
-			$('html, body').animate({ scrollTop: item.offset().top - 100 }, 'slow');
-
-			return false;
-		});
-
 		// allow to show the full table
 		$('.h-schedule').before($('#toggler').html());
 
@@ -283,6 +267,22 @@ jQuery(function($) {
 			$('.h-schedule .h-co').toggleClass('hidden');
 		});
 	}
+
+	// update ticker
+	window.setInterval(updateTicker, 5000);
+	updateTicker();
+
+	$('.h-jumper').on('click', function() {
+		var item = findCurrentItem();
+
+		if (!item) {
+			return false;
+		}
+
+		$('html, body').animate({ scrollTop: item.offset().top - 100 }, 'slow');
+
+		return false;
+	});
 
 	window.setInterval(updateRelativeTimes, 5000);
 	updateRelativeTimes();
