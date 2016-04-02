@@ -274,13 +274,13 @@ jQuery(function($) {
 		});
 
 		// allow to show the full table
-		$('#h-toggle-usability').on('click', function() {
-			//var isUsable = $('html').is('.js');
+		$('.h-schedule').before($('#toggler').html());
 
+		$('#h-toggle-usability').on('click', function() {
 			$('html').toggleClass('js');
 			$('.h-secondary').remove();
 			$('.h-schedule .expanded').removeClass('expanded');
-			$('.h-schedule .h-co').toggle();
+			$('.h-schedule .h-co').toggleClass('hidden');
 		});
 	}
 

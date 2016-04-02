@@ -131,10 +131,6 @@
 		</div>
 	</div>
 
-	<div class="text-right h-l{{ schedule.getMaxItemWidth(columns) }}">
-		<button class="btn-link btn-xs btn-default h-co" id="h-toggle-usability"><i class="fa fa-table"></i> Toggle full view</button>
-	</div>
-
 	<table class="table h-schedule h-l{{ schedule.getMaxItemWidth(columns) }}" data-columns="{{ numCols }}" data-precision="{{ precision }}">
 		<thead>
 			<tr>{% spaceless %}
@@ -183,6 +179,12 @@
 </div>
 
 {% if numCols > 1 %}
+<script type="text/html" id="toggler">
+<div class="text-right h-l{{ schedule.getMaxItemWidth(columns) }}">
+	<button class="btn-link btn-xs btn-default h-co" id="h-toggle-usability"><i class="fa fa-table"></i> Toggle full view</button>
+</div>
+</script>
+
 <script type="text/html" id="controls">
 <td class="h-co">
 	<button class="btn btn-link btn-xs" rel="more"><i class="fa fa-angle-double-down"></i> more</button>
