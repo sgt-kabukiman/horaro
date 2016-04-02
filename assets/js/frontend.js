@@ -187,6 +187,22 @@ jQuery(function($) {
 	$('.h-new-day').remove();
 
 	var scheduledFormat = null;
+	var language        = (window.navigator.userLanguage || window.navigator.language || 'some-where').toLowerCase();
+	var is12HourClock   = ['en-us', 'en-ca', 'en-au', 'en-ph', 'fil-ph', 'en-nz'].indexOf(language) !== -1;
+
+	if (!is12HourClock) {
+		moment.defineLocale('en-24hours', {
+			parentLocale: 'en',
+			longDateFormat: {
+            LTS: 'HH:mm:ss',
+            LT: 'HH:mm',
+            L: 'MM/DD/YYYY',
+            LL: 'MMMM D, YYYY',
+            LLL: 'MMMM D, YYYY LT',
+            LLLL: 'dddd, MMMM D, YYYY LT'
+			}
+		});
+	}
 
 	$('.h-s time').each(function() {
 		var d = new Date($(this).attr('datetime')), m = moment(d), element = $(this);
