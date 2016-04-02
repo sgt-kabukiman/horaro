@@ -152,6 +152,12 @@
 
 		{% for idx,item in schedule.scheduledItems %}
 		<tbody class="{{ idx % 2 ? 'h-odd' : 'h-even' }} h-i-l{{ item.getWidth(columns) }}">
+			{% if idx > 0 and old != item.scheduled.format('d') %}
+			<tr class="h-new-day info">
+				<td colspan="{{ numCols + 2 }}">{{ item.scheduled.format('l, F d, Y') }}</td>
+			</tr>
+			{% endif %}
+
 			<tr class="h-primary">
 				{% set extra = item.extra %}
 				<td class="h-s"><time datetime="{{ item.scheduled.format('Y-m-d\\TH:i:sP') }}">{{ item.scheduled.format(dtformat) }}</time></td>
@@ -161,12 +167,6 @@
 				<td class="h-{{ idx }}">{{ utils.markdown(extra[column.id]|default(''))|raw }}</td>
 				{% endfor %}
 			</tr>
-
-			{% if idx > 0 and old != item.scheduled.format('d') %}
-			<tr class="h-new-day info">
-				<td colspan="{{ numCols + 2 }}">{{ item.scheduled.format('l, F d, Y') }}</td>
-			</tr>
-			{% endif %}
 
 			{% set old = item.scheduled.format('d') %}
 			{% set end = item %}
