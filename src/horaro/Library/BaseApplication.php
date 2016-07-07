@@ -101,8 +101,10 @@ class BaseApplication extends Application {
 			return new ObscurityCodec\Optimus($optimus);
 		});
 
-		$this['raven-client'] = $this->share(function() {
-			return new \Raven_Client($this['config']['sentry_dsn']);
+		$this['sentry-client'] = $this->share(function() {
+			return new \Raven_Client($this['config']['sentry_dsn'], [
+				'install_default_breadcrumb_handlers' => false
+			]);
 		});
 
 		$this['schedule-transformer-json'] = $this->share(function() {

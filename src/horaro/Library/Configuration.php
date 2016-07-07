@@ -18,7 +18,7 @@ class Configuration extends \ArrayObject {
 			throw new \RuntimeException('Configuration file "'.$filename.'" does not exist.');
 		}
 
-		$data = Yaml::parse($filename);
+		$data = Yaml::parse(file_get_contents($filename));
 
 		if (!is_array($data)) {
 			throw new \RuntimeException('Configuration file "'.$filename.'" did not contain an array.');

@@ -127,7 +127,7 @@ class Application extends BaseApplication {
 		});
 
 		$this['middleware.errorhandler'] = $this->share(function() {
-			return new Middleware\ErrorHandler($this['raven-client'], $this['twig'], $this['version']);
+			return new Middleware\ErrorHandler($this['sentry-client'], $this['twig'], $this['version']);
 		});
 
 		$this['middleware.csrf'] = $this->share(function() {
