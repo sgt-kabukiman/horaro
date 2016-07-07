@@ -1,0 +1,227 @@
+{% extends "frontend.twig" %}
+
+{% block title %}API{% endblock %}
+
+{% block content %}
+<div class="row apidocs">
+	<div class="col-lg-12 col-md-12">
+		<h2>API <small>Version 1</small></h2>
+		<p>horaro offers a simple, read-only API to access <strong>public</strong> events and
+			schedules as JSON documents.</p>
+
+		<ul>
+			<li><a href="#basics">Basics</a></li>
+			<li><a href="#all-events"><code>GET /events</code></a></li>
+			<li><a href="#one-event"><code>GET /events/{id|slug}</code></a></li>
+			<li><a href="#one-event-schedules"><code>GET /events/{id|slug}/schedules</code></a></li>
+			<li><a href="#one-event-schedule"><code>GET /events/{id|slug}/schedules/{id|slug}</code></a></li>
+			<li><a href="#one-schedule"><code>GET /schedules/{id}</code></a></li>
+		</ul>
+
+		<div class="alert alert-info">
+			In addition to the API, each schedule is available as a JSON/XML/iCal export vie the links
+			on the schedule's navbar. These exports are not necessarily using the same JSON schema for
+			schedules as the API and are therefore not recommended to be used in an automated fashion.
+			They are meant for quick'n'dirty one-time hacks and for convenience.
+		</div>
+
+		<h3 id="basics">Basics</h3>
+		<p>
+			Perform <code>GET</code> requests to the required resource. You can explore the API
+			by installing a JSON viewer to your browser and visit the API's base URL,
+			<a href="/-/api/v1"><code>/-/api/v1</code></a>.<br>
+			Usually JSON is returned, but if you provide a <code>callback</code> parameter in the
+			query string and it's a valid JavaScript identifier, JSONP (i.e., JavaScript) will be
+			returned.<br>
+			Collections are limited to 20 elements per page by default, but this can be changed by
+			using the query string parameter <code>size</code>, which can be increased up to 100.
+			Paginated resources contain links to the next and previous page for your convenience,
+			so your client code does not need to construct them themselves.
+		</p>
+
+		<p>
+			Successful responses always have a <code>data</code> element and, when fetching collections,
+			a <code>pagination</code> element as well:
+		</p>
+
+		<div class="json"><pre>{
+  &quot;data&quot;: ...,
+  &quot;pagination&quot;: ...
+}</pre></div>
+
+		<p>
+			In case of an error, a <code>status</code> (equals the HTTP status code) and a
+			<code>message</code> element are returned:
+		</p>
+
+		<div class="json"><pre>{
+  &quot;status&quot;: 500,
+  &quot;message&quot;: &quot;Something exploded.&quot;
+}</pre></div>
+
+		<h3 id="all-events"><code>GET <span>/-/api/v1</span>/events</code> <small>(fetch multiple events)</small></h3>
+		<p>Returns a list of events, sorted by name. You can filter the result by using the following
+			query string parameters:</p>
+
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Parameter</th>
+					<th>Type</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>name</td>
+					<td>string</td>
+					<td>returns only those events whose name contains the given parameter</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<p>An event looks like this when represented as JSON:</p>
+
+		<div class="json"><pre>{
+  &quot;id&quot;: &quot;0350o4193y22u0b458&quot;,
+  &quot;name&quot;: &quot;A sample event&quot;,
+  &quot;slug&quot;: &quot;sample-event&quot;,
+  &quot;link&quot;: &quot;{{ baseUri }}/sample-event&quot;,
+  &quot;description&quot;: &quot;I am an optional description. If there is none, this element is null.&quot;,
+  &quot;owner&quot;: &quot;mcp&quot;,
+  &quot;website&quot;: &quot;http://www.example.com&quot;,
+  &quot;twitter&quot;: null,
+  &quot;twitch&quot;: &quot;example&quot;,
+  &quot;links&quot;: [
+    {
+      &quot;rel&quot;: &quot;self&quot;,
+      &quot;uri&quot;: &quot;{{ baseUri }}/-/api/v1/events/0350o4193y22u0b458&quot;
+    },
+    {
+      &quot;rel&quot;: &quot;schedules&quot;,
+      &quot;uri&quot;: &quot;{{ baseUri }}/-/api/v1/events/0350o4193y22u0b458/schedules&quot;
+    }
+  ]
+}</pre></div>
+
+		<p>A full response would look like this:</p>
+
+		<div class="json"><pre>{
+  &quot;data&quot;: [
+    &lt;event here&gt;,
+    &lt;event here&gt;,
+    &lt;event here&gt;,
+    ...
+  ],
+  &quot;pagination&quot;: {
+    &quot;offset&quot;: 0,
+    &quot;max&quot;: 20,
+    &quot;size&quot;: 20,
+    &quot;links&quot;: [
+      {
+        &quot;rel&quot;: &quot;next&quot;,
+        &quot;uri&quot;: &quot;{{ baseUri }}/-/api/v1/events?offset=20&quot;,
+      }
+    ]
+  }
+}</pre></div>
+
+		<h3 id="one-event"><code>GET <span>/-/api/v1</span>/events/{id|slug}</code> <small>(fetch a single event)</small></h3>
+		<p>Retrieves a specific event and returns HTTP 404 if it could not be found. You can either give
+			the event ID (preferred) or the event slug (which can change, so beware). When using the slug,
+			you are automatically redirected to the ID-based URL.</p>
+
+		<p>A successful response contains a single event:</p>
+
+		<div class="json"><pre>{
+  &quot;data&quot;: &lt;event here&gt;
+}</pre></div>
+
+		<h3 id="one-event-schedules"><code>GET <span>/-/api/v1</span>/events/{id|slug}/schedules</code> <small>(fetch schedules for an event)</small></h3>
+		<p>For a given event, returns the schedules sorted by their starting date and time. For
+			a description of how schedules look like, see below.</p>
+
+		<p>A full response would look like this:</p>
+
+		<div class="json"><pre>{
+  &quot;data&quot;: [
+    &lt;schedule here&gt;,
+    &lt;schedule here&gt;,
+    &lt;schedule here&gt;,
+    ...
+  ],
+  &quot;pagination&quot;: {
+    &quot;offset&quot;: 0,
+    &quot;max&quot;: 20,
+    &quot;size&quot;: 20,
+    &quot;links&quot;: [
+      {
+        &quot;rel&quot;: &quot;next&quot;,
+        &quot;uri&quot;: &quot;{{ baseUri }}/-/api/v1/events/0350o4193y22u0b458/schedules?offset=20&quot;,
+      }
+    ]
+  }
+}</pre></div>
+
+		<h3 id="one-event-schedule"><code>GET <span>/-/api/v1</span>/events/{id|slug}/schedules/{id|slug}</code> <small>(fetch a single schedule for an event)</small></h3>
+		<p>Retrieve a single schedule for a given event. This is mostly useful for when you know the
+			event and schedule slugs. You will either get a 404 error if there is no such schedule or
+			are redirected to the <code>/-/api/v1/schedules/{id}</code> URL.</p>
+
+		<h3 id="one-schedule"><code>GET <span>/-/api/v1</span>/schedules/{id}</code> <small>(fetch a single schedule)</small></h3>
+		<p>Retrieves a specific schedule and returns HTTP 404 if it could not be found.</p>
+
+		<p>A schedule looks like this when represented as JSON:</p>
+
+		<div class="json"><pre>{
+  &quot;id&quot;: &quot;0350o4193y22u0b458&quot;,
+  &quot;name&quot;: &quot;My Schedule&quot;,
+  &quot;slug&quot;: &quot;schedule&quot;,
+  &quot;timezone&quot;: &quot;Europe/Berlin&quot;,
+  &quot;start&quot;: &quot;2016-04-20T09:45:00+01:00&quot;,
+  &quot;start_t&quot;: 1461141900,
+  &quot;website&quot;: &quot;http://www.example.com&quot;,
+  &quot;twitter&quot;: null,
+  &quot;twitch&quot;: &quot;thestreamyo&quot;,
+  &quot;description&quot;: null,
+  &quot;setup&quot;: &quot;PT05M&quot;,
+  &quot;setup_t&quot;: 300,
+  &quot;updated&quot;: &quot;2016-03-20T20:16:58Z&quot;,
+  &quot;link&quot;: &quot;{{ baseUri }}/sample-event/schedule&quot;,
+  &quot;columns&quot;: [
+    &quot;Game&quot;,
+    &quot;Runner&quot;,
+    &quot;Category&quot;
+  ],
+  &quot;items&quot;: [
+    {
+      &quot;length&quot;: &quot;PT10M&quot;,
+      &quot;length_t&quot;: 600,
+      &quot;scheduled&quot;: &quot;2016-04-20T09:45:00+01:00&quot;,
+      &quot;scheduled_t&quot;: 1461141900,
+      &quot;data&quot;: [
+        &quot;Pong Reloaded&quot;,
+        &quot;Kabukiman&quot;,
+        &quot;100%&quot;
+      ]
+    },
+    ...
+  ],
+  &quot;links&quot;: [
+    {
+      &quot;rel&quot;: &quot;self&quot;,
+      &quot;uri&quot;: &quot;{{ baseUri }}/-/api/v1/schedules/0350o4193y22u0b458&quot;
+    },
+    {
+      &quot;rel&quot;: &quot;event&quot;,
+      &quot;uri&quot;: &quot;{{ baseUri }}/-/api/v1/events/7a504x3cyy29wxb448&quot;
+    }
+  ]
+}</pre></div>
+
+		<p>All times are given in two different format, once as an ISO 8601 timestamp/duration and
+			once as a UNIX timestamp (with the suffix <code>_t</code>). Use whatever is the easiest to
+			use in your programming environment.</p>
+	</div>
+</div>
+{% endblock %}

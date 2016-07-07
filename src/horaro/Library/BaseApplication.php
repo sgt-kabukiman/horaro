@@ -14,6 +14,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
 use Doctrine\ORM\Tools\Setup;
+use Jenssegers\Optimus\Optimus;
 use Silex\Application;
 use Silex\Provider;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
@@ -90,7 +91,14 @@ class BaseApplication extends Application {
 		});
 
 		$this['obscurity-codec'] = $this->share(function() {
-			return $this['debug'] ? new ObscurityCodec\Debug() : new ObscurityCodec\Hashids($this['config']['secret'], 8);
+			if ($this['debug']) {
+				return new ObscurityCodec\Debug();
+			}
+
+			$config  = $this['config']['optimus'];
+			$optimus = new Optimus($config['prime'], $config['inverse'], $config['random']);
+
+			return new ObscurityCodec\Optimus($optimus);
 		});
 
 		$this['raven-client'] = $this->share(function() {

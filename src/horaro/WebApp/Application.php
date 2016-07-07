@@ -12,6 +12,8 @@ namespace horaro\WebApp;
 
 use horaro\Library\BaseApplication;
 use horaro\Library\ObscurityCodec;
+use horaro\WebApp\Pager\OffsetLimitPager;
+use League\Fractal;
 use Silex\Provider\TwigServiceProvider;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 
@@ -58,6 +60,22 @@ class Application extends BaseApplication {
 		$this['csp'] = $this->share(function() {
 			return new ContentSecurityPolicy();
 		});
+
+		$this['fractal'] = $this->share(function() {
+			$manager = new Fractal\Manager();
+			$manager->setSerializer(new Fractal\Serializer\DataArraySerializer());
+
+			if (isset($_GET['embed'])) {
+				$manager->parseIncludes($_GET['embed']);
+				$manager->setRecursionLimit(2);
+			}
+
+			return $manager;
+		});
+
+		$this['api.v1.pager'] = function() {
+			return new OffsetLimitPager($this['request'], 20, 100);
+		};
 
 		$this['resource-resolver'] = $this->share(function() {
 			return new ResourceResolver($this['entitymanager'], $this['obscurity-codec']);
@@ -143,6 +161,10 @@ class Application extends BaseApplication {
 		$this['controller.admin.utils.config']     = $this->share(function() { return new Controller\Admin\Utils\ConfigController($this);     });
 		$this['controller.admin.utils.tools']      = $this->share(function() { return new Controller\Admin\Utils\ToolsController($this);      });
 		$this['controller.admin.utils.serverinfo'] = $this->share(function() { return new Controller\Admin\Utils\ServerInfoController($this); });
+		$this['controller.api.index']              = $this->share(function() { return new Controller\Api\IndexController($this);              });
+		$this['controller.api.v1.index']           = $this->share(function() { return new Controller\Api\Version1\IndexController($this);     });
+		$this['controller.api.v1.event']           = $this->share(function() { return new Controller\Api\Version1\EventController($this);     });
+		$this['controller.api.v1.schedule']        = $this->share(function() { return new Controller\Api\Version1\ScheduleController($this);  });
 
 		$this['validator.createaccount'] = $this->share(function() {
 			$userRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\User');
@@ -332,9 +354,20 @@ class Application extends BaseApplication {
 		$this->route('GET',  '/-/admin/utils/serverinfo/phpinfo',   'admin.utils.serverinfo:phpinfo',   'op');
 
 		///////////////////////////////////////////////////////////////////////////////////////////
+		// API
+
+		$this->route('GET', '/-/api',                                            'api.index:index',        null, false, true);
+		$this->route('GET', '/-/api/v1',                                         'api.v1.index:index',     null, false, true);
+		$this->route('GET', '/-/api/v1/events',                                  'api.v1.event:index',     null, false, true);
+		$this->route('GET', '/-/api/v1/events/{eventid}',                        'api.v1.event:view',      null, false, true);
+		$this->route('GET', '/-/api/v1/events/{eventid}/schedules',              'api.v1.event:schedules', null, false, true);
+		$this->route('GET', '/-/api/v1/events/{eventid}/schedules/{scheduleid}', 'api.v1.event:schedule',  null, false, true);
+		$this->route('GET', '/-/api/v1/schedules/{scheduleid}',                  'api.v1.schedule:view',   null, false, true);
+
+		///////////////////////////////////////////////////////////////////////////////////////////
 		// generic event/schedule routes
 
-		// We widen the rules for the slugs to allow for any junk to be appended to the URL.
+		// We widen the rules for the slugs (".+") to allow for any junk to be appended to the URL.
 		// The controller will filter accordingly.
 
 		$this->route('GET', '/{eventslug}',                          'frontend:event');
@@ -344,7 +377,7 @@ class Application extends BaseApplication {
 		$this->route('GET', '/{eventslug}/{scheduleslug}',           'frontend:schedule')->assert('scheduleslug', '.+');
 	}
 
-	protected function route($method, $pattern, $endpoint, $requiredRole = null, $noCsrf = false) {
+	protected function route($method, $pattern, $endpoint, $requiredRole = null, $noCsrf = false, $json = false) {
 		$endpoint   = 'controller.'.$endpoint.'Action';
 		$controller = $this->match($pattern, $endpoint)->method($method);
 		$route      = $controller->getRoute();
@@ -359,6 +392,10 @@ class Application extends BaseApplication {
 
 		if ($noCsrf) {
 			$route->setDefault(Middleware\Csrf::REQUIRE_NO_CSRF_TOKEN, true);
+		}
+
+		if ($json) {
+			$route->setDefault(Middleware\ErrorHandler::OUTPUT_JSON, true);
 		}
 
 		return $controller;

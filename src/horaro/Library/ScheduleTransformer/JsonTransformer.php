@@ -59,7 +59,9 @@ class JsonTransformer extends BaseTransformer {
 		$data = [
 			'meta' => [
 				'exported' => gmdate(self::DATE_FORMAT_UTC),
-				'hint'     => 'Use ?callback=yourcallback to use this document via JSONP.'
+				'hint'     => 'Use ?callback=yourcallback to use this document via JSONP.',
+				'api'      => 'This is a living document and may change over time. For a stable, well-defined output, use the API instead.',
+				'api-link' => '/-/api/v1/schedules/'.$this->encodeID($schedule->getId(), 'schedule')
 			],
 			'schedule' => [
 				'id'          => $this->encodeID($schedule->getId(), 'schedule'),
@@ -89,6 +91,11 @@ class JsonTransformer extends BaseTransformer {
 				'items'       => $items
 			]
 		];
+
+		if (!$schedule->isPublic()) {
+			unset($data['meta']['api']);
+			unset($data['meta']['api-link']);
+		}
 
 		if ($public) {
 			unset($data['schedule']['id']);

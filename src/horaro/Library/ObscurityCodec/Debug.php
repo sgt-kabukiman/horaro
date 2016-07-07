@@ -14,7 +14,7 @@ use horaro\Library\ObscurityCodec;
 
 class Debug implements ObscurityCodec {
 	public function encode($id, $entityType = null) {
-		return $id;
+		return (string) $id;
 	}
 
 	public function decode($hash, $entityType = null) {

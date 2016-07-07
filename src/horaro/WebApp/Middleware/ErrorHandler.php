@@ -13,6 +13,7 @@ namespace horaro\WebApp\Middleware;
 use horaro\WebApp\Application;
 use horaro\WebApp\Exception as Ex;
 use Symfony\Component\Debug\Exception\FatalErrorException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +24,8 @@ class ErrorHandler {
 	protected $raven;
 	protected $twig;
 	protected $version;
+
+	const OUTPUT_JSON = 'middleware.errorhandler.output-json';
 
 	public $levels = array(
 		E_WARNING           => 'Warning',
@@ -64,6 +67,8 @@ class ErrorHandler {
 		if (!$app['debug']) {
 			$app->error([$this, 'generic']);
 		}
+
+		$this->app = $app;
 
 		// some of this has been copied from Symfony\Component\Debug\ErrorHandler
 		register_shutdown_function(function() {
@@ -120,9 +125,19 @@ class ErrorHandler {
 	}
 
 	protected function respond($template, \Exception $e, $status = null) {
-		$data = ['e' => $e, 'result' => null]; // result is only for the login view
+		$status = $status ?: $e->getHttpStatus();
+		$json   = $this->app['request']->attributes->get(self::OUTPUT_JSON);
 
-		return new Response($this->twig->render($template, $data), $status ?: $e->getHttpStatus());
+		if ($json) {
+			$data     = ['status' => $status, 'message' => $e->getMessage()];
+			$response = new JsonResponse($data, $status);
+		}
+		else {
+			$data     = ['e' => $e, 'result' => null]; // result is only for the login view
+			$response = new Response($this->twig->render($template, $data), $status);
+		}
+
+		return $response;
 	}
 
 	protected function report(\Exception $e) {
