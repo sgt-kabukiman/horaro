@@ -28,7 +28,7 @@ class BaseApplication extends Application {
 	}
 
 	public function setupServices() {
-		$this['config'] = $this->share(function() {
+		$this['config'] = function() {
 			$config = new Configuration();
 			$dir    = HORARO_ROOT.'/resources/config/';
 
@@ -36,21 +36,21 @@ class BaseApplication extends Application {
 			$config->loadFile($dir.'parameters.yml');
 
 			return $config;
-		});
+		};
 
-		$this['runtime-config'] = $this->share(function() {
+		$this['runtime-config'] = function() {
 			return new RuntimeConfiguration($this['config'], $this['entitymanager']->getRepository('horaro\Library\Entity\Config'), $this['entitymanager']);
-		});
+		};
 
-		$this['session.storage.options'] = function() {
+		$this['session.storage.options'] = $this->factory(function() {
 			return [
 				'cookie_httponly' => true,
 				'cookie_lifetime' => $this['config']['cookie_lifetime'],
 				'cookie_secure'   => $this['config']['cookie_secure']
 			];
-		};
+		});
 
-		$this['session.storage.handler'] = $this->share(function() {
+		$this['session.storage.handler'] = function() {
 			$connection = $this['entitymanager']->getConnection();
 			$connection = $connection->getWrappedConnection();
 			$config     = $this['config'];
@@ -60,9 +60,9 @@ class BaseApplication extends Application {
 				$config['session'],
 				$this['session.storage.options']
 			);
-		});
+		};
 
-		$this['entitymanager'] = $this->share(function() {
+		$this['entitymanager'] = function() {
 			// the connection configuration
 			$config   = $this['config'];
 			$paths    = [HORARO_ROOT.'/resources/config' => 'horaro\Library\Entity'];
@@ -80,17 +80,17 @@ class BaseApplication extends Application {
 			$configuration->setMetadataDriverImpl($driver);
 
 			return EntityManager::create($config['database'], $configuration);
-		});
+		};
 
-		$this['rolemanager'] = $this->share(function() {
+		$this['rolemanager'] = function() {
 			return new RoleManager($this['config']['roles']);
-		});
+		};
 
-		$this['encoder'] = $this->share(function() {
+		$this['encoder'] = function() {
 			return new PasswordEncoder($this['config']['bcrypt_cost']);
-		});
+		};
 
-		$this['obscurity-codec'] = $this->share(function() {
+		$this['obscurity-codec'] = function() {
 			if ($this['debug']) {
 				return new ObscurityCodec\Debug();
 			}
@@ -99,47 +99,47 @@ class BaseApplication extends Application {
 			$optimus = new Optimus($config['prime'], $config['inverse'], $config['random']);
 
 			return new ObscurityCodec\Optimus($optimus);
-		});
+		};
 
-		$this['sentry-client'] = $this->share(function() {
+		$this['sentry-client'] = function() {
 			return new \Raven_Client($this['config']['sentry_dsn'], [
 				'install_default_breadcrumb_handlers' => false
 			]);
-		});
+		};
 
-		$this['schedule-transformer-json'] = $this->share(function() {
+		$this['schedule-transformer-json'] = function() {
 			return new ScheduleTransformer\JsonTransformer($this['obscurity-codec']);
-		});
+		};
 
-		$this['schedule-transformer-jsonp'] = $this->share(function() {
+		$this['schedule-transformer-jsonp'] = function() {
 			return new ScheduleTransformer\JsonpTransformer($this['request'], $this['obscurity-codec']);
-		});
+		};
 
-		$this['schedule-transformer-xml'] = $this->share(function() {
+		$this['schedule-transformer-xml'] = function() {
 			return new ScheduleTransformer\XmlTransformer($this['obscurity-codec']);
-		});
+		};
 
-		$this['schedule-transformer-csv'] = $this->share(function() {
+		$this['schedule-transformer-csv'] = function() {
 			return new ScheduleTransformer\CsvTransformer($this['obscurity-codec']);
-		});
+		};
 
-		$this['schedule-transformer-ical'] = $this->share(function() {
+		$this['schedule-transformer-ical'] = function() {
 			$secret = $this['config']['secret'];
 			$host   = $this['request']->getHost();
 
 			return new ScheduleTransformer\ICalTransformer($secret, $host, $this['obscurity-codec']);
-		});
+		};
 
 		// FIXME: The validators belong to the WebApp and should not be referenced in here.
 		//        We break this rule at the moment to avoid having to duplicate validation rules.
 
-		$this['schedule-importer-csv'] = $this->share(function() {
+		$this['schedule-importer-csv'] = function() {
 			return new ScheduleImporter\CsvImporter($this['entitymanager'], $this['validator.schedule']);
-		});
+		};
 
-		$this['schedule-importer-json'] = $this->share(function() {
+		$this['schedule-importer-json'] = function() {
 			return new ScheduleImporter\JsonImporter($this['entitymanager'], $this['validator.schedule']);
-		});
+		};
 
 		// set Silex' debug flag
 		$this['debug'] = $this['config']['debug'];

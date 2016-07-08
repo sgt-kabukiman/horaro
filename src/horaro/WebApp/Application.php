@@ -39,29 +39,29 @@ class Application extends BaseApplication {
 
 		$this['user'] = null;
 
-		$this['i18n'] = $this->share(function() {
+		$this['i18n'] = function() {
 			return new I18N($this);
-		});
+		};
 
-		$this['version'] = $this->share(function() {
+		$this['version'] = function() {
 			$filename = HORARO_ROOT.'/version';
 
 			return file_exists($filename) ? trim(file_get_contents($filename)) : 'version N/A';
-		});
+		};
 
-		$this['csrf'] = $this->share(function() {
+		$this['csrf'] = function() {
 			$factory   = new \RandomLib\Factory();
 			$generator = $factory->getMediumStrengthGenerator();
 			$name      = $this['config']['csrf_token_name'];
 
 			return new CsrfHandler($name, $generator);
-		});
+		};
 
-		$this['csp'] = $this->share(function() {
+		$this['csp'] = function() {
 			return new ContentSecurityPolicy();
-		});
+		};
 
-		$this['fractal'] = $this->share(function() {
+		$this['fractal'] = function() {
 			$manager = new Fractal\Manager();
 			$manager->setSerializer(new Fractal\Serializer\DataArraySerializer());
 
@@ -71,27 +71,27 @@ class Application extends BaseApplication {
 			}
 
 			return $manager;
-		});
-
-		$this['api.v1.pager'] = function() {
-			return new OffsetLimitPager($this['request'], 20, 100);
 		};
 
-		$this['resource-resolver'] = $this->share(function() {
-			return new ResourceResolver($this['entitymanager'], $this['obscurity-codec']);
+		$this['api.v1.pager'] = $this->factory(function() {
+			return new OffsetLimitPager($this['request'], 20, 100);
 		});
 
-		$this['markdown-converter'] = $this->share(function() {
+		$this['resource-resolver'] = function() {
+			return new ResourceResolver($this['entitymanager'], $this['obscurity-codec']);
+		};
+
+		$this['markdown-converter'] = function() {
 			return new Markdown\Converter(new Markdown\MarkdownOnHtml());
-		});
+		};
 
 		// overwrite transformer to inject the Markdown converter
-		$this['schedule-transformer-ical'] = $this->share(function() {
+		$this['schedule-transformer-ical'] = function() {
 			$secret = $this['config']['secret'];
 			$host   = $this['request']->getHost();
 
 			return new \horaro\Library\ScheduleTransformer\ICalTransformer($secret, $host, $this['obscurity-codec'], $this['markdown-converter']);
-		});
+		};
 
 		$this->register(new TwigServiceProvider(), array(
 			'twig.path' => HORARO_ROOT.'/views',
@@ -118,120 +118,126 @@ class Application extends BaseApplication {
 			return $twig;
 		});
 
-		$this['middleware.firewall'] = $this->share(function() {
+		// This is only for the views to still be able to access "app.request" instead of
+		// "app.requestStack.currentRequest" every time.
+		$this['request'] = $this->factory(function() {
+			return $this['request_stack']->getCurrentRequest();
+		});
+
+		$this['middleware.firewall'] = function() {
 			return new Middleware\Firewall($this);
-		});
+		};
 
-		$this['middleware.resolver'] = $this->share(function() {
+		$this['middleware.resolver'] = function() {
 			return new Middleware\Resolver($this['resource-resolver']);
-		});
+		};
 
-		$this['middleware.errorhandler'] = $this->share(function() {
+		$this['middleware.errorhandler'] = function() {
 			return new Middleware\ErrorHandler($this['sentry-client'], $this['twig'], $this['version']);
-		});
+		};
 
-		$this['middleware.csrf'] = $this->share(function() {
+		$this['middleware.csrf'] = function() {
 			return new Middleware\Csrf($this['csrf']);
-		});
+		};
 
-		$this['middleware.acl'] = $this->share(function() {
+		$this['middleware.acl'] = function() {
 			return new Middleware\ACL($this['rolemanager']);
-		});
+		};
 
-		$this['middleware.csp'] = $this->share(function() {
+		$this['middleware.csp'] = function() {
 			return new Middleware\CSP($this['csp']);
-		});
+		};
 
-		$this['controller.index']                  = $this->share(function() { return new Controller\IndexController($this);                  });
-		$this['controller.oauth']                  = $this->share(function() { return new Controller\OAuthController($this);                  });
-		$this['controller.frontend']               = $this->share(function() { return new Controller\FrontendController($this);               });
-		$this['controller.home']                   = $this->share(function() { return new Controller\HomeController($this);                   });
-		$this['controller.event']                  = $this->share(function() { return new Controller\EventController($this);                  });
-		$this['controller.schedule']               = $this->share(function() { return new Controller\ScheduleController($this);               });
-		$this['controller.sitemap']                = $this->share(function() { return new Controller\SitemapController($this);                });
-		$this['controller.schedule.item']          = $this->share(function() { return new Controller\ScheduleItemController($this);           });
-		$this['controller.schedule.column']        = $this->share(function() { return new Controller\ScheduleColumnController($this);         });
-		$this['controller.schedule.import']        = $this->share(function() { return new Controller\ScheduleImportController($this);         });
-		$this['controller.profile']                = $this->share(function() { return new Controller\ProfileController($this);                });
-		$this['controller.admin.index']            = $this->share(function() { return new Controller\Admin\IndexController($this);            });
-		$this['controller.admin.user']             = $this->share(function() { return new Controller\Admin\UserController($this);             });
-		$this['controller.admin.event']            = $this->share(function() { return new Controller\Admin\EventController($this);            });
-		$this['controller.admin.schedule']         = $this->share(function() { return new Controller\Admin\ScheduleController($this);         });
-		$this['controller.admin.utils']            = $this->share(function() { return new Controller\Admin\Utils\BaseController($this);       });
-		$this['controller.admin.utils.config']     = $this->share(function() { return new Controller\Admin\Utils\ConfigController($this);     });
-		$this['controller.admin.utils.tools']      = $this->share(function() { return new Controller\Admin\Utils\ToolsController($this);      });
-		$this['controller.admin.utils.serverinfo'] = $this->share(function() { return new Controller\Admin\Utils\ServerInfoController($this); });
-		$this['controller.api.index']              = $this->share(function() { return new Controller\Api\IndexController($this);              });
-		$this['controller.api.v1.index']           = $this->share(function() { return new Controller\Api\Version1\IndexController($this);     });
-		$this['controller.api.v1.event']           = $this->share(function() { return new Controller\Api\Version1\EventController($this);     });
-		$this['controller.api.v1.schedule']        = $this->share(function() { return new Controller\Api\Version1\ScheduleController($this);  });
+		$this['controller.index']                  = $this->factory(function() { return new Controller\IndexController($this);                  });
+		$this['controller.oauth']                  = $this->factory(function() { return new Controller\OAuthController($this);                  });
+		$this['controller.frontend']               = $this->factory(function() { return new Controller\FrontendController($this);               });
+		$this['controller.home']                   = $this->factory(function() { return new Controller\HomeController($this);                   });
+		$this['controller.event']                  = $this->factory(function() { return new Controller\EventController($this);                  });
+		$this['controller.schedule']               = $this->factory(function() { return new Controller\ScheduleController($this);               });
+		$this['controller.sitemap']                = $this->factory(function() { return new Controller\SitemapController($this);                });
+		$this['controller.schedule.item']          = $this->factory(function() { return new Controller\ScheduleItemController($this);           });
+		$this['controller.schedule.column']        = $this->factory(function() { return new Controller\ScheduleColumnController($this);         });
+		$this['controller.schedule.import']        = $this->factory(function() { return new Controller\ScheduleImportController($this);         });
+		$this['controller.profile']                = $this->factory(function() { return new Controller\ProfileController($this);                });
+		$this['controller.admin.index']            = $this->factory(function() { return new Controller\Admin\IndexController($this);            });
+		$this['controller.admin.user']             = $this->factory(function() { return new Controller\Admin\UserController($this);             });
+		$this['controller.admin.event']            = $this->factory(function() { return new Controller\Admin\EventController($this);            });
+		$this['controller.admin.schedule']         = $this->factory(function() { return new Controller\Admin\ScheduleController($this);         });
+		$this['controller.admin.utils']            = $this->factory(function() { return new Controller\Admin\Utils\BaseController($this);       });
+		$this['controller.admin.utils.config']     = $this->factory(function() { return new Controller\Admin\Utils\ConfigController($this);     });
+		$this['controller.admin.utils.tools']      = $this->factory(function() { return new Controller\Admin\Utils\ToolsController($this);      });
+		$this['controller.admin.utils.serverinfo'] = $this->factory(function() { return new Controller\Admin\Utils\ServerInfoController($this); });
+		$this['controller.api.index']              = $this->factory(function() { return new Controller\Api\IndexController($this);              });
+		$this['controller.api.v1.index']           = $this->factory(function() { return new Controller\Api\Version1\IndexController($this);     });
+		$this['controller.api.v1.event']           = $this->factory(function() { return new Controller\Api\Version1\EventController($this);     });
+		$this['controller.api.v1.schedule']        = $this->factory(function() { return new Controller\Api\Version1\ScheduleController($this);  });
 
-		$this['validator.createaccount'] = $this->share(function() {
+		$this['validator.createaccount'] = function() {
 			$userRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\User');
 
 			return new Validator\CreateAccountValidator($userRepo);
-		});
+		};
 
-		$this['validator.event'] = $this->share(function() {
+		$this['validator.event'] = function() {
 			$eventRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Event');
 			$config    = $this['config'];
 
 			return new Validator\EventValidator($eventRepo, array_keys($config['themes']), $config['default_event_theme']);
-		});
+		};
 
-		$this['validator.login'] = $this->share(function() {
+		$this['validator.login'] = function() {
 			$userRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\User');
 
 			return new Validator\LoginValidator($userRepo);
-		});
+		};
 
-		$this['validator.profile'] = $this->share(function() {
+		$this['validator.profile'] = function() {
 			$config = $this['config'];
 
 			return new Validator\ProfileValidator(array_keys($config['languages']), $config['default_language']);
-		});
+		};
 
-		$this['validator.schedule'] = $this->share(function() {
+		$this['validator.schedule'] = function() {
 			$scheduleRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Schedule');
 			$config       = $this['config'];
 
 			return new Validator\ScheduleValidator($scheduleRepo, array_keys($config['themes']));
-		});
+		};
 
-		$this['validator.schedule.item'] = $this->share(function() {
+		$this['validator.schedule.item'] = function() {
 			return new Validator\ScheduleItemValidator($this['obscurity-codec']);
-		});
+		};
 
-		$this['validator.schedule.column'] = $this->share(function() {
+		$this['validator.schedule.column'] = function() {
 			return new Validator\ScheduleColumnValidator();
-		});
+		};
 
-		$this['validator.schedule.import'] = $this->share(function() {
+		$this['validator.schedule.import'] = function() {
 			return new Validator\ScheduleImportValidator();
-		});
+		};
 
-		$this['validator.admin.user'] = $this->share(function() {
+		$this['validator.admin.user'] = function() {
 			$userRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\User');
 			$config   = $this['config'];
 
 			return new Validator\Admin\UserValidator($userRepo, $this['rolemanager'], array_keys($config['languages']));
-		});
+		};
 
-		$this['validator.admin.event'] = $this->share(function() {
+		$this['validator.admin.event'] = function() {
 			$eventRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Event');
 			$config    = $this['config'];
 
 			return new Validator\Admin\EventValidator($eventRepo, array_keys($config['themes']), $config['default_event_theme']);
-		});
+		};
 
-		$this['validator.admin.schedule'] = $this->share(function() {
+		$this['validator.admin.schedule'] = function() {
 			$scheduleRepo = $this['entitymanager']->getRepository('horaro\Library\Entity\Schedule');
 			$config       = $this['config'];
 
 			return new Validator\Admin\ScheduleValidator($scheduleRepo, array_keys($config['themes']));
-		});
+		};
 
-		$this['validator.admin.utils.config'] = $this->share(function() {
+		$this['validator.admin.utils.config'] = function() {
 			$config          = $this['config'];
 			$languages       = array_keys($config['languages']);
 			$defaultLanguage = $config['default_language'];
@@ -239,7 +245,7 @@ class Application extends BaseApplication {
 			$defaultTheme    = $config['default_event_theme'];
 
 			return new Validator\Admin\Utils\ConfigValidator($languages, $defaultLanguage, $themes, $defaultTheme);
-		});
+		};
 	}
 
 	public function setupRouting() {
