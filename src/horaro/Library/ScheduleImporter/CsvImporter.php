@@ -26,15 +26,16 @@ class CsvImporter extends BaseImporter {
 
 		$csv->setEnclosure('"');
 		$csv->setEscape('\\');
-		$csv->setFlags(\SplFileObject::READ_AHEAD | \SplFileObject::SKIP_EMPTY);
 
-		$probe = $csv->detectDelimiterList(10, [',', ';', "\t", '~']);
+		$probe = $csv->fetchDelimitersOccurrence([',', ';', "\t", '~'], 10);
 
 		if (empty($probe)) {
 			throw new \Exception('Could not determine the column separator. Please use comma (,), semicolon (;) or tab (\\t).');
 		}
 
-		$csv->setDelimiter(reset($probe));
+		reset($probe);
+
+		$csv->setDelimiter(key($probe));
 
 		// check the header row
 		$headers = $csv->fetchOne();
