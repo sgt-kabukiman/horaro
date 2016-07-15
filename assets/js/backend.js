@@ -53,19 +53,18 @@ jQuery(function($) {
 	// render flash messages
 
 	function growl(msg) {
-		$.bootstrapGrowl(msg, growlOpt);
+		$.notify({ message: msg }, growlOpt);
 	}
 
 	if ($('#h-flashes').length > 0) {
 		var growlOpt = {
-			ele:             'body',
-			type:            'info', // (null, 'info', 'error', 'success')
-			offset:          {from: 'top', amount: 26}, // 'top', or 'bottom'
-			align:           'center',
-			width:           350,
-			delay:           3000,
-			allow_dismiss:   true,
-			stackup_spacing: 5
+			type:      'info',
+			placement: {from: 'top', align: 'center'},
+			offset:    26,
+			width:     350,
+			delay:     3000,
+			spacing:   5,
+			animate:   { enter: '', exit: '' }
 		};
 
 		var flashes = JSON.parse($('#h-flashes').text());
