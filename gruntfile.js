@@ -28,13 +28,13 @@ module.exports = function (grunt) {
 					separator: '\n;\n'
 				},
 				src: [
-					'assets/vendor/pickadate/lib/compressed/picker.js',
-					'assets/vendor/pickadate/lib/compressed/picker.date.js',
-					'assets/vendor/pickadate/lib/compressed/picker.time.js',
-					'assets/vendor/moment/min/moment.min.js',
-					'assets/vendor/bootstrap-growl/jquery.bootstrap-growl.min.js',
-					'assets/vendor/knockout-secure-binding/dist/knockout-secure-binding.min.js',
-					'assets/vendor/nativesortable/nativesortable.js',
+					'node_modules/pickadate/lib/compressed/picker.js',
+					'node_modules/pickadate/lib/compressed/picker.date.js',
+					'node_modules/pickadate/lib/compressed/picker.time.js',
+					'node_modules/moment/min/moment.min.js',
+					'node_modules/bootstrap-notify/bootstrap-notify.min.js',
+					'node_modules/knockout-secure-binding/dist/knockout-secure-binding.min.js',
+					'node_modules/nativesortable/nativesortable.js',
 					'assets/js/knockout.x-editable.patched.js'
 				],
 				dest: 'tmp/assets/js/vendor-backend.js'
@@ -45,7 +45,7 @@ module.exports = function (grunt) {
 					separator: '\n;\n'
 				},
 				src: [
-					'assets/vendor/moment/min/moment.min.js',
+					'node_modules/moment/min/moment.min.js',
 				],
 				dest: 'tmp/assets/js/vendor-frontend.js'
 			},
@@ -65,8 +65,8 @@ module.exports = function (grunt) {
 					footer: 'var horaroTimeFormat = "HH:i !U!h!r";'
 				},
 				src: [
-					'assets/vendor/pickadate/lib/translations/de_DE.js',
-					'assets/vendor/moment/locale/de.js'
+					'node_modules/pickadate/lib/translations/de_DE.js',
+					'node_modules/moment/locale/de.js'
 				],
 				dest: 'tmp/assets/js/i18n/de_de.js'
 			},
@@ -76,10 +76,10 @@ module.exports = function (grunt) {
 					separator: '\n'
 				},
 				src: [
-					'assets/vendor/bootswatch/yeti/bootstrap.min.css',
-					'assets/vendor/pickadate/lib/themes/classic.css',
-					'assets/vendor/pickadate/lib/themes/classic.date.css',
-					'assets/vendor/pickadate/lib/themes/classic.time.css',
+					'node_modules/bootswatch/yeti/bootstrap.min.css',
+					'node_modules/pickadate/lib/themes/classic.css',
+					'node_modules/pickadate/lib/themes/classic.date.css',
+					'node_modules/pickadate/lib/themes/classic.time.css',
 				],
 				dest: 'tmp/assets/css/vendor-backend.css'
 			}
@@ -124,7 +124,7 @@ module.exports = function (grunt) {
 				files: [
 					{
 						expand: true,
-						src: ['assets/vendor/bootswatch/*/*.min.css'],
+						src: ['node_modules/bootswatch/*/*.min.css'],
 						dest: 'www/assets/css',
 						rename: function(dest, src) {
 							return path.join(dest, 'theme-' + path.basename(path.dirname(src)) + '.min.css');
