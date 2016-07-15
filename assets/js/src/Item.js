@@ -44,7 +44,7 @@ function Item(id, length, columns, pos) {
 	}, self);
 
 	self.formattedSchedule = ko.pureComputed(function() {
-		return moment.unix(self.scheduled() / 1000).zone(scheduleTZ).format('LT');
+		return moment.unix(self.scheduled() / 1000).utcOffset(scheduleTZ).format('LT');
 	}, self);
 
 	self.rowClass = ko.pureComputed(function() {
