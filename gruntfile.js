@@ -85,13 +85,19 @@ module.exports = function (grunt) {
 			}
 		},
 
-		rig: {
+		includereplace: {
 			app_backend: {
+				options: {
+					prefix: '\/\/@@'
+				},
 				files: {
 					'tmp/assets/js/app-backend.js': ['assets/js/backend.js']
 				}
 			},
 			app_frontend: {
+				options: {
+					prefix: '\/\/@@'
+				},
 				files: {
 					'tmp/assets/js/app-frontend.js': ['assets/js/frontend.js']
 				}
@@ -223,7 +229,7 @@ module.exports = function (grunt) {
 			},
 			app: {
 				files: ['assets/js/**/*'],
-				tasks: ['rig', 'uglify']
+				tasks: ['includereplace', 'uglify']
 			}
 		}
 	});
@@ -238,13 +244,13 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-filerev');
 	grunt.loadNpmTasks('grunt-filerev-assets');
+	grunt.loadNpmTasks('grunt-include-replace');
 	grunt.loadNpmTasks('grunt-lineending');
-	grunt.loadNpmTasks('grunt-rigger');
 	grunt.loadNpmTasks('grunt-shell');
 
 	// register custom tasks
 	grunt.registerTask('css',      ['less:app', 'concat:vendor_css_backend', 'copy:themes', 'cssmin']);
-	grunt.registerTask('js',       ['concat:vendor_js_backend', 'concat:vendor_js_frontend', 'rig', 'i18n', 'uglify']);
+	grunt.registerTask('js',       ['concat:vendor_js_backend', 'concat:vendor_js_frontend', 'includereplace', 'i18n', 'uglify']);
 	grunt.registerTask('i18n',     ['concat:i18n_en_us', 'concat:i18n_de_de']);
 	grunt.registerTask('assets',   ['css', 'js', 'copy:images']);
 	grunt.registerTask('doctrine', ['shell:schema', 'lineending:schema', 'shell:proxies']);

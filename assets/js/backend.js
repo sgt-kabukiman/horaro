@@ -126,14 +126,14 @@ jQuery(function($) {
 		}
 	};
 
-	//= src/Utils.js
-	//= src/SpatialNavigation.js
+	//@@include('src/Utils.js')
+	//@@include('src/SpatialNavigation.js')
 
-	//= src/Item.js
-	//= src/ItemsViewModel.js
-	//
-	//= src/Column.js
-	//= src/ColumnsViewModel.js
+	//@@include('src/Item.js')
+	//@@include('src/ItemsViewModel.js')
+
+	//@@include('src/Column.js')
+	//@@include('src/ColumnsViewModel.js')
 
 	var ui = $('body').data('ui');
 
