@@ -41,7 +41,7 @@ class OAuthController extends BaseController {
 		}
 
 		$session->set('oauth2provider', $providerName);
-		$session->set('oauth2state', $provider->state);
+		$session->set('oauth2state', $provider->getState());
 
 		return $this->redirect($authUrl);
 	}
@@ -66,7 +66,7 @@ class OAuthController extends BaseController {
 		try {
 			// try to get an access token
 			$token       = $provider->getAccessToken('authorization_code', ['code' => $code]);
-			$userDetails = $provider->getUserDetails($token);
+			$userDetails = $provider->getResourceOwner($token);
 		}
 		catch (Exception $e) {
 			$message = 'Something unexpected happened when completing your login. Please try again later.';
@@ -83,7 +83,7 @@ class OAuthController extends BaseController {
 
 		// find the user
 		$userRepo = $this->getRepository('User');
-		$identity = $userDetails->uid;
+		$identity = $userDetails->getId();
 		$existing = $userRepo->findOneBy(['twitch_oauth' => $identity]);
 
 		if (!$existing) {
@@ -93,9 +93,9 @@ class OAuthController extends BaseController {
 			// nobody is logged in, so let's create a new account
 			if (!$currentUser) {
 				$user = new User();
-				$user->setLogin('oauth:twitch:'.$userDetails->nickname);
+				$user->setLogin('oauth:twitch:'.$userDetails->getUsername());
 				$user->setPassword(null);
-				$user->setDisplayName($userDetails->name);
+				$user->setDisplayName($userDetails->getDisplayName());
 				$user->setRole($config['default_role']);
 				$user->setMaxEvents($config['max_events']);
 				$user->setLanguage('en_us');

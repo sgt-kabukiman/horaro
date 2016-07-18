@@ -10,72 +10,32 @@
 
 namespace horaro\WebApp\OAuth2;
 
-use League\OAuth2\Client\Entity\User;
-use League\OAuth2\Client\Provider\AbstractProvider;
+use Depotwarehouse\OAuth2\Client\Twitch\Provider\Twitch as BaseProvider;
 use League\OAuth2\Client\Token\AccessToken;
 
-class TwitchProvider extends AbstractProvider {
-	public $authorizationHeader = 'OAuth';
-	public $scopeSeparator      = ' ';
-	public $scopes              = [];
+class TwitchProvider extends BaseProvider {
+	public $scopes = [];
 
-	const ROOT_URL = 'https://api.twitch.tv/kraken';
+	protected function fetchResourceOwnerDetails(AccessToken $token) {
+		// fetch root to get the link to the authenticated user's profile
+		$headers  = $this->getHeaders($token);
+		$url      = $this->getAuthenticatedUrlForEndpoint('/kraken', $token);
+		$request  = $this->getAuthenticatedRequest(self::METHOD_GET, $url, $token);
+		$response = $this->getResponse($request);
 
-	public function urlAuthorize() {
-		return self::ROOT_URL.'/oauth2/authorize';
-	}
+		// construct the URL to this user's profile
+		$user = $response['token']['user_name'];
+		$url  = $this->apiDomain.'/kraken/users/'.urlencode($user);
 
-	public function urlAccessToken() {
-		return self::ROOT_URL.'/oauth2/token';
-	}
+		// and fetch it
+		$request  = $this->getAuthenticatedRequest(self::METHOD_GET, $url, $token);
+		$response = $this->getResponse($request);
 
-	public function urlUserDetails(AccessToken $token) {
-		// This only works if we got user_read; for the most basic tokens, we need
-		// to fetch the username manually and just get the public user record.
-		// See fetchUserDetails().
-		return self::ROOT_URL.'/user';
-	}
+		// because we faked how we got the user profile, the profile is missing some
+		// keys; let's add them, knowing that we don't need them anway.
+		$response['email'] = 'nope';
+		$response['partnered'] = false;
 
-	protected function fetchUserDetails(AccessToken $token) {
-		if (!in_array('user_read', $this->scopes)) {
-			// fetch root to get the link to the authenticated user's profile
-			$headers  = $this->getHeaders($token);
-			$response = json_decode($this->fetchProviderData(self::ROOT_URL, $headers));
-			$user     = $response->token->user_name;
-			$url      = self::ROOT_URL.'/users/'.urlencode($user);
-		}
-		else {
-			$url = $this->urlUserDetails($token);
-		}
-
-		$headers = $this->getHeaders($token);
-
-		return $this->fetchProviderData($url, $headers);
-	}
-
-	public function userDetails($response, AccessToken $token) {
-		$user = new User();
-		$user->exchangeArray([
-			'uid'         => $this->userUid($response, $token),
-			'name'        => $this->userScreenName($response, $token),
-			'email'       => $this->userEmail($response, $token),
-			'nickname'    => $response->name,
-			'imageUrl'    => $response->logo,
-			'description' => isset($response->bio) && $response->bio ? $response->bio : null,
-		]);
-
-		return $user;
-	}
-
-	public function userUid($response, AccessToken $token) {
-		return $response->_id;
-	}
-
-	public function userEmail($response, AccessToken $token) {
-		return isset($response->email) ? $response->email : null;
-	}
-
-	public function userScreenName($response, AccessToken $token) {
-		return $response->display_name;
-	}
+		return $response;
+    }
 }
