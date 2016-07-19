@@ -26,16 +26,17 @@ class ScheduleValidator extends BaseValidator {
 	public function validate(array $schedule, Event $event, Schedule $ref = null) {
 		$this->result = ['_errors' => false];
 
-		$this->setFilteredValue('name',       $this->validateName($schedule['name'], $event, $ref));
-		$this->setFilteredValue('slug',       $this->validateSlug($schedule['slug'], $event, $ref));
-		$this->setFilteredValue('timezone',   $this->validateTimezone($schedule['timezone'], $event, $ref));
-		$this->setFilteredValue('start',      $this->validateStart($schedule['start_date'], $schedule['start_time'], $event, $ref));
-		$this->setFilteredValue('website',    $this->validateWebsite($schedule['website'], $event, $ref));
-		$this->setFilteredValue('twitter',    $this->validateTwitterAccount($schedule['twitter'], $event, $ref));
-		$this->setFilteredValue('twitch',     $this->validateTwitchAccount($schedule['twitch'], $event, $ref));
-		$this->setFilteredValue('theme',      $this->validateTheme($schedule['theme'], $event, $ref));
-		$this->setFilteredValue('secret',     $this->validateSecret($schedule['secret']));
-		$this->setFilteredValue('setup_time', $this->validateSetupTime($schedule['setup_time'], $event, $ref));
+		$this->setFilteredValue('name',          $this->validateName($schedule['name'], $event, $ref));
+		$this->setFilteredValue('slug',          $this->validateSlug($schedule['slug'], $event, $ref));
+		$this->setFilteredValue('timezone',      $this->validateTimezone($schedule['timezone'], $event, $ref));
+		$this->setFilteredValue('start',         $this->validateStart($schedule['start_date'], $schedule['start_time'], $event, $ref));
+		$this->setFilteredValue('website',       $this->validateWebsite($schedule['website'], $event, $ref));
+		$this->setFilteredValue('twitter',       $this->validateTwitterAccount($schedule['twitter'], $event, $ref));
+		$this->setFilteredValue('twitch',        $this->validateTwitchAccount($schedule['twitch'], $event, $ref));
+		$this->setFilteredValue('theme',         $this->validateTheme($schedule['theme'], $event, $ref));
+		$this->setFilteredValue('secret',        $this->validateSecret($schedule['secret']));
+		$this->setFilteredValue('hidden_secret', $this->validateHiddenSecret($schedule['hidden_secret']));
+		$this->setFilteredValue('setup_time',    $this->validateSetupTime($schedule['setup_time'], $event, $ref));
 
 		return $this->result;
 	}
@@ -203,6 +204,20 @@ class ScheduleValidator extends BaseValidator {
 
 		if (mb_strlen($secret) > 0 && !preg_match('/^[a-zA-Z0-9_-]+$/', $secret)) {
 			$this->addError('secret', 'The secret can only use the characters a-z, 0-9, dash and underscore.', $throwUp);
+		}
+
+		return $secret === '' ? null : $secret;
+	}
+
+	public function validateHiddenSecret($secret, $throwUp = false) {
+		$secret = trim($secret);
+
+		if (mb_strlen($secret) > 20) {
+			$this->addError('hidden_secret', 'The hidden column secret can only be up to 20 characters in length.', $throwUp);
+		}
+
+		if (mb_strlen($secret) > 0 && !preg_match('/^[a-zA-Z0-9_-]+$/', $secret)) {
+			$this->addError('hidden_secret', 'The hidden column secret can only use the characters a-z, 0-9, dash and underscore.', $throwUp);
 		}
 
 		return $secret === '' ? null : $secret;

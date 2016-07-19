@@ -30,4 +30,20 @@ class ScheduleColumnRepository extends EntityRepository {
 
 		return (int) $query->getSingleScalarResult();
 	}
+
+	public function countVisible(Schedule $schedule = null) {
+		$dql = 'SELECT COUNT(c.id) FROM horaro\Library\Entity\ScheduleColumn c WHERE c.hidden = :hidden';
+
+		if ($schedule) {
+			$query = $this->_em->createQuery($dql.' AND c.schedule = :schedule');
+			$query->setParameter('schedule', $schedule);
+		}
+		else {
+			$query = $this->_em->createQuery($dql);
+		}
+
+		$query->setParameter('hidden', false);
+
+		return (int) $query->getSingleScalarResult();
+	}
 }

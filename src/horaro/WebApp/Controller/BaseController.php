@@ -135,7 +135,7 @@ class BaseController {
 	}
 
 	protected function exceedsMaxScheduleColumns(Schedule $s) {
-		return $this->getRepository('ScheduleColumn')->count($s) >= 10;
+		return $this->getRepository('ScheduleColumn')->countVisible($s) >= 10;
 	}
 
 	protected function setCachingHeader(Response $response, $resourceType, \DateTime $lastModified = null) {

@@ -24,10 +24,10 @@ class XmlTransformer extends BaseTransformer {
 		return 'xml';
 	}
 
-	public function transform(Schedule $schedule, $public = false) {
+	public function transform(Schedule $schedule, $public = false, $withHiddenColumns = false) {
 		$event = $schedule->getEvent();
 		$start = $schedule->getLocalStart();
-		$cols  = $schedule->getColumns();
+		$cols  = $withHiddenColumns ? $schedule->getColumns() : $schedule->getVisibleColumns();
 
 		$xml = new \XMLWriter();
 		$xml->openMemory();
@@ -83,7 +83,12 @@ class XmlTransformer extends BaseTransformer {
 
 				$xml->startElement('columns');
 					foreach ($schedule->getColumns() as $col) {
-						$xml->writeElement('column', $col->getName());
+						$xml->startElement('column');
+							if ($withHiddenColumns) {
+								$xml->writeAttribute('hidden', $col->isHidden() ? 'true' : 'false');
+							}
+							$xml->text($col->getName());
+						$xml->endElement();
 					}
 				$xml->endElement();
 

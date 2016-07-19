@@ -2,7 +2,7 @@
 
 {% set theme     = schedule.theme                                %}
 {% set start     = schedule.localStart                           %}
-{% set columns   = schedule.columns                              %}
+{% set columns   = schedule.visibleColumns                       %}
 {% set numCols   = columns|length                                %}
 {% set fluid     = numCols > 4                                   %}
 {% set appendix  = key ? '?key=' ~ key : ''                      %}
@@ -197,7 +197,7 @@
 
 <script type="text/html" id="expanded_tpl">
 <tr class="h-secondary">
-	<td colspan="{{ numCols + 2 }}">
+	<td colspan="{{ numCols + 3 }}">
 		<dl class="dl-horizontal">
 			<dt class="h-e-l">{{ schedule.text('col-estimate')|default('Estimate') }}:</dt>
 			<dd class="h-e-l">&nbsp;</dd>

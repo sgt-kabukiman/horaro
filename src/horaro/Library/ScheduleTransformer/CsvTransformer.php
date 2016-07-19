@@ -23,17 +23,19 @@ class CsvTransformer extends BaseTransformer {
 		return 'csv';
 	}
 
-	public function transform(Schedule $schedule, $public = false) {
-		$rows      = [];
-		$cols      = $schedule->getColumns();
-		$toCSV     = function($val) {
+	public function transform(Schedule $schedule, $public = false, $withHiddenColumns = false) {
+		$rows  = [];
+		$cols  = $withHiddenColumns ? $schedule->getColumns() : $schedule->getVisibleColumns();
+		$toCSV = function($val) {
 			return '"'.addcslashes($val, '"').'"';
 		};
 
 		$header = [$toCSV('Scheduled'), $toCSV('Length')];
 
 		foreach ($cols as $col) {
-			$header[] = $toCSV($col->getName());
+			$prefix = $col->isHidden() ? 'hidden:' : '';
+
+			$header[] = $toCSV($prefix.$col->getName());
 		}
 
 		$rows[] = implode(';', $header);

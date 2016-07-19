@@ -27,6 +27,11 @@ class ScheduleColumn {
 	private $position;
 
 	/**
+	 * @var bool
+	 */
+	private $hidden;
+
+	/**
 	 * @var string
 	 */
 	private $name;
@@ -35,6 +40,10 @@ class ScheduleColumn {
 	 * @var \horaro\Library\Entity\Schedule
 	 */
 	private $schedule;
+
+	public function __construct() {
+		$this->setHidden(false);
+	}
 
 	/**
 	 * Get id
@@ -64,6 +73,27 @@ class ScheduleColumn {
 	 */
 	public function getPosition() {
 		return $this->position;
+	}
+
+	/**
+	 * Set hidden
+	 *
+	 * @param  bool $hidden
+	 * @return ScheduleItem
+	 */
+	public function setHidden($hidden) {
+		$this->hidden = !!$hidden;
+
+		return $this;
+	}
+
+	/**
+	 * Get hidden
+	 *
+	 * @return bool
+	 */
+	public function isHidden() {
+		return $this->hidden;
 	}
 
 	/**

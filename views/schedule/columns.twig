@@ -29,6 +29,7 @@
 			<thead>
 				<tr>
 					<th class="h-name">Column Name</th>
+					<th class="h-ishidden">hidden</th>
 					<th class="h-controls">&nbsp;</th>
 				</tr>
 			</thead>
@@ -44,7 +45,7 @@
 			<!-- /ko -->
 		</table>
 
-		<!-- ko if: hasNewColumn() || isFull() -->
+		<!-- ko if: hasNewColumn() -->
 		<div class="row">
 			<div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-4 col-xs-offset-4 text-center">
 				<a href="#" id="h-add-model" class="btn btn-success btn-block btn-sm disabled"><i class="fa fa-plus fa-1x"></i> add column</a>
@@ -52,7 +53,7 @@
 		</div>
 		<!-- /ko -->
 
-		<!-- ko if: !hasNewColumn() && !isFull() -->
+		<!-- ko if: !hasNewColumn() -->
 		<div class="row">
 			<div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-6 col-xs-offset-3 text-center">
 				<a href="#" id="h-add-model" data-bind="click: add, activate: add" class="btn btn-success btn-block btn-sm"><i class="fa fa-plus fa-1x"></i> add column</a>
@@ -81,6 +82,8 @@
 		<p>You want to move the most important columns at the top, so they are always visible. Also,
 		keep the column names short and simple.</p>
 
+		<h4>Mobile Devices Considerations</h4>
+
 		<p>Keep in mind that your audience on mobile devices has smaller screens and can therefore not
 		easily consume a schedule with lots of columns. Depending on the device size, excessive columns
 		will be hidden by default and only shown when the user clicks on a link (pretty much like the
@@ -89,6 +92,21 @@
 		<p>On a phone in portait mode, only the first column is shown. In landscape mode (around 600px
 		in width), the second column and the length is shown. Then, for each ~200px more in width, one
 		more column is shown.</p>
+
+		<h4>Hidden Columns</h4>
+
+		<p>By default, columns are visible everywhere, i.e. shown to all visitors on the website and
+		available through the API. You can change that however by using the checkboxes for each column.
+		Hidden columns will not show up on the schedule page (because of that, they also do not count
+		against the 10 column limit), <strong>but are still included in the API</strong>.</p>
+
+		<p>If you want to hide them completely (even in the API), configure a &quot;hidden column
+		secret&quot; in <a href="/-/schedules/{{ schedule.id|obscurify('schedule') }}/edit">this schedule's
+		settings</a>. When set, the columns and their data will only be returned when this secret is
+		given like so:</p>
+
+		<p><code>/{{ schedule.event.slug }}/{{ schedule.slug }}.json?hiddenkey=…</code> (for the simple exports on the schedule page)</p>
+		<p><code>/-/api/v1/events/{{ schedule.event.slug }}/schedules/{{ schedule.slug }}?hiddenkey=…</code> (for the API)</p>
 	</div>
 </div>
 

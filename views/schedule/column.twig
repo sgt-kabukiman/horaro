@@ -1,7 +1,12 @@
 {# Do not use the ternary operator because the secure bindings for Knockout do not support them. #}
 <tbody data-bind="attr: {'data-colid': id, 'class': bodyClass(), 'draggable': 'true' }">
 	<tr class="h-primary">
-		<td data-bind="attr: { class: 'h-name '   + rowClass() }"><a href="#" data-bind="editable: name, editableOptions: { hidden: onEditableHidden }"></a></td>
+		<td data-bind="attr: { class: 'h-name ' + rowClass() }"><a href="#" data-bind="editable: name, editableOptions: { hidden: onEditableHidden }"></a></td>
+		<td data-bind="attr: { class: 'h-ishidden ' + rowClass() }">
+			<!-- ko if: !fixed -->
+			<input type="checkbox" value="1" data-bind="checked: hidden, attr: { disabled: hidden() && $parent.isFull() }"></a>
+			<!-- /ko -->
+		</td>
 		<td data-bind="attr: { class: 'text-right h-controls ' + rowClass() }">
 			<!-- ko if: !deleting() -->
 			<!-- ko if: !fixed -->

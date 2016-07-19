@@ -32,14 +32,14 @@ class JsonpTransformer extends JsonTransformer {
 		return 'js';
 	}
 
-	public function transform(Schedule $schedule, $public = false) {
+	public function transform(Schedule $schedule, $public = false, $withHiddenColumns = false) {
 		$callback = $this->request->query->get('callback');
 
 		if (!$this->isValidCallback($callback)) {
 			throw new \InvalidArgumentException('The given callback is malformed.');
 		}
 
-		$json = parent::transform($schedule, $public);
+		$json = parent::transform($schedule, $public, $withHiddenColumns);
 
 		// add empty inline comment to prevent content type sniffing attacks like Rosetta Flash
 		return sprintf('/**/%s(%s);', $callback, $json);

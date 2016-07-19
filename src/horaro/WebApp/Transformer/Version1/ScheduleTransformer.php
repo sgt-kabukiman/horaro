@@ -12,14 +12,23 @@ namespace horaro\WebApp\Transformer\Version1;
 
 use horaro\Library\Entity\Schedule;
 use horaro\Library\ScheduleTransformer\JsonTransformer;
+use horaro\WebApp\Application;
 use horaro\WebApp\Transformer\BaseTransformer;
 
 class ScheduleTransformer extends BaseTransformer {
 	protected $availableIncludes = [];
 
+	private $includeHiddenColumns = false;
+
+	public function __construct(Application $app, $includeHiddenColumns = false) {
+		parent::__construct($app);
+
+		$this->includeHiddenColumns = $includeHiddenColumns;
+	}
+
 	public function transform(Schedule $schedule) {
 		$transformer = new JsonTransformer($this->codec);
-		$transformed = json_decode($transformer->transform($schedule, false), true);
+		$transformed = json_decode($transformer->transform($schedule, false, $this->includeHiddenColumns), true);
 
 		$data = $transformed['schedule'];
 

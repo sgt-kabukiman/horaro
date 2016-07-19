@@ -35,8 +35,11 @@ function ColumnsViewModel(columns) {
 		return self.fixedColumns().length;
 	}, self);
 
+	// full only is a restriction on non-hidden columns, so remove hidden columns from the list
 	self.isFull = ko.pureComputed(function() {
-		return self.numOfFlexibleColumns() >= 10;
+		return ko.utils.arrayFilter(self.columns(), function(col) {
+			return col.fixed === false && !col.hidden();
+		}).length >= 10;
 	}, self);
 
 	self.isMinimal = ko.pureComputed(function() {
@@ -65,7 +68,15 @@ function ColumnsViewModel(columns) {
 	// behaviours
 
 	self.add = function() {
-		var name = 'New Column', col = new Column(-1, '', self.numOfFlexibleColumns() + 1, false);
+		var
+			name = 'New Column',
+
+			// if we're already at the limit, create a hidden column by default; the user cannot un-hide
+			// it until another column is removed or marked as hidden; set the hidden flag here to not
+			// cause TWO POST requests, with the first one possibly failing because it could create a
+			// non-hidden column exceeding the limit
+			hidden = self.isFull(),
+			col    = new Column(-1, '', self.numOfFlexibleColumns() + 1, hidden, false);
 
 		self.columns.push(col);
 		col.name(name); // trigger storing the column immediately

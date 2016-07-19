@@ -215,6 +215,9 @@ module.exports = function (grunt) {
 		},
 
 		lineending: {
+			options: {
+				eol: 'lf'
+			},
 			schema: {
 				files: {
 					'resources/schema.sql': ['resources/schema.sql']

@@ -166,7 +166,7 @@ jQuery(function($) {
 
 			if (colData) {
 				colData.forEach(function(column, idx) {
-					columns.push(new Column(column[0], column[1], column[2], column[3]));
+					columns.push(new Column(column[0], column[1], column[2], column[3], column[4]));
 				});
 			}
 

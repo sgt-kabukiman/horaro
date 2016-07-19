@@ -86,7 +86,7 @@ class EventController extends BaseController {
 			}
 		}
 
-		return $this->respondWithCollection($schedules, new ScheduleTransformer($this->app));
+		return $this->respondWithCollection($schedules, new ScheduleTransformer($this->app, false));
 	}
 
 	public function scheduleAction(Request $request) {

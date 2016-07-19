@@ -73,7 +73,7 @@
 			<tr>
 				<th class="h-s">{{ schedule.text('col-scheduled')|default('Scheduled') }}</th>
 				<th class="h-l">{{ schedule.text('col-estimate')|default('Estimate') }}</th>
-				{% for idx,column in schedule.columns %}
+				{% for idx,column in schedule.columns|slice(0,10) %}
 				<th class="h-{{ idx }}">{{ column.name }}</th>
 				{% endfor %}
 				<th class="h-co">&nbsp;</th>

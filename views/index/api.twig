@@ -171,6 +171,23 @@
 		<h3 id="one-schedule"><code>GET <span>/-/api/v1</span>/schedules/{id}</code> <small>(fetch a single schedule)</small></h3>
 		<p>Retrieves a specific schedule and returns HTTP 404 if it could not be found.</p>
 
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>hiddenkey</td>
+          <td>string</td>
+          <td>required to include hidden columns if a &quot;hidden column secret&quot; is configured</td>
+        </tr>
+      </tbody>
+    </table>
+
 		<p>A schedule looks like this when represented as JSON:</p>
 
 		<div class="json"><pre>{
@@ -188,6 +205,9 @@
   &quot;setup_t&quot;: 300,
   &quot;updated&quot;: &quot;2016-03-20T20:16:58Z&quot;,
   &quot;link&quot;: &quot;{{ baseUri }}/sample-event/schedule&quot;,
+  &quot;hidden_columns&quot;: [
+    &quot;Category&quot;
+  ],
   &quot;columns&quot;: [
     &quot;Game&quot;,
     &quot;Runner&quot;,
@@ -222,6 +242,10 @@
 		<p>All times are given in two different format, once as an ISO 8601 timestamp/duration and
 			once as a UNIX timestamp (with the suffix <code>_t</code>). Use whatever is the easiest to
 			use in your programming environment.</p>
+
+    <p>If a column has hidden columns and those are accessible for the requester (either because
+      there is no secret configured or the requested provided the correct one), they will be listed
+      in <code>hidden_columns</code> in addition to the <code>columns</code> list.</p>
 	</div>
 </div>
 {% endblock %}

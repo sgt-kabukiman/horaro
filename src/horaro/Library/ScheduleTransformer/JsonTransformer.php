@@ -26,15 +26,20 @@ class JsonTransformer extends BaseTransformer {
 		return 'json';
 	}
 
-	public function transform(Schedule $schedule, $public = false) {
-		$event     = $schedule->getEvent();
-		$cols      = $schedule->getColumns();
-		$columns   = [];
-		$items     = [];
-		$start     = $schedule->getLocalStart();
+	public function transform(Schedule $schedule, $public = false, $withHiddenColumns = false) {
+		$event   = $schedule->getEvent();
+		$cols    = $withHiddenColumns ? $schedule->getColumns() : $schedule->getVisibleColumns();
+		$columns = [];
+		$hidden  = [];
+		$items   = [];
+		$start   = $schedule->getLocalStart();
 
 		foreach ($cols as $col) {
 			$columns[] = $col->getName();
+
+			if ($col->isHidden()) {
+				$hidden[] = $col->getName();
+			}
 		}
 
 		foreach ($schedule->getScheduledItems() as $item) {
@@ -87,14 +92,19 @@ class JsonTransformer extends BaseTransformer {
 					'theme'  => $event->getTheme(),
 					'secret' => $event->getSecret()
 				],
-				'columns'     => $columns,
-				'items'       => $items
+				'hidden_columns' => $hidden,
+				'columns'        => $columns,
+				'items'          => $items
 			]
 		];
 
 		if (!$schedule->isPublic()) {
 			unset($data['meta']['api']);
 			unset($data['meta']['api-link']);
+		}
+
+		if (!$withHiddenColumns) {
+			unset($data['schedule']['hidden_columns']);
 		}
 
 		if ($public) {

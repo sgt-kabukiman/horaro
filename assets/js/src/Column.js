@@ -1,11 +1,12 @@
-function Column(id, name, pos, fixed) {
+function Column(id, name, pos, hidden, fixed) {
 	var self = this;
 
 	// setup simple data properties
 
-	self.id    = ko.observable(id);
-	self.name  = ko.observable(name);
-	self.fixed = !!fixed;
+	self.id     = ko.observable(id);
+	self.name   = ko.observable(name);
+	self.hidden = ko.observable(hidden);
+	self.fixed  = !!fixed;
 
 	// setup properties for managing app state
 
@@ -56,7 +57,7 @@ function Column(id, name, pos, fixed) {
 
 	// subscribers
 
-	self.name.subscribe(function(newValue) {
+	function updateColumn() {
 		if (self.suspended) {
 			return;
 		}
@@ -73,7 +74,11 @@ function Column(id, name, pos, fixed) {
 			url += '/' + colID + '?_method=PUT';
 		}
 
-		var data = { name: newValue };
+		var data = {
+			name: self.name(),
+			hidden: self.hidden(),
+		};
+
 		data[csrfTokenName] = csrfToken;
 
 		self.busy(true);
@@ -105,7 +110,10 @@ function Column(id, name, pos, fixed) {
 				self.busy(false);
 			}
 		});
-	});
+	}
+
+	self.name.subscribe(updateColumn);
+	self.hidden.subscribe(updateColumn);
 
 	self.deleteColumn = function() {
 		if (self.suspended) {

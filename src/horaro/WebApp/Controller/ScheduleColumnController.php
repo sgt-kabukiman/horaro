@@ -21,12 +21,18 @@ class ScheduleColumnController extends BaseController {
 		$schedule = $this->getRequestedSchedule($request);
 		$extra    = $schedule->getExtra();
 		$columns  = [
-			[Schedule::COLUMN_SCHEDULED, isset($extra['texts'][Schedule::COLUMN_SCHEDULED]) ? $extra['texts'][Schedule::COLUMN_SCHEDULED] : 'Scheduled', -1, true],
-			[Schedule::COLUMN_ESTIMATE,  isset($extra['texts'][Schedule::COLUMN_ESTIMATE])  ? $extra['texts'][Schedule::COLUMN_ESTIMATE]  : 'Estimated',  0, true]
+			[Schedule::COLUMN_SCHEDULED, isset($extra['texts'][Schedule::COLUMN_SCHEDULED]) ? $extra['texts'][Schedule::COLUMN_SCHEDULED] : 'Scheduled', -1, false, true],
+			[Schedule::COLUMN_ESTIMATE,  isset($extra['texts'][Schedule::COLUMN_ESTIMATE])  ? $extra['texts'][Schedule::COLUMN_ESTIMATE]  : 'Estimated',  0, false, true]
 		];
 
 		foreach ($schedule->getColumns() as $col) {
-			$columns[] = [$this->encodeID($col->getID(), 'schedule.column'), $col->getName(), $col->getPosition(), false];
+			$columns[] = [
+				$this->encodeID($col->getID(), 'schedule.column'),
+				$col->getName(),
+				$col->getPosition(),
+				$col->isHidden(),
+				false
+			];
 		}
 
 		return $this->render('schedule/columns.twig', ['schedule' => $schedule, 'columns' => $columns]);
@@ -34,10 +40,6 @@ class ScheduleColumnController extends BaseController {
 
 	public function createAction(Request $request) {
 		$schedule = $this->getRequestedSchedule($request);
-
-		if ($this->exceedsMaxScheduleColumns($schedule)) {
-			throw new Ex\BadRequestException('You cannot create more columns for this schedule.');
-		}
 
 		$payload   = $this->getPayload($request);
 		$validator = $this->app['validator.schedule.column'];
@@ -56,6 +58,11 @@ class ScheduleColumnController extends BaseController {
 			return $this->respondWithArray(['errors' => $response], 400);
 		}
 
+		// check the limit if the column is not supposed to be hidden
+		if (!$result['hidden']['filtered'] && $this->exceedsMaxScheduleColumns($schedule)) {
+			throw new Ex\BadRequestException('You cannot create more columns for this schedule.');
+		}
+
 		$em  = $this->getEntityManager();
 		$col = $em->transactional(function($em) use ($schedule, $result) {
 			$this->lockSchedule($schedule);
@@ -72,6 +79,7 @@ class ScheduleColumnController extends BaseController {
 			$col->setSchedule($schedule);
 			$col->setPosition($max + 1);
 			$col->setName($result['name']['filtered']);
+			$col->setHidden($result['hidden']['filtered']);
 
 			$schedule->touch();
 
@@ -87,9 +95,10 @@ class ScheduleColumnController extends BaseController {
 
 		return $this->respondWithArray([
 			'data' => [
-				'id'   => $this->encodeID($col->getId(), 'schedule.column'),
-				'pos'  => $col->getPosition(),
-				'name' => $col->getName()
+				'id'     => $this->encodeID($col->getId(), 'schedule.column'),
+				'pos'    => $col->getPosition(),
+				'name'   => $col->getName(),
+				'hidden' => $col->isHidden(),
 			]
 		], 201);
 	}
@@ -117,6 +126,7 @@ class ScheduleColumnController extends BaseController {
 		// update column
 
 		$column->setName($result['name']['filtered']);
+		$column->setHidden($result['hidden']['filtered']);
 		$schedule->touch();
 
 		// store it
@@ -127,9 +137,10 @@ class ScheduleColumnController extends BaseController {
 
 		return $this->respondWithArray([
 			'data' => [
-				'id'   => $this->encodeID($column->getId(), 'schedule.column'),
-				'pos'  => $column->getPosition(),
-				'name' => $column->getName(),
+				'id'     => $this->encodeID($column->getId(), 'schedule.column'),
+				'pos'    => $column->getPosition(),
+				'name'   => $column->getName(),
+				'hidden' => $column->isHidden(),
 			]
 		], 200);
 	}

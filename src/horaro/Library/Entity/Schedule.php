@@ -74,6 +74,11 @@ class Schedule {
 	/**
 	 * @var string
 	 */
+	private $hidden_secret;
+
+	/**
+	 * @var string
+	 */
 	private $description;
 
 	/**
@@ -465,6 +470,28 @@ class Schedule {
 	}
 
 	/**
+	 * Set hidden secret
+	 *
+	 * @param string $secret
+	 * @return Schedule
+	 */
+	public function setHiddenSecret($secret) {
+		$secret              = trim($secret);
+		$this->hidden_secret = mb_strlen($secret) === 0 ? null : $secret;
+
+		return $this;
+	}
+
+	/**
+	 * Get hidden secret
+	 *
+	 * @return string
+	 */
+	public function getHiddenSecret() {
+		return $this->hidden_secret;
+	}
+
+	/**
 	 * Set description
 	 *
 	 * @param string $description
@@ -675,6 +702,17 @@ class Schedule {
 	 */
 	public function getColumns() {
 		return $this->columns;
+	}
+
+	/**
+	 * Get visible columns
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getVisibleColumns() {
+		return $this->columns->filter(function($col) {
+			return !$col->isHidden();
+		});
 	}
 
 	/**

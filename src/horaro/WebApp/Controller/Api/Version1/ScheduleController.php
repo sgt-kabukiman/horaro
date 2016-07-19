@@ -32,6 +32,14 @@ class ScheduleController extends BaseController {
 			throw new NotFoundException('Schedule '.$scheduleID.' could not be found.');
 		}
 
-		return $this->respondWithItem($schedule, new ScheduleTransformer($this->app));
+		// check if hidden columns can be shown
+		$hiddenSecret         = $schedule->getHiddenSecret();
+		$includeHiddenColumns = $hiddenSecret === null;
+
+		if (!$includeHiddenColumns) {
+			$includeHiddenColumns = $request->query->get('hiddenkey') === $hiddenSecret;
+		}
+
+		return $this->respondWithItem($schedule, new ScheduleTransformer($this->app, $includeHiddenColumns));
 	}
 }

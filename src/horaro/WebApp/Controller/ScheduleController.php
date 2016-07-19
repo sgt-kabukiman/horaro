@@ -72,17 +72,18 @@ class ScheduleController extends BaseController {
 
 		$validator = $this->getValidator();
 		$result    = $validator->validate([
-			'name'       => $request->request->get('name'),
-			'slug'       => $request->request->get('slug'),
-			'timezone'   => $request->request->get('timezone'),
-			'start_date' => $request->request->get('start_date'),
-			'start_time' => $request->request->get('start_time'),
-			'website'    => $request->request->get('website'),
-			'twitter'    => $request->request->get('twitter'),
-			'twitch'     => $request->request->get('twitch'),
-			'theme'      => $request->request->get('theme'),
-			'secret'     => $request->request->get('secret'),
-			'setup_time' => $request->request->get('setup_time')
+			'name'          => $request->request->get('name'),
+			'slug'          => $request->request->get('slug'),
+			'timezone'      => $request->request->get('timezone'),
+			'start_date'    => $request->request->get('start_date'),
+			'start_time'    => $request->request->get('start_time'),
+			'website'       => $request->request->get('website'),
+			'twitter'       => $request->request->get('twitter'),
+			'twitch'        => $request->request->get('twitch'),
+			'theme'         => $request->request->get('theme'),
+			'secret'        => $request->request->get('secret'),
+			'hidden_secret' => $request->request->get('hidden_secret'),
+			'setup_time'    => $request->request->get('setup_time')
 		], $event);
 
 		if ($result['_errors']) {
@@ -106,6 +107,7 @@ class ScheduleController extends BaseController {
 			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
 			->setSecret($result['secret']['filtered'])
+			->setHiddenSecret($result['hidden_secret']['filtered'])
 			->setSetupTime($result['setup_time']['filtered'])
 			->setMaxItems($config['max_schedule_items'])
 			->touch()
@@ -141,17 +143,18 @@ class ScheduleController extends BaseController {
 		$event     = $schedule->getEvent();
 		$validator = $this->getValidator();
 		$result    = $validator->validate([
-			'name'       => $request->request->get('name'),
-			'slug'       => $request->request->get('slug'),
-			'timezone'   => $request->request->get('timezone'),
-			'start_date' => $request->request->get('start_date'),
-			'start_time' => $request->request->get('start_time'),
-			'website'    => $request->request->get('website'),
-			'twitter'    => $request->request->get('twitter'),
-			'twitch'     => $request->request->get('twitch'),
-			'theme'      => $request->request->get('theme'),
-			'secret'     => $request->request->get('secret'),
-			'setup_time' => $request->request->get('setup_time')
+			'name'          => $request->request->get('name'),
+			'slug'          => $request->request->get('slug'),
+			'timezone'      => $request->request->get('timezone'),
+			'start_date'    => $request->request->get('start_date'),
+			'start_time'    => $request->request->get('start_time'),
+			'website'       => $request->request->get('website'),
+			'twitter'       => $request->request->get('twitter'),
+			'twitch'        => $request->request->get('twitch'),
+			'theme'         => $request->request->get('theme'),
+			'secret'        => $request->request->get('secret'),
+			'hidden_secret' => $request->request->get('hidden_secret'),
+			'setup_time'    => $request->request->get('setup_time')
 		], $event, $schedule);
 
 		if ($result['_errors']) {
@@ -170,6 +173,7 @@ class ScheduleController extends BaseController {
 			->setTwitch($result['twitch']['filtered'])
 			->setTheme($result['theme']['filtered'])
 			->setSecret($result['secret']['filtered'])
+			->setHiddenSecret($result['hidden_secret']['filtered'])
 			->setSetupTime($result['setup_time']['filtered'])
 			->touch()
 		;
@@ -238,7 +242,7 @@ class ScheduleController extends BaseController {
 
 		$id          = 'schedule-transformer-'.$format;
 		$transformer = $this->app[$id];
-		$data        = $transformer->transform($schedule);
+		$data        = $transformer->transform($schedule, false, true);
 		$filename    = sprintf('%s-%s.%s', $schedule->getEvent()->getSlug(), $schedule->getSlug(), $transformer->getFileExtension());
 
 		return new Response($data, 200, [

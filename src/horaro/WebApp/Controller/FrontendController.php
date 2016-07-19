@@ -68,11 +68,19 @@ class FrontendController extends BaseController {
 			$format = 'jsonp';
 		}
 
+		// check if hidden columns can be shown
+		$hiddenSecret         = $schedule->getHiddenSecret();
+		$includeHiddenColumns = $hiddenSecret === null;
+
+		if (!$includeHiddenColumns) {
+			$includeHiddenColumns = $request->query->get('hiddenkey') === $hiddenSecret;
+		}
+
 		$id          = 'schedule-transformer-'.$format;
 		$transformer = $this->app[$id];
 
 		try {
-			$data = $transformer->transform($schedule, true);
+			$data = $transformer->transform($schedule, true, $includeHiddenColumns);
 		}
 		catch (\InvalidArgumentException $e) {
 			throw new Ex\BadRequestException($e->getMessage());

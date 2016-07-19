@@ -38,12 +38,12 @@ class ICalTransformer extends BaseTransformer {
 		return 'ics';
 	}
 
-	public function transform(Schedule $schedule, $public = false) {
+	public function transform(Schedule $schedule, $public = false, $withHiddenColumns = false) {
 		$utc         = new \DateTimeZone('UTC');
 		$now         = new \DateTime('now', $utc);
 		$tz          = $schedule->getTimezone();
 		$scheduled   = $schedule->getUTCStart();
-		$columns     = $schedule->getColumns();
+		$columns     = $withHiddenColumns ? $schedule->getColumns() : $schedule->getVisibleColumns();
 		$columnNames = [];
 		$columnIDs   = [];
 
