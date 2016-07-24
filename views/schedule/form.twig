@@ -194,8 +194,13 @@
 		column secret</strong>, these hidden columns are also excluded from the API, unless the requester
 		provides the configured secret like so:</p>
 
+		{% if schedule %}
 		<p><code>/{{ schedule.event.slug }}/{{ schedule.slug }}.json?hiddenkey=…</code> (for the simple exports on the schedule page)</p>
 		<p><code>/-/api/v1/events/{{ schedule.event.slug }}/schedules/{{ schedule.slug }}?hiddenkey=…</code> (for the API)</p>
+		{% else %}
+		<p><code>/{event}/{schedule}.json?hiddenkey=…</code> (for the simple exports on the schedule page)</p>
+		<p><code>/-/api/v1/events/{event}/schedules/{schedule}?hiddenkey=…</code> (for the API)</p>
+		{% endif %}
 	</div>
 </div>
 
