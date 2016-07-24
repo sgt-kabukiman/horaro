@@ -12,6 +12,7 @@ namespace horaro\WebApp\Controller\Api;
 
 use horaro\WebApp\Controller\BaseController as RegularBaseController;
 use horaro\WebApp\Exception\BadRequestException;
+use horaro\WebApp\JsonRedirectResponse;
 use horaro\WebApp\Pager\PagerInterface;
 use League\Fractal\Resource;
 use League\Fractal\Resource\ResourceInterface;
@@ -23,6 +24,10 @@ class BaseController extends RegularBaseController {
 	// allow access to all public elements
 	protected function hasResourceAccess($resource) {
 		return $resource->isPublic();
+	}
+
+	protected function redirect($uri, $status = 302) {
+		return new JsonRedirectResponse($uri, $status);
 	}
 
 	protected function getFractalManager() {
