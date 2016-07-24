@@ -11,6 +11,7 @@
 namespace horaro\Library\ScheduleTransformer;
 
 use horaro\Library\Entity\Schedule;
+use horaro\Library\Entity\ScheduleItem;
 
 class JsonTransformer extends BaseTransformer {
 	const DATE_FORMAT_TZ  = 'Y-m-d\TH:i:sP';
@@ -27,12 +28,9 @@ class JsonTransformer extends BaseTransformer {
 	}
 
 	public function transform(Schedule $schedule, $public = false, $withHiddenColumns = false) {
-		$event   = $schedule->getEvent();
 		$cols    = $withHiddenColumns ? $schedule->getColumns() : $schedule->getVisibleColumns();
 		$columns = [];
 		$hidden  = [];
-		$items   = [];
-		$start   = $schedule->getLocalStart();
 
 		foreach ($cols as $col) {
 			$columns[] = $col->getName();
@@ -42,24 +40,13 @@ class JsonTransformer extends BaseTransformer {
 			}
 		}
 
+		$items = [];
 		foreach ($schedule->getScheduledItems() as $item) {
-			$extra = $item->getExtra();
-			$node  = [
-				'length'      => $item->getISODuration(),
-				'length_t'    => $item->getLengthInSeconds(),
-				'scheduled'   => $item->getScheduled()->format(self::DATE_FORMAT_TZ),
-				'scheduled_t' => (int) $item->getScheduled()->format('U'),
-				'data'        => []
-			];
-
-			foreach ($cols as $col) {
-				$colID = $col->getId();
-
-				$node['data'][] = isset($extra[$colID]) ? $extra[$colID] : null;
-			}
-
-			$items[] = $node;
+			$items[] = $this->transformItem($item, $cols);
 		}
+
+		$event = $schedule->getEvent();
+		$start = $schedule->getLocalStart();
 
 		$data = [
 			'meta' => [
@@ -121,5 +108,71 @@ class JsonTransformer extends BaseTransformer {
 		}
 
 		return json_encode($data, JSON_UNESCAPED_SLASHES);
+	}
+
+	// the following methods are helpers for the API and do not return JSON, but arrays
+
+	public function transformTicker(Schedule $schedule, array $ticker, $public = false, $withHiddenColumns = false) {
+		$cols    = $withHiddenColumns ? $schedule->getColumns() : $schedule->getVisibleColumns();
+		$columns = [];
+		$hidden  = [];
+
+		foreach ($cols as $col) {
+			$columns[] = $col->getName();
+
+			if ($col->isHidden()) {
+				$hidden[] = $col->getName();
+			}
+		}
+
+		$event = $schedule->getEvent();
+		$start = $schedule->getLocalStart();
+
+		$data = [
+			'schedule' => [
+				'id'             => $this->encodeID($schedule->getId(), 'schedule'),
+				'name'           => $schedule->getName(),
+				'slug'           => $schedule->getSlug(),
+				'timezone'       => $schedule->getTimezone(),
+				'start'          => $start->format(self::DATE_FORMAT_TZ),
+				'start_t'        => (int) $start->format('U'),
+				'setup'          => $schedule->getSetupTimeISODuration(),
+				'setup_t'        => $schedule->getSetupTimeInSeconds(),
+				'updated'        => $schedule->getUpdatedAt()->format(self::DATE_FORMAT_UTC), // updated is stored as UTC, so it's okay to disregard the sys timezone here and force UTC
+				'url'            => sprintf('/%s/%s', $event->getSlug(), $schedule->getSlug()),
+				'hidden_columns' => $hidden,
+				'columns'        => $columns,
+			],
+			'ticker' => [
+				'previous' => $ticker['prev'] ? $this->transformItem($ticker['prev'], $cols) : null,
+				'current' => $ticker['active'] ? $this->transformItem($ticker['active'], $cols) : null,
+				'next' => $ticker['next'] ? $this->transformItem($ticker['next'], $cols) : null,
+			]
+		];
+
+		if (!$withHiddenColumns) {
+			unset($data['schedule']['hidden_columns']);
+		}
+
+		return $data;
+	}
+
+	public function transformItem(ScheduleItem $item, $columns) {
+		$extra  = $item->getExtra();
+		$result = [
+			'length'      => $item->getISODuration(),
+			'length_t'    => $item->getLengthInSeconds(),
+			'scheduled'   => $item->getScheduled()->format(self::DATE_FORMAT_TZ),
+			'scheduled_t' => (int) $item->getScheduled()->format('U'),
+			'data'        => []
+		];
+
+		foreach ($columns as $col) {
+			$colID = $col->getId();
+
+			$result['data'][] = isset($extra[$colID]) ? $extra[$colID] : null;
+		}
+
+		return $result;
 	}
 }

@@ -15,7 +15,7 @@ use horaro\Library\ScheduleTransformer\JsonTransformer;
 use horaro\WebApp\Application;
 use horaro\WebApp\Transformer\BaseTransformer;
 
-class ScheduleTransformer extends BaseTransformer {
+class ScheduleTickerTransformer extends BaseTransformer {
 	protected $availableIncludes = [];
 
 	private $includeHiddenColumns = false;
@@ -26,37 +26,21 @@ class ScheduleTransformer extends BaseTransformer {
 		$this->includeHiddenColumns = $includeHiddenColumns;
 	}
 
-	public function transform(Schedule $schedule) {
+	public function transform(array $ticker) {
+		$schedule    = $ticker['schedule'];
 		$transformer = new JsonTransformer($this->codec);
-		$transformed = json_decode($transformer->transform($schedule, false, $this->includeHiddenColumns), true);
-
-		$data = $transformed['schedule'];
-
-		// remove private data (do not use transform()'s $public parameter because it removes the IDs as well)
-		unset($data['theme'], $data['secret']);
-
-		// embedding the event is handled by Fractal
-		unset($data['event']);
+		$data        = $transformer->transformTicker($schedule, $ticker, $this->includeHiddenColumns);
 
 		// replace "url" with an absolute "link"
-		$data['link'] = $this->base().$data['url'];
-		unset($data['url']);
-
-		// "re-sort"
-		$i = $data['items'];
-		$c = $data['columns'];
-
-		unset($data['items'], $data['columns']);
-
-		$data['columns'] = $c;
-		$data['items']   = $i;
+		$data['schedule']['link'] = $this->base().$data['schedule']['url'];
+		unset($data['schedule']['url']);
 
 		// add additional API links
 		$eventID       = $this->encodeID($schedule->getEvent()->getID(), 'event');
 		$data['links'] = [
-			['rel' => 'self',   'uri' => $this->url('/v1/schedules/'.$data['id'])],
-			['rel' => 'event',  'uri' => $this->url('/v1/events/'.$eventID)],
-			['rel' => 'ticker', 'uri' => $this->url('/v1/schedules/'.$data['id']).'/ticker'],
+			['rel' => 'self',     'uri' => $this->url('/v1/schedules/'.$data['schedule']['id']).'/ticker'],
+			['rel' => 'schedule', 'uri' => $this->url('/v1/schedules/'.$data['schedule']['id'])],
+			['rel' => 'event',    'uri' => $this->url('/v1/events/'.$eventID)],
 		];
 
 		return $data;

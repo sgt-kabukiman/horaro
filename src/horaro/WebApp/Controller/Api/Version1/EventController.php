@@ -99,6 +99,16 @@ class EventController extends BaseController {
 		return $this->redirect('/-/api/v1/schedules/'.$scheduleID);
 	}
 
+	public function scheduleTickerAction(Request $request) {
+		list ($event)    = $this->resolveEvent($request);
+		list ($schedule) = $this->resolveSchedule($event, $request);
+
+		$codec      = $this->app['obscurity-codec'];
+		$scheduleID = $codec->encode($schedule->getID(), 'schedule');
+
+		return $this->redirect('/-/api/v1/schedules/'.$scheduleID.'/ticker');
+	}
+
 	private function resolveEvent(Request $request) {
 		$event   = null;
 		$bySlug  = false;

@@ -362,13 +362,15 @@ class Application extends BaseApplication {
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// API
 
-		$this->route('GET', '/-/api',                                            'api.index:index',        null, false, true);
-		$this->route('GET', '/-/api/v1',                                         'api.v1.index:index',     null, false, true);
-		$this->route('GET', '/-/api/v1/events',                                  'api.v1.event:index',     null, false, true);
-		$this->route('GET', '/-/api/v1/events/{eventid}',                        'api.v1.event:view',      null, false, true);
-		$this->route('GET', '/-/api/v1/events/{eventid}/schedules',              'api.v1.event:schedules', null, false, true);
-		$this->route('GET', '/-/api/v1/events/{eventid}/schedules/{scheduleid}', 'api.v1.event:schedule',  null, false, true);
-		$this->route('GET', '/-/api/v1/schedules/{scheduleid}',                  'api.v1.schedule:view',   null, false, true);
+		$this->route('GET', '/-/api',                                                   'api.index:index',             null, false, true);
+		$this->route('GET', '/-/api/v1',                                                'api.v1.index:index',          null, false, true);
+		$this->route('GET', '/-/api/v1/events',                                         'api.v1.event:index',          null, false, true);
+		$this->route('GET', '/-/api/v1/events/{eventid}',                               'api.v1.event:view',           null, false, true);
+		$this->route('GET', '/-/api/v1/events/{eventid}/schedules',                     'api.v1.event:schedules',      null, false, true);
+		$this->route('GET', '/-/api/v1/events/{eventid}/schedules/{scheduleid}',        'api.v1.event:schedule',       null, false, true);
+		$this->route('GET', '/-/api/v1/events/{eventid}/schedules/{scheduleid}/ticker', 'api.v1.event:scheduleTicker', null, false, true);
+		$this->route('GET', '/-/api/v1/schedules/{scheduleid}',                         'api.v1.schedule:view',        null, false, true);
+		$this->route('GET', '/-/api/v1/schedules/{scheduleid}/ticker',                  'api.v1.schedule:ticker',      null, false, true);
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// generic event/schedule routes

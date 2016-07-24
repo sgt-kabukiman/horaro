@@ -6,16 +6,19 @@
 <div class="row apidocs">
 	<div class="col-lg-12 col-md-12">
 		<h2>API <small>Version 1</small></h2>
-		<p>horaro offers a simple, read-only API to access <strong>public</strong> events and
+		<p>Horaro offers a simple, read-only API to access <strong>public</strong> events and
 			schedules as JSON documents.</p>
 
 		<ul>
+			<li><a href="#understanding">Understanding Horaro</a></li>
 			<li><a href="#basics">Basics</a></li>
 			<li><a href="#all-events"><code>GET /events</code></a></li>
 			<li><a href="#one-event"><code>GET /events/{id|slug}</code></a></li>
 			<li><a href="#one-event-schedules"><code>GET /events/{id|slug}/schedules</code></a></li>
 			<li><a href="#one-event-schedule"><code>GET /events/{id|slug}/schedules/{id|slug}</code></a></li>
+			<li><a href="#one-event-schedule-ticker"><code>GET /events/{id|slug}/schedules/{id|slug}/ticker</code></a></li>
 			<li><a href="#one-schedule"><code>GET /schedules/{id}</code></a></li>
+			<li><a href="#one-schedule-ticker"><code>GET /schedules/{id}/ticker</code></a></li>
 		</ul>
 
 		<div class="alert alert-info">
@@ -24,6 +27,14 @@
 			schedules as the API and are therefore not recommended to be used in an automated fashion.
 			They are meant for quick'n'dirty one-time hacks and for convenience.
 		</div>
+
+		<h3 id="understanding">Understanding Horaro</h3>
+		<p>For those unfamiliar, Horaro allows users to each manage multiple <em>events</em>, each of
+			which is compromised of (possibly) multiple <em>schedules</em>. Events are not bound to dates
+			and times (like the AGDQ event, which has schedules in many years), schedules however are.<br>
+			Within a schedule, there are a number of user-controlled columns and a number of items. It's
+			a fancy table, nothing more really. Each row (item) has, besides the content columns, a length
+			and a scheduled time.</p>
 
 		<h3 id="basics">Basics</h3>
 		<p>
@@ -168,25 +179,30 @@
 			event and schedule slugs. You will either get a 404 error if there is no such schedule or
 			are redirected to the <code>/-/api/v1/schedules/{id}</code> URL.</p>
 
+		<h3 id="one-event-schedule-ticker"><code>GET <span>/-/api/v1</span>/events/{id|slug}/schedules/{id|slug}/ticker</code> <small>(fetch a single schedule's ticker)</small></h3>
+		<p>This works analogously to the resource above, in that is redirects to the canonical URL
+			(<code>/-/api/v1/schedules/{id}/ticker</code>) if the schedule was found and returns a 404
+			otherwise. See below to learn more about what the ticker actually is.</p>
+
 		<h3 id="one-schedule"><code>GET <span>/-/api/v1</span>/schedules/{id}</code> <small>(fetch a single schedule)</small></h3>
 		<p>Retrieves a specific schedule and returns HTTP 404 if it could not be found.</p>
 
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Parameter</th>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>hiddenkey</td>
-          <td>string</td>
-          <td>required to include hidden columns if a &quot;hidden column secret&quot; is configured</td>
-        </tr>
-      </tbody>
-    </table>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Parameter</th>
+					<th>Type</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>hiddenkey</td>
+					<td>string</td>
+					<td>required to include hidden columns if a &quot;hidden column secret&quot; is configured</td>
+				</tr>
+			</tbody>
+		</table>
 
 		<p>A schedule looks like this when represented as JSON:</p>
 
@@ -233,6 +249,10 @@
       &quot;uri&quot;: &quot;{{ baseUri }}/-/api/v1/schedules/0350o4193y22u0b458&quot;
     },
     {
+      &quot;rel&quot;: &quot;ticker&quot;,
+      &quot;uri&quot;: &quot;{{ baseUri }}/-/api/v1/schedules/0350o4193y22u0b458/ticker&quot;
+    },
+    {
       &quot;rel&quot;: &quot;event&quot;,
       &quot;uri&quot;: &quot;{{ baseUri }}/-/api/v1/events/7a504x3cyy29wxb448&quot;
     }
@@ -243,9 +263,87 @@
 			once as a UNIX timestamp (with the suffix <code>_t</code>). Use whatever is the easiest to
 			use in your programming environment.</p>
 
-    <p>If a column has hidden columns and those are accessible for the requester (either because
-      there is no secret configured or the requested provided the correct one), they will be listed
-      in <code>hidden_columns</code> in addition to the <code>columns</code> list.</p>
+		<p>If a column has hidden columns and those are accessible for the requester (either because
+			there is no secret configured or the requested provided the correct one), they will be listed
+			in <code>hidden_columns</code> in addition to the <code>columns</code> list.</p>
+
+		<h3 id="one-schedule-ticker"><code>GET <span>/-/api/v1</span>/schedules/{id}/ticker</code> <small>(fetch a schedule ticker)</small></h3>
+		<p>In many cases, API clients just want to know what item is currently scheduled, what's the
+			previous one and what's the next, upcoming one. This is what Horaro calls the <em>ticker</em>.
+			On the schedule page itself, it's placed above the table while the schedule is running.</p>
+
+		<p>The structure of this response is similar to the one above: It contains a reduced description
+			of the timing-related setting for the schedule (start time, setup time, timezone, &hellip;)
+			and then the (up to) three relevant schedule items.</p>
+
+		<p>A ticker looks like this when represented as JSON:</p>
+
+		<div class="json"><pre>{
+  &quot;schedule&quot;: {
+    &quot;id&quot;: &quot;24&quot;,
+    &quot;name&quot;: &quot;2013 Schedule&quot;,
+    &quot;slug&quot;: &quot;2013&quot;,
+    &quot;timezone&quot;: &quot;Europe/Stockholm&quot;,
+    &quot;start&quot;: &quot;2013-07-15T19:00:00+02:00&quot;,
+    &quot;start_t&quot;: 1373907600,
+    &quot;setup&quot;: &quot;PT0S&quot;,
+    &quot;setup_t&quot;: 0,
+    &quot;updated&quot;: &quot;2015-04-25T18:57:39Z&quot;,
+    &quot;link&quot;: &quot;{{ baseUri }}/sample-event/schedule&quot;,
+    &quot;hidden_columns&quot;: [
+      &quot;Category&quot;
+    ],
+    &quot;columns&quot;: [
+      &quot;Game&quot;,
+      &quot;Runner&quot;,
+      &quot;Category&quot;
+    ],
+  },
+  &quot;ticker&quot;: {
+    &quot;previous&quot;: {
+      &quot;length&quot;: &quot;PT1H&quot;,
+      &quot;length_t&quot;: 3600,
+      &quot;scheduled&quot;: &quot;2013-07-21T09:40:00+02:00&quot;,
+      &quot;scheduled_t&quot;: 1374392400,
+      &quot;data&quot;: [
+        &quot;Something Something Something&quot;,
+        &quot;Somebody&quot;,
+        &quot;100%&quot;,
+      ]
+    },
+    &quot;current&quot;: {
+      &quot;length&quot;: &quot;PT1H&quot;,
+      &quot;length_t&quot;: 7200,
+      &quot;scheduled&quot;: &quot;2013-07-21T09:50:00+02:00&quot;,
+      &quot;scheduled_t&quot;: 1374452400,
+      &quot;data&quot;: [
+        &quot;The current game&quot;,
+        &quot;You&quot;,
+        &quot;any%&quot;,
+      ]
+    },
+    &quot;next&quot;: null
+  },
+  &quot;links&quot;: [
+    {
+      &quot;rel&quot;: &quot;self&quot;,
+      &quot;uri&quot;: &quot;{{ baseUri }}/-/api/v1/schedules/0350o4193y22u0b458/ticker&quot;
+    },
+    {
+      &quot;rel&quot;: &quot;schedule&quot;,
+      &quot;uri&quot;: &quot;{{ baseUri }}/-/api/v1/schedules/0350o4193y22u0b458&quot;
+    },
+    {
+      &quot;rel&quot;: &quot;event&quot;,
+      &quot;uri&quot;: &quot;{{ baseUri }}/-/api/v1/events/7a504x3cyy29wxb448&quot;
+    }
+  ]
+}</pre></div>
+
+		<p>Each of <code>previous</code>, <code>current</code> and <code>next</code> can be <code>null</code>,
+			dependending of the schedule state and number of items. For non-empty schedules that have not yet
+			started, only <code>next</code> is given, for a schedule that is already over, only <code>previous</code>
+			is given.</p>
 	</div>
 </div>
 {% endblock %}
