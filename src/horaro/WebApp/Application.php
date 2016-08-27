@@ -148,6 +148,17 @@ class Application extends BaseApplication {
 			return new Middleware\CSP($this['csp']);
 		};
 
+		$this['middleware.securityheaders'] = function() {
+			$config = $this['config'];
+			$maxAge = null;
+
+			if (isset($config['hsts_max_age'])) {
+				$maxAge = $config['hsts_max_age'];
+			}
+
+			return new Middleware\SecurityHeaders($maxAge);
+		};
+
 		$this['controller.index']                  = $this->factory(function() { return new Controller\IndexController($this);                  });
 		$this['controller.oauth']                  = $this->factory(function() { return new Controller\OAuthController($this);                  });
 		$this['controller.frontend']               = $this->factory(function() { return new Controller\FrontendController($this);               });
@@ -257,6 +268,7 @@ class Application extends BaseApplication {
 
 		$this->before('middleware.csp:before');
 		$this->after('middleware.csp:after');
+		$this->after($this['middleware.securityheaders']);
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// general routes

@@ -57,6 +57,12 @@ cookie_lifetime: 86400
 # Horaro only via SSL/TLS.
 cookie_secure: false
 
+# Set this to the number of seconds to use for the max-age value in the
+# Strict-Transport-Security header. Use this only if you exclusively (!) offer
+# Horaro via HTTPS and are sure that you can provide working HTTPS for
+# however long you choose to set this.
+hsts_max_age: ~
+
 # OAuth configuration
 # Set this if you want to allow people to log in via Twitch. If you want that,
 # you will know what these settings mean.
