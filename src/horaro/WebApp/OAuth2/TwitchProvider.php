@@ -37,5 +37,9 @@ class TwitchProvider extends BaseProvider {
 		$response['partnered'] = false;
 
 		return $response;
-    }
+	}
+
+	protected function getDefaultHeaders() {
+		return ['Client-ID' => $this->clientId];
+	}
 }
