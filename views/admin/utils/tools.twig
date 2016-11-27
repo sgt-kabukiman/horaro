@@ -33,4 +33,18 @@
 		schedules.</p>
 	</div>
 </div>
+
+<div class="row">
+	<div class="col-lg-3 col-md-4 col-sm-4 col-xs-6 text-right">
+		<form method="post" action="/-/admin/utils/tools/cleanupusers">
+			{{ macros.csrf_token() }}
+			<button type="submit" class="btn btn-default btn-sm btn-block"><i class="fa fa-user-times"> </i> Remove inactive accounts</button>
+		</form>
+	</div>
+
+	<div class="col-lg-9 col-md-8 col-sm-8 col-xs-6">
+		<p>This will remove all OAuth-based accounts that have not created any content and are older than one month.
+		If those users come back, they will just get a new account and not notice anything.</p>
+	</div>
+</div>
 {% endblock %}

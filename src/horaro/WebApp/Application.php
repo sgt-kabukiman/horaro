@@ -367,6 +367,7 @@ class Application extends BaseApplication {
 		$this->route('GET',  '/-/admin/utils/tools',                'admin.utils.tools:form',           'op');
 		$this->route('POST', '/-/admin/utils/tools/cleartwigcache', 'admin.utils.tools:cleartwigcache', 'op');
 		$this->route('POST', '/-/admin/utils/tools/fixpositions',   'admin.utils.tools:fixpositions',   'op');
+		$this->route('POST', '/-/admin/utils/tools/cleanupusers',   'admin.utils.tools:cleanupusers',   'op');
 
 		$this->route('GET',  '/-/admin/utils/serverinfo',           'admin.utils.serverinfo:form',      'op');
 		$this->route('GET',  '/-/admin/utils/serverinfo/phpinfo',   'admin.utils.serverinfo:phpinfo',   'op');

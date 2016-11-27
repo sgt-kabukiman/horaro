@@ -75,4 +75,21 @@ class ToolsController extends BaseController {
 
 		return $this->redirect('/-/admin/utils/tools');
 	}
+
+	public function cleanupusersAction(Request $request) {
+		$em    = $this->getEntityManager();
+		$repo  = $this->getRepository('User');
+		$users = $repo->findInactiveOAuthAccounts();
+
+		$em->transactional(function($em) use ($users) {
+			foreach ($users as $user) {
+				$em->remove($user);
+			}
+		});
+
+		$num = count($users);
+		$this->addSuccessMsg(sprintf('%d account%s have been removed.', $num, $num == 1 ? '' : 's'));
+
+		return $this->redirect('/-/admin/utils/tools');
+	}
 }
