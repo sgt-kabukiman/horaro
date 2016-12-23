@@ -11,6 +11,7 @@
 namespace horaro\Library\ScheduleTransformer;
 
 use horaro\Library\Entity\Schedule;
+use horaro\Library\Entity\ScheduleColumn;
 use horaro\Library\Entity\ScheduleItem;
 
 class JsonTransformer extends BaseTransformer {
@@ -28,7 +29,7 @@ class JsonTransformer extends BaseTransformer {
 	}
 
 	public function transform(Schedule $schedule, $public = false, $withHiddenColumns = false) {
-		$cols    = $withHiddenColumns ? $schedule->getColumns() : $schedule->getVisibleColumns();
+		$cols    = $this->getEffectiveColumns($schedule, $withHiddenColumns);
 		$columns = [];
 		$hidden  = [];
 
@@ -40,9 +41,12 @@ class JsonTransformer extends BaseTransformer {
 			}
 		}
 
+		// make it possible to hide the options by specifying the ?hiddenkey secret
+		$optionsCol = $withHiddenColumns ? $schedule->getOptionsColumn() : null;
+
 		$items = [];
 		foreach ($schedule->getScheduledItems() as $item) {
-			$items[] = $this->transformItem($item, $cols);
+			$items[] = $this->transformItem($item, $cols, $optionsCol);
 		}
 
 		$event = $schedule->getEvent();
@@ -113,7 +117,7 @@ class JsonTransformer extends BaseTransformer {
 	// the following methods are helpers for the API and do not return JSON, but arrays
 
 	public function transformTicker(Schedule $schedule, array $ticker, $public = false, $withHiddenColumns = false) {
-		$cols    = $withHiddenColumns ? $schedule->getColumns() : $schedule->getVisibleColumns();
+		$cols    = $this->getEffectiveColumns($schedule, $withHiddenColumns);
 		$columns = [];
 		$hidden  = [];
 
@@ -127,6 +131,9 @@ class JsonTransformer extends BaseTransformer {
 
 		$event = $schedule->getEvent();
 		$start = $schedule->getLocalStart();
+
+		// make it possible to hide the options by specifying the ?hiddenkey secret
+		$optionsCol = $withHiddenColumns ? $schedule->getOptionsColumn() : null;
 
 		$data = [
 			'schedule' => [
@@ -144,9 +151,9 @@ class JsonTransformer extends BaseTransformer {
 				'columns'        => $columns,
 			],
 			'ticker' => [
-				'previous' => $ticker['prev'] ? $this->transformItem($ticker['prev'], $cols) : null,
-				'current' => $ticker['active'] ? $this->transformItem($ticker['active'], $cols) : null,
-				'next' => $ticker['next'] ? $this->transformItem($ticker['next'], $cols) : null,
+				'previous' => $ticker['prev']   ? $this->transformItem($ticker['prev'],   $cols, $optionsCol) : null,
+				'current'  => $ticker['active'] ? $this->transformItem($ticker['active'], $cols, $optionsCol) : null,
+				'next'     => $ticker['next']   ? $this->transformItem($ticker['next'],   $cols, $optionsCol) : null,
 			]
 		];
 
@@ -157,7 +164,7 @@ class JsonTransformer extends BaseTransformer {
 		return $data;
 	}
 
-	public function transformItem(ScheduleItem $item, $columns) {
+	public function transformItem(ScheduleItem $item, $columns, ScheduleColumn $optionsCol = null) {
 		$extra  = $item->getExtra();
 		$result = [
 			'length'      => $item->getISODuration(),
@@ -171,6 +178,10 @@ class JsonTransformer extends BaseTransformer {
 			$colID = $col->getId();
 
 			$result['data'][] = isset($extra[$colID]) ? $extra[$colID] : null;
+		}
+
+		if ($optionsCol) {
+			$result['options'] = $item->getOptions($optionsCol);
 		}
 
 		return $result;

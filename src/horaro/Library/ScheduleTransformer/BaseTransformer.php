@@ -10,6 +10,7 @@
 
 namespace horaro\Library\ScheduleTransformer;
 
+use horaro\Library\Entity\Schedule;
 use horaro\Library\ObscurityCodec;
 
 class BaseTransformer {
@@ -25,5 +26,16 @@ class BaseTransformer {
 
 	protected function decodeID($hash, $entityType = null) {
 		return $this->codec->decode($hash, $entityType);
+	}
+
+	protected function getEffectiveColumns(Schedule $schedule, $withHiddenColumns = false) {
+		$cols = $withHiddenColumns ? $schedule->getColumns() : $schedule->getVisibleColumns();
+
+		// never expose the special options column
+		$cols = $cols->filter(function($col) {
+			return $col->getName() !== Schedule::OPTION_COLUMN_NAME;
+		});
+
+		return $cols;
 	}
 }

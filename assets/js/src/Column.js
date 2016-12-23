@@ -55,7 +55,19 @@ function Column(id, name, pos, hidden, fixed) {
 		return self.position() >= viewModel.numOfFlexibleColumns();
 	};
 
+	self.isOptionsColumn = function() {
+		return self.name() === "[[options]]";
+	};
+
 	// subscribers
+
+	function handleNameChange() {
+		if (self.isOptionsColumn()) {
+			self.suspended = true;
+			self.hidden(true);
+			self.suspended = false;
+		}
+	}
 
 	function updateColumn() {
 		if (self.suspended) {
@@ -112,6 +124,7 @@ function Column(id, name, pos, hidden, fixed) {
 		});
 	}
 
+	self.name.subscribe(handleNameChange);
 	self.name.subscribe(updateColumn);
 	self.hidden.subscribe(updateColumn);
 

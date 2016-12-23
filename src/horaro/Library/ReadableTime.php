@@ -74,4 +74,32 @@ class ReadableTime {
 
 		return implode(' ', $result);
 	}
+
+	public static function dateTimeToSeconds(\DateTime $dt = null) {
+		if (!$dt) {
+			return 0;
+		}
+
+		$parts = explode(':', $dt->format('H:i:s'));
+
+		return $parts[0] * 3600 + $parts[1] * 60 + $parts[2];
+	}
+
+	public static function dateTimeToISODuration(\DateTime $dt = null) {
+		if (!$dt) {
+			return 'PT0S';
+		}
+
+		$iso = preg_replace('/(?<=[THMS])0+[HMS]/', '$1', $dt->format('\P\TG\Hi\Ms\S'));
+
+		if ($iso === 'PT') {
+			return 'PT0S';
+		}
+
+		return $iso;
+	}
+
+	public static function dateTimeToDateInterval(\DateTime $dt = null) {
+		return new \DateInterval(static::dateTimeToISODuration($dt));
+	}
 }

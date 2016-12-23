@@ -25,9 +25,12 @@ class XmlTransformer extends BaseTransformer {
 	}
 
 	public function transform(Schedule $schedule, $public = false, $withHiddenColumns = false) {
+		$cols  = $this->getEffectiveColumns($schedule, $withHiddenColumns);
 		$event = $schedule->getEvent();
 		$start = $schedule->getLocalStart();
-		$cols  = $withHiddenColumns ? $schedule->getColumns() : $schedule->getVisibleColumns();
+
+		// make it possible to hide the options by specifying the ?hiddenkey secret
+		$optionsCol = $withHiddenColumns ? $schedule->getOptionsColumn() : null;
 
 		$xml = new \XMLWriter();
 		$xml->openMemory();
@@ -82,7 +85,7 @@ class XmlTransformer extends BaseTransformer {
 				$xml->endElement();
 
 				$xml->startElement('columns');
-					foreach ($schedule->getColumns() as $col) {
+					foreach ($cols as $col) {
 						$xml->startElement('column');
 							if ($withHiddenColumns) {
 								$xml->writeAttribute('hidden', $col->isHidden() ? 'true' : 'false');
@@ -112,6 +115,21 @@ class XmlTransformer extends BaseTransformer {
 									$xml->writeElement('value', isset($extra[$colID]) ? $extra[$colID] : null);
 								}
 							$xml->endElement();
+
+							if ($optionsCol) {
+								$options = $item->getOptions();
+
+								if ($options) {
+									$xml->startElement('options');
+									foreach ($options as $key => $value) {
+										$xml->startElement('option');
+										$xml->writeAttribute('key', $key);
+										$xml->text($value);
+										$xml->endElement();
+									}
+									$xml->endElement();
+								}
+							}
 						$xml->endElement();
 					}
 				$xml->endElement();

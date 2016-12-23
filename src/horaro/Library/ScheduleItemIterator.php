@@ -16,13 +16,16 @@ class ScheduleItemIterator implements \Iterator {
 	protected $schedule;
 	protected $items;
 	protected $time;
+	protected $setup;
+	protected $optionsCol;
 	protected $current;
 	protected $position;
 
 	public function __construct(Schedule $schedule) {
-		$this->schedule = $schedule;
-		$this->items    = $schedule->getItems();
-		$this->setup    = $schedule->getSetupTimeDateInterval();
+		$this->schedule   = $schedule;
+		$this->items      = $schedule->getItems();
+		$this->setup      = $schedule->getSetupTimeDateInterval();
+		$this->optionsCol = $schedule->getOptionsColumn();
 
 		$this->rewind();
 	}
@@ -45,8 +48,18 @@ class ScheduleItemIterator implements \Iterator {
 	public function next() {
 		$this->position++;
 
+		$setupTime = $this->setup;
+
+		if ($this->optionsCol) {
+			$customSetup = $this->current->getSetupTime($this->optionsCol);
+
+			if ($customSetup) {
+				$setupTime = $customSetup;
+			}
+		}
+
 		$this->time->add($this->current->getDateInterval());
-		$this->time->add($this->setup);
+		$this->time->add($setupTime);
 
 		$this->updateCurrentItem();
 	}

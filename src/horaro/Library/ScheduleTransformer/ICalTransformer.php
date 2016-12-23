@@ -43,7 +43,7 @@ class ICalTransformer extends BaseTransformer {
 		$now         = new \DateTime('now', $utc);
 		$tz          = $schedule->getTimezone();
 		$scheduled   = $schedule->getUTCStart();
-		$columns     = $withHiddenColumns ? $schedule->getColumns() : $schedule->getVisibleColumns();
+		$columns     = $this->getEffectiveColumns($schedule, $withHiddenColumns);
 		$columnNames = [];
 		$columnIDs   = [];
 

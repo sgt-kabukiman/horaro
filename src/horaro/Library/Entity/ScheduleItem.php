@@ -11,6 +11,7 @@
 namespace horaro\Library\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use horaro\Library\ReadableTime;
 
 /**
  * ScheduleItem
@@ -193,6 +194,50 @@ class ScheduleItem {
 		}
 
 		return $len;
+	}
+
+	public function getOptions(ScheduleColumn $optionsCol = null) {
+		if ($optionsCol === null) {
+			$optionsCol = $this->getSchedule()->getOptionsColumn();
+
+			if ($optionsCol === null) {
+				return null;
+			}
+		}
+
+		$colID   = $optionsCol->getID();
+		$extra   = $this->getExtra();
+		$options = null;
+
+		if (isset($extra[$colID])) {
+			$decoded = @json_decode($extra[$colID], false, 5);
+
+			if (json_last_error() === JSON_ERROR_NONE && $decoded instanceof \stdClass) {
+				$options = (array) $decoded;
+			}
+		}
+
+		return $options;
+	}
+
+	public function getSetupTime(ScheduleColumn $optionsCol = null) {
+		$options = $this->getOptions($optionsCol);
+
+		if (!empty($options['setup'])) {
+			try {
+				$parser = new ReadableTime();
+				$parsed = $parser->parse(trim($options['setup']));
+
+				if ($parsed) {
+					return ReadableTime::dateTimeToDateInterval($parsed);
+				}
+			}
+			catch (\InvalidArgumentException $e) {
+				// ignore bad user input
+			}
+		}
+
+		return null;
 	}
 
 	/**

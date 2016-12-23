@@ -25,7 +25,7 @@ class CsvTransformer extends BaseTransformer {
 
 	public function transform(Schedule $schedule, $public = false, $withHiddenColumns = false) {
 		$rows  = [];
-		$cols  = $withHiddenColumns ? $schedule->getColumns() : $schedule->getVisibleColumns();
+		$cols  = $this->getEffectiveColumns($schedule, $withHiddenColumns);
 		$toCSV = function($val) {
 			return '"'.addcslashes($val, '"').'"';
 		};

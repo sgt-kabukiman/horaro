@@ -13,11 +13,14 @@ namespace horaro\Library\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use horaro\Library\ScheduleItemIterator;
+use horaro\Library\ReadableTime;
 
 /**
  * Schedule
  */
 class Schedule {
+	const OPTION_COLUMN_NAME = '[[options]]';
+
 	const COLUMN_SCHEDULED = 'col-scheduled';
 	const COLUMN_ESTIMATE  = 'col-estimate';
 
@@ -539,24 +542,7 @@ class Schedule {
 	 * @return int
 	 */
 	public function getSetupTimeInSeconds() {
-		$setup = $this->getSetupTime();
-
-		if (!$setup) {
-			return 0;
-		}
-
-		$parts = explode(':', $setup->format('H:i:s'));
-
-		return $parts[0] * 3600 + $parts[1] * 60 + $parts[2];
-	}
-
-	/**
-	 * Get setup time as DateInterval
-	 *
-	 * @return \DateInterval
-	 */
-	public function getSetupTimeDateInterval() {
-		return new \DateInterval($this->getSetupTimeISODuration());
+		return ReadableTime::dateTimeToSeconds($this->getSetupTime());
 	}
 
 	/**
@@ -565,19 +551,16 @@ class Schedule {
 	 * @return string
 	 */
 	public function getSetupTimeISODuration() {
-		$setup = $this->getSetupTime();
+		return ReadableTime::dateTimeToISODuration($this->getSetupTime());
+	}
 
-		if (!$setup) {
-			return 'PT0S';
-		}
-
-		$iso = preg_replace('/(?<=[THMS])0+[HMS]/', '$1', $setup->format('\P\TG\Hi\Ms\S'));
-
-		if ($iso === 'PT') {
-			return 'PT0S';
-		}
-
-		return $iso;
+	/**
+	 * Get setup time as DateInterval
+	 *
+	 * @return \DateInterval
+	 */
+	public function getSetupTimeDateInterval() {
+		return ReadableTime::dateTimeToDateInterval($this->getSetupTime());
 	}
 
 	/**
@@ -756,5 +739,17 @@ class Schedule {
 		}
 
 		return false;
+	}
+
+	public function getOptionsColumn() {
+		$columns = $this->getColumns();
+
+		foreach ($columns as $col) {
+			if ($col->getName() === self::OPTION_COLUMN_NAME) {
+				return $col;
+			}
+		}
+
+		return null;
 	}
 }
