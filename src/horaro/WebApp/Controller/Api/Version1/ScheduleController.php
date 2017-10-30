@@ -14,6 +14,7 @@ use horaro\WebApp\Controller\Api\BaseController;
 use horaro\WebApp\Exception\NotFoundException;
 use horaro\WebApp\Transformer\Version1\ScheduleTransformer;
 use horaro\WebApp\Transformer\Version1\ScheduleTickerTransformer;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ScheduleController extends BaseController {
@@ -41,7 +42,11 @@ class ScheduleController extends BaseController {
 			$includeHiddenColumns = $request->query->get('hiddenkey') === $hiddenSecret;
 		}
 
-		return $this->respondWithItem($schedule, new ScheduleTransformer($this->app, $includeHiddenColumns));
+		$response = $this->respondWithItem($schedule, new ScheduleTransformer($this->app, $includeHiddenColumns));
+		if ($response->setLastModified($schedule->getUpdatedAt())->isNotModified($request)) {
+			return $response;
+		}
+		return $response;
 	}
 
 	public function tickerAction(Request $request) {
