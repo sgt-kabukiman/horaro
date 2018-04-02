@@ -65,7 +65,7 @@ class EventController extends BaseController {
 		], $event);
 
 		if ($result['_errors']) {
-			return $this->renderForm($user, $result);
+			return $this->renderForm($event, $result);
 		}
 
 		// update event
