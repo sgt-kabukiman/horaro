@@ -3,7 +3,7 @@ MAINTAINER Sgt. Kabukiman
 
 # install packages
 RUN apk --no-cache add php7 php7-fpm php7-mysqli php7-json php7-openssl php7-curl \
-    php7-zlib php7-xml php7-phar php7-intl php7-xmlreader php7-ctype \
+    php7-zlib php7-xml php7-phar php7-intl php7-xmlreader php7-ctype php7-session \
     php7-mbstring php7-pdo_mysql nginx nodejs supervisor curl
 
 # install Composer
@@ -42,9 +42,9 @@ RUN COMPOSER_CACHE_DIR=/tmp/.composer composer install --no-dev --no-progress --
 RUN npm install grunt-cli && \
     npm install && \
     ./node_modules/.bin/grunt ship && \
-    rm -rf node_modules tmp/assets tmp/assets.json
+    rm -rf node_modules tmp/assets
 
 # finish the image up
 EXPOSE 80
 USER root
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["sh", "/var/www/horaro/entrypoint.sh"]
