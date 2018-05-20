@@ -21,7 +21,7 @@ RUN npm install grunt-cli && \
     ./node_modules/.bin/grunt ship
 
 # determine version
-RUN git describe --tags > version
+RUN git describe --tags --always > version
 
 # remove temporary files to make the next copy commands easier
 RUN rm -rf assets tmp/assets node_modules .git .gitignore tests
