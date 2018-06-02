@@ -84,8 +84,38 @@ jQuery(function($) {
 		return currentItem;
 	}
 
+	var itemTitleColumn = null;
+
+	function determineTitleColumn() {
+		// try the first 3 columns only
+		for (var i = 0; i < 4; ++i) {
+			var cells = $('.h-schedule td.h-' + i);
+
+			for (var j = 0; j < cells.length; ++j) {
+				// we found a non-empty column!
+				if ($(cells[j]).text() !== '') {
+					return i;
+				}
+			}
+		}
+
+		// fallback to the first column
+		return 0;
+	}
+
 	function getItemTitle(item) {
-		return item.find('.h-0').text();
+		// determine what column contains the item's title; some schedules leave the first column
+		// empty to have the scheduled time and the estimate right next to each other
+		if (itemTitleColumn === null) {
+			itemTitleColumn = determineTitleColumn();
+		}
+
+		var text = item.find('.h-' + itemTitleColumn).text();
+		if (text === '') {
+			text = '(unnamed item)';
+		}
+
+		return text;
 	}
 
 	function getItemScheduled(item) {
