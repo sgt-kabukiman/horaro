@@ -25,10 +25,11 @@ class UserController extends BaseController {
 			$page = 0;
 		}
 
+		$query     = $request->query->get('q', '');
 		$eventRepo = $this->getRepository('Event');
 		$userRepo  = $this->getRepository('User');
-		$users     = $userRepo->findBy([], ['login' => 'ASC'], $size, $page*$size);
-		$total     = $userRepo->count();
+		$users     = $userRepo->findFiltered($query, $size, $page*$size);
+		$total     = $userRepo->countFiltered($query);
 
 		foreach ($users as $user) {
 			$user->eventCount = $eventRepo->count($user);
@@ -36,7 +37,8 @@ class UserController extends BaseController {
 
 		return $this->render('admin/users/index.twig', [
 			'users' => $users,
-			'pager' => new Pager($page, $total, $size)
+			'pager' => new Pager($page, $total, $size),
+			'query'     => $query
 		]);
 	}
 

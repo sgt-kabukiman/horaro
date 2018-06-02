@@ -6,6 +6,19 @@
 {% block content %}
 <h2>Users</h2>
 
+<form method="get" action="/-/admin/users" class="form-inline text-center filter-form">
+	<div class="form-group">
+		<label class="sr-only" for="search-keyword">Keyword</label>
+		<input type="text" class="form-control" id="search-keyword" name="q" placeholder="Keyword" value="{{ query }}">
+	</div>
+	<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-search"> </i> Search</button>
+</form>
+
+{% if users is empty %}
+<div class="alert alert-info">
+	<i class="fa fa-info-circle"></i> No users were found matching the query.
+</div>
+{% else %}
 <table class="table table-striped table-hover">
 	<thead>
 		<tr>
@@ -39,5 +52,6 @@
 	</tbody>
 </table>
 
-{{ macros.render_pager(pager, '/-/admin/users') }}
+{{ macros.render_pager(pager, '/-/admin/users', {'q': query}) }}
+{% endif %}
 {% endblock %}

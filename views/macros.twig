@@ -28,10 +28,10 @@
 /assets/{% if app.debug %}{{ path }}{% else %}{{ utils.asset(path) }}{% endif %}
 {% endmacro %}
 
-{% macro render_pager(pager, baseUrl) %}
+{% macro render_pager(pager, baseUrl, params = []) %}
 {% if pager.pages > 1 %}
 <div class="text-center">
-	{{ pager.htmlList('ul', [], 'page', baseUrl)|raw }}
+	{{ pager.htmlList('ul', params, 'page', baseUrl)|raw }}
 </div>
 {% endif %}
 {% endmacro %}

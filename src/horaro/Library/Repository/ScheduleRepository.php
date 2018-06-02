@@ -34,6 +34,34 @@ class ScheduleRepository extends EntityRepository {
 		return (int) $query->getSingleScalarResult();
 	}
 
+	public function findFiltered($query, $size, $offset) {
+		return $this->createQueryBuilder('s')
+			->where('s.name LIKE :query')
+			->orWhere('s.slug LIKE :query')
+			->orWhere('s.website LIKE :query')
+			->orWhere('s.twitter LIKE :query')
+			->orWhere('s.twitch LIKE :query')
+			->setParameter('query', '%'.$query.'%')
+			->add('orderBy', 's.name ASC')
+   		->setMaxResults($size)
+			->setFirstResult($offset)
+			->getQuery()
+			->getResult();
+	}
+
+	public function countFiltered($query) {
+		return $this->createQueryBuilder('s')
+			->select('COUNT(s)')
+			->where('s.name LIKE :query')
+			->orWhere('s.slug LIKE :query')
+			->orWhere('s.website LIKE :query')
+			->orWhere('s.twitter LIKE :query')
+			->orWhere('s.twitch LIKE :query')
+			->setParameter('query', '%'.$query.'%')
+			->getQuery()
+			->getSingleScalarResult();
+	}
+
 	public function findCurrentlyRunning() {
 		$day       = 24 * 3600;
 		$now       = time();

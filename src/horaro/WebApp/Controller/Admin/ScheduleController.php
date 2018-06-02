@@ -25,10 +25,11 @@ class ScheduleController extends BaseController {
 			$page = 0;
 		}
 
+		$query        = $request->query->get('q', '');
 		$itemRepo     = $this->getRepository('ScheduleItem');
 		$scheduleRepo = $this->getRepository('Schedule');
-		$schedules    = $scheduleRepo->findBy([], ['name' => 'ASC'], $size, $page*$size);
-		$total        = $scheduleRepo->count();
+		$schedules    = $scheduleRepo->findFiltered($query, $size, $page*$size);
+		$total        = $scheduleRepo->countFiltered($query);
 
 		foreach ($schedules as $schedule) {
 			$schedule->itemCount = $itemRepo->count($schedule);
@@ -36,7 +37,8 @@ class ScheduleController extends BaseController {
 
 		return $this->render('admin/schedules/index.twig', [
 			'schedules' => $schedules,
-			'pager'  => new Pager($page, $total, $size)
+			'pager'     => new Pager($page, $total, $size),
+			'query'     => $query
 		]);
 	}
 

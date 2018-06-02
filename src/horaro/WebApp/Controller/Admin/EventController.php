@@ -25,13 +25,15 @@ class EventController extends BaseController {
 			$page = 0;
 		}
 
+		$query     = $request->query->get('q', '');
 		$eventRepo = $this->getRepository('Event');
-		$events    = $eventRepo->findBy([], ['name' => 'ASC'], $size, $page*$size);
-		$total     = $eventRepo->count();
+		$events    = $eventRepo->findFiltered($query, $size, $page*$size);
+		$total     = $eventRepo->countFiltered($query);
 
 		return $this->render('admin/events/index.twig', [
 			'events' => $events,
-			'pager'  => new Pager($page, $total, $size)
+			'pager'  => new Pager($page, $total, $size),
+			'query'  => $query
 		]);
 	}
 
