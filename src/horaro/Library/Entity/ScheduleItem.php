@@ -131,7 +131,13 @@ class ScheduleItem {
 	 * @return string
 	 */
 	public function getISODuration() {
-		return preg_replace('/(?<=[THMS])0+[HMS]/', '$1', $this->length->format('\P\TG\Hi\Ms\S'));
+		$iso = preg_replace('/(?<=[THMS])0+[HMS]/', '$1', $this->length->format('\P\TG\Hi\Ms\S'));
+
+		if ($iso === 'PT') {
+			$iso = 'PT0S';
+		}
+
+		return $iso;
 	}
 
 	/**
