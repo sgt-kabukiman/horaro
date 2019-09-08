@@ -32,7 +32,7 @@ class UserController extends BaseController {
 		$total     = $userRepo->countFiltered($query);
 
 		foreach ($users as $user) {
-			$user->eventCount = $eventRepo->count($user);
+			$user->eventCount = $eventRepo->countEvents($user);
 		}
 
 		return $this->render('admin/users/index.twig', [

@@ -16,7 +16,7 @@ use Doctrine\ORM\EntityRepository;
  * User Repository
  */
 class UserRepository extends EntityRepository {
-	public function count() {
+	public function countUsers() {
 		return (int) $this->_em->createQuery('SELECT COUNT(u.id) FROM horaro\Library\Entity\User u')->getSingleScalarResult();
 	}
 

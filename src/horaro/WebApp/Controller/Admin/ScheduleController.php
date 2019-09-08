@@ -32,7 +32,7 @@ class ScheduleController extends BaseController {
 		$total        = $scheduleRepo->countFiltered($query);
 
 		foreach ($schedules as $schedule) {
-			$schedule->itemCount = $itemRepo->count($schedule);
+			$schedule->itemCount = $itemRepo->countItems($schedule);
 		}
 
 		return $this->render('admin/schedules/index.twig', [
@@ -134,7 +134,7 @@ class ScheduleController extends BaseController {
 		$config    = $this->app['config'];
 		$timezones = \DateTimeZone::listIdentifiers();
 
-		$schedule->itemCount = $itemRepo->count($schedule);
+		$schedule->itemCount = $itemRepo->countItems($schedule);
 
 		return $this->render('admin/schedules/form.twig', [
 			'result'    => $result,

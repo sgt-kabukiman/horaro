@@ -17,7 +17,7 @@ use horaro\Library\Entity\Schedule;
  * Schedule Column Repository
  */
 class ScheduleColumnRepository extends EntityRepository {
-	public function count(Schedule $schedule = null) {
+	public function countColumns(Schedule $schedule = null) {
 		$dql = 'SELECT COUNT(c.id) FROM horaro\Library\Entity\ScheduleColumn c';
 
 		if ($schedule) {

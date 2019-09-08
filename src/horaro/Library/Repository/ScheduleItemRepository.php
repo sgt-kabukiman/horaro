@@ -17,7 +17,7 @@ use horaro\Library\Entity\Schedule;
  * Schedule Item Repository
  */
 class ScheduleItemRepository extends EntityRepository {
-	public function count(Schedule $schedule = null) {
+	public function countItems(Schedule $schedule = null) {
 		$dql = 'SELECT COUNT(i.id) FROM horaro\Library\Entity\ScheduleItem i';
 
 		if ($schedule) {

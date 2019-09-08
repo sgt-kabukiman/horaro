@@ -17,7 +17,7 @@ use horaro\Library\Entity\User;
  * Event Repository
  */
 class EventRepository extends EntityRepository {
-	public function count(User $user = null) {
+	public function countEvents(User $user = null) {
 		$dql = 'SELECT COUNT(e.id) FROM horaro\Library\Entity\Event e';
 
 		if ($user) {

@@ -20,7 +20,7 @@ use horaro\Library\Entity\User;
  * Schedule Repository
  */
 class ScheduleRepository extends EntityRepository {
-	public function count(Event $event = null) {
+	public function countSchedules(Event $event = null) {
 		$dql = 'SELECT COUNT(s.id) FROM horaro\Library\Entity\Schedule s';
 
 		if ($event) {

@@ -28,7 +28,7 @@ class Csrf {
 			return;
 		}
 
-		if ($request->isMethodSafe()) {
+		if ($request->isMethodSafe(false)) {
 			return;
 		}
 

@@ -119,19 +119,19 @@ class BaseController {
 	}
 
 	protected function exceedsMaxUsers() {
-		return $this->getRepository('User')->count() >= $this->app['config']['max_users'];
+		return $this->getRepository('User')->countUsers() >= $this->app['config']['max_users'];
 	}
 
 	protected function exceedsMaxEvents(User $u) {
-		return $this->getRepository('Event')->count($u) >= $u->getMaxEvents();
+		return $this->getRepository('Event')->countEvents($u) >= $u->getMaxEvents();
 	}
 
 	protected function exceedsMaxSchedules(Event $e) {
-		return $this->getRepository('Schedule')->count($e) >= $e->getMaxSchedules();
+		return $this->getRepository('Schedule')->countSchedules($e) >= $e->getMaxSchedules();
 	}
 
 	protected function exceedsMaxScheduleItems(Schedule $s) {
-		return $this->getRepository('ScheduleItem')->count($s) >= $s->getMaxItems();
+		return $this->getRepository('ScheduleItem')->countItems($s) >= $s->getMaxItems();
 	}
 
 	protected function exceedsMaxScheduleColumns(Schedule $s) {

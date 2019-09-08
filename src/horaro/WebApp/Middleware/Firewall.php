@@ -27,7 +27,7 @@ class Firewall {
 
 	public function __invoke(Request $request, Application $app) {
 		// allow internal proxies (i.e. in a Docker network)
-		Request::setTrustedProxies(['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16']);
+		Request::setTrustedProxies(['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'], Request::HEADER_X_FORWARDED_ALL);
 
 		$user = null;
 
