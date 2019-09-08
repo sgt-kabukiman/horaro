@@ -1,11 +1,11 @@
-FROM alpine:3.7 AS builder
-MAINTAINER Sgt. Kabukiman
+FROM alpine:3.10 AS builder
+LABEL maintainer="Sgt. Kabukiman"
 
 # install packages
 RUN apk --no-cache add php7 php7-json php7-openssl php7-phar php7-mbstring nodejs git
 
 # install Composer
-ADD https://getcomposer.org/download/1.6.2/composer.phar /usr/bin/composer
+ADD https://getcomposer.org/download/1.9.0/composer.phar /usr/bin/composer
 RUN chmod +rx /usr/bin/composer
 
 # add our sources
@@ -29,8 +29,8 @@ RUN rm -rf assets tmp/assets node_modules .git .gitignore tests
 ###################################################################################
 # second stage: final image
 
-FROM alpine:3.7
-MAINTAINER Sgt. Kabukiman
+FROM alpine:3.10
+LABEL maintainer="Sgt. Kabukiman"
 
 # install packages
 RUN apk --no-cache add php7 php7-fpm php7-mysqli php7-json php7-openssl php7-curl \
