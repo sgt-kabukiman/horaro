@@ -2,7 +2,7 @@ FROM alpine:3.10 AS builder
 LABEL maintainer="Sgt. Kabukiman"
 
 # install packages
-RUN apk --no-cache add php7 php7-json php7-openssl php7-phar php7-mbstring nodejs git
+RUN apk --no-cache add php7 php7-json php7-openssl php7-phar php7-mbstring nodejs npm git
 
 # install Composer
 ADD https://getcomposer.org/download/1.9.0/composer.phar /usr/bin/composer
