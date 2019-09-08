@@ -9,7 +9,7 @@
         "ircmaxell/random-lib": "^1.2.0",
         "jenssegers/optimus": "^1.0.0",
         "justinrainbow/json-schema": "^5.2.8",
-        "league/csv": "^8.1.0",
+        "league/csv": "^9.3.0",
         "league/fractal": "^0.13.0",
         "league/oauth2-client": "^1.4.1",
         "michelf/php-markdown": "^1.6.0",

@@ -27,14 +27,12 @@ class CsvImporter extends BaseImporter {
 		$csv->setEnclosure('"');
 		$csv->setEscape('\\');
 
-		$probe = $csv->fetchDelimitersOccurrence([',', ';', "\t", '~'], 10);
-
+		$probe = \League\Csv\delimiter_detect($csv, [',', ';', "\t", '~'], 10);
 		if (empty($probe)) {
 			throw new \Exception('Could not determine the column separator. Please use comma (,), semicolon (;) or tab (\\t).');
 		}
 
-		reset($probe);
-
+		arsort($probe);
 		$csv->setDelimiter(key($probe));
 
 		// check the header row
