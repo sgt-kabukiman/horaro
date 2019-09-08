@@ -12,6 +12,7 @@ namespace horaro\WebApp\Middleware;
 
 use horaro\WebApp\Application;
 use horaro\WebApp\Exception as Ex;
+use Sentry\Client as SentryClient;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -21,7 +22,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Twig_Environment;
 
 class ErrorHandler {
-	protected $raven;
+	protected $sentry;
 	protected $twig;
 	protected $version;
 
@@ -43,8 +44,8 @@ class ErrorHandler {
 		E_PARSE             => 'Parse',
 	);
 
-	public function __construct(\Raven_Client $client, Twig_Environment $twig, $version) {
-		$this->raven   = $client;
+	public function __construct(SentryClient $sentry, Twig_Environment $twig, $version) {
+		$this->sentry  = $sentry;
 		$this->twig    = $twig;
 		$this->version = $version;
 	}
@@ -141,21 +142,6 @@ class ErrorHandler {
 	}
 
 	protected function report(\Exception $e) {
-		// send exception to Sentry
-		preg_match('/^(\d+).(\d+).(\d+)/', PHP_VERSION, $match);
-		$php = sprintf('%d.%d.%d', $match[1], $match[2], $match[3]);
-
-		$this->raven->captureException($e, [
-			'tags' => [
-				'app_version' => $this->version,
-				'php_version' => $php
-			],
-			'extra' => [
-				'memory_usage'      => round(memory_get_usage(true) / (1024*1024), 2).' MiB',
-				'peak_memory_usage' => round(memory_get_peak_usage(true) / (1024*1024), 2).' MiB',
-				'system_load'       => function_exists('sys_getloadavg') ? implode(' / ', sys_getloadavg()) : 'N/A',
-				'full_php_version'  => PHP_VERSION
-			]
-		]);
+		$this->sentry->captureException($e);
 	}
 }

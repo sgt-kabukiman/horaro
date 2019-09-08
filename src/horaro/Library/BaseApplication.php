@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
 use Doctrine\ORM\Tools\Setup;
 use Jenssegers\Optimus\Optimus;
+use Sentry\ClientBuilder;
 use Silex\Application;
 use Silex\Provider;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
@@ -102,9 +103,9 @@ class BaseApplication extends Application {
 		};
 
 		$this['sentry-client'] = function() {
-			return new \Raven_Client($this['config']['sentry_dsn'], [
-				'install_default_breadcrumb_handlers' => false
-			]);
+			return ClientBuilder::create([
+				'dsn' => $this['config']['sentry_dsn'],
+			])->getClient();
 		};
 
 		$this['schedule-transformer-json'] = function() {
