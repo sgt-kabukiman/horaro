@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2015, Sgt. Kabukiman, https://github.com/sgt-kabukiman
+ * Copyright (c) 2019, Sgt. Kabukiman, https://github.com/sgt-kabukiman
  *
  * This file is released under the terms of the MIT license. You can find the
  * complete text in the attached LICENSE file or online at:

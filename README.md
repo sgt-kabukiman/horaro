@@ -3,7 +3,7 @@ horaro - Beautiful Schedules for the Web
 
 horaro (Esperanto for *schedule*) is a small web application for creating
 schedules for stream marathons (e.g. on Twitch or Hitbox). It's written in
-PHP 5.4 and only requires PHP (duh) and MySQL 5 to run.
+PHP 7.2 and only requires PHP (duh) and MySQL 5 to run.
 
 Features
 --------
