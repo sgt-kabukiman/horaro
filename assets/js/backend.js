@@ -151,7 +151,7 @@ jQuery(function($) {
 
 			if (itemData) {
 				itemData.forEach(function(item, idx) {
-					items.push(new Item(item[0], item[1], item[2], idx + 1));
+					items.push(new Item(item[0], item[1], item[2], item[3], idx + 1));
 				});
 			}
 

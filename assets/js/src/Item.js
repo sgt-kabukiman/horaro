@@ -1,10 +1,11 @@
-function Item(id, length, columns, pos) {
+function Item(id, length, columns, setup, pos) {
 	var self = this;
 
 	// setup simple data properties
 
 	self.id         = ko.observable(id);
 	self.length     = ko.observable(length);
+	self.setup      = ko.observable(setup);
 	self.scheduled  = ko.observable();      // will be set by calculateSchedule()
 	self.dateSwitch = ko.observable(false); // will be set by calculateSchedule()
 
@@ -82,6 +83,11 @@ function Item(id, length, columns, pos) {
 		viewModel.calculateSchedule(0);
 	});
 
+	self.setup.subscribe(function(newValue) {
+		self.sync({setup: newValue});
+		viewModel.calculateSchedule(0);
+	});
+
 	scheduleColumns.forEach(function(colID) {
 		var name = 'col_' + colID;
 
@@ -141,6 +147,7 @@ function Item(id, length, columns, pos) {
 
 				self.id(result.data.id);
 				self.length(result.data.length);
+				self.setup(result.data.setup);
 				self.errors(false);
 
 				scheduleColumns.forEach(function(id) {

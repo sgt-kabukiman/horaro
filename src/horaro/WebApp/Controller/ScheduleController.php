@@ -13,6 +13,7 @@ namespace horaro\WebApp\Controller;
 use horaro\Library\Entity\Event;
 use horaro\Library\Entity\Schedule;
 use horaro\Library\Entity\ScheduleColumn;
+use horaro\Library\ReadableTime;
 use horaro\WebApp\Exception as Ex;
 use horaro\WebApp\Validator\ScheduleValidator;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,11 +22,16 @@ use Symfony\Component\HttpFoundation\Response;
 class ScheduleController extends BaseController {
 	public function detailAction(Request $request) {
 		$schedule  = $this->getRequestedSchedule($request);
+		$optsCol   = $schedule->getOptionsColumn();
+		$setup     = $schedule->getSetupTime();
 		$items     = [];
 		$columnIDs = [];
 
 		foreach ($schedule->getItems() as $item) {
 			$extra = [];
+			$itemSetup = ($optsCol !== null) ? $item->getSetupTime($optsCol) : null;
+			$itemSetup = ($itemSetup === null) ? $setup : $itemSetup;
+			$itemSetup = ReadableTime::dateTimeToSeconds($itemSetup);
 
 			foreach ($item->getExtra() as $colID => $value) {
 				$extra[$this->encodeID($colID, 'schedule.column')] = $value;
@@ -34,7 +40,8 @@ class ScheduleController extends BaseController {
 			$items[] = [
 				$this->encodeID($item->getId(), 'schedule.item'),
 				$item->getLengthInSeconds(),
-				$extra
+				$extra,
+				$itemSetup
 			];
 		}
 

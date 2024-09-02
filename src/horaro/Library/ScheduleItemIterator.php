@@ -51,7 +51,7 @@ class ScheduleItemIterator implements \Iterator {
 		$setupTime = $this->setup;
 
 		if ($this->optionsCol) {
-			$customSetup = $this->current->getSetupTime($this->optionsCol);
+			$customSetup = $this->current->getSetupTimeDateInterval($this->optionsCol);
 
 			if ($customSetup) {
 				$setupTime = $customSetup;

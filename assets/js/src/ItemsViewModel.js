@@ -42,7 +42,7 @@ function ItemsViewModel(items) {
 			start = scheduleStart.getTime();
 		}
 		else {
-			start = items[startIdx].scheduled() + (items[startIdx].length() * 1000);
+			start = items[startIdx].scheduled() + ((items[startIdx].length() + items[startIdx].setup()) * 1000);
 		}
 
 		scheduled = start;
@@ -56,7 +56,7 @@ function ItemsViewModel(items) {
 
 			date       = moment.unix(scheduled / 1000).utcOffset(scheduleTZ);
 			dayOfYear  = date.dayOfYear();
-			scheduled += ((item.length() + scheduleSetupTime) * 1000);
+			scheduled += ((item.length() + item.setup()) * 1000);
 
 			if (prev !== null && prev !== dayOfYear) {
 				item.dateSwitch(date.format('dddd, ll'));
@@ -73,7 +73,7 @@ function ItemsViewModel(items) {
 			data[id] = '';
 		});
 
-		item = new Item(-1, 30*60, data, self.items().length + 1);
+		item = new Item(-1, 30*60, data, scheduleSetupTime, self.items().length + 1);
 		item.sync();
 
 		self.items.push(item);

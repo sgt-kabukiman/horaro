@@ -232,11 +232,7 @@ class ScheduleItem {
 		if (!empty($options['setup'])) {
 			try {
 				$parser = new ReadableTime();
-				$parsed = $parser->parse(trim($options['setup']));
-
-				if ($parsed) {
-					return ReadableTime::dateTimeToDateInterval($parsed);
-				}
+				return $parser->parse(trim($options['setup']));
 			}
 			catch (\InvalidArgumentException $e) {
 				// ignore bad user input
@@ -244,6 +240,33 @@ class ScheduleItem {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get setup time in seconds
+	 *
+	 * @return int
+	 */
+	public function getSetupTimeInSeconds(ScheduleColumn $optionsCol = null) {
+		return ReadableTime::dateTimeToSeconds($this->getSetupTime($optionsCol));
+	}
+
+	/**
+	 * Get setup time as ISO duration
+	 *
+	 * @return string
+	 */
+	public function getSetupTimeISODuration(ScheduleColumn $optionsCol = null) {
+		return ReadableTime::dateTimeToISODuration($this->getSetupTime($optionsCol));
+	}
+
+	/**
+	 * Get setup time as DateInterval
+	 *
+	 * @return \DateInterval
+	 */
+	public function getSetupTimeDateInterval(ScheduleColumn $optionsCol = null) {
+		return ReadableTime::dateTimeToDateInterval($this->getSetupTime($optionsCol));
 	}
 
 	/**

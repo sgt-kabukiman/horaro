@@ -12,6 +12,7 @@ namespace horaro\WebApp\Controller;
 
 use horaro\Library\Entity\Schedule;
 use horaro\Library\Entity\ScheduleItem;
+use horaro\Library\ReadableTime;
 use horaro\WebApp\Exception as Ex;
 use horaro\WebApp\Validator\ScheduleItemValidator;
 use Symfony\Component\HttpFoundation\Request;
@@ -254,12 +255,18 @@ class ScheduleItemController extends BaseController {
 			$extraData[$this->encodeID($colID, 'schedule.column')] = $value;
 		}
 
+		$setupTime = $item->getSetupTime();
+		if ($setupTime === null)
+			$setupTime = $item->getSchedule()->getSetupTime();
+		$setupTime = ReadableTime::dateTimeToSeconds($setupTime);
+
 		return $this->respondWithArray([
 			'data' => [
 				'id'      => $this->encodeID($item->getId(), 'schedule.item'),
 				'pos'     => $item->getPosition(),
 				'length'  => $item->getLengthInSeconds(),
-				'columns' => $extraData
+				'columns' => $extraData,
+				'setup'   => $setupTime
 			]
 		], $status);
 	}
